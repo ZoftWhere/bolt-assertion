@@ -14,28 +14,22 @@
         <project.report.sourceEncoding>UTF-8</project.report.sourceEncoding>
 
         <!-- Settings: maven-compiler-plugin -->
-        <maven.compiler.release>9</maven.compiler.release>
+        <maven.compiler.main-jdk>1.8</maven.compiler.main-jdk>
+        <maven.compiler.test-jdk>11</maven.compiler.test-jdk>
 
         <!-- Settings: User defined plugin properties -->
-        <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
-        <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
         <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
-        <maven-ear-plugin.version>3.0.1</maven-ear-plugin.version>
-        <maven-ejb-plugin.version>3.0.1</maven-ejb-plugin.version>
         <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
-        <maven-jar-plugin.version>3.1.0</maven-jar-plugin.version>
-        <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
-        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+        <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
+        <maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
-        <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
-        <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
+        <maven-site-plugin.version>3.8.2</maven-site-plugin.version>
         <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
-        <maven-surefire-plugin.version>3.0.0-M1</maven-surefire-plugin.version>
-        <maven-toolchains-plugin.version>1.1</maven-toolchains-plugin.version>
-        <maven-war-plugin.version>3.2.2</maven-war-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
+        <maven-toolchains-plugin.version>3.0.0</maven-toolchains-plugin.version>
 
         <!-- > -->
         <org.junit.5.version>5.4.2</org.junit.5.version>
@@ -57,7 +51,7 @@
         <dependency>
             <groupId>app.zoftwhere.mutable</groupId>
             <artifactId>mutable-library</artifactId>
-            <version>1.0.0</version>
+            <version>1.2.0</version>
         </dependency>
 
         <dependency>
@@ -104,11 +98,18 @@
                         <phase>none</phase>
                     </execution>
                     <execution>
-                        <id>example-compile</id>
+                        <id>main-compile</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
+                        <configuration>
+                            <source>${maven.compiler.main-jdk}</source>
+                            <target>${maven.compiler.main-jdk}</target>
+                            <excludes>
+                                <exclude>module-info.java</exclude>
+                            </excludes>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>default-testCompile</id>
@@ -116,14 +117,18 @@
                     </execution>
                     <execution>
                         <id>test-compile</id>
-                        <phase>compile</phase>
+                        <phase>test-compile</phase>
                         <goals>
                             <goal>testCompile</goal>
                         </goals>
+                        <configuration>
+                            <release>${maven.compiler.test-jdk}</release>
+                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
-                    <release>${maven.compiler.release}</release>
+                    <source>${maven.compiler.test-jdk}</source>
+                    <target>${maven.compiler.test-jdk}</target>
                     <compilerArgs>
                         <arg>-Xlint:all,-processing,-cast,-serial,-try</arg>
                     </compilerArgs>
@@ -140,44 +145,44 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>${maven-deploy-plugin.version}</version>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resources-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-resources</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>main-resources</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>resources</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-testResources</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>test-resources</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>testResources</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <overwrite>false</overwrite>
+                </configuration>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>${maven-install-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <!-- mvn install:install-file@local -->
-                        <id>local</id>
-                        <phase>none</phase>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <configuration>
-                            <file>${project.build.directory}/${project.build.finalName}.jar</file>
-                            <generatePom>false</generatePom>
-                            <pomFile>pom.xml</pomFile>
-                            <sources>${project.build.directory}/${project.build.finalName}-sources.jar</sources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>shade-install</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <configuration>
-                            <file>${project.basedir}/bolt-assertion-shade.jar</file>
-                            <generatePom>false</generatePom>
-                            <pomFile>pom.xml</pomFile>
-                            <packaging>jar</packaging>
-                            <classifier>shade</classifier>
-                        </configuration>
-                    </execution>
-                </executions>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <printSummary>false</printSummary>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -193,7 +198,7 @@
                         <phase>none</phase>
                     </execution>
                     <execution>
-                        <id>example-jar</id>
+                        <id>main-jar</id>
                         <phase>package</phase>
                         <goals>
                             <goal>jar</goal>
@@ -219,46 +224,20 @@
                         <manifest>
                             <addClasspath>false</addClasspath>
                         </manifest>
-                        <manifestEntries>
+                        <!--<manifestEntries>
+                            <Built-By/>
                             <Main-Class/>
                             <Class-Path/>
                             <Dependencies/>
-                        </manifestEntries>
+                        </manifestEntries>-->
                     </archive>
                 </configuration>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven-resources-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>default-resources</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>example-resources</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>resources</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>default-testResources</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>test-resources</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>testResources</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <overwrite>false</overwrite>
-                </configuration>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
             </plugin>
 
             <plugin>
@@ -274,7 +253,7 @@
                         <phase>none</phase>
                     </execution>
                     <execution>
-                        <id>example-source</id>
+                        <id>main-source</id>
                         <phase>package</phase>
                         <goals>
                             <goal>jar</goal>
@@ -299,7 +278,19 @@
                 </configuration>
             </plugin>
 
-            <!--<plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>${maven-install-plugin.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${maven-deploy-plugin.version}</version>
+            </plugin>
+
+            <plugin>
                 <groupId>org.moditect</groupId>
                 <artifactId>moditect-maven-plugin</artifactId>
                 <version>1.0.0.Beta2</version>
@@ -313,57 +304,12 @@
                         <configuration>
                             <overwriteExistingFiles>true</overwriteExistingFiles>
                             <module>
-                                <moduleInfoFile>example-jpms/module-info.java</moduleInfoFile>
+                                <moduleInfoFile>main-jpms/module-info.java</moduleInfoFile>
                             </module>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>-->
-
-            <!-- Ensure that the jar plugin goals execute before the shade plugin. -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
-                <configuration>
-                    <createDependencyReducedPom>true</createDependencyReducedPom>
-                    <filters>
-                        <filter>
-                            <artifact>*:*</artifact>
-                            <excludes>
-                                <exclude>module-info.class</exclude>
-                                <exclude>META-INF/*.SF</exclude>
-                                <exclude>META-INF/*.DSA</exclude>
-                                <exclude>META-INF/*.RSA</exclude>
-                            </excludes>
-                        </filter>
-                    </filters>
-                </configuration>
-                <executions>
-                    <execution>
-                        <!-- mvn shade:shade@bolt-assertion-shade -->
-                        <id>bolt-assertion-shade</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <shadedClassifierName>shade</shadedClassifierName>
-                            <transformers>
-                                <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                                <transformer implementation
-                                    ="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                </transformer>
-                            </transformers>
-                            <outputFile>bolt-assertion-shade.jar</outputFile>
-                            <outputDirectory>${project.basedir}</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
-
         </plugins>
     </build>
 </project>
