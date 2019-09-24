@@ -16,6 +16,12 @@ The project is Maven based, so executing the ```mvn install``` should install th
 
 The source code has a compile dependency on the [ZoftWhere Mutable Library](http://github.com/ZoftWhere/mutable-library).  Ensure that this dependency is installed.
 
+The test source code is written against JDK 11, so when compile for and earlier JDK, the main source code can compiled and installed by executing the following maven call:
+
+```shell script
+mvn clean compile jar:jar source:jar javadoc:jar install:install-file@main-install -f pom.xml
+```
+
 ## Examples
 
 ### Hello World Lambda
@@ -25,8 +31,9 @@ The bolt assertion provides a Runner instance.  Here is a Hello World example:
 public class HelloWorldExample {
 
     // An immutable runner that can be reused.
-    private final Runner runner = Runner.newRunner();
+    private final Runner runner = new Runner();
 
+    @Test
     void testCase() {
 
         // Hello World lambda.
@@ -36,7 +43,7 @@ public class HelloWorldExample {
             })
             .input()
             .expected("Hello World!")
-            .assertResult();
+            .assertSuccess();
     }
 
 }
@@ -50,7 +57,7 @@ public class CommandLineExample {
 
     public static void main(String[] args) throws Exception {
         try (Scanner scanner = new Scanner(System.in)) {
-            try (FileWriter fileWriter = new FileWriter(System.getenv("OUTPUT_PATH"))){
+            try (FileWriter fileWriter = new FileWriter(System.getenv("OUTPUT_PATH"))) {
                 try (BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
                     main(args, scanner, bufferedWriter);
                 }
@@ -59,7 +66,9 @@ public class CommandLineExample {
     }
 
     // Make a proxy method to decrease boilerplate, and simplify.
-    static void main(String[] arguments, Scanner scanner, BufferedWriter bufferedWriter) throws IOException {
+    static void main(String[] arguments, Scanner scanner, BufferedWriter bufferedWriter)
+    throws IOException
+    {
         String name = scanner.nextLine();
         bufferedWriter.write(String.format("Hello %s!", name));
         bufferedWriter.newLine();
@@ -70,14 +79,15 @@ public class CommandLineExample {
 ``` kotlin 
 class CommandLineExampleTest {
 
-    private final Runner runner = Runner.newRunner();
+    private final Runner runner = new Runner();
 
+    @Test
     void testCase() {
         runner.run(CommandLineExample::main)
             .argument()
             .input("World")
-            .expected("Hello World!")
-            .assertResult();
+            .expected("Hello World!", "")
+            .assertSuccess();
     }
 
 }
@@ -101,15 +111,16 @@ public class ConsoleOutputExample {
 ``` kotlin
 class ConsoleOutputExampleTest {
 
-    private final Runner runner = Runner.newRunner();
+    private final Runner runner = new Runner();
 
+    @Test
     void testCase() {
         // Not Thread Safe!
         runner.runConsole(redirect(ConsoleOutputExample::main))
             .argument()
             .input("World")
-            .expected("Hello World!")
-            .assertResult();
+            .expected("Hello World!", "")
+            .assertSuccess();
     }
 
     /** Not Thread Safe **/
