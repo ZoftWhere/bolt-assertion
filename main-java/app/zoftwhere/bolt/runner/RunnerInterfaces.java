@@ -13,11 +13,10 @@ import app.zoftwhere.function.ThrowingConsumer2;
 import app.zoftwhere.function.ThrowingConsumer3;
 import app.zoftwhere.function.ThrowingFunction0;
 
+@SuppressWarnings("unused")
 class RunnerInterfaces {
 
     interface IRunner<T extends TestResult> extends RunnerProgramFirst<T>, RunnerInputFirst<T> { }
-
-    //
 
     private interface RunnerProgramFirst<T> extends //
         RunWithArguments<RunnerPreProgram<T>>, RunNoArguments<RunnerProgram<T>> { }
@@ -26,27 +25,23 @@ class RunnerInterfaces {
 
     interface RunnerProgram<T> extends Input<RunnerOutput<T>> { }
 
-    //
-
     private interface RunnerInputFirst<T> extends Input<RunnerInput<T>> { }
 
     interface RunnerInput<T> extends Arguments<RunnerLoader<T>>, RunNoArguments<RunnerOutput<T>> { }
 
     interface RunnerLoader<T> extends RunWithArguments<RunnerOutput<T>> { }
 
-    //
+    interface RunnerOutput<T> extends Comparison<RunnerPreTest<T>, String>, RunnerOutputCommon<T> { }
 
-    interface RunnerOutput<T> extends Comparison<RunnerPreTest<T>, String>, RunnerPreTest<T> { }
+    interface RunnerPreTest<T> extends RunnerOutputCommon<T> { }
 
-    @SuppressWarnings("unused")
-    interface RunnerPreTest<T> extends Expected<RunnerAsserter<T>> {
+    interface RunnerOutputCommon<T> extends Expected<RunnerAsserter<T>> {
 
         String[] output();
 
         Exception exception();
     }
 
-    @SuppressWarnings("unused")
     interface RunnerAsserter<T> extends Assertions<T> {
 
         RunnerTestResult result();
@@ -54,60 +49,48 @@ class RunnerInterfaces {
 
     interface RunnerTestResult extends TestResult { }
 
-    //
-
-    @SuppressWarnings("unused")
-    protected interface RunNoArguments<T> {
+    interface RunNoArguments<T> {
 
         T run(ThrowingConsumer2<Scanner, BufferedWriter> program);
 
-        T run(Charset charset, ThrowingConsumer2<Scanner, BufferedWriter> program);
-
         T runConsole(ThrowingConsumer2<InputStream, OutputStream> program);
+
+        T runConsole(Charset charset, ThrowingConsumer2<InputStream, OutputStream> program);
     }
 
-    @SuppressWarnings("unused")
-    protected interface RunWithArguments<T> {
+    interface RunWithArguments<T> {
 
         T run(ThrowingConsumer3<String[], Scanner, BufferedWriter> program);
 
-        T run(Charset charset, ThrowingConsumer3<String[], Scanner, BufferedWriter> program);
-
         T runConsole(ThrowingConsumer3<String[], InputStream, OutputStream> program);
+
+        T runConsole(Charset charset, ThrowingConsumer3<String[], InputStream, OutputStream> program);
     }
 
-    @SuppressWarnings("unused")
-    protected interface Arguments<T> {
+    interface Arguments<T> {
 
         T argument(String... arguments);
     }
 
-    @SuppressWarnings("unused")
-    protected interface Input<T> {
+    interface Input<T> {
 
         T input(String... input);
 
         T input(ThrowingFunction0<InputStream> getInputStream);
 
-        T input(ThrowingFunction0<InputStream> getInputStream, Charset decode);
-
-        T input(ThrowingFunction0<InputStream> getInputStream, Charset decode, Charset encode);
+        T input(ThrowingFunction0<InputStream> getInputStream, Charset charset);
 
         T loadInput(String resourceName, Class<?> withClass);
 
-        T loadInput(String resourceName, Class<?> withClass, Charset decode);
-
-        T loadInput(String resourceName, Class<?> withClass, Charset decode, Charset encode);
+        T loadInput(String resourceName, Class<?> withClass, Charset charset);
     }
 
-    @SuppressWarnings("unused")
-    protected interface Comparison<T, C> {
+    interface Comparison<T, C> {
 
         T comparator(Comparator<C> comparator);
     }
 
-    @SuppressWarnings("unused")
-    protected interface Expected<T> {
+    interface Expected<T> {
 
         T expected(String... expected);
 
@@ -120,18 +103,18 @@ class RunnerInterfaces {
         T loadExpectation(String resourceName, Class<?> withClass, Charset charset);
     }
 
-    @SuppressWarnings("unused")
-    protected interface Assertions<T> {
+    interface Assertions<T> {
 
-        void assertResult();
+        void assertSuccess();
+
+        void assertFail();
 
         void assertException();
 
         void assertCheck(ThrowingConsumer1<T> consumer);
     }
 
-    @SuppressWarnings("unused")
-    protected interface TestResult {
+    interface TestResult {
 
         boolean isSuccess();
 
@@ -145,4 +128,5 @@ class RunnerInterfaces {
 
         Optional<String> message();
     }
+
 }

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 public class HelloWorldExample {
 
     // An immutable runner that can be reused.
-    private final Runner runner = Runner.newRunner();
+    private final Runner runner = new Runner();
 
     @Test
     void testCase() {
@@ -22,7 +22,7 @@ public class HelloWorldExample {
             })
             .input()
             .expected("Hello World!")
-            .assertResult();
+            .assertSuccess();
     }
 
 }

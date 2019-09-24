@@ -25,10 +25,11 @@ class RunnerScopeTest {
 
     private final String boltExceptionName = RunnerProxy.getBoltExceptionName();
 
+    private final Runner runner = newRunner();
+
     @SuppressWarnings({"ThrowableNotThrown", "unused"})
     @Test
     void testProgramFirstScope() {
-        Runner runner = newRunner();
 
         RunnerPreProgram r2a;
         RunnerPreProgram r2b = runner.run((strings, scanner, writer) -> {});
@@ -54,8 +55,8 @@ class RunnerScopeTest {
         RunnerAsserter r6a = r4a.expected();
         RunnerAsserter r6b = r5b.expected();
 
-        r6a.assertResult();
-        r6b.assertResult();
+        r6a.assertSuccess();
+        r6b.assertSuccess();
 
         r6a.assertCheck((result) -> {});
         r6b.assertCheck((result) -> {});
@@ -76,8 +77,6 @@ class RunnerScopeTest {
     @SuppressWarnings("ThrowableNotThrown")
     @Test
     void testInputFirstScope() {
-        Runner runner = newRunner();
-
         RunnerInput r2a = runner.input();
 
         RunnerLoader r3a = r2a.argument();
@@ -98,8 +97,8 @@ class RunnerScopeTest {
 
         RunnerAsserter r6a = r5a.expected();
         RunnerAsserter r6b = r4b.expected();
-        r6a.assertResult();
-        r6b.assertResult();
+        r6a.assertSuccess();
+        r6b.assertSuccess();
         r6a.assertCheck((result) -> {});
         try {
             r6a.assertException();
@@ -132,50 +131,48 @@ class RunnerScopeTest {
 
     @Test
     void testScope() {
-        Runner runner = newRunner();
         assertNotNull(runner.run((scanner, writer) -> {}));
         assertNotNull(runner.run((strings, scanner, writer) -> {}));
-        assertNotNull(runner.run(UTF_8, (scanner, writer) -> {}));
-        assertNotNull(runner.run(UTF_8, (strings, scanner, writer) -> {}));
         assertNotNull(runner.runConsole((inputStream, outputStream) -> {}));
         assertNotNull(runner.runConsole((strings, inputStream, outputStream) -> {}));
+        assertNotNull(runner.runConsole(UTF_8, (inputStream, outputStream) -> {}));
+        assertNotNull(runner.runConsole(UTF_8, (strings, inputStream, outputStream) -> {}));
 
         RunnerPreProgram preProgram = runner.run((strings, scanner, writer) -> {});
         RunnerProgram program = preProgram.argument();
         assertNotNull(program.input());
         assertNotNull(program.input(() -> null));
         assertNotNull(program.input(() -> null, UTF_8));
-        assertNotNull(program.input(() -> null, UTF_8, UTF_8));
 
         String resourceName1 = "1";
         String resourceName2 = "2";
         assertNotNull(runner.input());
         assertNotNull(runner.loadInput(resourceName1, runner.getClass()));
-        assertNotNull(runner.loadInput(resourceName1, program.getClass(), UTF_8));
-        assertNotNull(runner.loadInput(resourceName2, program.getClass(), UTF_8, UTF_8));
+        assertNotNull(runner.loadInput(resourceName2, program.getClass(), UTF_8));
 
         RunnerInput input = runner.input();
         assertNotNull(input.run((scanner, writer) -> {}));
-        assertNotNull(input.run(UTF_8, (scanner, writer) -> {}));
+        assertNotNull(input.runConsole((inputStream, outputStream) -> {}));
+        assertNotNull(input.runConsole(UTF_8, (inputStream, outputStream) -> {}));
 
         RunnerLoader loader = input.argument();
         assertNotNull(loader.run((strings, scanner, writer) -> {}));
-        assertNotNull(loader.run(UTF_8, (strings, scanner, writer) -> {}));
         assertNotNull(loader.runConsole((strings, inputStream, outputStream) -> {}));
+        assertNotNull(loader.runConsole(UTF_8, (strings, inputStream, outputStream) -> {}));
 
         RunnerOutput output = program.input();
         assertNotNull(output);
 
         String expectationResource = "RunnerScopeTest.txt";
-        RunnerPreTest preTest = program.input().comparator(null);
+        RunnerPreTest preTest = output.comparator(null);
         assertNotNull(preTest.expected());
         assertNotNull(preTest.expected(() -> new ByteArrayInputStream(new byte[0])));
         assertNotNull(preTest.expected(() -> new ByteArrayInputStream(new byte[0]), UTF_8));
-        preTest.loadExpectation(expectationResource, getClass());
-        preTest.loadExpectation(expectationResource, getClass(), UTF_8);
+        preTest.loadExpectation(expectationResource, Runner.class);
+        preTest.loadExpectation(expectationResource, Runner.class, UTF_8);
 
         RunnerAsserter asserter = preTest.expected();
-        asserter.assertResult();
+        asserter.assertSuccess();
         asserter.assertCheck(result -> {});
         try { asserter.assertException(); }
         catch (Exception ignored) { }
@@ -185,8 +182,10 @@ class RunnerScopeTest {
         assertNotNull(result.output());
         assertTrue(result.isSuccess());
         assertFalse(result.isFail());
-        assertFalse(result.exception().isPresent());
-        assertFalse(result.message().isPresent());
+        assertFalse(result.exception()
+            .isPresent());
+        assertFalse(result.message()
+            .isPresent());
     }
 
 }

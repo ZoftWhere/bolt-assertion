@@ -13,11 +13,7 @@ import app.zoftwhere.function.ThrowingFunction0;
 @SuppressWarnings("unused")
 public class RunnerProxy extends RunnerInterfaces implements RunnerInterfaces.IRunner<Runner.RunnerTestResult> {
 
-    private final Runner runner = Runner.newRunner();
-
-    public static String getBoltExceptionName() {
-        return Runner.BoltAssertionException.class.getName();
-    }
+    private final Runner runner = new Runner();
 
     public RunnerProxy() {
     }
@@ -38,11 +34,6 @@ public class RunnerProxy extends RunnerInterfaces implements RunnerInterfaces.IR
     }
 
     @Override
-    public Runner.RunnerInput input(ThrowingFunction0<InputStream> getInputStream, Charset decode, Charset encode) {
-        return runner.input(getInputStream, decode, encode);
-    }
-
-    @Override
     public Runner.RunnerInput loadInput(String resourceName, Class<?> withClass) {
         return runner.loadInput(resourceName, withClass);
     }
@@ -53,18 +44,15 @@ public class RunnerProxy extends RunnerInterfaces implements RunnerInterfaces.IR
     }
 
     @Override
-    public Runner.RunnerInput loadInput(String resourceName, Class<?> withClass, Charset decode, Charset encode) {
-        return runner.loadInput(resourceName, withClass, decode, encode);
-    }
-
-    @Override
     public Runner.RunnerProgram run(ThrowingConsumer2<Scanner, BufferedWriter> program) {
         return runner.run(program);
     }
 
     @Override
-    public Runner.RunnerProgram run(Charset charset, ThrowingConsumer2<Scanner, BufferedWriter> program) {
-        return runner.run(charset, program);
+    public Runner.RunnerPreProgram run(
+        ThrowingConsumer3<String[], Scanner, BufferedWriter> program)
+    {
+        return runner.run(program);
     }
 
     @Override
@@ -73,18 +61,28 @@ public class RunnerProxy extends RunnerInterfaces implements RunnerInterfaces.IR
     }
 
     @Override
-    public Runner.RunnerPreProgram run(ThrowingConsumer3<String[], Scanner, BufferedWriter> program) {
-        return runner.run(program);
+    public Runner.RunnerProgram runConsole(Charset charset,
+        ThrowingConsumer2<InputStream, OutputStream> program)
+    {
+        return runner.runConsole(charset, program);
     }
 
     @Override
-    public Runner.RunnerPreProgram run(Charset charset, ThrowingConsumer3<String[], Scanner, BufferedWriter> program) {
-        return runner.run(charset, program);
-    }
-
-    @Override
-    public Runner.RunnerPreProgram runConsole(ThrowingConsumer3<String[], InputStream, OutputStream> program) {
+    public Runner.RunnerPreProgram runConsole(
+        ThrowingConsumer3<String[], InputStream, OutputStream> program)
+    {
         return runner.runConsole(program);
+    }
+
+    @Override
+    public Runner.RunnerPreProgram runConsole(Charset charset,
+        ThrowingConsumer3<String[], InputStream, OutputStream> program)
+    {
+        return runner.runConsole(charset, program);
+    }
+
+    public static String getBoltExceptionName() {
+        return Runner.BoltAssertionException.class.getName();
     }
 
 }

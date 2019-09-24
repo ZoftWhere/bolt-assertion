@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -22,46 +21,56 @@ import app.zoftwhere.function.ThrowingFunction0;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * Bolt Assertion Runner.
+ */
 public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult> {
 
+    private final RunnerSplitter splitter = new RunnerSplitter();
+
     /**
-     * User Runner static method {@link #newRunner()}<p>
+     * Constructor for an reusable, immutable instance of the runner.
+     * <p>
+     * The Runner static method {@link #newRunner()} may also be used.
      */
-    private Runner() {
-    }
-
-    @Override
-    public RunnerPreProgram run(ThrowingConsumer3<String[], Scanner, BufferedWriter> program) {
-        return new RunnerPreProgram(forProgram(program, UTF_8));
-    }
-
-    @Override
-    public RunnerPreProgram run(Charset charset, ThrowingConsumer3<String[], Scanner, BufferedWriter> program) {
-        return new RunnerPreProgram(forProgram(program, charset));
-    }
-
-    @Override
-    public RunnerPreProgram runConsole(ThrowingConsumer3<String[], InputStream, OutputStream> program) {
-        return new RunnerPreProgram(program);
+    public Runner() {
     }
 
     @Override
     public RunnerProgram run(ThrowingConsumer2<Scanner, BufferedWriter> program) {
-        return new RunnerProgram(forProgram(program, UTF_8));
+        return new RunnerProgram(forProgram(program), UTF_8);
     }
 
     @Override
-    public RunnerProgram run(Charset charset, ThrowingConsumer2<Scanner, BufferedWriter> program) {
-        return new RunnerProgram(forProgram(program, charset));
+    public RunnerPreProgram run(ThrowingConsumer3<String[], Scanner, BufferedWriter> program) {
+        return new RunnerPreProgram(forProgram(program), UTF_8);
     }
 
+    @Override
     public RunnerProgram runConsole(ThrowingConsumer2<InputStream, OutputStream> program) {
-        return new RunnerProgram(program);
+        return new RunnerProgram(program, UTF_8);
+    }
+
+    @Override
+    public RunnerPreProgram runConsole(ThrowingConsumer3<String[], InputStream, OutputStream> program) {
+        return new RunnerPreProgram(program, UTF_8);
+    }
+
+    @Override
+    public RunnerProgram runConsole(Charset charset, ThrowingConsumer2<InputStream, OutputStream> program) {
+        return new RunnerProgram(program, charset);
+    }
+
+    @Override
+    public RunnerPreProgram runConsole(Charset charset, ThrowingConsumer3<String[], InputStream, OutputStream> program)
+    {
+        return new RunnerPreProgram(program, charset);
     }
 
     @Override
     public RunnerInput input(String... input) {
-        return new RunnerInput(() -> forInput(input, UTF_8));
+        final String[] array = input != null && input.length > 0 ? input : new String[] {""};
+        return new RunnerInput(() -> forInput(array));
     }
 
     @Override
@@ -71,12 +80,7 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
 
     @Override
     public RunnerInput input(ThrowingFunction0<InputStream> getInputStream, Charset decode) {
-        return new RunnerInput(getInputStreamCodec(getInputStream, decode, UTF_8));
-    }
-
-    @Override
-    public RunnerInput input(ThrowingFunction0<InputStream> getInputStream, Charset decode, Charset encode) {
-        return new RunnerInput(getInputStreamCodec(getInputStream, decode, encode));
+        return new RunnerInput(getUTF8Inputted(getInputStream, decode));
     }
 
     @Override
@@ -86,55 +90,43 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
 
     @Override
     public RunnerInput loadInput(String resourceName, Class<?> withClass, Charset decode) {
-        ThrowingFunction0<InputStream> input = () -> withClass.getResourceAsStream(resourceName);
-        ThrowingFunction0<InputStream> codec = getInputStreamCodec(input, decode, UTF_8);
-        return new RunnerInput(codec);
+        final ThrowingFunction0<InputStream> input = () -> withClass.getResourceAsStream(resourceName);
+        final ThrowingFunction0<InputStream> supplier = getUTF8Inputted(input, decode);
+        return new RunnerInput(supplier);
     }
 
-    @Override
-    public RunnerInput loadInput(String resourceName, Class<?> withClass, Charset decode, Charset encode) {
-        ThrowingFunction0<InputStream> input = () -> withClass.getResourceAsStream(resourceName);
-        ThrowingFunction0<InputStream> codec = getInputStreamCodec(input, decode, encode);
-        return new RunnerInput(codec);
-    }
-
-    private InputStream forInput(String[] input, Charset charset) throws IOException {
-        final ByteArrayOutputStream outputStream = getOutputStream();
-        final BufferedWriter writer = getWriter(outputStream, charset);
-        final int size = input.length;
-        if (size > 0) {
-            writer.write(input[0]);
-            for (int i = 1; i < size; i++) {
-                writer.newLine();
-                writer.write(input[i]);
+    private InputStream forInput(String[] input) throws IOException {
+        try (ByteArrayOutputStream outputStream = getOutputStream()) {
+            try (BufferedWriter writer = getWriter(outputStream)) {
+                writer.write(input[0]);
+                for (int i = 1, size = input.length; i < size; i++) {
+                    writer.newLine();
+                    writer.write(input[i]);
+                }
+                writer.flush();
+                return new ByteArrayInputStream(outputStream.toByteArray());
             }
         }
-        writer.flush();
-        return new ByteArrayInputStream(outputStream.toByteArray());
     }
 
-    private ThrowingConsumer2<InputStream, OutputStream> forProgram(
-        ThrowingConsumer2<Scanner, BufferedWriter> program,
-        Charset charset)
+    private ThrowingConsumer2<InputStream, OutputStream> forProgram( //
+        ThrowingConsumer2<Scanner, BufferedWriter> program)
     {
-        return (inputStream, outputStream) ->
-        {
-            try (Scanner s = new Scanner(inputStream, charset.name())) {
-                try (BufferedWriter w = getWriter(outputStream, UTF_8)) {
+        return (inputStream, outputStream) -> {
+            try (Scanner s = new Scanner(inputStream, UTF_8.name())) {
+                try (BufferedWriter w = getWriter(outputStream)) {
                     program.accept(s, w);
                 }
             }
         };
     }
 
-    private ThrowingConsumer3<String[], InputStream, OutputStream> forProgram(
-        ThrowingConsumer3<String[], Scanner, BufferedWriter> program,
-        Charset charset)
+    private ThrowingConsumer3<String[], InputStream, OutputStream> forProgram( //
+        ThrowingConsumer3<String[], Scanner, BufferedWriter> program)
     {
-        return (array, inputStream, outputStream) ->
-        {
-            try (Scanner s = new Scanner(inputStream, charset.name())) {
-                try (BufferedWriter w = getWriter(outputStream, UTF_8)) {
+        return (array, inputStream, outputStream) -> {
+            try (Scanner s = new Scanner(inputStream, UTF_8.name())) {
+                try (BufferedWriter w = getWriter(outputStream)) {
                     program.accept(array, s, w);
                 }
             }
@@ -145,71 +137,103 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
         return new ByteArrayOutputStream(1024);
     }
 
-    private BufferedWriter getWriter(OutputStream outputStream, Charset charset) {
-        final OutputStreamWriter writer = new OutputStreamWriter(outputStream, charset);
+    private BufferedWriter getWriter(OutputStream outputStream) {
+        final OutputStreamWriter writer = new OutputStreamWriter(outputStream, UTF_8);
         return new BufferedWriter(writer);
     }
 
-    private String[] splitOutput(ByteArrayOutputStream outputStream) {
-        return new String(outputStream.toByteArray(), java.nio.charset.StandardCharsets.UTF_8).split(System.lineSeparator());
+    private String[] splitOutput(byte[] data, Charset charset) {
+        final List<String> list = splitter.getList(new String(data, charset));
+        final int size = list.size();
+        final String[] array = new String[size];
+        return list.toArray(array);
     }
 
-    private RunnerOutput getProgramResult(
-        ThrowingConsumer3<String[], InputStream, OutputStream> program,
-        String[] arguments,
-        ThrowingFunction0<InputStream> input)
+    private RunnerOutput getProgramResult( //
+        ThrowingConsumer3<String[], InputStream, OutputStream> program, //
+        Charset outputCharset, //
+        String[] arguments, //
+        ThrowingFunction0<InputStream> input) //
     {
-        final ByteArrayOutputStream outputStream = getOutputStream();
-        try (InputStream inputStream = input.accept()) {
+        ByteArrayOutputStream outputStream = null;
+        Throwable throwable = null;
+
+        try (ByteArrayOutputStream byteArrayOutputStream = getOutputStream(); //
+            InputStream inputStream = input.accept()) //
+        {
+            outputStream = byteArrayOutputStream;
             if (inputStream == null) {
                 throw new NullPointerException("bolt.runner.load.input.input.stream.null");
             }
-            program.accept(arguments, inputStream, outputStream);
-            outputStream.flush();
-            final String[] found = splitOutput(outputStream);
-            return new RunnerOutput(found, null);
-        }
-        catch (Throwable throwable) {
-            final String[] found = splitOutput(outputStream);
-            return new RunnerOutput(found, throwable);
-        }
-        finally {
             try {
-                outputStream.close();
+                program.accept(arguments, inputStream, byteArrayOutputStream);
             }
-            catch (IOException e) {
-                e.printStackTrace();
+            catch (Throwable e) {
+                throwable = e;
+            }
+
+            if (throwable != null) {
+                throw throwable;
             }
         }
+        catch (Throwable e) {
+            throwable = e;
+        }
+
+        final byte[] data = outputStream != null ? outputStream.toByteArray() : null;
+        final String[] found = splitOutput(data, outputCharset);
+        return new RunnerOutput(found, throwable);
     }
 
-    private ThrowingFunction0<InputStream> getInputStreamCodec(
-        ThrowingFunction0<InputStream> input,
-        Charset decode,
-        Charset encode)
+    private ThrowingFunction0<InputStream> getUTF8Inputted( //
+        ThrowingFunction0<InputStream> input, Charset decode)
     {
+        if (decode.name().equals(UTF_8.name())) {
+            return input;
+        }
+
         return () -> {
-            try (Scanner scanner = new Scanner(input.accept(), decode.name())) {
-                final List<String> list = new ArrayList<>();
-                while (scanner.hasNext()) {
-                    list.add(scanner.nextLine());
-                }
+            try (InputStream inputStream = input.accept()) {
+                final List<String> list = splitter.getList(inputStream, decode);
                 final int size = list.size();
-                String[] array = new String[size];
-                array = list.toArray(array);
-                return forInput(array, encode);
+                final String[] array = list.toArray(new String[size]);
+                return forInput(array);
             }
         };
     }
 
     private Exception fromThrowable(Throwable throwable) {
-        if (throwable == null) {
+        if (throwable == null) { return null;}
+        if (throwable instanceof Exception) { return (Exception) throwable;}
+        return new Exception(throwable);
+    }
+
+    private RunnerTestResult buildTestResult(String[] expected, String[] output, Throwable throwable,
+        Comparator<String> comparator)
+    {
+        final String message = throwable == null ? testMessage(expected, output, comparator) : null;
+        return new RunnerTestResult(output, expected, fromThrowable(throwable), message);
+    }
+
+    private String testMessage(String[] expected, String[] output, Comparator<String> comparator) {
+        if (expected.length != output.length) {
+            return String.format("Lengths to not match. Expected %d, found %d.", expected.length, output.length);
+        }
+        final int size = output.length;
+        if (comparator == null) {
+            for (int i = 0; i < size; i++) {
+                if (!Objects.equals(expected[i], output[i])) {
+                    return String.format("Line %d: Expected \"%s\". Found \"%s\"", i + 1, expected[i], output[i]);
+                }
+            }
             return null;
         }
-        if (throwable instanceof Exception) {
-            return (Exception) throwable;
+        for (int i = 0; i < size; i++) {
+            if (comparator.compare(expected[i], output[i]) != 0) {
+                return String.format("Line %d: Expected \"%s\". Found \"%s\"", i + 1, expected[i], output[i]);
+            }
         }
-        return new Exception(throwable);
+        return null;
     }
 
     /**
@@ -218,20 +242,23 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
      * @return an new immutable runner instance
      */
     public static Runner newRunner() {
-        return new Runner() { };
+        return new Runner();
     }
 
     public class RunnerPreProgram implements RunnerInterfaces.RunnerPreProgram<RunnerTestResult> {
 
-        final ThrowingConsumer3<String[], InputStream, OutputStream> program;
+        private final ThrowingConsumer3<String[], InputStream, OutputStream> program;
 
-        RunnerPreProgram(ThrowingConsumer3<String[], InputStream, OutputStream> program) {
+        private final Charset outputCharset;
+
+        RunnerPreProgram(ThrowingConsumer3<String[], InputStream, OutputStream> program, Charset outputCharset) {
             this.program = program;
+            this.outputCharset = outputCharset;
         }
 
         @Override
         public RunnerProgram argument(String... arguments) {
-            return new RunnerProgram(program, arguments);
+            return new RunnerProgram(program, arguments, outputCharset);
         }
     }
 
@@ -241,63 +268,56 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
 
         final String[] arguments;
 
-        RunnerProgram(ThrowingConsumer3<String[], InputStream, OutputStream> program, String[] arguments) {
+        private final Charset outputCharset;
+
+        RunnerProgram(ThrowingConsumer3<String[], InputStream, OutputStream> program, String[] arguments,
+            Charset outputCharset)
+        {
             this.program = program;
             this.arguments = arguments;
+            this.outputCharset = outputCharset;
         }
 
-        RunnerProgram(ThrowingConsumer2<InputStream, OutputStream> program) {
-            this.program = (strings, inputStream, outputStream) -> { //
+        RunnerProgram(ThrowingConsumer2<InputStream, OutputStream> program, Charset outputCharset) {
+            this.program = (strings, inputStream, outputStream) -> { /**/
                 program.accept(inputStream, outputStream);
             };
             this.arguments = null;
+            this.outputCharset = outputCharset;
         }
 
         @Override
         public RunnerOutput input(String... input) {
-            final ThrowingFunction0<InputStream> getInput = () -> forInput(input, UTF_8);
-            return getProgramResult(program, arguments, getInput);
+            final String[] array = input != null && input.length > 0 ? input : new String[] {""};
+            final ThrowingFunction0<InputStream> getInput = () -> forInput(array);
+            return getProgramResult(program, UTF_8, arguments, getInput);
         }
 
         @Override
         public RunnerOutput input(ThrowingFunction0<InputStream> getInputStream) {
-            return create(getInputStream);
+            return create(getInputStream, UTF_8);
         }
 
+        @Override
         public RunnerOutput input(ThrowingFunction0<InputStream> getInputStream, Charset decode) {
-            return create(getInputStream, decode, UTF_8);
-        }
-
-        public RunnerOutput input(ThrowingFunction0<InputStream> getInputStream, Charset decode, Charset encode) {
-            return create(getInputStream, decode, encode);
+            return create(getInputStream, decode);
         }
 
         @Override
         public RunnerOutput loadInput(String resourceName, Class<?> withClass) {
-            ThrowingFunction0<InputStream> inputSupplier = () -> withClass.getResourceAsStream(resourceName);
-            return create(inputSupplier);
+            final ThrowingFunction0<InputStream> inputSupplier = () -> withClass.getResourceAsStream(resourceName);
+            return create(inputSupplier, UTF_8);
         }
 
-        public RunnerOutput loadInput(String resourceName, Class<?> withClass, Charset decode) {
-            ThrowingFunction0<InputStream> inputSupplier = () -> withClass.getResourceAsStream(resourceName);
-            return create(inputSupplier, decode, UTF_8);
+        @Override
+        public RunnerOutput loadInput(String resourceName, Class<?> withClass, Charset charset) {
+            final ThrowingFunction0<InputStream> inputSupplier = () -> withClass.getResourceAsStream(resourceName);
+            return create(inputSupplier, charset);
         }
 
-        public RunnerOutput loadInput(String resourceName, Class<?> withClass, Charset decode, Charset encode) {
-            ThrowingFunction0<InputStream> inputSupplier = () -> withClass.getResourceAsStream(resourceName);
-            return create(inputSupplier, decode, encode);
-        }
-
-        private RunnerOutput create(ThrowingFunction0<InputStream> getInputStream) {
-            return getProgramResult(program, arguments, getInputStream);
-        }
-
-        private RunnerOutput create(ThrowingFunction0<InputStream> getInputStream,
-            Charset decode,
-            Charset encode)
-        {
-            ThrowingFunction0<InputStream> codec = getInputStreamCodec(getInputStream, decode, encode);
-            return getProgramResult(program, arguments, codec);
+        private RunnerOutput create(ThrowingFunction0<InputStream> getInputStream, Charset inputCharset) {
+            final ThrowingFunction0<InputStream> supplier = getUTF8Inputted(getInputStream, inputCharset);
+            return getProgramResult(this.program, this.outputCharset, this.arguments, supplier);
         }
     }
 
@@ -315,27 +335,22 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
         }
 
         public RunnerOutput runConsole(ThrowingConsumer2<InputStream, OutputStream> program) {
-            ThrowingConsumer3<String[], InputStream, OutputStream> internal =
-                (strings, inputStream, outputStream) -> { //
-                    program.accept(inputStream, outputStream);
-                };
-            return getProgramResult(internal, null, getInput);
+            ThrowingConsumer3<String[], InputStream, OutputStream> internal = /**/
+                (strings, inputStream, outputStream) -> program.accept(inputStream, outputStream);
+            return getProgramResult(internal, UTF_8, null, getInput);
         }
 
         public RunnerOutput run(ThrowingConsumer2<Scanner, BufferedWriter> program) {
-            ThrowingConsumer3<String[], InputStream, OutputStream> internal =
-                (strings, inputStream, outputStream) -> { //
-                    forProgram(program, UTF_8).accept(inputStream, outputStream);
-                };
-            return getProgramResult(internal, null, getInput);
+            ThrowingConsumer3<String[], InputStream, OutputStream> internal = /**/
+                (strings, inputStream, outputStream) -> forProgram(program).accept(inputStream, outputStream);
+            return getProgramResult(internal, UTF_8, null, getInput);
         }
 
-        public RunnerOutput run(Charset charset, ThrowingConsumer2<Scanner, BufferedWriter> program) {
-            ThrowingConsumer3<String[], InputStream, OutputStream> internal =
-                (strings, inputStream, outputStream) -> { //
-                    forProgram(program, charset).accept(inputStream, outputStream);
-                };
-            return getProgramResult(internal, null, getInput);
+        @Override
+        public RunnerOutput runConsole(Charset charset, ThrowingConsumer2<InputStream, OutputStream> program) {
+            ThrowingConsumer3<String[], InputStream, OutputStream> internal = /**/
+                (strings, inputStream, outputStream) -> program.accept(inputStream, outputStream);
+            return getProgramResult(internal, charset, null, getInput);
         }
     }
 
@@ -352,72 +367,41 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
 
         @Override
         public RunnerOutput run(ThrowingConsumer3<String[], Scanner, BufferedWriter> program) {
-            return getProgramResult(forProgram(program, UTF_8), arguments, getInput);
+            return getProgramResult(forProgram(program), UTF_8, arguments, getInput);
         }
 
         @Override
-        public RunnerOutput run(Charset charset, ThrowingConsumer3<String[], Scanner, BufferedWriter> program) {
-            return getProgramResult(forProgram(program, charset), arguments, getInput);
+        public RunnerOutput runConsole(ThrowingConsumer3<String[], InputStream, OutputStream> console) {
+            return getProgramResult(console, UTF_8, arguments, getInput);
         }
 
         @Override
-        public RunnerOutput runConsole(ThrowingConsumer3<String[], InputStream, OutputStream> program) {
-            return getProgramResult(program, arguments, getInput);
+        public RunnerOutput runConsole(Charset charset, ThrowingConsumer3<String[], InputStream, OutputStream> console)
+        {
+            return getProgramResult(console, charset, arguments, getInput);
         }
     }
 
     public class RunnerOutput extends RunnerOutputCommon implements RunnerInterfaces.RunnerOutput<RunnerTestResult> {
 
-        private final String[] found;
-
-        private final Exception exception;
-
         RunnerOutput(String[] found, Throwable throwable) {
             super(found, throwable, null);
-            this.found = found;
-            this.exception = fromThrowable(throwable);
         }
 
         @Override
         public RunnerPreTest comparator(Comparator<String> comparator) {
             return new RunnerPreTest(output(), exception(), comparator);
         }
-
-        @Override
-        public String[] output() {
-            return found;
-        }
-
-        @Override
-        public Exception exception() {
-            return exception;
-        }
     }
 
     public class RunnerPreTest extends RunnerOutputCommon implements RunnerInterfaces.RunnerPreTest<RunnerTestResult> {
 
-        private final String[] found;
-
-        private final Exception exception;
-
         RunnerPreTest(String[] found, Exception exception, Comparator<String> comparator) {
             super(found, exception, comparator);
-            this.found = found;
-            this.exception = exception;
-        }
-
-        @Override
-        public String[] output() {
-            return found;
-        }
-
-        @Override
-        public Exception exception() {
-            return exception;
         }
     }
 
-    private abstract class RunnerOutputCommon {
+    class RunnerOutputCommon implements RunnerInterfaces.RunnerOutputCommon<RunnerTestResult> {
 
         private final String[] found;
 
@@ -431,9 +415,19 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
             this.comparator = comparator;
         }
 
+        @Override
+        public String[] output() {
+            return found;
+        }
+
+        @Override
+        public Exception exception() {
+            return exception;
+        }
+
         public RunnerAsserter expected(String... expected) {
-            String[] array = expected != null && expected.length > 0 ? expected : new String[] {""};
-            RunnerTestResult testResult = buildTestResult(array, found, exception, comparator);
+            final String[] array = expected != null && expected.length > 0 ? expected : new String[] {""};
+            final RunnerTestResult testResult = buildTestResult(array, found, exception, comparator);
             return new RunnerAsserter(testResult);
         }
 
@@ -458,15 +452,10 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
                 if (inputStream == null) {
                     throw new NullPointerException("bolt.load.expectation.input.stream.null");
                 }
-                try (Scanner scanner = new Scanner(inputStream, charset.name())) {
-                    List<String> list = new ArrayList<>();
-                    while (scanner.hasNextLine()) {
-                        list.add(scanner.nextLine());
-                    }
-                    final int size = list.size();
-                    final String[] array = list.toArray(new String[size]);
-                    return expected(array);
-                }
+                final List<String> list = splitter.getList(inputStream, charset);
+                final int size = list.size();
+                final String[] array = list.toArray(new String[size]);
+                return expected(array);
             }
             catch (Throwable e) {
                 throw new BoltAssertionException("bolt.load.expectation.error", e);
@@ -483,23 +472,27 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
         }
 
         @Override
-        public void assertResult() {
+        public void assertSuccess() {
             if (result.isSuccess()) {
                 return;
             }
 
-            if (result.message().isPresent()) {
-                if (result.exception().isPresent()) {
-                    throw new BoltAssertionException(result.message().get(), result.exception().get());
-                }
+            final String message = result.message().orElse(null);
+            final Exception exception = result.exception().orElse(null);
+            throw new BoltAssertionException(message, exception);
+        }
+
+        @Override
+        public void assertFail() {
+            if (result.exception().isPresent()) {
                 throw new BoltAssertionException(result.exception().get());
             }
-            else if (result.message().isPresent()) {
-                throw new BoltAssertionException(result.message().get());
+
+            if (result.message().isPresent() && result.isFail()) {
+                return;
             }
-            else {
-                throw new BoltAssertionException();
-            }
+
+            throw new BoltAssertionException("bolt.runner.assertion.expected.failure", null);
         }
 
         @Override
@@ -507,9 +500,10 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
             if (result.exception().isPresent()) {
                 return;
             }
-            throw new BoltAssertionException("bolt.runner.assertion.expected.exception");
+            throw new BoltAssertionException("bolt.runner.assertion.expected.exception", null);
         }
 
+        @Override
         public void assertCheck(ThrowingConsumer1<RunnerTestResult> custom) {
             try {
                 custom.accept(result);
@@ -519,6 +513,7 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
             }
         }
 
+        @Override
         public RunnerTestResult result() {
             return result;
         }
@@ -576,64 +571,19 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
         }
     }
 
-    private RunnerTestResult buildTestResult(String[] expected,
-        String[] output,
-        Throwable throwable,
-        Comparator<String> comparator)
-    {
-        String message = throwable == null ? testMessage(expected, output, comparator) : null;
-        return new RunnerTestResult(output, expected, fromThrowable(throwable), message);
-    }
-
-    private String testMessage(String[] expected, String[] output, Comparator<String> comparator) {
-        if (expected == null) {
-            return "expected == null";
-        }
-
-        if (output == null) {
-            return "output == null";
-        }
-
-        if (expected.length != output.length) {
-            return String.format("Lengths to not match. Expected %d, found %d.", expected.length, output.length);
-        }
-
-        final int size = output.length;
-        if (comparator == null) {
-            for (int i = 0; i < size; i++) {
-                if (!Objects.equals(expected[i], output[i])) {
-                    return String.format("Line %d: Expected \"%s\". Found \"%s\"", i + 1, expected[i], output[i]);
-                }
-            }
-            return null;
-        }
-
-        for (int i = 0; i < size; i++) {
-            if (comparator.compare(expected[i], output[i]) != 0) {
-                return String.format("Line %d: Expected \"%s\". Found \"%s\"", i + 1, expected[i], output[i]);
-            }
-        }
-
-        return null;
-    }
-
     static class BoltAssertionException extends RuntimeException {
 
-        BoltAssertionException() {
-            super();
-        }
-
+        @SuppressWarnings("SameParameterValue")
         BoltAssertionException(String message) {
             super(message);
-        }
-
-        BoltAssertionException(String message, Throwable cause) {
-            super(message, cause);
         }
 
         BoltAssertionException(Throwable cause) {
             super(cause);
         }
-    }
 
+        BoltAssertionException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
 }

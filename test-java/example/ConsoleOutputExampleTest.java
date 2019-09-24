@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 class ConsoleOutputExampleTest {
 
-    private final Runner runner = Runner.newRunner();
+    private final Runner runner = new Runner();
 
     @Test
     void testCase() {
@@ -19,8 +19,8 @@ class ConsoleOutputExampleTest {
         runner.runConsole(redirect(ConsoleOutputExample::main))
             .argument()
             .input("World")
-            .expected("Hello World!")
-            .assertResult();
+            .expected("Hello World!", "")
+            .assertSuccess();
     }
 
     /** Not Thread Safe **/

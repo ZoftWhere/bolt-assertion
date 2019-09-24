@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 class ExceptionExample {
 
     // An immutable runner that can be reused.
-    private final Runner runner = Runner.newRunner();
+    private final Runner runner = new Runner();
 
     @Test
     void testCase() {
