@@ -5,15 +5,15 @@ import org.junit.jupiter.api.Test;
 
 class CommandLineExampleTest {
 
-    private final Runner runner = Runner.newRunner();
+    private final Runner runner = new Runner();
 
     @Test
     void testCase() {
         runner.run(CommandLineExample::main)
             .argument()
             .input("World")
-            .expected("Hello World!")
-            .assertResult();
+            .expected("Hello World!", "")
+            .assertSuccess();
     }
 
 }

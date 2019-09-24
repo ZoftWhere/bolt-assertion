@@ -2,7 +2,6 @@ package example;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Scanner;
 
 import app.zoftwhere.bolt.runner.Runner;
@@ -11,7 +10,7 @@ import org.junit.jupiter.api.Test;
 class BasicExample {
 
     // An immutable runner that can be reused.
-    private final Runner runner = Runner.newRunner();
+    private final Runner runner = new Runner();
 
     @Test
     void testCase() {
@@ -20,33 +19,33 @@ class BasicExample {
         runner.run(BasicExample::basic)
             .input()
             .expected("Hello World?")
-            .assertResult();
+            .assertSuccess();
 
         // Start with defining the application input (application must still accept scanner and writer).
         runner.input()
             .run(BasicExample::basic)
             .expected("Hello World?")
-            .assertResult();
+            .assertSuccess();
 
         // Run a simple lambda.
         runner.run((scanner, bufferedWriter) -> bufferedWriter.write("Hello World!"))
             .input()
             .expected("Hello World!")
-            .assertResult();
+            .assertSuccess();
 
-        // Run with a program arguments.
+        // Run a program with arguments.
         runner.run(BasicExample::main)
             .argument("a=1", "b=2")
             .input()
-            .expected("Program arguments: [a=1, b=2]")
-            .assertResult();
+            .expected("Program arguments:", "a=1", "b=2")
+            .assertSuccess();
 
-        // Run with a program arguments.
+        // Run with arguments with input.
         runner.input()
             .argument("a=1", "b=2")
             .run(BasicExample::main)
-            .expected("Program arguments: [a=1, b=2]")
-            .assertResult();
+            .expected("Program arguments:", "a=1", "b=2")
+            .assertSuccess();
 
         // Run with a difference method.
         runner.input()
@@ -55,15 +54,23 @@ class BasicExample {
                 bufferedWriter.write(result);
             })
             .expected("Success!")
-            .assertResult();
+            .assertSuccess();
     }
 
-    private static void basic(Scanner scanner, BufferedWriter writer) throws IOException {
+    private static void basic(Scanner scanner, BufferedWriter writer)
+    throws IOException
+    {
         writer.write("Hello World?");
     }
 
-    private static void main(String[] argumentArray, Scanner scanner, BufferedWriter writer) throws IOException {
-        writer.write("Program arguments: " + Arrays.toString(argumentArray));
+    private static void main(String[] argumentArray, Scanner scanner, BufferedWriter writer)
+    throws IOException
+    {
+        writer.write("Program arguments:");
+        for (String line : argumentArray) {
+            writer.newLine();
+            writer.write(line);
+        }
     }
 
     private static String runProcess() {
