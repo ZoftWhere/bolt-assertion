@@ -1,4 +1,4 @@
-package app.zoftwhere.bolt.runner;
+package app.zoftwhere.bolt.nio;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;

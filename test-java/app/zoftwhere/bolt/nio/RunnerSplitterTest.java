@@ -1,8 +1,9 @@
-package app.zoftwhere.bolt.runner;
+package app.zoftwhere.bolt.nio;
 
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 
+import app.zoftwhere.bolt.nio.RunnerSplitter;
 import org.junit.jupiter.api.Test;
 
 import static java.nio.charset.StandardCharsets.UTF_8;

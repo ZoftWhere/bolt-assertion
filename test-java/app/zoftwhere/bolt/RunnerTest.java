@@ -1,4 +1,4 @@
-package app.zoftwhere.bolt.runner;
+package app.zoftwhere.bolt;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -10,12 +10,13 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 
-import app.zoftwhere.bolt.runner.Runner.BoltAssertionException;
-import app.zoftwhere.bolt.runner.Runner.RunnerOutput;
+import app.zoftwhere.bolt.Runner.BoltAssertionException;
+import app.zoftwhere.bolt.Runner.RunnerOutput;
+import app.zoftwhere.bolt.nio.RunnerSplitter;
 import app.zoftwhere.mutable.MutableValue;
 import org.junit.jupiter.api.Test;
 
-import static app.zoftwhere.bolt.runner.Runner.newRunner;
+import static app.zoftwhere.bolt.Runner.newRunner;
 import static java.nio.charset.StandardCharsets.UTF_16;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;

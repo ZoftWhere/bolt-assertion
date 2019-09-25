@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
-import app.zoftwhere.bolt.runner.Runner;
+import app.zoftwhere.bolt.Runner;
 import app.zoftwhere.function.ThrowingConsumer1;
 import app.zoftwhere.function.ThrowingConsumer3;
 import org.junit.jupiter.api.Test;

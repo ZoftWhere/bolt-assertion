@@ -1,4 +1,4 @@
-package app.zoftwhere.bolt.runner;
+package app.zoftwhere.bolt;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -14,6 +14,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
 
+import app.zoftwhere.bolt.nio.RunnerSplitter;
 import app.zoftwhere.function.ThrowingConsumer1;
 import app.zoftwhere.function.ThrowingConsumer2;
 import app.zoftwhere.function.ThrowingConsumer3;

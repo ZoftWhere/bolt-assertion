@@ -1,4 +1,4 @@
-package app.zoftwhere.bolt.runner;
+package app.zoftwhere.bolt;
 
 import java.io.BufferedWriter;
 import java.io.InputStream;

@@ -3,7 +3,7 @@ package example;
 import java.io.BufferedWriter;
 import java.util.Scanner;
 
-import app.zoftwhere.bolt.runner.Runner;
+import app.zoftwhere.bolt.Runner;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings({"CodeBlock2Expr", "WeakerAccess"})

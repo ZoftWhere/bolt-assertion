@@ -1,11 +1,11 @@
-package app.zoftwhere.bolt.runner.scope;
+package app.zoftwhere.bolt.scope;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Scanner;
 
-import app.zoftwhere.bolt.runner.RunnerSplitter;
+import app.zoftwhere.bolt.nio.RunnerSplitter;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
