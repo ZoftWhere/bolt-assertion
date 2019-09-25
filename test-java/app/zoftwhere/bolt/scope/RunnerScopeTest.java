@@ -1,20 +1,20 @@
-package app.zoftwhere.bolt.runner.scope;
+package app.zoftwhere.bolt.scope;
 
 import java.io.ByteArrayInputStream;
 
-import app.zoftwhere.bolt.runner.Runner;
-import app.zoftwhere.bolt.runner.Runner.RunnerAsserter;
-import app.zoftwhere.bolt.runner.Runner.RunnerInput;
-import app.zoftwhere.bolt.runner.Runner.RunnerLoader;
-import app.zoftwhere.bolt.runner.Runner.RunnerOutput;
-import app.zoftwhere.bolt.runner.Runner.RunnerPreProgram;
-import app.zoftwhere.bolt.runner.Runner.RunnerPreTest;
-import app.zoftwhere.bolt.runner.Runner.RunnerProgram;
-import app.zoftwhere.bolt.runner.Runner.RunnerTestResult;
-import app.zoftwhere.bolt.runner.RunnerProxy;
+import app.zoftwhere.bolt.Runner;
+import app.zoftwhere.bolt.Runner.RunnerAsserter;
+import app.zoftwhere.bolt.Runner.RunnerInput;
+import app.zoftwhere.bolt.Runner.RunnerLoader;
+import app.zoftwhere.bolt.Runner.RunnerOutput;
+import app.zoftwhere.bolt.Runner.RunnerPreProgram;
+import app.zoftwhere.bolt.Runner.RunnerPreTest;
+import app.zoftwhere.bolt.Runner.RunnerProgram;
+import app.zoftwhere.bolt.Runner.RunnerTestResult;
+import app.zoftwhere.bolt.RunnerProxy;
 import org.junit.jupiter.api.Test;
 
-import static app.zoftwhere.bolt.runner.Runner.newRunner;
+import static app.zoftwhere.bolt.Runner.newRunner;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

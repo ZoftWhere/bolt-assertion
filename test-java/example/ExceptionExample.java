@@ -1,6 +1,6 @@
 package example;
 
-import app.zoftwhere.bolt.runner.Runner;
+import app.zoftwhere.bolt.Runner;
 import org.junit.jupiter.api.Test;
 
 class ExceptionExample {

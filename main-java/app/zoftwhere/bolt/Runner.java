@@ -1,4 +1,4 @@
-package app.zoftwhere.bolt.runner;
+package app.zoftwhere.bolt;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -18,6 +18,7 @@ import app.zoftwhere.function.ThrowingConsumer1;
 import app.zoftwhere.function.ThrowingConsumer2;
 import app.zoftwhere.function.ThrowingConsumer3;
 import app.zoftwhere.function.ThrowingFunction0;
+import app.zoftwhere.bolt.nio.LineSplitter;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -25,8 +26,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * Bolt Assertion Runner.
  */
 public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult> {
-
-    private final RunnerSplitter splitter = new RunnerSplitter();
 
     /**
      * Constructor for an reusable, immutable instance of the runner.
@@ -142,13 +141,6 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
         return new BufferedWriter(writer);
     }
 
-    private String[] splitOutput(byte[] data, Charset charset) {
-        final List<String> list = splitter.getList(new String(data, charset));
-        final int size = list.size();
-        final String[] array = new String[size];
-        return list.toArray(array);
-    }
-
     private RunnerOutput getProgramResult( //
         ThrowingConsumer3<String[], InputStream, OutputStream> program, //
         Charset outputCharset, //
@@ -181,7 +173,7 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
         }
 
         final byte[] data = outputStream != null ? outputStream.toByteArray() : null;
-        final String[] found = splitOutput(data, outputCharset);
+        final String[] found = new LineSplitter(data, outputCharset).array();
         return new RunnerOutput(found, throwable);
     }
 
@@ -194,9 +186,7 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
 
         return () -> {
             try (InputStream inputStream = input.accept()) {
-                final List<String> list = splitter.getList(inputStream, decode);
-                final int size = list.size();
-                final String[] array = list.toArray(new String[size]);
+                final String[] array = new LineSplitter(inputStream, decode).array();
                 return forInput(array);
             }
         };
@@ -403,21 +393,21 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
 
     class RunnerOutputCommon implements RunnerInterfaces.RunnerOutputCommon<RunnerTestResult> {
 
-        private final String[] found;
+        private final String[] output;
 
         private final Exception exception;
 
         private final Comparator<String> comparator;
 
-        RunnerOutputCommon(String[] found, Throwable throwable, Comparator<String> comparator) {
-            this.found = found;
+        RunnerOutputCommon(String[] output, Throwable throwable, Comparator<String> comparator) {
+            this.output = output;
             this.exception = fromThrowable(throwable);
             this.comparator = comparator;
         }
 
         @Override
         public String[] output() {
-            return found;
+            return output;
         }
 
         @Override
@@ -427,7 +417,7 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
 
         public RunnerAsserter expected(String... expected) {
             final String[] array = expected != null && expected.length > 0 ? expected : new String[] {""};
-            final RunnerTestResult testResult = buildTestResult(array, found, exception, comparator);
+            final RunnerTestResult testResult = buildTestResult(array, output, exception, comparator);
             return new RunnerAsserter(testResult);
         }
 
@@ -452,9 +442,7 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
                 if (inputStream == null) {
                     throw new NullPointerException("bolt.load.expectation.input.stream.null");
                 }
-                final List<String> list = splitter.getList(inputStream, charset);
-                final int size = list.size();
-                final String[] array = list.toArray(new String[size]);
+                final String[] array = new LineSplitter(inputStream, charset).array();
                 return expected(array);
             }
             catch (Throwable e) {
@@ -572,11 +560,6 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
     }
 
     static class BoltAssertionException extends RuntimeException {
-
-        @SuppressWarnings("SameParameterValue")
-        BoltAssertionException(String message) {
-            super(message);
-        }
 
         BoltAssertionException(Throwable cause) {
             super(cause);

@@ -3,9 +3,9 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>app.zoftwhere.runner</groupId>
+    <groupId>app.zoftwhere.bolt</groupId>
     <artifactId>bolt-assertion</artifactId>
-    <version>2.0.0</version>
+    <version>3.0.0</version>
 
     <properties>
         <!-- Settings: maven-resource-plugin -->
@@ -14,7 +14,7 @@
         <project.report.sourceEncoding>UTF-8</project.report.sourceEncoding>
 
         <!-- Settings: maven-compiler-plugin -->
-        <maven.compiler.main-jdk>1.8</maven.compiler.main-jdk>
+        <maven.compiler.main-jdk>8</maven.compiler.main-jdk>
         <maven.compiler.test-jdk>11</maven.compiler.test-jdk>
 
         <!-- Settings: User defined plugin properties -->

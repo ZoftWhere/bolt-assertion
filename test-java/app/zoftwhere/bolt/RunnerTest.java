@@ -1,4 +1,4 @@
-package app.zoftwhere.bolt.runner;
+package app.zoftwhere.bolt;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -10,12 +10,13 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 
-import app.zoftwhere.bolt.runner.Runner.BoltAssertionException;
-import app.zoftwhere.bolt.runner.Runner.RunnerOutput;
+import app.zoftwhere.bolt.Runner.BoltAssertionException;
+import app.zoftwhere.bolt.Runner.RunnerOutput;
+import app.zoftwhere.bolt.nio.LineSplitter;
 import app.zoftwhere.mutable.MutableValue;
 import org.junit.jupiter.api.Test;
 
-import static app.zoftwhere.bolt.runner.Runner.newRunner;
+import static app.zoftwhere.bolt.Runner.newRunner;
 import static java.nio.charset.StandardCharsets.UTF_16;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -324,19 +325,18 @@ class RunnerTest {
     }
 
     private static void echoConsole(InputStream inputStream, OutputStream outputStream) throws IOException {
-        final RunnerSplitter splitter = new RunnerSplitter();
-        final var list = splitter.getList(inputStream, UTF_8);
+        final var list = new LineSplitter(inputStream, UTF_8).list();
         final int size = list.size();
-        final var writer = new BufferedWriter(new OutputStreamWriter(outputStream, UTF_8));
-        if (size > 0) {
-            writer.write(list.get(0));
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, UTF_8))) {
+            if (size > 0) {
+                writer.write(list.get(0));
+            }
+            for (int i = 1; i < size; i++) {
+                writer.newLine();
+                writer.write(list.get(i));
+            }
+            writer.flush();
         }
-        for (int i = 1; i < size; i++) {
-            writer.newLine();
-            writer.write(list.get(i));
-        }
-        writer.flush();
-        writer.close();
     }
 
 }

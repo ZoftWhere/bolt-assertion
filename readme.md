@@ -22,6 +22,12 @@ The test source code is written against JDK 11, so when compile for and earlier 
 mvn clean compile jar:jar source:jar javadoc:jar install:install-file@main-install -f pom.xml
 ```
 
+
+## Release Notes
+
+The [ZoftWhere Bolt Assertion Release Notes](https://github.com/ZoftWhere/bolt-assertion/tree/master/main-github/release-notes) are available for viewing/download [here](https://github.com/ZoftWhere/bolt-assertion/tree/main-github/release-notes).
+
+
 ## Examples
 
 ### Hello World Lambda
