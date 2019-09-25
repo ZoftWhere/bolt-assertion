@@ -18,6 +18,11 @@ class RunnerInterfaces {
 
     interface IRunner<T extends TestResult> extends RunnerProgramFirst<T>, RunnerInputFirst<T> { }
 
+    /**
+     * The interfaces that forms the basis for Runner#run() and Runner#runConsole().
+     *
+     * @param <T> The type for the class passed to RunnerAsserter#assertCheck(&lt;T&gt; throwingConsumer)
+     */
     private interface RunnerProgramFirst<T> extends //
         RunWithArguments<RunnerPreProgram<T>>, RunNoArguments<RunnerProgram<T>> { }
 
@@ -25,6 +30,11 @@ class RunnerInterfaces {
 
     interface RunnerProgram<T> extends Input<RunnerOutput<T>> { }
 
+    /**
+     * The interfaces that forms the basis for Runner#input() and Runner#loadInput().
+     *
+     * @param <T> The type for the class passed to RunnerAsserter#assertCheck(&lt;T&gt; throwingConsumer)
+     */
     private interface RunnerInputFirst<T> extends Input<RunnerInput<T>> { }
 
     interface RunnerInput<T> extends Arguments<RunnerLoader<T>>, RunNoArguments<RunnerOutput<T>> { }
