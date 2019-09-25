@@ -6,7 +6,6 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Scanner;
 
-import app.zoftwhere.bolt.Runner;
 import app.zoftwhere.function.ThrowingConsumer2;
 import app.zoftwhere.function.ThrowingConsumer3;
 import app.zoftwhere.function.ThrowingFunction0;
