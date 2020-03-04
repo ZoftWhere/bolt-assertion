@@ -96,6 +96,9 @@
                     <execution>
                         <id>default-compile</id>
                         <phase>none</phase>
+                        <configuration>
+                            <release>${maven.compiler.test-jdk}</release>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>main-compile</id>
@@ -104,11 +107,18 @@
                             <goal>compile</goal>
                         </goals>
                         <configuration>
+                            <release>${maven.compiler.test-jdk}</release>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>main-compile-jdk8</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
                             <source>${maven.compiler.main-jdk}</source>
                             <target>${maven.compiler.main-jdk}</target>
-                            <excludes>
-                                <exclude>module-info.java</exclude>
-                            </excludes>
                         </configuration>
                     </execution>
                     <execution>
@@ -127,20 +137,12 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <source>${maven.compiler.test-jdk}</source>
-                    <target>${maven.compiler.test-jdk}</target>
                     <compilerArgs>
                         <arg>-Xlint:all,-processing,-cast,-serial,-try</arg>
                     </compilerArgs>
-                    <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
+                    <showWarnings>true</showWarnings>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>${maven-dependency-plugin.version}</version>
             </plugin>
 
             <plugin>
@@ -181,8 +183,18 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
+                    <!-- https://issues.apache.org/jira/browse/SUREFIRE-1534 -->
+                    <forkCount>0</forkCount>
+                    <reuseForks>false</reuseForks>
+                    <useSystemClassLoader>false</useSystemClassLoader>
                     <printSummary>false</printSummary>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${maven-dependency-plugin.version}</version>
             </plugin>
 
             <plugin>
@@ -240,15 +252,16 @@
                 <version>${maven-javadoc-plugin.version}</version>
                 <executions>
                     <execution>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
                         <id>main-javadoc</id>
                         <phase>package</phase>
                         <goals>
                             <goal>jar</goal>
                         </goals>
                         <configuration>
+                            <failOnWarnings>true</failOnWarnings>
+                            <sourceFileExcludes>
+                                <exclude>module-info.java</exclude>
+                            </sourceFileExcludes>
                         </configuration>
                     </execution>
                     <execution>
@@ -258,9 +271,14 @@
                             <goal>test-jar</goal>
                         </goals>
                         <configuration>
+                            <failOnWarnings>false</failOnWarnings>
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <quiet>true</quiet>
+                    <failOnError>true</failOnError>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -268,13 +286,6 @@
                 <artifactId>maven-source-plugin</artifactId>
                 <version>${maven-source-plugin.version}</version>
                 <executions>
-                    <execution>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>default-source</id>
-                        <phase>none</phase>
-                    </execution>
                     <execution>
                         <id>main-source</id>
                         <phase>package</phase>
@@ -297,7 +308,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <forceCreation>true</forceCreation>
                 </configuration>
             </plugin>
 
@@ -338,7 +348,7 @@
                 <version>1.0.0.Beta2</version>
                 <executions>
                     <execution>
-                        <id>add-module-info</id>
+                        <id>main-jpms</id>
                         <phase>package</phase>
                         <goals>
                             <goal>add-module-info</goal>
