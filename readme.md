@@ -6,21 +6,22 @@ Bolt-on unit test assertion for program output.
 
 ## Overview
 
-The ZoftWhere Bolt Assertion Library is a bolt-on for unit-testing.  It has an elegant DSL for testing the output of a program.
+The ZoftWhere Bolt Assertion Library is a bolt-on for unit-testing.  It has an elegant Java based DSL for testing the output of a program.
+
 
 ## Compiling and Installing the Library
 
-The source code can be compiled with Java language version 8.  It has been tested with Oracle JDK8, JDK11 and JDK12.
+The source code can be compiled with Java language version 8.  It has been tested with Oracle JDK8, JDK11 and JDK12.  The test sources are compiled against JDK 11.
 
-The project is Maven based, so executing the ```mvn install``` should install the library to the local repository.  It has been tested with Apache Maven v3.6.1.
+The project is Maven based, so executing the ```mvn install``` should install the library to the local repository (Requires at least JDK11).  It has been tested with Apache Maven v3.6.1.
 
 The source code has a compile dependency on the [ZoftWhere Mutable Library](http://github.com/ZoftWhere/mutable-library).  Ensure that this dependency is installed.
 
-The test source code is written against JDK 11, so when compile for and earlier JDK, the main source code can compiled and installed by executing the following maven call:
+If the project needs to be installed against JDK8, it can be accomplished by calling the following Maven command:
 
-```shell script
-mvn clean compile jar:jar source:jar javadoc:jar install:install-file@main-install -f pom.xml
-```
+``` shell script
+mvn clean compiler:compile@main-compile-jdk8 jar:jar@main-jar build-helper:add-source@main-jpms source:jar@main-sources javadoc:jar@main-javadoc moditect:add-module-info@main-jpms install:install-file@main-install
+``` 
 
 
 ## Release Notes
