@@ -163,7 +163,7 @@ The source code for the [ZoftWhere Bolt Assertion Examples](https://github.com/Z
 
 ## License
 
-Copyright (C) 2019 ZoftWhere
+Copyright (C) 2020 ZoftWhere
 
 Licensed under the MIT License
 
