@@ -233,15 +233,21 @@
                 </executions>
                 <configuration>
                     <archive>
+                        <addMavenDescriptor>false</addMavenDescriptor>
                         <manifest>
                             <addClasspath>false</addClasspath>
                         </manifest>
-                        <!--<manifestEntries>
-                            <Built-By/>
-                            <Main-Class/>
-                            <Class-Path/>
-                            <Dependencies/>
-                        </manifestEntries>-->
+                        <manifestEntries>
+                            <Main-Class> </Main-Class>
+                            <Class-Path> </Class-Path>
+                            <Dependencies> </Dependencies>
+                            <Implementation-Title>${project.artifactId}</Implementation-Title>
+                            <Implementation-Vendor>${project.groupId}</Implementation-Vendor>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Specification-Title>${project.artifactId}</Specification-Title>
+                            <Specification-Vendor>${project.groupId}</Specification-Vendor>
+                            <Specification-Version>${project.version}</Specification-Version>
+                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
@@ -340,6 +346,26 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>${maven-deploy-plugin.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>add-jpms-source</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.basedir}/main-jpms</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
