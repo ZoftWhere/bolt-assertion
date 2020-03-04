@@ -11,7 +11,7 @@ import app.zoftwhere.function.ThrowingConsumer3;
 import app.zoftwhere.function.ThrowingFunction0;
 
 @SuppressWarnings("unused")
-public class RunnerProxy extends RunnerInterfaces implements RunnerInterfaces.IRunner<Runner.RunnerTestResult> {
+public class RunnerProxy extends RunnerInterfaces implements RunnerInterfaces.IRunner {
 
     private final Runner runner = new Runner();
 

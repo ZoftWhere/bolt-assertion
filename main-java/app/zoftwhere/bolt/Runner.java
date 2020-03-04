@@ -9,26 +9,25 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
 
+import app.zoftwhere.bolt.nio.LineSplitter;
 import app.zoftwhere.function.ThrowingConsumer1;
 import app.zoftwhere.function.ThrowingConsumer2;
 import app.zoftwhere.function.ThrowingConsumer3;
 import app.zoftwhere.function.ThrowingFunction0;
-import app.zoftwhere.bolt.nio.LineSplitter;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Bolt Assertion Runner.
  */
-public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult> {
+public class Runner implements RunnerInterfaces.IRunner {
 
     /**
-     * Constructor for an reusable, immutable instance of the runner.
+     * Constructor for a reusable, immutable instance of the runner (more than one test can be run with it).
      * <p>
      * The Runner static method {@link #newRunner()} may also be used.
      */
@@ -229,13 +228,13 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
     /**
      * This is an immutable runner (so get one, and run all the tests you need).
      *
-     * @return an new immutable runner instance
+     * @return an immutable runner instance
      */
     public static Runner newRunner() {
         return new Runner();
     }
 
-    public class RunnerPreProgram implements RunnerInterfaces.RunnerPreProgram<RunnerTestResult> {
+    public class RunnerPreProgram implements RunnerInterfaces.RunnerPreProgram {
 
         private final ThrowingConsumer3<String[], InputStream, OutputStream> program;
 
@@ -252,7 +251,7 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
         }
     }
 
-    public class RunnerProgram implements RunnerInterfaces.RunnerProgram<RunnerTestResult> {
+    public class RunnerProgram implements RunnerInterfaces.RunnerProgram {
 
         final ThrowingConsumer3<String[], InputStream, OutputStream> program;
 
@@ -311,7 +310,7 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
         }
     }
 
-    public class RunnerInput implements RunnerInterfaces.RunnerInput<RunnerTestResult> {
+    public class RunnerInput implements RunnerInterfaces.RunnerInput {
 
         private final ThrowingFunction0<InputStream> getInput;
 
@@ -344,7 +343,7 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
         }
     }
 
-    public class RunnerLoader implements RunnerInterfaces.RunnerLoader<RunnerTestResult> {
+    public class RunnerLoader implements RunnerInterfaces.RunnerLoader {
 
         private final ThrowingFunction0<InputStream> getInput;
 
@@ -372,7 +371,7 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
         }
     }
 
-    public class RunnerOutput extends RunnerOutputCommon implements RunnerInterfaces.RunnerOutput<RunnerTestResult> {
+    public class RunnerOutput extends RunnerOutputCommon implements RunnerInterfaces.RunnerOutput {
 
         RunnerOutput(String[] found, Throwable throwable) {
             super(found, throwable, null);
@@ -384,14 +383,14 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
         }
     }
 
-    public class RunnerPreTest extends RunnerOutputCommon implements RunnerInterfaces.RunnerPreTest<RunnerTestResult> {
+    public class RunnerPreTest extends RunnerOutputCommon implements RunnerInterfaces.RunnerPreTest {
 
         RunnerPreTest(String[] found, Exception exception, Comparator<String> comparator) {
             super(found, exception, comparator);
         }
     }
 
-    class RunnerOutputCommon implements RunnerInterfaces.RunnerOutputCommon<RunnerTestResult> {
+    class RunnerOutputCommon implements RunnerInterfaces.RunnerOutputCommon {
 
         private final String[] output;
 
@@ -508,7 +507,7 @@ public class Runner implements RunnerInterfaces.IRunner<Runner.RunnerTestResult>
     }
 
     @SuppressWarnings("InnerClassMayBeStatic")
-    public class RunnerTestResult implements RunnerInterfaces.RunnerTestResult, RunnerInterfaces.TestResult {
+    public class RunnerTestResult extends RunnerInterfaces.AbstractTestResult {
 
         private final boolean success;
 
