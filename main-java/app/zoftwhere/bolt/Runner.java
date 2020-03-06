@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
@@ -183,10 +184,17 @@ public class Runner implements RunnerInterfaces.IRunner {
             return input;
         }
 
-        return () -> {
-            try (InputStream inputStream = input.accept()) {
-                final String[] array = new LineSplitter(inputStream, decode).array();
-                return forInput(array);
+        return () -> new InputStream() {
+            final InputStreamReader decoder = new InputStreamReader(input.accept(), decode);
+
+            @Override
+            public int read() throws IOException {
+                return decoder.read();
+            }
+
+            @Override
+            public void close() throws IOException {
+                decoder.close();
             }
         };
     }
