@@ -220,8 +220,9 @@ public class Runner implements RunnerInterfaces.IRunner {
     private RunnerTestResult buildTestResult(String[] expected, String[] output, Throwable throwable,
         Comparator<String> comparator)
     {
+        final Exception exception = fromThrowable(throwable);
         final String message = throwable == null ? testMessage(expected, output, comparator) : null;
-        return new RunnerTestResult(output, expected, fromThrowable(throwable), message);
+        return new RunnerTestResult(output, expected, exception, message);
     }
 
     private String testMessage(String[] expected, String[] output, Comparator<String> comparator) {
@@ -495,12 +496,12 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
 
         @Override
-        public void assertFail() {
+        public void assertFailure() {
             if (result.exception().isPresent()) {
                 throw new BoltAssertionException(result.exception().get());
             }
 
-            if (result.message().isPresent() && result.isFail()) {
+            if (result.message().isPresent() && result.isFailure()) {
                 return;
             }
 
@@ -558,8 +559,13 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
 
         @Override
-        public boolean isFail() {
+        public boolean isFailure() {
             return !success;
+        }
+
+        @Override
+        public boolean isException() {
+            return exception != null;
         }
 
         @Override

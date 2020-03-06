@@ -116,7 +116,7 @@ class RunnerInterfaces {
 
         void assertSuccess();
 
-        void assertFail();
+        void assertFailure();
 
         void assertException();
 
@@ -127,7 +127,9 @@ class RunnerInterfaces {
 
         boolean isSuccess();
 
-        boolean isFail();
+        boolean isFailure();
+
+        boolean isException();
 
         String[] output();
 

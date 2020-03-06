@@ -238,13 +238,13 @@ class RunnerTest {
         runner.runConsole(RunnerTest::echoConsole)
             .input("a")
             .expected("z")
-            .assertFail();
+            .assertFailure();
 
         runner.runConsole(RunnerTest::echoConsole)
             .input("a")
             .comparator(Comparator.naturalOrder())
             .expected("z")
-            .assertFail();
+            .assertFailure();
 
         try {
             runner.runConsole((inputStream, outputStream) -> {
@@ -253,7 +253,7 @@ class RunnerTest {
                 .input()
                 .comparator(null)
                 .expected()
-                .assertFail();
+                .assertFailure();
             fail("bolt.runner.test.error.exception.expected");
         }
         catch (Throwable throwable) {
@@ -264,7 +264,7 @@ class RunnerTest {
             runner.runConsole(RunnerTest::echoConsole)
                 .input("")
                 .expected("")
-                .assertFail();
+                .assertFailure();
             fail("bolt.runner.test.error.exception.expected");
         }
         catch (Throwable throwable) {
