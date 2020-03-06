@@ -136,9 +136,10 @@ public class Runner implements RunnerInterfaces.IRunner {
         ThrowingConsumer3<String[], Scanner, BufferedWriter> program)
     {
         return (array, inputStream, outputStream) -> {
-            try (Scanner s = new Scanner(inputStream, UTF_8.name())) {
-                try (BufferedWriter w = getWriter(outputStream)) {
-                    program.accept(array, s, w);
+            // Scanner(InputStream, String) for backward compatibility.
+            try (Scanner scanner = new Scanner(inputStream, UTF_8.name())) {
+                try (BufferedWriter writer = getWriter(outputStream)) {
+                    program.accept(array, scanner, writer);
                 }
             }
         };
@@ -269,22 +270,22 @@ public class Runner implements RunnerInterfaces.IRunner {
 
         final String[] arguments;
 
-        private final Charset outputCharset;
+        private final Charset charset;
 
         RunnerProgram(ThrowingConsumer3<String[], InputStream, OutputStream> program, String[] arguments,
-            Charset outputCharset)
+            Charset charset)
         {
             this.program = program;
             this.arguments = arguments;
-            this.outputCharset = outputCharset;
+            this.charset = charset;
         }
 
-        RunnerProgram(ThrowingConsumer2<InputStream, OutputStream> program, Charset outputCharset) {
+        RunnerProgram(ThrowingConsumer2<InputStream, OutputStream> program, Charset charset) {
             this.program = (strings, inputStream, outputStream) -> { /**/
                 program.accept(inputStream, outputStream);
             };
             this.arguments = null;
-            this.outputCharset = outputCharset;
+            this.charset = charset;
         }
 
         @Override
@@ -319,12 +320,12 @@ public class Runner implements RunnerInterfaces.IRunner {
          * Creates a {@code RunnerOutput} for the program input {@code InputStream}.
          *
          * @param getInputStream function to return the {@code InputStream} for the program input
-         * @param charset         the charset of the {@code InputStream}
+         * @param charset        the charset of the {@code InputStream}
          * @return a {@code RunnerOutput instance}
          */
         private RunnerOutput create(ThrowingFunction0<InputStream> getInputStream, Charset charset) {
             final ThrowingFunction0<InputStream> getInput = getUTF8Inputted(getInputStream, charset);
-            return getProgramResult(program, outputCharset, arguments, getInput);
+            return getProgramResult(program, this.charset, arguments, getInput);
         }
     }
 
@@ -379,14 +380,14 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
 
         @Override
-        public RunnerOutput runConsole(ThrowingConsumer3<String[], InputStream, OutputStream> console) {
-            return getProgramResult(console, UTF_8, arguments, getInput);
+        public RunnerOutput runConsole(ThrowingConsumer3<String[], InputStream, OutputStream> program) {
+            return getProgramResult(program, UTF_8, arguments, getInput);
         }
 
         @Override
-        public RunnerOutput runConsole(Charset charset, ThrowingConsumer3<String[], InputStream, OutputStream> console)
+        public RunnerOutput runConsole(Charset charset, ThrowingConsumer3<String[], InputStream, OutputStream> program)
         {
-            return getProgramResult(console, charset, arguments, getInput);
+            return getProgramResult(program, charset, arguments, getInput);
         }
     }
 
