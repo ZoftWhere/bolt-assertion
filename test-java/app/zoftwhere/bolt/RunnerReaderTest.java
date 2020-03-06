@@ -95,7 +95,7 @@ class RunnerReaderTest {
         var runner = new RunnerReader(stream, UTF_8) {
             @Override
             String readLine() throws IOException {
-                 throw new IOException();
+                throw new IOException();
             }
         };
 
@@ -117,6 +117,7 @@ class RunnerReaderTest {
         try {
             RunnerReader.readArray(() -> new RunnerReader(stream, UTF_8) {
                 @Override
+                @SuppressWarnings("RedundantThrows")
                 public void close() throws IOException {
                     throw new UncheckedIOException(new IOException("Fake IO Exception."));
                 }
@@ -133,6 +134,7 @@ class RunnerReaderTest {
         try {
             RunnerReader.readList(() -> new RunnerReader(stream, UTF_8) {
                 @Override
+                @SuppressWarnings("RedundantThrows")
                 public void close() throws IOException {
                     throw new UncheckedIOException(new IOException("Fake IO Exception."));
                 }
