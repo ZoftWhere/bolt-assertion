@@ -28,6 +28,15 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class Runner implements RunnerInterfaces.IRunner {
 
     /**
+     * This is an immutable runner (so get one, and run all the tests you need).
+     *
+     * @return an immutable runner instance
+     */
+    public static Runner newRunner() {
+        return new Runner();
+    }
+
+    /**
      * Constructor for a reusable, immutable instance of the runner (more than one test can be run with it).
      * <p>
      * The Runner static method {@link #newRunner()} may also be used.
@@ -234,15 +243,6 @@ public class Runner implements RunnerInterfaces.IRunner {
             }
         }
         return null;
-    }
-
-    /**
-     * This is an immutable runner (so get one, and run all the tests you need).
-     *
-     * @return an immutable runner instance
-     */
-    public static Runner newRunner() {
-        return new Runner();
     }
 
     public class RunnerPreProgram implements RunnerInterfaces.RunnerPreProgram {
