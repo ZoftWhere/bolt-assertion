@@ -77,8 +77,8 @@ public class Runner implements RunnerInterfaces.IRunner {
     }
 
     @Override
-    public RunnerInput input(ThrowingFunction0<InputStream> getInputStream, Charset decode) {
-        return new RunnerInput(getUTF8Inputted(getInputStream, decode));
+    public RunnerInput input(ThrowingFunction0<InputStream> getInputStream, Charset charset) {
+        return new RunnerInput(getUTF8Inputted(getInputStream, charset));
     }
 
     @Override
@@ -87,10 +87,10 @@ public class Runner implements RunnerInterfaces.IRunner {
     }
 
     @Override
-    public RunnerInput loadInput(String resourceName, Class<?> withClass, Charset decode) {
-        final ThrowingFunction0<InputStream> input = () -> withClass.getResourceAsStream(resourceName);
-        final ThrowingFunction0<InputStream> supplier = getUTF8Inputted(input, decode);
-        return new RunnerInput(supplier);
+    public RunnerInput loadInput(String resourceName, Class<?> withClass, Charset charset) {
+        final ThrowingFunction0<InputStream> resource = () -> withClass.getResourceAsStream(resourceName);
+        final ThrowingFunction0<InputStream> getInputStream = getUTF8Inputted(resource, charset);
+        return new RunnerInput(getInputStream);
     }
 
     private InputStream forInput(String[] input) throws IOException {
@@ -115,9 +115,9 @@ public class Runner implements RunnerInterfaces.IRunner {
         ThrowingConsumer2<Scanner, BufferedWriter> program)
     {
         return (inputStream, outputStream) -> {
-            try (Scanner s = new Scanner(inputStream, UTF_8.name())) {
-                try (BufferedWriter w = getWriter(outputStream)) {
-                    program.accept(s, w);
+            try (Scanner scanner = new Scanner(inputStream, UTF_8.name())) {
+                try (BufferedWriter writer = getWriter(outputStream)) {
+                    program.accept(scanner, writer);
                 }
             }
         };
@@ -146,7 +146,7 @@ public class Runner implements RunnerInterfaces.IRunner {
 
     private RunnerOutput getProgramResult( //
         ThrowingConsumer3<String[], InputStream, OutputStream> program, //
-        Charset outputCharset, //
+        Charset charset, //
         String[] arguments, //
         ThrowingFunction0<InputStream> input) //
     {
@@ -176,8 +176,8 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
 
         final byte[] data = outputStream != null ? outputStream.toByteArray() : null;
-        final String[] found = data != null ? readArray(() -> new RunnerReader(data, outputCharset)) : null;
-        return new RunnerOutput(found, throwable);
+        final String[] output = data != null ? readArray(() -> new RunnerReader(data, charset)) : null;
+        return new RunnerOutput(output, throwable);
     }
 
     private ThrowingFunction0<InputStream> getUTF8Inputted( //
@@ -298,8 +298,8 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
 
         @Override
-        public RunnerOutput input(ThrowingFunction0<InputStream> getInputStream, Charset decode) {
-            return create(getInputStream, decode);
+        public RunnerOutput input(ThrowingFunction0<InputStream> getInputStream, Charset charset) {
+            return create(getInputStream, charset);
         }
 
         @Override
@@ -314,9 +314,16 @@ public class Runner implements RunnerInterfaces.IRunner {
             return create(inputSupplier, charset);
         }
 
-        private RunnerOutput create(ThrowingFunction0<InputStream> getInputStream, Charset inputCharset) {
-            final ThrowingFunction0<InputStream> supplier = getUTF8Inputted(getInputStream, inputCharset);
-            return getProgramResult(this.program, this.outputCharset, this.arguments, supplier);
+        /**
+         * Creates a {@code RunnerOutput} for the program input {@code InputStream}.
+         *
+         * @param getInputStream function to return the {@code InputStream} for the program input
+         * @param charset         the charset of the {@code InputStream}
+         * @return a {@code RunnerOutput instance}
+         */
+        private RunnerOutput create(ThrowingFunction0<InputStream> getInputStream, Charset charset) {
+            final ThrowingFunction0<InputStream> getInput = getUTF8Inputted(getInputStream, charset);
+            return getProgramResult(program, outputCharset, arguments, getInput);
         }
     }
 
@@ -355,6 +362,7 @@ public class Runner implements RunnerInterfaces.IRunner {
 
     public class RunnerLoader implements RunnerInterfaces.RunnerLoader {
 
+        /** Program input {@code InputStream} function */
         private final ThrowingFunction0<InputStream> getInput;
 
         private final String[] arguments;
@@ -383,8 +391,8 @@ public class Runner implements RunnerInterfaces.IRunner {
 
     public class RunnerOutput extends RunnerOutputCommon implements RunnerInterfaces.RunnerOutput {
 
-        RunnerOutput(String[] found, Throwable throwable) {
-            super(found, throwable, null);
+        RunnerOutput(String[] output, Throwable throwable) {
+            super(output, throwable, null);
         }
 
         @Override
@@ -446,13 +454,20 @@ public class Runner implements RunnerInterfaces.IRunner {
             return create(() -> withClass.getResourceAsStream(resourceName), charset);
         }
 
+        /**
+         * Creates a {@code RunnerAsserter} for the expected result {@code InputStream}.
+         *
+         * @param getInputStream function to return the {@code InputStream} for the expected result
+         * @param charset        the charset of the {@code InputStream}
+         * @return a {@code RunnerAsserter} instance
+         */
         private RunnerAsserter create(ThrowingFunction0<InputStream> getInputStream, Charset charset) {
             try (InputStream inputStream = getInputStream.accept()) {
                 if (inputStream == null) {
                     throw new NullPointerException("bolt.load.expectation.input.stream.null");
                 }
-                final String[] array = readArray(() -> new RunnerReader(inputStream, charset));
-                return expected(array);
+                final String[] expected = readArray(() -> new RunnerReader(inputStream, charset));
+                return expected(expected);
             }
             catch (Throwable e) {
                 throw new BoltAssertionException("bolt.load.expectation.error", e);
