@@ -200,8 +200,8 @@ public class Runner implements RunnerInterfaces.IRunner {
             return new ByteArrayInputStream(new byte[0]);
         }
 
-        try (ByteArrayOutputStream outputStream = getOutputStream()) {
-            try (BufferedWriter writer = getWriter(outputStream)) {
+        try (ByteArrayOutputStream outputStream = newOutputStream()) {
+            try (BufferedWriter writer = newWriter(outputStream)) {
                 writer.write(input[0]);
                 for (int i = 1, size = input.length; i < size; i++) {
                     writer.newLine();
@@ -224,7 +224,7 @@ public class Runner implements RunnerInterfaces.IRunner {
     {
         return (inputStream, outputStream) -> {
             try (Scanner scanner = new Scanner(inputStream, UTF_8.name())) {
-                try (BufferedWriter writer = getWriter(outputStream)) {
+                try (BufferedWriter writer = newWriter(outputStream)) {
                     program.accept(scanner, writer);
                 }
             }
@@ -241,9 +241,8 @@ public class Runner implements RunnerInterfaces.IRunner {
         ThrowingConsumer3<String[], Scanner, BufferedWriter> program)
     {
         return (array, inputStream, outputStream) -> {
-            // Scanner(InputStream, String) for backward compatibility.
-            try (Scanner scanner = new Scanner(inputStream, UTF_8.name())) {
-                try (BufferedWriter writer = getWriter(outputStream)) {
+            try (Scanner scanner = newScanner(inputStream)) {
+                try (BufferedWriter writer = newWriter(outputStream)) {
                     program.accept(array, scanner, writer);
                 }
             }
@@ -251,11 +250,21 @@ public class Runner implements RunnerInterfaces.IRunner {
     }
 
     /**
+     * Helper method for getting a new {@code Scanner}.
+     *
+     * @return {@code Scanner}
+     */
+    private Scanner newScanner(InputStream inputStream) {
+        // Scanner(InputStream, String) for backward compatibility.
+        return new Scanner(inputStream, UTF_8.name());
+    }
+
+    /**
      * Helper method for getting a new {@code ByteArrayOutputSteam}.
      *
      * @return {@code ByteArrayOutputSteam}
      */
-    private ByteArrayOutputStream getOutputStream() {
+    private ByteArrayOutputStream newOutputStream() {
         return new ByteArrayOutputStream(1024);
     }
 
@@ -265,7 +274,7 @@ public class Runner implements RunnerInterfaces.IRunner {
      * @param outputStream {@code OutputSteam}
      * @return {@code BufferedWriter}
      */
-    private BufferedWriter getWriter(OutputStream outputStream) {
+    private BufferedWriter newWriter(OutputStream outputStream) {
         final OutputStreamWriter writer = new OutputStreamWriter(outputStream, UTF_8);
         return new BufferedWriter(writer);
     }
@@ -288,7 +297,7 @@ public class Runner implements RunnerInterfaces.IRunner {
         ByteArrayOutputStream outputStream = null;
         Throwable throwable = null;
 
-        try (ByteArrayOutputStream byteArrayOutputStream = getOutputStream(); //
+        try (ByteArrayOutputStream byteArrayOutputStream = newOutputStream(); //
             InputStream inputStream = input.accept()) //
         {
             outputStream = byteArrayOutputStream;
