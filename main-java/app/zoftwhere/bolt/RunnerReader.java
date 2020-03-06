@@ -64,21 +64,23 @@ class RunnerReader extends Reader implements Iterator<String> {
     }
 
     public boolean hasNext() {
-        synchronized (lock) {
-            try {
-                return lastLineEmpty || reader.ready();
+        try {
+            synchronized (lock) {
+                return lastLineEmpty || ready();
             }
-            catch (IOException ignore) {
-                return false;
-            }
+        }
+        catch (IOException ignore) {
+            return false;
         }
     }
 
     @Override
     public boolean ready() throws IOException {
+        boolean flag;
         synchronized (lock) {
-            return reader.ready();
+            flag = reader.ready();
         }
+        return flag;
     }
 
     @Override
@@ -92,19 +94,15 @@ class RunnerReader extends Reader implements Iterator<String> {
     }
 
     String readLine() throws IOException {
+        StringBuilder builder = new StringBuilder(defaultExpectedLineLength);
+
         synchronized (lock) {
-            StringBuilder builder = new StringBuilder(defaultExpectedLineLength);
             lastLineEmpty = false;
 
             while (true) {
                 int v = reader.read();
 
                 if (v == -1) {
-                    if (lastLineEmpty) {
-                        lastLineEmpty = false;
-                        return "";
-                    }
-
                     break;
                 }
 
@@ -132,9 +130,9 @@ class RunnerReader extends Reader implements Iterator<String> {
 
                 builder.append(c);
             }
-
-            return builder.toString();
         }
+
+        return builder.toString();
     }
 
     private Stream<String> lines() {
@@ -153,19 +151,15 @@ class RunnerReader extends Reader implements Iterator<String> {
     }
 
     @Override
+    @SuppressWarnings("RedundantThrows")
     public int read() throws IOException {
-        synchronized (lock) {
-            return reader.read();
-        }
+        return -1;
     }
 
     @Override
+    @SuppressWarnings("RedundantThrows")
     public int read(char[] chars, int offset, int length) throws IOException {
-        int n;
-        synchronized (lock) {
-            n = reader.read(chars, offset, length);
-        }
-        return n;
+        return -1;
     }
 
     @Override

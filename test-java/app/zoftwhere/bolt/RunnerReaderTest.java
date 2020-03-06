@@ -2,6 +2,7 @@ package app.zoftwhere.bolt;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.function.Supplier;
@@ -23,6 +24,19 @@ class RunnerReaderTest {
         final var reader = forString(string, UTF_16);
         assertEquals("", reader.readLine());
         assertFalse(reader.hasNext());
+    }
+
+    @Test
+    void testReadBuffer() throws IOException {
+        var reader = new RunnerReader("".getBytes(), UTF_8);
+        assertEquals(-1, reader.read());
+    }
+
+    @Test
+    void testRead() throws IOException {
+        var reader = new RunnerReader("".getBytes(), UTF_8);
+        var chars = new char[0];
+        assertEquals(-1, reader.read(chars, 0, 0));
     }
 
     @Test
@@ -55,8 +69,82 @@ class RunnerReaderTest {
     }
 
     @Test
+    void testHasNextFail() throws IOException {
+        var stream = new ByteArrayInputStream("".getBytes()) {
+            @Override
+            public synchronized int read(byte[] b, int off, int len) {
+                return -1;
+            }
+        };
+
+        var runner = new RunnerReader(stream, UTF_8) {
+            @Override
+            public boolean ready() throws IOException {
+                throw new IOException();
+            }
+        };
+
+        runner.readLine();
+        assertFalse(runner.hasNext());
+    }
+
+    @Test
+    void testNextFail() {
+        var stream = new ByteArrayInputStream("".getBytes());
+
+        var runner = new RunnerReader(stream, UTF_8) {
+            @Override
+            String readLine() throws IOException {
+                 throw new IOException();
+            }
+        };
+
+        try {
+            runner.next();
+            fail("UncheckedIOException expected.");
+        }
+        catch (RuntimeException e) {
+            if (!(e instanceof UncheckedIOException)) {
+                throw e;
+            }
+        }
+    }
+
+    @Test
+    void testToArrayFail() {
+        var stream = new ByteArrayInputStream(new byte[0]);
+
+        try {
+            RunnerReader.readArray(() -> new RunnerReader(stream, UTF_8) {
+                @Override
+                public void close() throws IOException {
+                    throw new UncheckedIOException(new IOException("Fake IO Exception."));
+                }
+            });
+            fail();
+        }
+        catch (Exception ignore) { }
+    }
+
+    @Test
+    void testReadListFail() {
+        var stream = new ByteArrayInputStream(new byte[0]);
+
+        try {
+            RunnerReader.readList(() -> new RunnerReader(stream, UTF_8) {
+                @Override
+                public void close() throws IOException {
+                    throw new UncheckedIOException(new IOException("Fake IO Exception."));
+                }
+            });
+            fail();
+        }
+        catch (Exception ignore) { }
+    }
+
+    @Test
     void testByteArraySplitter() {
-        final var string = "\n\n";
+        final var string = "\r\n\r\n";
         final Supplier<RunnerReader> supplier = () -> forString(string, UTF_8);
         final var list = RunnerReader.readList(supplier);
         final var array = RunnerReader.readArray(supplier);
@@ -93,7 +181,7 @@ class RunnerReaderTest {
             builder.append("\n").append(array[i]);
         }
         String input = builder.toString();
-        final var list =  RunnerReader.readList(() -> forString(input, UTF_8));
+        final var list = RunnerReader.readList(() -> forString(input, UTF_8));
 
         if (array.length != list.size()) {
             assertEquals(array.length, list.size(), test + " [" + Arrays.toString(list.toArray()) + "]");
@@ -116,4 +204,5 @@ class RunnerReaderTest {
         final var input = new ByteArrayInputStream(string.getBytes(charset));
         return new RunnerReader(input, charset);
     }
+
 }
