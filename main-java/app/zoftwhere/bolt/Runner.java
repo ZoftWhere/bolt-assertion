@@ -669,7 +669,7 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
     }
 
-    class RunnerOutputCommon implements RunnerInterfaces.RunnerOutputCommon {
+    public class RunnerOutputCommon implements RunnerInterfaces.RunnerOutputCommon {
 
         private final String[] output;
 
