@@ -68,8 +68,7 @@ public class Runner implements RunnerInterfaces.IRunner {
 
     @Override
     public RunnerInput input(String... input) {
-        final String[] array = input != null && input.length > 0 ? input : new String[] {""};
-        return new RunnerInput(() -> forInput(array));
+        return new RunnerInput(() -> forInput(input));
     }
 
     @Override
@@ -95,6 +94,10 @@ public class Runner implements RunnerInterfaces.IRunner {
     }
 
     private InputStream forInput(String[] input) throws IOException {
+        if (input == null || input.length == 0) {
+            return new ByteArrayInputStream(new byte[0]);
+        }
+
         try (ByteArrayOutputStream outputStream = getOutputStream()) {
             try (BufferedWriter writer = getWriter(outputStream)) {
                 writer.write(input[0]);
@@ -285,8 +288,7 @@ public class Runner implements RunnerInterfaces.IRunner {
 
         @Override
         public RunnerOutput input(String... input) {
-            final String[] array = input != null && input.length > 0 ? input : new String[] {""};
-            final ThrowingFunction0<InputStream> getInput = () -> forInput(array);
+            final ThrowingFunction0<InputStream> getInput = () -> forInput(input);
             return getProgramResult(program, UTF_8, arguments, getInput);
         }
 
