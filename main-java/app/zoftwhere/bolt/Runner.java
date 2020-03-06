@@ -14,12 +14,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
 
-import app.zoftwhere.bolt.nio.LineSplitter;
 import app.zoftwhere.function.ThrowingConsumer1;
 import app.zoftwhere.function.ThrowingConsumer2;
 import app.zoftwhere.function.ThrowingConsumer3;
 import app.zoftwhere.function.ThrowingFunction0;
 
+import static app.zoftwhere.bolt.RunnerReader.readArray;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
@@ -173,7 +173,7 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
 
         final byte[] data = outputStream != null ? outputStream.toByteArray() : null;
-        final String[] found = new LineSplitter(data, outputCharset).array();
+        final String[] found = data != null ? readArray(() -> new RunnerReader(data, outputCharset)) : null;
         return new RunnerOutput(found, throwable);
     }
 
@@ -449,7 +449,7 @@ public class Runner implements RunnerInterfaces.IRunner {
                 if (inputStream == null) {
                     throw new NullPointerException("bolt.load.expectation.input.stream.null");
                 }
-                final String[] array = new LineSplitter(inputStream, charset).array();
+                final String[] array = readArray(() -> new RunnerReader(inputStream, charset));
                 return expected(array);
             }
             catch (Throwable e) {
