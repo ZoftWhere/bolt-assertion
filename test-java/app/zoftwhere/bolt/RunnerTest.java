@@ -10,7 +10,6 @@ import java.nio.charset.Charset;
 import java.util.Comparator;
 
 import app.zoftwhere.bolt.Runner.BoltAssertionException;
-import app.zoftwhere.bolt.Runner.RunnerOutput;
 import app.zoftwhere.mutable.MutableValue;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-class RunnerTest {
+class RunnerTest extends RunnerInterfaces {
 
     private final Runner runner = newRunner();
 

@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 class RunnerScopeTest {
 
-    private final String boltExceptionName = RunnerProxy.getBoltExceptionName();
+    private final String boltExceptionName = Runner.class.getName() + "$BoltAssertionException";
 
     private final Runner runner = newRunner();
 

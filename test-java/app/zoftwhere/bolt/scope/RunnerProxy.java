@@ -1,4 +1,4 @@
-package app.zoftwhere.bolt;
+package app.zoftwhere.bolt.scope;
 
 import java.io.BufferedWriter;
 import java.io.InputStream;
@@ -6,15 +6,16 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Scanner;
 
+import app.zoftwhere.bolt.Runner;
 import app.zoftwhere.function.ThrowingConsumer2;
 import app.zoftwhere.function.ThrowingConsumer3;
 import app.zoftwhere.function.ThrowingFunction0;
 
-@SuppressWarnings("unused")
-public class RunnerProxy extends RunnerInterfaces implements RunnerInterfaces.IRunner {
+public class RunnerProxy extends Runner {
 
     private final Runner runner = new Runner();
 
+    @SuppressWarnings("WeakerAccess")
     public RunnerProxy() {
     }
 
@@ -61,8 +62,7 @@ public class RunnerProxy extends RunnerInterfaces implements RunnerInterfaces.IR
     }
 
     @Override
-    public Runner.RunnerProgram runConsole(Charset charset,
-        ThrowingConsumer2<InputStream, OutputStream> program)
+    public Runner.RunnerProgram runConsole(Charset charset, ThrowingConsumer2<InputStream, OutputStream> program)
     {
         return runner.runConsole(charset, program);
     }
@@ -79,10 +79,6 @@ public class RunnerProxy extends RunnerInterfaces implements RunnerInterfaces.IR
         ThrowingConsumer3<String[], InputStream, OutputStream> program)
     {
         return runner.runConsole(charset, program);
-    }
-
-    public static String getBoltExceptionName() {
-        return Runner.BoltAssertionException.class.getName();
     }
 
 }
