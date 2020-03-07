@@ -49,14 +49,13 @@ class RunnerInputStream extends InputStream {
         }
 
         if (!Character.isSurrogate((char) f1)) {
-            buffer = Character.toString(f1).getBytes(destination);
+            buffer = Character.toString((char) f1).getBytes(destination);
             size = buffer.length;
             return;
         }
 
         int f2 = reader.read();
-        int c = Character.toCodePoint((char) f1, (char) f2);
-        buffer = Character.toString(c).getBytes(destination);
+        buffer = (new String(new char[] {(char) f1, (char) f2})).getBytes(destination);
         size = buffer.length;
     }
 
