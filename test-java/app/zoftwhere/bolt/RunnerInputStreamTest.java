@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.List;
 
 import app.zoftwhere.mutable.MutableValue;
@@ -89,7 +88,6 @@ class RunnerInputStreamTest {
         final var codec = List.of(US_ASCII, UTF_8, UTF_16LE, UTF_16BE);
         final var string = "Test Close.\n\n\n";
         final var size = (int) string.chars().count();
-        final var buffer = new char[size];
         final var closedFlag = new MutableValue<>(Boolean.FALSE);
 
         assertTrue(closedFlag.isPresent());
