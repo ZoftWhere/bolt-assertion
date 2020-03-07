@@ -27,6 +27,14 @@ class RunnerReaderTest {
     }
 
     @Test
+    void testByteOrderMark() throws IOException {
+        final var string = "\ufeffUTF-16";
+        try (var reader = forString(string, UTF_16)) {
+            assertEquals("UTF-16", reader.readLine());
+        }
+    }
+
+    @Test
     void testReadBuffer() throws IOException {
         var reader = new RunnerReader("".getBytes(), UTF_8);
         assertEquals(-1, reader.read());

@@ -128,6 +128,11 @@ class RunnerReader extends Reader implements Iterator<String> {
                     return builder.toString();
                 }
 
+                // Skip UTF-16 BOMs
+                if (c == '\ufeff') {
+                    continue;
+                }
+
                 builder.append(c);
             }
         }
