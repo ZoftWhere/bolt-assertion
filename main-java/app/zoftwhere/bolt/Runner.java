@@ -5,7 +5,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
@@ -56,7 +55,20 @@ public class Runner implements RunnerInterfaces.IRunner {
      */
     @Override
     public RunnerProgram run(ThrowingConsumer2<Scanner, BufferedWriter> program) {
-        return new RunnerProgram(forProgram(program), UTF_8);
+        return new RunnerProgram(forProgram(program, UTF_8), UTF_8);
+    }
+
+    /**
+     * Specify the program.
+     *
+     * @param charset the charset for {@code InputStream} and {@code OutputStream}
+     * @param program the program
+     * @return {@code RunnerProgram}
+     * @since 4.0.0
+     */
+    @Override
+    public RunnerProgram run(Charset charset, ThrowingConsumer2<Scanner, BufferedWriter> program) {
+        return new RunnerProgram(forProgram(program, charset), charset);
     }
 
     /**
@@ -68,7 +80,20 @@ public class Runner implements RunnerInterfaces.IRunner {
      */
     @Override
     public RunnerPreProgram run(ThrowingConsumer3<String[], Scanner, BufferedWriter> program) {
-        return new RunnerPreProgram(forProgram(program), UTF_8);
+        return new RunnerPreProgram(forProgram(program, UTF_8), UTF_8);
+    }
+
+    /**
+     * Specify the program.
+     *
+     * @param charset the charset for {@code Scanner} and {@code BufferedWriter}
+     * @param program the program
+     * @return {@code RunnerPreProgram}
+     * @since 4.0.0
+     */
+    @Override
+    public RunnerPreProgram run(Charset charset, ThrowingConsumer3<String[], Scanner, BufferedWriter> program) {
+        return new RunnerPreProgram(forProgram(program, charset), charset);
     }
 
     /**
@@ -86,18 +111,6 @@ public class Runner implements RunnerInterfaces.IRunner {
     /**
      * Specify the program.
      *
-     * @param program the program
-     * @return {@code RunnerPreProgram}
-     * @since 1.0.0
-     */
-    @Override
-    public RunnerPreProgram runConsole(ThrowingConsumer3<String[], InputStream, OutputStream> program) {
-        return new RunnerPreProgram(program, UTF_8);
-    }
-
-    /**
-     * Specify the program.
-     *
      * @param charset the charset for {@code InputStream} and {@code OutputStream}
      * @param program the program
      * @return {@code RunnerProgram}
@@ -106,6 +119,18 @@ public class Runner implements RunnerInterfaces.IRunner {
     @Override
     public RunnerProgram runConsole(Charset charset, ThrowingConsumer2<InputStream, OutputStream> program) {
         return new RunnerProgram(program, charset);
+    }
+
+    /**
+     * Specify the program.
+     *
+     * @param program the program
+     * @return {@code RunnerPreProgram}
+     * @since 1.0.0
+     */
+    @Override
+    public RunnerPreProgram runConsole(ThrowingConsumer3<String[], InputStream, OutputStream> program) {
+        return new RunnerPreProgram(program, UTF_8);
     }
 
     /**
@@ -131,7 +156,7 @@ public class Runner implements RunnerInterfaces.IRunner {
      */
     @Override
     public RunnerInput input(String... input) {
-        return new RunnerInput(() -> forInput(input));
+        return new RunnerInput(() -> forInput(input), UTF_8);
     }
 
     /**
@@ -143,7 +168,7 @@ public class Runner implements RunnerInterfaces.IRunner {
      */
     @Override
     public RunnerInput input(ThrowingFunction0<InputStream> getInputStream) {
-        return new RunnerInput(getInputStream);
+        return new RunnerInput(getInputStream, UTF_8);
     }
 
     /**
@@ -156,7 +181,7 @@ public class Runner implements RunnerInterfaces.IRunner {
      */
     @Override
     public RunnerInput input(ThrowingFunction0<InputStream> getInputStream, Charset charset) {
-        return new RunnerInput(getUTF8Inputted(getInputStream, charset));
+        return new RunnerInput(getInputStream, charset);
     }
 
     /**
@@ -169,7 +194,7 @@ public class Runner implements RunnerInterfaces.IRunner {
      */
     @Override
     public RunnerInput loadInput(String resourceName, Class<?> withClass) {
-        return new RunnerInput(() -> withClass.getResourceAsStream(resourceName));
+        return new RunnerInput(() -> withClass.getResourceAsStream(resourceName), UTF_8);
     }
 
     /**
@@ -184,8 +209,7 @@ public class Runner implements RunnerInterfaces.IRunner {
     @Override
     public RunnerInput loadInput(String resourceName, Class<?> withClass, Charset charset) {
         final ThrowingFunction0<InputStream> resource = () -> withClass.getResourceAsStream(resourceName);
-        final ThrowingFunction0<InputStream> getInputStream = getUTF8Inputted(resource, charset);
-        return new RunnerInput(getInputStream);
+        return new RunnerInput(resource, charset);
     }
 
     /**
@@ -201,7 +225,7 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
 
         try (ByteArrayOutputStream outputStream = newOutputStream()) {
-            try (BufferedWriter writer = newWriter(outputStream)) {
+            try (BufferedWriter writer = newWriter(outputStream, UTF_8)) {
                 writer.write(input[0]);
                 for (int i = 1, size = input.length; i < size; i++) {
                     writer.newLine();
@@ -217,14 +241,16 @@ public class Runner implements RunnerInterfaces.IRunner {
      * Helper method for providing {@code Scanner} and {@code BufferedWriter} to program.
      *
      * @param program the program
+     * @param charset the program character set encoding
      * @return standard {@code InputStream}, {@code OutputSteam} consumer
      */
     private ThrowingConsumer2<InputStream, OutputStream> forProgram( //
-        ThrowingConsumer2<Scanner, BufferedWriter> program)
+        ThrowingConsumer2<Scanner, BufferedWriter> program, //
+        Charset charset) //
     {
         return (inputStream, outputStream) -> {
-            try (Scanner scanner = new Scanner(inputStream, UTF_8.name())) {
-                try (BufferedWriter writer = newWriter(outputStream)) {
+            try (Scanner scanner = newScanner(inputStream, charset)) {
+                try (BufferedWriter writer = newWriter(outputStream, charset)) {
                     program.accept(scanner, writer);
                 }
             }
@@ -235,14 +261,16 @@ public class Runner implements RunnerInterfaces.IRunner {
      * Helper method for providing {@code Scanner} and {@code BufferedWriter} to program.
      *
      * @param program the program
+     * @param charset the program character set encoding
      * @return standard {@code InputStream}, {@code OutputSteam} consumer
      */
     private ThrowingConsumer3<String[], InputStream, OutputStream> forProgram( //
-        ThrowingConsumer3<String[], Scanner, BufferedWriter> program)
+        ThrowingConsumer3<String[], Scanner, BufferedWriter> program, //
+        Charset charset) //
     {
         return (array, inputStream, outputStream) -> {
-            try (Scanner scanner = newScanner(inputStream)) {
-                try (BufferedWriter writer = newWriter(outputStream)) {
+            try (Scanner scanner = newScanner(inputStream, charset)) {
+                try (BufferedWriter writer = newWriter(outputStream, charset)) {
                     program.accept(array, scanner, writer);
                 }
             }
@@ -254,9 +282,9 @@ public class Runner implements RunnerInterfaces.IRunner {
      *
      * @return {@code Scanner}
      */
-    private Scanner newScanner(InputStream inputStream) {
+    private Scanner newScanner(InputStream inputStream, Charset charset) {
         // Scanner(InputStream, String) for backward compatibility.
-        return new Scanner(inputStream, UTF_8.name());
+        return new Scanner(inputStream, charset.name());
     }
 
     /**
@@ -274,31 +302,33 @@ public class Runner implements RunnerInterfaces.IRunner {
      * @param outputStream {@code OutputSteam}
      * @return {@code BufferedWriter}
      */
-    private BufferedWriter newWriter(OutputStream outputStream) {
-        final OutputStreamWriter writer = new OutputStreamWriter(outputStream, UTF_8);
+    private BufferedWriter newWriter(OutputStream outputStream, Charset charset) {
+        final OutputStreamWriter writer = new OutputStreamWriter(outputStream, charset);
         return new BufferedWriter(writer);
     }
 
     /**
      * Helper method for executing the program and collecting the output.
      *
-     * @param program   the program
-     * @param charset   the program output charset
-     * @param arguments the program arguments
-     * @param input     the program input
+     * @param program       the program
+     * @param outputCharset the program output character set encoding
+     * @param arguments     the program arguments
+     * @param input         the program input
+     * @param inputCharset  the program input character set encoding
      * @return {@code RunnerOutput}
      */
     private RunnerOutput getProgramResult( //
         ThrowingConsumer3<String[], InputStream, OutputStream> program, //
-        Charset charset, //
+        Charset outputCharset, //
         String[] arguments, //
-        ThrowingFunction0<InputStream> input) //
+        ThrowingFunction0<InputStream> input, //
+        Charset inputCharset) //
     {
         ByteArrayOutputStream outputStream = null;
         Throwable throwable = null;
 
         try (ByteArrayOutputStream byteArrayOutputStream = newOutputStream(); //
-            InputStream inputStream = input.accept()) //
+            InputStream inputStream = newInputStreamSupplier(input, inputCharset, outputCharset).accept()) //
         {
             outputStream = byteArrayOutputStream;
             if (inputStream == null) {
@@ -320,37 +350,28 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
 
         final byte[] data = outputStream != null ? outputStream.toByteArray() : null;
-        final String[] output = data != null ? readArray(() -> new RunnerReader(data, charset)) : null;
+        final String[] output = data != null ? readArray(() -> new RunnerReader(data, outputCharset)) : null;
         return new RunnerOutput(output, throwable);
     }
 
     /**
      * Helper method for setting up decoded {@code InputSteam}.
      *
-     * @param input  the input stream
-     * @param decode the desired charset for the input stream
-     * @return {@code InputSteam} with UTF-8 as encoding
+     * @param input   the input stream
+     * @param charset the input stream character set encoding
+     * @param decode  the desired character set encoding
+     * @return {@code InputSteam} with desired character set as encoding
      */
-    private ThrowingFunction0<InputStream> getUTF8Inputted( //
-        ThrowingFunction0<InputStream> input, Charset decode)
+    private ThrowingFunction0<InputStream> newInputStreamSupplier( //
+        ThrowingFunction0<InputStream> input, //
+        Charset charset, //
+        Charset decode) //
     {
-        if (decode.name().equals(UTF_8.name())) {
+        if (charset.name().equals(decode.name())) {
             return input;
         }
 
-        return () -> new InputStream() {
-            final InputStreamReader decoder = new InputStreamReader(input.accept(), decode);
-
-            @Override
-            public int read() throws IOException {
-                return decoder.read();
-            }
-
-            @Override
-            public void close() throws IOException {
-                decoder.close();
-            }
-        };
+        return () -> new RunnerInputStream(input.accept(), charset, decode);
     }
 
     /**
@@ -374,8 +395,11 @@ public class Runner implements RunnerInterfaces.IRunner {
      * @param comparator {@code Nullable} comparator
      * @return {@code RunnerTestResult}
      */
-    private RunnerTestResult buildTestResult(String[] expected, String[] output, Throwable throwable,
-        Comparator<String> comparator)
+    private RunnerTestResult buildTestResult( //
+        String[] expected, //
+        String[] output, //
+        Throwable throwable, //
+        Comparator<String> comparator) //
     {
         final Exception exception = fromThrowable(throwable);
         final String message = throwable == null ? testMessage(expected, output, comparator) : null;
@@ -437,26 +461,28 @@ public class Runner implements RunnerInterfaces.IRunner {
 
     public class RunnerProgram implements RunnerInterfaces.RunnerProgram {
 
-        final ThrowingConsumer3<String[], InputStream, OutputStream> program;
+        private final ThrowingConsumer3<String[], InputStream, OutputStream> program;
 
-        final String[] arguments;
+        private final String[] arguments;
 
-        private final Charset charset;
+        private final Charset programCharset;
 
-        RunnerProgram(ThrowingConsumer3<String[], InputStream, OutputStream> program, String[] arguments,
-            Charset charset)
+        RunnerProgram(
+            ThrowingConsumer3<String[], InputStream, OutputStream> program, //
+            String[] arguments, //
+            Charset programCharset) //
         {
             this.program = program;
             this.arguments = arguments;
-            this.charset = charset;
+            this.programCharset = programCharset;
         }
 
-        RunnerProgram(ThrowingConsumer2<InputStream, OutputStream> program, Charset charset) {
+        RunnerProgram(ThrowingConsumer2<InputStream, OutputStream> program, Charset programCharset) {
             this.program = (strings, inputStream, outputStream) -> { /**/
                 program.accept(inputStream, outputStream);
             };
             this.arguments = null;
-            this.charset = charset;
+            this.programCharset = programCharset;
         }
 
         /**
@@ -469,7 +495,7 @@ public class Runner implements RunnerInterfaces.IRunner {
         @Override
         public RunnerOutput input(String... input) {
             final ThrowingFunction0<InputStream> getInput = () -> forInput(input);
-            return getProgramResult(program, UTF_8, arguments, getInput);
+            return getProgramResult(program, programCharset, arguments, getInput, UTF_8);
         }
 
         /**
@@ -534,17 +560,18 @@ public class Runner implements RunnerInterfaces.IRunner {
          * @return a {@code RunnerOutput instance}
          */
         private RunnerOutput create(ThrowingFunction0<InputStream> getInputStream, Charset charset) {
-            final ThrowingFunction0<InputStream> getInput = getUTF8Inputted(getInputStream, charset);
-            return getProgramResult(program, this.charset, arguments, getInput);
+            return getProgramResult(program, programCharset, arguments, getInputStream, charset);
         }
     }
 
     public class RunnerInput implements RunnerInterfaces.RunnerInput {
 
         private final ThrowingFunction0<InputStream> getInput;
+        private final Charset inputCharset;
 
-        RunnerInput(ThrowingFunction0<InputStream> getInputStream) {
+        RunnerInput(ThrowingFunction0<InputStream> getInputStream, Charset charset) {
             this.getInput = getInputStream;
+            this.inputCharset = charset;
         }
 
         /**
@@ -556,7 +583,33 @@ public class Runner implements RunnerInterfaces.IRunner {
          */
         @Override
         public RunnerLoader argument(String... arguments) {
-            return new RunnerLoader(getInput, arguments);
+            return new RunnerLoader(inputCharset, getInput, arguments);
+        }
+
+        /**
+         * Specify the program.
+         *
+         * @param program the program
+         * @return {@code RunnerOutput}
+         * @since 1.0.0
+         */
+        public RunnerOutput run(ThrowingConsumer2<Scanner, BufferedWriter> program) {
+            ThrowingConsumer3<String[], InputStream, OutputStream> internal = /**/
+                (strings, inputStream, outputStream) -> forProgram(program, UTF_8).accept(inputStream, outputStream);
+            return getProgramResult(internal, UTF_8, null, getInput, inputCharset);
+        }
+
+        /**
+         * Specify the program.
+         *
+         * @param program the program
+         * @return {@code RunnerOutput}
+         * @since 1.0.0
+         */
+        public RunnerOutput run(Charset charset, ThrowingConsumer2<Scanner, BufferedWriter> program) {
+            ThrowingConsumer3<String[], InputStream, OutputStream> internal = /**/
+                (strings, inputStream, outputStream) -> forProgram(program, charset).accept(inputStream, outputStream);
+            return getProgramResult(internal, charset, null, getInput, inputCharset);
         }
 
         /**
@@ -569,20 +622,7 @@ public class Runner implements RunnerInterfaces.IRunner {
         public RunnerOutput runConsole(ThrowingConsumer2<InputStream, OutputStream> program) {
             ThrowingConsumer3<String[], InputStream, OutputStream> internal = /**/
                 (strings, inputStream, outputStream) -> program.accept(inputStream, outputStream);
-            return getProgramResult(internal, UTF_8, null, getInput);
-        }
-
-        /**
-         * Specify the program.
-         *
-         * @param program the program
-         * @return {@code RunnerOutput}
-         * @since 1.0.0
-         */
-        public RunnerOutput run(ThrowingConsumer2<Scanner, BufferedWriter> program) {
-            ThrowingConsumer3<String[], InputStream, OutputStream> internal = /**/
-                (strings, inputStream, outputStream) -> forProgram(program).accept(inputStream, outputStream);
-            return getProgramResult(internal, UTF_8, null, getInput);
+            return getProgramResult(internal, UTF_8, null, getInput, inputCharset);
         }
 
         /**
@@ -597,7 +637,7 @@ public class Runner implements RunnerInterfaces.IRunner {
         public RunnerOutput runConsole(Charset charset, ThrowingConsumer2<InputStream, OutputStream> program) {
             ThrowingConsumer3<String[], InputStream, OutputStream> internal = /**/
                 (strings, inputStream, outputStream) -> program.accept(inputStream, outputStream);
-            return getProgramResult(internal, charset, null, getInput);
+            return getProgramResult(internal, charset, null, getInput, inputCharset);
         }
     }
 
@@ -606,9 +646,12 @@ public class Runner implements RunnerInterfaces.IRunner {
         /** Program input {@code InputStream} function */
         private final ThrowingFunction0<InputStream> getInput;
 
+        private final Charset inputCharset;
+
         private final String[] arguments;
 
-        RunnerLoader(ThrowingFunction0<InputStream> getInput, String[] arguments) {
+        RunnerLoader(Charset charset, ThrowingFunction0<InputStream> getInput, String[] arguments) {
+            this.inputCharset = charset;
             this.getInput = getInput;
             this.arguments = arguments;
         }
@@ -622,7 +665,19 @@ public class Runner implements RunnerInterfaces.IRunner {
          */
         @Override
         public RunnerOutput run(ThrowingConsumer3<String[], Scanner, BufferedWriter> program) {
-            return getProgramResult(forProgram(program), UTF_8, arguments, getInput);
+            return getProgramResult(forProgram(program, UTF_8), UTF_8, arguments, getInput, inputCharset);
+        }
+
+        /**
+         * Specify the program.
+         *
+         * @param program the program
+         * @return {@code RunnerOutput}
+         * @since 1.0.0
+         */
+        @Override
+        public RunnerOutput run(Charset charset, ThrowingConsumer3<String[], Scanner, BufferedWriter> program) {
+            return getProgramResult(forProgram(program, charset), charset, arguments, getInput, inputCharset);
         }
 
         /**
@@ -634,7 +689,7 @@ public class Runner implements RunnerInterfaces.IRunner {
          */
         @Override
         public RunnerOutput runConsole(ThrowingConsumer3<String[], InputStream, OutputStream> program) {
-            return getProgramResult(program, UTF_8, arguments, getInput);
+            return getProgramResult(program, UTF_8, arguments, getInput, inputCharset);
         }
 
         /**
@@ -648,7 +703,7 @@ public class Runner implements RunnerInterfaces.IRunner {
         @Override
         public RunnerOutput runConsole(Charset charset, ThrowingConsumer3<String[], InputStream, OutputStream> program)
         {
-            return getProgramResult(program, charset, arguments, getInput);
+            return getProgramResult(program, charset, arguments, getInput, inputCharset);
         }
     }
 

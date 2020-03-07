@@ -50,10 +50,22 @@ public class RunnerProxy extends Runner {
     }
 
     @Override
+    public Runner.RunnerProgram run(Charset charset, ThrowingConsumer2<Scanner, BufferedWriter> program) {
+        return runner.run(charset, program);
+    }
+
+    @Override
     public Runner.RunnerPreProgram run(
         ThrowingConsumer3<String[], Scanner, BufferedWriter> program)
     {
         return runner.run(program);
+    }
+
+    @Override
+    public Runner.RunnerPreProgram run(
+        Charset charset, ThrowingConsumer3<String[], Scanner, BufferedWriter> program)
+    {
+        return runner.run(charset, program);
     }
 
     @Override

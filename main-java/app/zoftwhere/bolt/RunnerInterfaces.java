@@ -62,6 +62,8 @@ class RunnerInterfaces {
 
         T run(ThrowingConsumer2<Scanner, BufferedWriter> program);
 
+        T run(Charset charset, ThrowingConsumer2<Scanner, BufferedWriter> program);
+
         T runConsole(ThrowingConsumer2<InputStream, OutputStream> program);
 
         T runConsole(Charset charset, ThrowingConsumer2<InputStream, OutputStream> program);
@@ -70,6 +72,8 @@ class RunnerInterfaces {
     interface RunWithArguments<T> {
 
         T run(ThrowingConsumer3<String[], Scanner, BufferedWriter> program);
+
+        T run(Charset charset, ThrowingConsumer3<String[], Scanner, BufferedWriter> program);
 
         T runConsole(ThrowingConsumer3<String[], InputStream, OutputStream> program);
 
