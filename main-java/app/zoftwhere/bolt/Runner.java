@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
@@ -774,12 +775,14 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
 
         /**
-         * @return the program output
+         * Retrieve the actual program output.
+         *
+         * @return array copy of the program output
          * @since 1.0.0
          */
         @Override
         public String[] output() {
-            return output;
+            return Arrays.copyOf(output, output.length);
         }
 
         /**
@@ -1031,25 +1034,25 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
 
         /**
-         * Actual program output.
+         * Retrieve actual program output.
          *
-         * @return actual program output
+         * @return array copy of actual program output
          * @since 1.0.0
          */
         @Override
         public String[] output() {
-            return output;
+            return Arrays.copyOf(output, output.length);
         }
 
         /**
-         * Expected program output.
+         * Retrieve expected program output.
          *
-         * @return expected program output
+         * @return array copy of expected program output
          * @since 1.0.0
          */
         @Override
         public String[] expected() {
-            return expected;
+            return Arrays.copyOf(expected, expected.length);
         }
 
         /**
