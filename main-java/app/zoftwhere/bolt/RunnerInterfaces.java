@@ -55,7 +55,7 @@ class RunnerInterfaces {
 
     interface RunnerTestResult extends TestResult { }
 
-    interface RunNoArguments<T> {
+    private interface RunNoArguments<T> {
 
         T run(ThrowingConsumer2<Scanner, BufferedWriter> program);
 
@@ -66,7 +66,7 @@ class RunnerInterfaces {
         T runConsole(Charset charset, ThrowingConsumer2<InputStream, OutputStream> program);
     }
 
-    interface RunWithArguments<T> {
+    private interface RunWithArguments<T> {
 
         T run(ThrowingConsumer3<String[], Scanner, BufferedWriter> program);
 
@@ -77,12 +77,12 @@ class RunnerInterfaces {
         T runConsole(Charset charset, ThrowingConsumer3<String[], InputStream, OutputStream> program);
     }
 
-    interface Arguments<T> {
+    private interface Arguments<T> {
 
         T argument(String... arguments);
     }
 
-    interface Input<T> {
+    private interface Input<T> {
 
         T input(String... input);
 
@@ -95,12 +95,12 @@ class RunnerInterfaces {
         T loadInput(String resourceName, Class<?> withClass, Charset charset);
     }
 
-    interface Comparison<T, C> {
+    private interface Comparison<T, C> {
 
         T comparator(Comparator<C> comparator);
     }
 
-    interface Expected<T> {
+    private interface Expected<T> {
 
         T expected(String... expected);
 
@@ -113,7 +113,7 @@ class RunnerInterfaces {
         T loadExpectation(String resourceName, Class<?> withClass, Charset charset);
     }
 
-    interface Assertions<T extends AbstractTestResult> {
+    private interface Assertions<T extends AbstractTestResult> {
 
         void assertSuccess();
 
@@ -126,7 +126,7 @@ class RunnerInterfaces {
         T result();
     }
 
-    interface TestResult {
+    private interface TestResult {
 
         boolean isSuccess();
 
