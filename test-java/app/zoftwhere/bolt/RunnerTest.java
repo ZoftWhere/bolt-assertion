@@ -445,6 +445,8 @@ class RunnerTest extends RunnerInterfaces {
             assertEquals("bolt.runner.asserter.success.found", e.getMessage());
         }
 
+        asserter.onOffence(testResult -> fail("bolt.runner.test.success.not.offence"));
+
         var result = asserter.result();
         assertNull(result.message().orElse(null));
         assertNull(result.exception().orElse(null));
@@ -477,7 +479,19 @@ class RunnerTest extends RunnerInterfaces {
             assertEquals("bolt.runner.asserter.output.length.mismatch", e.getMessage());
         }
 
+        try {
+            asserter.onOffence(result -> {
+                throw new BoltAssertionException(result.message().orElse("null.message"));
+            });
+            fail("bolt.runner.test.exception.expected");
+        }
+        catch (Exception e) {
+            assertTrue(e instanceof BoltAssertionException);
+            assertEquals("bolt.runner.asserter.output.length.mismatch", e.getMessage());
+        }
+
         var result = asserter.result();
+        assertEquals(-1, result.offendingIndex());
         assertNull(result.exception().orElse(null));
         assertEquals("bolt.runner.asserter.output.length.mismatch", result.message().orElse(null));
     }
@@ -509,7 +523,19 @@ class RunnerTest extends RunnerInterfaces {
             assertEquals("bolt.runner.asserter.output.data.mismatch", e.getMessage());
         }
 
+        try {
+            asserter.onOffence(result -> {
+                throw new BoltAssertionException(result.message().orElse(null), null);
+            });
+            fail("bolt.runner.test.exception.expected");
+        }
+        catch (Exception e) {
+            assertTrue(e instanceof BoltAssertionException);
+            assertEquals("bolt.runner.asserter.output.data.mismatch", e.getMessage());
+        }
+
         var result = asserter.result();
+        assertEquals(0, result.offendingIndex());
         assertNull(result.exception().orElse(null));
         assertEquals("bolt.runner.asserter.output.data.mismatch", result.message().orElse(null));
     }
@@ -539,10 +565,22 @@ class RunnerTest extends RunnerInterfaces {
             assertEquals("bolt.runner.asserter.error.found", e.getMessage());
         }
 
+        try {
+            asserter.onOffence(result -> {
+                throw result.exception().orElse(new NullPointerException(""));
+            });
+            fail("bolt.runner.test.exception.expected");
+        }
+        catch (Exception e) {
+            assertTrue(e instanceof BoltAssertionException);
+            assertEquals("thrown", e.getMessage());
+        }
+
         asserter.assertException();
 
         var result = asserter.result();
         var exception = result.exception().orElse(null);
+        assertEquals(-1, result.offendingIndex());
         assertNotNull(exception);
         assertTrue(exception instanceof Exception);
         assertEquals("thrown", exception.getMessage());

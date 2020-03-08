@@ -29,7 +29,7 @@ class RunnerAsserterTest extends Runner {
     @Test
     void testResultFailure() {
         var blank = new String[] {""};
-        final var result = new RunnerTestResult(blank, blank, "");
+        final var result = new RunnerTestResult(blank, blank, -1, "");
         final var asserter = new RunnerAsserter(result);
 
         asserter.assertFailure();

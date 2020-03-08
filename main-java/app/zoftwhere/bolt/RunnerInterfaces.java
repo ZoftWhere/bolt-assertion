@@ -122,6 +122,8 @@ class RunnerInterfaces {
 
         void assertCheck(ThrowingConsumer1<T> consumer);
 
+        void onOffence(ThrowingConsumer1<T> consumer);
+
         T result();
     }
 
@@ -132,6 +134,8 @@ class RunnerInterfaces {
         boolean isFailure();
 
         boolean isException();
+
+        int offendingIndex();
 
         String[] output();
 

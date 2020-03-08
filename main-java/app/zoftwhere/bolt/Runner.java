@@ -435,15 +435,16 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
 
         if (expected.length != output.length) {
+            int none = -1;
             String message = "bolt.runner.asserter.output.length.mismatch";
-            return new RunnerTestResult(output, expected, message);
+            return new RunnerTestResult(output, expected, none, message);
         }
         final int size = output.length;
         if (comparator == null) {
             for (int index = 0; index < size; index++) {
                 if (!Objects.equals(expected[index], output[index])) {
                     String message = "bolt.runner.asserter.output.data.mismatch";
-                    return new RunnerTestResult(output, expected, message);
+                    return new RunnerTestResult(output, expected, index, message);
                 }
             }
         }
@@ -451,7 +452,7 @@ public class Runner implements RunnerInterfaces.IRunner {
             for (int index = 0; index < size; index++) {
                 if (comparator.compare(expected[index], output[index]) != 0) {
                     String message = "bolt.runner.asserter.output.data.mismatch";
-                    return new RunnerTestResult(output, expected, message);
+                    return new RunnerTestResult(output, expected, index, message);
                 }
             }
         }
@@ -960,6 +961,26 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
 
         /**
+         * Asserts program behaviour with offence triggered consumer.
+         * <p>
+         * The consumer should throw a throwable for undesired behaviour.
+         *
+         * @param custom custom consumer
+         * @since 5.0.0
+         */
+        @Override
+        public void onOffence(ThrowingConsumer1<RunnerTestResult> custom) {
+            if (!result.isSuccess()) {
+                try {
+                    custom.accept(result);
+                }
+                catch (Throwable throwable) {
+                    throw new BoltAssertionException(throwable.getMessage(), throwable.getCause());
+                }
+            }
+        }
+
+        /**
          * @return the program test result
          * @since 1.0.0
          */
@@ -976,6 +997,8 @@ public class Runner implements RunnerInterfaces.IRunner {
 
         private final String[] expected;
 
+        private final int offendingIndex;
+
         private final String message;
 
         private final Exception exception;
@@ -983,20 +1006,24 @@ public class Runner implements RunnerInterfaces.IRunner {
         RunnerTestResult(String[] output, String[] expected) {
             this.output = requireNonNull(output);
             this.expected = requireNonNull(expected);
+            this.offendingIndex = -1;
             this.message = null;
             this.exception = null;
         }
 
-        RunnerTestResult(String[] output, String[] expected, String message) {
+        RunnerTestResult(String[] output, String[] expected, int offendingIndex, String message) {
             this.output = requireNonNull(output);
             this.expected = requireNonNull(expected);
-            this.message = requireNonNull(message);
+            //noinspection ManualMinMaxCalculation
+            this.offendingIndex = offendingIndex >= -1 ? offendingIndex : -1;
+            this.message = message;
             this.exception = null;
         }
 
         RunnerTestResult(String[] output, String[] expected, Exception exception) {
             this.output = requireNonNull(output);
             this.expected = requireNonNull(expected);
+            this.offendingIndex = -1;
             this.message = null;
             this.exception = exception;
         }
@@ -1054,6 +1081,16 @@ public class Runner implements RunnerInterfaces.IRunner {
         @Override
         public String[] expected() {
             return Arrays.copyOf(expected, expected.length);
+        }
+
+        /**
+         * Retrieve the offending index for output comparison.
+         *
+         * @return array index for mismatch, -1 on length or none
+         * @since 5.0.0
+         */
+        public int offendingIndex() {
+            return offendingIndex;
         }
 
         /**
