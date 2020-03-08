@@ -896,11 +896,11 @@ public class Runner implements RunnerInterfaces.IRunner {
         @Override
         public void assertSuccess() {
             if (result.isFailure()) {
-                throw new BoltAssertionException(result.message, null);
+                throw new BoltAssertionException(result.message);
             }
 
             if (result.isException()) {
-                throw new BoltAssertionException("bolt.runner.asserter.error.found", null);
+                throw new BoltAssertionException("bolt.runner.asserter.error.found");
             }
         }
 
@@ -914,11 +914,11 @@ public class Runner implements RunnerInterfaces.IRunner {
         @Override
         public void assertFailure() {
             if (result.isSuccess()) {
-                throw new BoltAssertionException("bolt.runner.asserter.success.found", null);
+                throw new BoltAssertionException("bolt.runner.asserter.success.found");
             }
 
             if (result.isException()) {
-                throw new BoltAssertionException("bolt.runner.asserter.error.found", null);
+                throw new BoltAssertionException("bolt.runner.asserter.error.found");
             }
         }
 
@@ -932,11 +932,11 @@ public class Runner implements RunnerInterfaces.IRunner {
         @Override
         public void assertException() {
             if (result.isSuccess()) {
-                throw new BoltAssertionException("bolt.runner.asserter.success.found", null);
+                throw new BoltAssertionException("bolt.runner.asserter.success.found");
             }
 
             if (result.isFailure()) {
-                throw new BoltAssertionException(result.message, null);
+                throw new BoltAssertionException(result.message);
             }
         }
 
@@ -1082,6 +1082,10 @@ public class Runner implements RunnerInterfaces.IRunner {
      * A Bolt Runner Assertion Exception class for internal exceptions.
      */
     static class BoltAssertionException extends RuntimeException {
+
+        BoltAssertionException(String message) {
+            super(message, null);
+        }
 
         BoltAssertionException(String message, Throwable cause) {
             super(message, cause);
