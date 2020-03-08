@@ -327,7 +327,7 @@ public class Runner implements RunnerInterfaces.IRunner {
         ThrowingFunction0<InputStream> input, //
         Charset inputCharset) //
     {
-        ByteArrayOutputStream outputStream = null;
+        ByteArrayOutputStream outputStream = newOutputStream();
         Throwable throwable = null;
 
         try (ByteArrayOutputStream byteArrayOutputStream = newOutputStream(); //
@@ -352,9 +352,9 @@ public class Runner implements RunnerInterfaces.IRunner {
             throwable = e;
         }
 
-        final byte[] data = outputStream != null ? outputStream.toByteArray() : null;
-        final String[] output = data != null ? readArray(() -> new RunnerReader(data, outputCharset)) : null;
-        return new RunnerOutput(output, throwable);
+        final byte[] data = outputStream.toByteArray();
+        final String[] output = readArray(() -> new RunnerReader(data, outputCharset));
+        return new RunnerOutput(output, fromThrowable(throwable));
     }
 
     /**
@@ -712,10 +712,10 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
     }
 
-    public class RunnerOutput extends RunnerOutputCommon implements RunnerInterfaces.RunnerOutput {
+    public class RunnerOutput extends RunnerPreTest implements RunnerInterfaces.RunnerOutput {
 
-        RunnerOutput(String[] output, Throwable throwable) {
-            super(output, throwable, null);
+        RunnerOutput(String[] output, Exception exception) {
+            super(output, exception, null);
         }
 
         /**
@@ -738,7 +738,7 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
     }
 
-    public class RunnerOutputCommon implements RunnerInterfaces.RunnerOutputCommon {
+    class RunnerOutputCommon implements RunnerInterfaces.RunnerOutputCommon {
 
         private final String[] output;
 
@@ -850,7 +850,7 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
     }
 
-    public class RunnerAsserter implements RunnerInterfaces.RunnerAsserter<RunnerTestResult> {
+    public class RunnerAsserter implements RunnerInterfaces.RunnerAsserter {
 
         private final RunnerTestResult result;
 

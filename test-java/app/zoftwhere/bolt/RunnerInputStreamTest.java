@@ -87,7 +87,6 @@ class RunnerInputStreamTest {
         // UTF_16 does not work here; UTF_16BE and UTF_16LE is listed instead.
         final var codec = List.of(US_ASCII, UTF_8, UTF_16LE, UTF_16BE);
         final var string = "Test Close.\n\n\n";
-        final var size = (int) string.chars().count();
         final var closedFlag = new MutableValue<>(Boolean.FALSE);
 
         assertTrue(closedFlag.isPresent());

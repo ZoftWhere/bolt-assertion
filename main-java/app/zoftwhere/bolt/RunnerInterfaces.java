@@ -41,17 +41,14 @@ class RunnerInterfaces {
 
     interface RunnerPreTest extends RunnerOutputCommon { }
 
-    interface RunnerOutputCommon extends Expected<RunnerAsserter<Runner.RunnerTestResult>> {
+    interface RunnerOutputCommon extends Expected<RunnerAsserter> {
 
         String[] output();
 
         Exception exception();
     }
 
-    interface RunnerAsserter<T extends AbstractTestResult> extends Assertions<T> {
-
-        RunnerTestResult result();
-    }
+    interface RunnerAsserter extends Assertions<Runner.RunnerTestResult> { }
 
     static abstract class AbstractTestResult implements RunnerTestResult {
     }
@@ -116,7 +113,7 @@ class RunnerInterfaces {
         T loadExpectation(String resourceName, Class<?> withClass, Charset charset);
     }
 
-    interface Assertions<T> {
+    interface Assertions<T extends AbstractTestResult> {
 
         void assertSuccess();
 
@@ -125,6 +122,8 @@ class RunnerInterfaces {
         void assertException();
 
         void assertCheck(ThrowingConsumer1<T> consumer);
+
+        T result();
     }
 
     interface TestResult {

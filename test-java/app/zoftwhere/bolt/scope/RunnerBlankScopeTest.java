@@ -86,12 +86,12 @@ class RunnerBlankScopeTest {
         testRunnerOutput(output.comparator(Comparator.nullsFirst(Comparator.naturalOrder())));
     }
 
-    private void testRunnerOutput(Runner.RunnerOutputCommon outputCommon) {
-        testAsserter(outputCommon.expected(""));
-        testAsserter(outputCommon.expected(this::blankStream));
-        testAsserter(outputCommon.expected(this::blankStream, UTF_8));
-        testAsserter(outputCommon.loadExpectation("RunnerBlankScopeTest.txt", Runner.class));
-        testAsserter(outputCommon.loadExpectation("RunnerBlankScopeTest.txt", Runner.class, UTF_8));
+    private void testRunnerOutput(Runner.RunnerPreTest preTest) {
+        testAsserter(preTest.expected(""));
+        testAsserter(preTest.expected(this::blankStream));
+        testAsserter(preTest.expected(this::blankStream, UTF_8));
+        testAsserter(preTest.loadExpectation("RunnerBlankScopeTest.txt", Runner.class));
+        testAsserter(preTest.loadExpectation("RunnerBlankScopeTest.txt", Runner.class, UTF_8));
     }
 
     private void testAsserter(Runner.RunnerAsserter asserter) {

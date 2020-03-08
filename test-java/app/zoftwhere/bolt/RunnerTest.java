@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import static app.zoftwhere.bolt.Runner.newRunner;
 import static app.zoftwhere.bolt.RunnerReader.readList;
+import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_16;
 import static java.nio.charset.StandardCharsets.UTF_16BE;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -110,6 +111,72 @@ class RunnerTest extends RunnerInterfaces {
 
         output.loadExpectation("RunnerTest.txt", getClass(), UTF_8)
             .assertSuccess();
+    }
+
+    @Test
+    void testRunProgram() {
+        runner.run((scanner, bufferedWriter) -> {})
+            .input("")
+            .expected("")
+            .assertSuccess();
+
+        runner.run(US_ASCII, (scanner, bufferedWriter) -> {})
+            .input("")
+            .expected("")
+            .assertSuccess();
+
+        runner.run(((strings, scanner, bufferedWriter) -> {}))
+            .argument("")
+            .input("")
+            .expected("")
+            .assertSuccess();
+
+        runner.run(US_ASCII, ((strings, scanner, bufferedWriter) -> {}))
+            .argument("")
+            .input("")
+            .expected("")
+            .assertSuccess();
+    }
+
+    @Test
+    void testOptimised() {
+        runner.input("optimised 1")
+            .run(((scanner, bufferedWriter) -> bufferedWriter.write(scanner.nextLine())))
+            .expected("optimised 1")
+            .assertSuccess();
+
+        runner.input("optimised 2")
+            .run(UTF_16BE, ((scanner, bufferedWriter) -> bufferedWriter.write(scanner.nextLine())))
+            .expected("optimised 2")
+            .assertSuccess();
+
+        runner.input("optimised 3")
+            .argument("")
+            .run(((strings, scanner, bufferedWriter) -> bufferedWriter.write(scanner.nextLine())))
+            .expected("optimised 3")
+            .assertSuccess();
+
+        runner.input("optimised 4")
+            .argument("")
+            .run(UTF_16BE, ((strings, scanner, bufferedWriter) -> bufferedWriter.write(scanner.nextLine())))
+            .expected("optimised 4")
+            .assertSuccess();
+    }
+
+    @Test
+    void testExecuteRunException() {
+        runner.input("")
+            .run((scanner, bufferedWriter) -> { throw new Exception("Test Coverage."); })
+            .expected()
+            .assertException();
+    }
+
+    @Test
+    void testExecuteRunNullInput() {
+        runner.input(() -> null)
+            .run((scanner, bufferedWriter) -> {})
+            .expected("")
+            .assertException();
     }
 
     @Test
