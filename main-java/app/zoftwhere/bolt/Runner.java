@@ -22,6 +22,7 @@ import app.zoftwhere.function.ThrowingFunction0;
 
 import static app.zoftwhere.bolt.RunnerReader.readArray;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Bolt Assertion Runner.
@@ -288,7 +289,7 @@ public class Runner implements RunnerInterfaces.IRunner {
      */
     private Scanner newScanner(InputStream inputStream, Charset charset) {
         // Scanner(InputStream, String) for backward compatibility.
-        Objects.requireNonNull(inputStream, "bolt.runner.load.input.input.stream.null");
+        requireNonNull(inputStream, "bolt.runner.load.input.input.stream.null");
         return new Scanner(inputStream, charset.name());
     }
 
@@ -769,7 +770,7 @@ public class Runner implements RunnerInterfaces.IRunner {
         private final Comparator<String> comparator;
 
         RunnerOutputCommon(String[] output, Exception exception, Comparator<String> comparator) {
-            this.output = Objects.requireNonNull(output);
+            this.output = requireNonNull(output);
             this.exception = exception;
             this.comparator = comparator;
         }
@@ -980,22 +981,22 @@ public class Runner implements RunnerInterfaces.IRunner {
         private final Exception exception;
 
         RunnerTestResult(String[] output, String[] expected) {
-            this.output = Objects.requireNonNull(output);
-            this.expected = Objects.requireNonNull(expected);
+            this.output = requireNonNull(output);
+            this.expected = requireNonNull(expected);
             this.message = null;
             this.exception = null;
         }
 
         RunnerTestResult(String[] output, String[] expected, String message) {
-            this.output = Objects.requireNonNull(output);
-            this.expected = Objects.requireNonNull(expected);
-            this.message = message;
+            this.output = requireNonNull(output);
+            this.expected = requireNonNull(expected);
+            this.message = requireNonNull(message);
             this.exception = null;
         }
 
         RunnerTestResult(String[] output, String[] expected, Exception exception) {
-            this.output = Objects.requireNonNull(output);
-            this.expected = Objects.requireNonNull(expected);
+            this.output = requireNonNull(output);
+            this.expected = requireNonNull(expected);
             this.message = null;
             this.exception = exception;
         }
