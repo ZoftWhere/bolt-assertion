@@ -429,7 +429,7 @@ public class Runner implements RunnerInterfaces.IRunner {
     {
         final Exception exception = fromThrowable(throwable);
         final String message = throwable == null ? testMessage(expected, output, comparator) : null;
-        return new RunnerTestResult(output, expected, exception, message);
+        return new RunnerTestResult(output, expected, message, exception);
     }
 
     /**
@@ -965,50 +965,47 @@ public class Runner implements RunnerInterfaces.IRunner {
     @SuppressWarnings("InnerClassMayBeStatic")
     public class RunnerTestResult extends RunnerInterfaces.AbstractTestResult {
 
-        private final boolean success;
-
         private final String[] output;
 
         private final String[] expected;
 
-        private final Exception exception;
-
         private final String message;
 
-        RunnerTestResult(String[] output, String[] expected, Exception exception, String message) {
+        private final Exception exception;
+
+        RunnerTestResult(String[] output, String[] expected, String message, Exception exception) {
             this.output = output;
             this.expected = expected;
-            this.exception = exception;
             this.message = message;
-            this.success = exception == null && message == null;
+            this.exception = exception;
         }
 
         /**
          * Check if program outputs match successfully.
          *
-         * @return {@code true} for success, {@code false} otherwise
+         * @return {@code true} for success, {@code false} for failure or error
          * @since 1.0.0
          */
         @Override
         public boolean isSuccess() {
-            return success;
+            return message == null && exception == null;
         }
 
         /**
-         * Check if program outputs fail to match.
+         * Check if program assertion failure.
          *
-         * @return {@code true} for failure, {@code false} otherwise
+         * @return {@code true} for failure, {@code false} for success or error
          * @since 4.0.0
          */
         @Override
         public boolean isFailure() {
-            return !success;
+            return message != null && exception == null;
         }
 
         /**
          * Check if program terminated with an error.
          *
-         * @return {@code true} for failure, {@code false} otherwise
+         * @return {@code true} for error, {@code false} for success or failure
          * @since 4.0.0
          */
         @Override
