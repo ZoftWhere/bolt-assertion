@@ -799,8 +799,8 @@ public class Runner implements RunnerInterfaces.IRunner {
          * @since 1.0.0
          */
         public RunnerAsserter expected(String... expected) {
-            final String[] array = expected != null && expected.length > 0 ? expected : new String[] {""};
-            final RunnerTestResult testResult = buildTestResult(array, output, exception, comparator);
+            final String[] expectation = expected != null && expected.length > 0 ? expected : new String[] {""};
+            final RunnerTestResult testResult = buildTestResult(expectation, output, exception, comparator);
             return new RunnerAsserter(testResult);
         }
 
