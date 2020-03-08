@@ -391,6 +391,136 @@ class RunnerTest extends RunnerInterfaces {
         }
     }
 
+    @Test
+    void testRunTestSuccess() {
+        var asserter = runner //
+            .runConsole((inputStream, outputStream) -> {})
+            .input("")
+            .expected("");
+
+        asserter.assertSuccess();
+
+        try {
+            asserter.assertFailure();
+            fail("bolt.runner.test.exception.expected");
+        }
+        catch (Exception e) {
+            assertTrue(e instanceof BoltAssertionException);
+            assertEquals("bolt.runner.assertion.expected.failure", e.getMessage());
+        }
+
+        try {
+            asserter.assertException();
+            fail("bolt.runner.test.exception.expected");
+        }
+        catch (Exception e) {
+            assertTrue(e instanceof BoltAssertionException);
+            assertEquals("bolt.runner.assertion.expected.exception", e.getMessage());
+        }
+
+        var result = asserter.result();
+        assertNull(result.message().orElse(null));
+        assertNull(result.exception().orElse(null));
+    }
+
+    @Test
+    void testRunTestFailureExpectedLength() {
+        var asserter = runner //
+            .runConsole((inputStream, outputStream) -> {})
+            .input("")
+            .expected("", "");
+
+        try {
+            asserter.assertSuccess();
+            fail("bolt.runner.test.exception.expected");
+        }
+        catch (Exception e) {
+            assertTrue(e instanceof BoltAssertionException);
+            assertEquals("Lengths to not match. Expected 2, found 1.", e.getMessage());
+        }
+
+        asserter.assertFailure();
+
+        try {
+            asserter.assertException();
+            fail("bolt.runner.test.exception.expected");
+        }
+        catch (Exception e) {
+            assertTrue(e instanceof BoltAssertionException);
+            assertEquals("bolt.runner.assertion.expected.exception", e.getMessage());
+        }
+
+        var result = asserter.result();
+        assertNull(result.exception().orElse(null));
+        assertEquals("Lengths to not match. Expected 2, found 1.", result.message().orElse(null));
+    }
+
+    @Test
+    void testRunTestFailureComparisonFailure() {
+        var asserter = runner //
+            .runConsole((inputStream, outputStream) -> {})
+            .input("")
+            .expected("mismatch");
+
+        try {
+            asserter.assertSuccess();
+            fail("bolt.runner.test.exception.expected");
+        }
+        catch (Exception e) {
+            assertTrue(e instanceof BoltAssertionException);
+            assertEquals("Line 1: Expected \"mismatch\". Found \"\"", e.getMessage());
+        }
+
+        asserter.assertFailure();
+
+        try {
+            asserter.assertException();
+            fail("bolt.runner.test.exception.expected");
+        }
+        catch (Exception e) {
+            assertTrue(e instanceof BoltAssertionException);
+            assertEquals("bolt.runner.assertion.expected.exception", e.getMessage());
+        }
+
+        var result = asserter.result();
+        assertNull(result.exception().orElse(null));
+        assertEquals("Line 1: Expected \"mismatch\". Found \"\"", result.message().orElse(null));
+    }
+
+    @Test
+    void testRunThrowException() {
+        var asserter = runner //
+            .runConsole((inputStream, outputStream) -> { throw new Exception("thrown"); })
+            .input("")
+            .expected("");
+
+        try {
+            asserter.assertSuccess();
+            fail("bolt.runner.test.exception.expected");
+        }
+        catch (Exception e) {
+            assertTrue(e instanceof BoltAssertionException);
+            assertNull(e.getMessage());
+        }
+
+        try {
+            asserter.assertFailure();
+            fail("bolt.runner.test.exception.expected");
+        }
+        catch (Exception e) {
+            assertTrue(e instanceof BoltAssertionException);
+            assertEquals("thrown", e.getMessage());
+        }
+
+        asserter.assertException();
+
+        var result = asserter.result();
+        var exception = result.exception().orElse(null);
+        assertNotNull(exception);
+        assertTrue(exception instanceof Exception);
+        assertEquals("thrown", exception.getMessage());
+    }
+
     private static void echoConsole(InputStream inputStream, OutputStream outputStream) throws IOException {
         final var list = readList(() -> new RunnerReader(inputStream, UTF_8));
         final int size = list.size();
