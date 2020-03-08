@@ -7,17 +7,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 
 import app.zoftwhere.bolt.Runner.BoltAssertionException;
-import app.zoftwhere.bolt.Runner.RunnerOutput;
-import app.zoftwhere.bolt.nio.LineSplitter;
 import app.zoftwhere.mutable.MutableValue;
 import org.junit.jupiter.api.Test;
 
 import static app.zoftwhere.bolt.Runner.newRunner;
+import static app.zoftwhere.bolt.RunnerReader.readList;
+import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_16;
+import static java.nio.charset.StandardCharsets.UTF_16BE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -26,13 +26,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-class RunnerTest {
+class RunnerTest extends RunnerInterfaces {
 
     private final Runner runner = newRunner();
 
     @Test
     void testInputStreamClose() {
-        final Charset charset = StandardCharsets.UTF_16BE;
+        final Charset charset = UTF_16BE;
         final MutableValue<Boolean> closedFlag = new MutableValue<>(Boolean.FALSE);
         assertTrue(closedFlag.isPresent());
         assertFalse(closedFlag.get());
@@ -46,7 +46,7 @@ class RunnerTest {
         };
 
         runner.input(() -> inputStream, charset)
-            .runConsole((inputStream1, outputStream) -> {})
+            .runConsole((input, output) -> {})
             .expected();
 
         assertNotNull(closedFlag);
@@ -114,7 +114,73 @@ class RunnerTest {
     }
 
     @Test
-    void testLoadingInput() {
+    void testRunProgram() {
+        runner.run((scanner, bufferedWriter) -> {})
+            .input("")
+            .expected("")
+            .assertSuccess();
+
+        runner.run(US_ASCII, (scanner, bufferedWriter) -> {})
+            .input("")
+            .expected("")
+            .assertSuccess();
+
+        runner.run(((strings, scanner, bufferedWriter) -> {}))
+            .argument("")
+            .input("")
+            .expected("")
+            .assertSuccess();
+
+        runner.run(US_ASCII, ((strings, scanner, bufferedWriter) -> {}))
+            .argument("")
+            .input("")
+            .expected("")
+            .assertSuccess();
+    }
+
+    @Test
+    void testOptimised() {
+        runner.input("optimised 1")
+            .run(((scanner, bufferedWriter) -> bufferedWriter.write(scanner.nextLine())))
+            .expected("optimised 1")
+            .assertSuccess();
+
+        runner.input("optimised 2")
+            .run(UTF_16BE, ((scanner, bufferedWriter) -> bufferedWriter.write(scanner.nextLine())))
+            .expected("optimised 2")
+            .assertSuccess();
+
+        runner.input("optimised 3")
+            .argument("")
+            .run(((strings, scanner, bufferedWriter) -> bufferedWriter.write(scanner.nextLine())))
+            .expected("optimised 3")
+            .assertSuccess();
+
+        runner.input("optimised 4")
+            .argument("")
+            .run(UTF_16BE, ((strings, scanner, bufferedWriter) -> bufferedWriter.write(scanner.nextLine())))
+            .expected("optimised 4")
+            .assertSuccess();
+    }
+
+    @Test
+    void testExecuteRunException() {
+        runner.input("")
+            .run((scanner, bufferedWriter) -> { throw new Exception("Test Coverage."); })
+            .expected()
+            .assertException();
+    }
+
+    @Test
+    void testExecuteRunNullInput() {
+        runner.input(() -> null)
+            .run((scanner, bufferedWriter) -> {})
+            .expected("")
+            .assertException();
+    }
+
+    @Test
+    void testLoadingInputAll() {
         runner //
             .runConsole(RunnerTest::echoConsole)
             .loadInput("RunnerTest.txt", Runner.class)
@@ -178,6 +244,7 @@ class RunnerTest {
             assertTrue(e instanceof BoltAssertionException);
             assertNotNull(e.getMessage());
             assertEquals("bolt.load.expectation.error", e.getMessage());
+            assertEquals("bolt.load.expectation.input.stream.null", e.getCause().getMessage());
         }
     }
 
@@ -237,13 +304,13 @@ class RunnerTest {
         runner.runConsole(RunnerTest::echoConsole)
             .input("a")
             .expected("z")
-            .assertFail();
+            .assertFailure();
 
         runner.runConsole(RunnerTest::echoConsole)
             .input("a")
             .comparator(Comparator.naturalOrder())
             .expected("z")
-            .assertFail();
+            .assertFailure();
 
         try {
             runner.runConsole((inputStream, outputStream) -> {
@@ -252,7 +319,7 @@ class RunnerTest {
                 .input()
                 .comparator(null)
                 .expected()
-                .assertFail();
+                .assertFailure();
             fail("bolt.runner.test.error.exception.expected");
         }
         catch (Throwable throwable) {
@@ -263,7 +330,7 @@ class RunnerTest {
             runner.runConsole(RunnerTest::echoConsole)
                 .input("")
                 .expected("")
-                .assertFail();
+                .assertFailure();
             fail("bolt.runner.test.error.exception.expected");
         }
         catch (Throwable throwable) {
@@ -325,7 +392,7 @@ class RunnerTest {
     }
 
     private static void echoConsole(InputStream inputStream, OutputStream outputStream) throws IOException {
-        final var list = new LineSplitter(inputStream, UTF_8).list();
+        final var list = readList(() -> new RunnerReader(inputStream, UTF_8));
         final int size = list.size();
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, UTF_8))) {
             if (size > 0) {

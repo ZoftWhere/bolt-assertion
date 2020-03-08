@@ -16,45 +16,41 @@ import app.zoftwhere.function.ThrowingFunction0;
 @SuppressWarnings("unused")
 class RunnerInterfaces {
 
-    interface IRunner<T extends TestResult> extends RunnerProgramFirst<T>, RunnerInputFirst<T> { }
+    interface IRunner extends RunnerProgramFirst, RunnerInputFirst { }
 
     /**
      * The interfaces that forms the basis for Runner#run() and Runner#runConsole().
-     *
-     * @param <T> The type for the class passed to RunnerAsserter#assertCheck(&lt;T&gt; throwingConsumer)
      */
-    private interface RunnerProgramFirst<T> extends //
-        RunWithArguments<RunnerPreProgram<T>>, RunNoArguments<RunnerProgram<T>> { }
+    private interface RunnerProgramFirst extends //
+        RunWithArguments<RunnerPreProgram>, RunNoArguments<RunnerProgram> { }
 
-    interface RunnerPreProgram<T> extends Arguments<RunnerProgram<T>> { }
+    interface RunnerPreProgram extends Arguments<RunnerProgram> { }
 
-    interface RunnerProgram<T> extends Input<RunnerOutput<T>> { }
+    interface RunnerProgram extends Input<RunnerOutput> { }
 
     /**
      * The interfaces that forms the basis for Runner#input() and Runner#loadInput().
-     *
-     * @param <T> The type for the class passed to RunnerAsserter#assertCheck(&lt;T&gt; throwingConsumer)
      */
-    private interface RunnerInputFirst<T> extends Input<RunnerInput<T>> { }
+    private interface RunnerInputFirst extends Input<RunnerInput> { }
 
-    interface RunnerInput<T> extends Arguments<RunnerLoader<T>>, RunNoArguments<RunnerOutput<T>> { }
+    interface RunnerInput extends Arguments<RunnerLoader>, RunNoArguments<RunnerOutput> { }
 
-    interface RunnerLoader<T> extends RunWithArguments<RunnerOutput<T>> { }
+    interface RunnerLoader extends RunWithArguments<RunnerOutput> { }
 
-    interface RunnerOutput<T> extends Comparison<RunnerPreTest<T>, String>, RunnerOutputCommon<T> { }
+    interface RunnerOutput extends Comparison<RunnerPreTest, String>, RunnerOutputCommon { }
 
-    interface RunnerPreTest<T> extends RunnerOutputCommon<T> { }
+    interface RunnerPreTest extends RunnerOutputCommon { }
 
-    interface RunnerOutputCommon<T> extends Expected<RunnerAsserter<T>> {
+    interface RunnerOutputCommon extends Expected<RunnerAsserter> {
 
         String[] output();
 
         Exception exception();
     }
 
-    interface RunnerAsserter<T> extends Assertions<T> {
+    interface RunnerAsserter extends Assertions<Runner.RunnerTestResult> { }
 
-        RunnerTestResult result();
+    static abstract class AbstractTestResult implements RunnerTestResult {
     }
 
     interface RunnerTestResult extends TestResult { }
@@ -62,6 +58,8 @@ class RunnerInterfaces {
     interface RunNoArguments<T> {
 
         T run(ThrowingConsumer2<Scanner, BufferedWriter> program);
+
+        T run(Charset charset, ThrowingConsumer2<Scanner, BufferedWriter> program);
 
         T runConsole(ThrowingConsumer2<InputStream, OutputStream> program);
 
@@ -71,6 +69,8 @@ class RunnerInterfaces {
     interface RunWithArguments<T> {
 
         T run(ThrowingConsumer3<String[], Scanner, BufferedWriter> program);
+
+        T run(Charset charset, ThrowingConsumer3<String[], Scanner, BufferedWriter> program);
 
         T runConsole(ThrowingConsumer3<String[], InputStream, OutputStream> program);
 
@@ -113,22 +113,26 @@ class RunnerInterfaces {
         T loadExpectation(String resourceName, Class<?> withClass, Charset charset);
     }
 
-    interface Assertions<T> {
+    interface Assertions<T extends AbstractTestResult> {
 
         void assertSuccess();
 
-        void assertFail();
+        void assertFailure();
 
         void assertException();
 
         void assertCheck(ThrowingConsumer1<T> consumer);
+
+        T result();
     }
 
     interface TestResult {
 
         boolean isSuccess();
 
-        boolean isFail();
+        boolean isFailure();
+
+        boolean isException();
 
         String[] output();
 

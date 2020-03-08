@@ -1,4 +1,4 @@
-package app.zoftwhere.bolt;
+package app.zoftwhere.bolt.scope;
 
 import java.io.BufferedWriter;
 import java.io.InputStream;
@@ -6,15 +6,16 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Scanner;
 
+import app.zoftwhere.bolt.Runner;
 import app.zoftwhere.function.ThrowingConsumer2;
 import app.zoftwhere.function.ThrowingConsumer3;
 import app.zoftwhere.function.ThrowingFunction0;
 
-@SuppressWarnings("unused")
-public class RunnerProxy extends RunnerInterfaces implements RunnerInterfaces.IRunner<Runner.RunnerTestResult> {
+public class RunnerProxy extends Runner {
 
     private final Runner runner = new Runner();
 
+    @SuppressWarnings("WeakerAccess")
     public RunnerProxy() {
     }
 
@@ -49,10 +50,22 @@ public class RunnerProxy extends RunnerInterfaces implements RunnerInterfaces.IR
     }
 
     @Override
+    public Runner.RunnerProgram run(Charset charset, ThrowingConsumer2<Scanner, BufferedWriter> program) {
+        return runner.run(charset, program);
+    }
+
+    @Override
     public Runner.RunnerPreProgram run(
         ThrowingConsumer3<String[], Scanner, BufferedWriter> program)
     {
         return runner.run(program);
+    }
+
+    @Override
+    public Runner.RunnerPreProgram run(
+        Charset charset, ThrowingConsumer3<String[], Scanner, BufferedWriter> program)
+    {
+        return runner.run(charset, program);
     }
 
     @Override
@@ -61,8 +74,7 @@ public class RunnerProxy extends RunnerInterfaces implements RunnerInterfaces.IR
     }
 
     @Override
-    public Runner.RunnerProgram runConsole(Charset charset,
-        ThrowingConsumer2<InputStream, OutputStream> program)
+    public Runner.RunnerProgram runConsole(Charset charset, ThrowingConsumer2<InputStream, OutputStream> program)
     {
         return runner.runConsole(charset, program);
     }
@@ -79,10 +91,6 @@ public class RunnerProxy extends RunnerInterfaces implements RunnerInterfaces.IR
         ThrowingConsumer3<String[], InputStream, OutputStream> program)
     {
         return runner.runConsole(charset, program);
-    }
-
-    public static String getBoltExceptionName() {
-        return Runner.BoltAssertionException.class.getName();
     }
 
 }
