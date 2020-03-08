@@ -783,6 +783,8 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
 
         /**
+         * Retrieve the program error.
+         *
          * @return the program throwable and/or exception, if thrown, null otherwise
          * @since 1.0.0
          */
@@ -792,6 +794,8 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
 
         /**
+         * Specify the expected program output.
+         *
          * @param expected the expected program output
          * @return {@code RunnerAsserter}
          * @since 1.0.0
