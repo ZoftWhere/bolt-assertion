@@ -13,6 +13,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
 
+import app.zoftwhere.bolt.RunnerInterfaces.AbstractTestResult;
 import app.zoftwhere.function.ThrowingConsumer1;
 import app.zoftwhere.function.ThrowingConsumer2;
 import app.zoftwhere.function.ThrowingConsumer3;
@@ -963,7 +964,7 @@ public class Runner implements RunnerInterfaces.IRunner {
     }
 
     @SuppressWarnings("InnerClassMayBeStatic")
-    public class RunnerTestResult extends RunnerInterfaces.AbstractTestResult {
+    public class RunnerTestResult extends AbstractTestResult implements RunnerInterfaces.RunnerTestResult {
 
         private final String[] output;
 

@@ -13,7 +13,6 @@ import app.zoftwhere.function.ThrowingConsumer2;
 import app.zoftwhere.function.ThrowingConsumer3;
 import app.zoftwhere.function.ThrowingFunction0;
 
-@SuppressWarnings("unused")
 class RunnerInterfaces {
 
     interface IRunner extends RunnerProgramFirst, RunnerInputFirst { }
@@ -50,10 +49,10 @@ class RunnerInterfaces {
 
     interface RunnerAsserter extends Assertions<Runner.RunnerTestResult> { }
 
-    static abstract class AbstractTestResult implements RunnerTestResult {
-    }
-
     interface RunnerTestResult extends TestResult { }
+
+    static abstract class AbstractTestResult implements TestResult {
+    }
 
     private interface RunNoArguments<T> {
 
