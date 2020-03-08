@@ -61,7 +61,7 @@ public class Runner implements RunnerInterfaces.IRunner {
     /**
      * Specify the program.
      *
-     * @param charset the charset for {@code InputStream} and {@code OutputStream}
+     * @param charset the charset for {@code BufferedWriter}
      * @param program the program
      * @return {@code RunnerProgram}
      * @since 4.0.0
@@ -86,7 +86,7 @@ public class Runner implements RunnerInterfaces.IRunner {
     /**
      * Specify the program.
      *
-     * @param charset the charset for {@code Scanner} and {@code BufferedWriter}
+     * @param charset the charset for {@code BufferedWriter}
      * @param program the program
      * @return {@code RunnerPreProgram}
      * @since 4.0.0
@@ -242,7 +242,7 @@ public class Runner implements RunnerInterfaces.IRunner {
      *
      * @param program the program
      * @param charset the program character set encoding
-     * @return standard {@code InputStream}, {@code OutputSteam} consumer
+     * @return standard {@code InputStream}, {@code OutputStream} consumer
      */
     private ThrowingConsumer2<InputStream, OutputStream> forProgram( //
         ThrowingConsumer2<Scanner, BufferedWriter> program, //
@@ -262,7 +262,7 @@ public class Runner implements RunnerInterfaces.IRunner {
      *
      * @param program the program
      * @param charset the program character set encoding
-     * @return standard {@code InputStream}, {@code OutputSteam} consumer
+     * @return standard {@code InputStream}, {@code OutputStream} consumer
      */
     private ThrowingConsumer3<String[], InputStream, OutputStream> forProgram( //
         ThrowingConsumer3<String[], Scanner, BufferedWriter> program, //
@@ -280,6 +280,8 @@ public class Runner implements RunnerInterfaces.IRunner {
     /**
      * Helper method for getting a new {@code Scanner}.
      *
+     * @param inputStream program input {@code InputStream}
+     * @param charset     program input character set encoding
      * @return {@code Scanner}
      */
     private Scanner newScanner(InputStream inputStream, Charset charset) {
@@ -288,18 +290,19 @@ public class Runner implements RunnerInterfaces.IRunner {
     }
 
     /**
-     * Helper method for getting a new {@code ByteArrayOutputSteam}.
+     * Helper method for getting a new {@code ByteArrayOutputStream}.
      *
-     * @return {@code ByteArrayOutputSteam}
+     * @return {@code ByteArrayOutputStream}
      */
     private ByteArrayOutputStream newOutputStream() {
         return new ByteArrayOutputStream(1024);
     }
 
     /**
-     * Helper method for getting a {@code BufferedWriter} wrapping an {@code OutputSteamWriter}.
+     * Helper method for getting a {@code BufferedWriter} wrapping an {@code OutputStreamWriter}.
      *
-     * @param outputStream {@code OutputSteam}
+     * @param outputStream {@code OutputStream}
+     * @param charset      {@code OutputStream} character set encoding
      * @return {@code BufferedWriter}
      */
     private BufferedWriter newWriter(OutputStream outputStream, Charset charset) {
@@ -355,12 +358,12 @@ public class Runner implements RunnerInterfaces.IRunner {
     }
 
     /**
-     * Helper method for setting up decoded {@code InputSteam}.
+     * Helper method for setting up decoded {@code InputStream}.
      *
      * @param input   the input stream
      * @param charset the input stream character set encoding
      * @param decode  the desired character set encoding
-     * @return {@code InputSteam} with desired character set as encoding
+     * @return {@code InputStream} with desired character set as encoding
      */
     private ThrowingFunction0<InputStream> newInputStreamSupplier( //
         ThrowingFunction0<InputStream> input, //
@@ -513,8 +516,8 @@ public class Runner implements RunnerInterfaces.IRunner {
         /**
          * Specify the input.
          *
-         * @param getInputStream {@code InputSteam} function for input
-         * @param charset        the {@code InputSteam} character set encoding
+         * @param getInputStream {@code InputStream} function for input
+         * @param charset        the {@code InputStream} character set encoding
          * @return {@code RunnerOutput}
          * @since 1.0.0
          */
@@ -603,8 +606,9 @@ public class Runner implements RunnerInterfaces.IRunner {
          * Specify the program.
          *
          * @param program the program
+         * @param charset the charset for {@code BufferedWriter}
          * @return {@code RunnerOutput}
-         * @since 1.0.0
+         * @since 4.0.0
          */
         public RunnerOutput run(Charset charset, ThrowingConsumer2<Scanner, BufferedWriter> program) {
             ThrowingConsumer3<String[], InputStream, OutputStream> internal = /**/
@@ -671,9 +675,10 @@ public class Runner implements RunnerInterfaces.IRunner {
         /**
          * Specify the program.
          *
+         * @param charset the charset for {@code BufferedWriter}
          * @param program the program
          * @return {@code RunnerOutput}
-         * @since 1.0.0
+         * @since 4.0.0
          */
         @Override
         public RunnerOutput run(Charset charset, ThrowingConsumer3<String[], Scanner, BufferedWriter> program) {
@@ -876,7 +881,7 @@ public class Runner implements RunnerInterfaces.IRunner {
          * <p>
          * Throws {@code BoltAssertionException} for success or error.
          *
-         * @since 1.0.0
+         * @since 4.0.0
          */
         @Override
         public void assertFailure() {
