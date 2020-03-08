@@ -101,22 +101,22 @@ class RunnerScopeTest {
         r6a.assertCheck((result) -> {});
         try {
             r6a.assertException();
-            fail("bolt.scope.test.expected.bolt.assertion.exception");
+            fail("bolt.runner.scope.test.expected.bolt.assertion.exception");
         }
         catch (Exception e) {
             String exceptionClassName = e.getClass().getName();
             if (!boltExceptionName.equals(exceptionClassName)) {
-                fail("bolt.scope.test.expected.bolt.assertion.exception");
+                fail("bolt.runner.scope.test.expected.bolt.assertion.exception");
             }
         }
         try {
             r6b.assertException();
-            fail("bolt.scope.test.expected.bolt.assertion.exception");
+            fail("bolt.runner.scope.test.expected.bolt.assertion.exception");
         }
         catch (Exception e) {
             String exceptionClassName = e.getClass().getName();
             if (!boltExceptionName.equals(exceptionClassName)) {
-                fail("bolt.scope.test.expected.bolt.assertion.exception");
+                fail("bolt.runner.scope.test.expected.bolt.assertion.exception");
             }
         }
         r6b.assertCheck((result) -> {});

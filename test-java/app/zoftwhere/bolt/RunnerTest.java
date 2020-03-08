@@ -164,19 +164,65 @@ class RunnerTest extends RunnerInterfaces {
     }
 
     @Test
-    void testExecuteRunException() {
-        runner.input("")
-            .run((scanner, bufferedWriter) -> { throw new Exception("Test Coverage."); })
-            .expected()
-            .assertException();
+    void testExecuteRunFirstNullInput() {
+        final var asserter = runner
+            .run((scanner, bufferedWriter) -> {})
+            .input(() -> null)
+            .expected("");
+
+        asserter.assertException();
+        final var result = asserter.result();
+        final var exception = result.exception().orElse(null);
+        assertTrue(exception instanceof NullPointerException);
+        assertEquals("bolt.runner.load.input.input.stream.null", exception.getMessage());
     }
 
     @Test
-    void testExecuteRunNullInput() {
-        runner.input(() -> null)
+    void testExecuteInputFirstNullInput() {
+        final var asserter = runner
+            .input(() -> null)
             .run((scanner, bufferedWriter) -> {})
-            .expected("")
-            .assertException();
+            .expected("");
+
+        asserter.assertException();
+        final var result = asserter.result();
+        final var exception = result.exception().orElse(null);
+        assertTrue(exception instanceof NullPointerException);
+        assertEquals("bolt.runner.load.input.input.stream.null", exception.getMessage());
+    }
+
+    @Test
+    void testExecuteRunFirstNullExpectation() {
+        try {
+            runner //
+                .run((scanner, bufferedWriter) -> {})
+                .input("")
+                .expected(() -> null);
+            fail("bolt.runner.test.error.exception.expected");
+        }
+        catch (Exception e) {
+            assertTrue(e instanceof BoltAssertionException);
+            assertNotNull(e.getMessage());
+            assertEquals("bolt.runner.load.expectation.error", e.getMessage());
+            assertEquals("bolt.runner.load.expectation.input.stream.null", e.getCause().getMessage());
+        }
+    }
+
+    @Test
+    void testExecuteInputFirstNullExpectation() {
+        try {
+            runner //
+                .input("")
+                .run((scanner, bufferedWriter) -> {})
+                .expected(() -> null);
+            fail("bolt.runner.test.error.exception.expected");
+        }
+        catch (Exception e) {
+            assertTrue(e instanceof BoltAssertionException);
+            assertNotNull(e.getMessage());
+            assertEquals("bolt.runner.load.expectation.error", e.getMessage());
+            assertEquals("bolt.runner.load.expectation.input.stream.null", e.getCause().getMessage());
+        }
     }
 
     @Test
@@ -225,35 +271,12 @@ class RunnerTest extends RunnerInterfaces {
     }
 
     @Test
-    void testNullSupplier() {
-        runner //
-            .input(() -> null)
-            .runConsole(RunnerTest::echoConsole)
-            .expected()
-            .assertException();
-
-        try {
-            runner //
-                .input()
-                .runConsole(RunnerTest::echoConsole)
-                .expected(() -> null)
-                .assertException();
-            fail("bolt.runner.test.error.exception.expected");
-        }
-        catch (Exception e) {
-            assertTrue(e instanceof BoltAssertionException);
-            assertNotNull(e.getMessage());
-            assertEquals("bolt.load.expectation.error", e.getMessage());
-            assertEquals("bolt.load.expectation.input.stream.null", e.getCause().getMessage());
-        }
-    }
-
-    @Test
     void testAssertSuccessAntagonist() {
 
         // BoltAssertionException when checking success against failure.
         try {
-            runner.runConsole(RunnerTest::echoConsole)
+            runner //
+                .runConsole(RunnerTest::echoConsole)
                 .input("", "a")
                 .expected("")
                 .assertSuccess();
@@ -268,7 +291,8 @@ class RunnerTest extends RunnerInterfaces {
 
         // BoltAssertionException when checking success against failure (with comparator).
         try {
-            runner.runConsole(RunnerTest::echoConsole)
+            runner //
+                .runConsole(RunnerTest::echoConsole)
                 .input("a")
                 .comparator(String::compareToIgnoreCase)
                 .expected("z")
@@ -285,7 +309,8 @@ class RunnerTest extends RunnerInterfaces {
         // BoltAssertionException when checking success against exception.
         final var successAntagonist = "success.exception";
         try {
-            runner.runConsole((inputStream, outputStream) -> { throw new Exception(successAntagonist); })
+            runner //
+                .runConsole((inputStream, outputStream) -> { throw new Exception(successAntagonist); })
                 .input("")
                 .expected("")
                 .assertSuccess();
@@ -293,29 +318,31 @@ class RunnerTest extends RunnerInterfaces {
         }
         catch (Throwable throwable) {
             assertTrue(throwable instanceof BoltAssertionException);
-            assertNull(throwable.getMessage());
-            assertNotNull(throwable.getCause());
-            assertEquals(successAntagonist, throwable.getCause().getMessage());
+            assertEquals("bolt.runner.asserter.error.found", throwable.getMessage());
+            assertNull(throwable.getCause());
         }
     }
 
     @Test
-    void testAssertFail() {
-        runner.runConsole(RunnerTest::echoConsole)
+    void testAssertFailure() {
+        runner //
+            .runConsole(RunnerTest::echoConsole)
             .input("a")
             .expected("z")
             .assertFailure();
 
-        runner.runConsole(RunnerTest::echoConsole)
+        runner //
+            .runConsole(RunnerTest::echoConsole)
             .input("a")
             .comparator(Comparator.naturalOrder())
             .expected("z")
             .assertFailure();
 
         try {
-            runner.runConsole((inputStream, outputStream) -> {
-                throw new Throwable(null, null);
-            })
+            runner //
+                .runConsole((inputStream, outputStream) -> {
+                    throw new Throwable("");
+                })
                 .input()
                 .comparator(null)
                 .expected()
@@ -351,7 +378,7 @@ class RunnerTest extends RunnerInterfaces {
         }
         catch (Throwable throwable) {
             assertTrue(throwable instanceof BoltAssertionException);
-            assertEquals("bolt.runner.assertion.expected.exception", throwable.getMessage());
+            assertEquals("bolt.runner.asserter.success.found", throwable.getMessage());
             assertNull(throwable.getCause());
         }
 
@@ -365,7 +392,7 @@ class RunnerTest extends RunnerInterfaces {
         }
         catch (Throwable throwable) {
             assertTrue(throwable instanceof BoltAssertionException);
-            assertEquals("bolt.runner.assertion.expected.exception", throwable.getMessage());
+            assertEquals("bolt.runner.asserter.output.length.mismatch", throwable.getMessage());
             assertNull(throwable.getCause());
         }
     }
@@ -406,7 +433,7 @@ class RunnerTest extends RunnerInterfaces {
         }
         catch (Exception e) {
             assertTrue(e instanceof BoltAssertionException);
-            assertEquals("bolt.runner.assertion.expected.failure", e.getMessage());
+            assertEquals("bolt.runner.asserter.success.found", e.getMessage());
         }
 
         try {
@@ -415,7 +442,7 @@ class RunnerTest extends RunnerInterfaces {
         }
         catch (Exception e) {
             assertTrue(e instanceof BoltAssertionException);
-            assertEquals("bolt.runner.assertion.expected.exception", e.getMessage());
+            assertEquals("bolt.runner.asserter.success.found", e.getMessage());
         }
 
         var result = asserter.result();
@@ -436,7 +463,7 @@ class RunnerTest extends RunnerInterfaces {
         }
         catch (Exception e) {
             assertTrue(e instanceof BoltAssertionException);
-            assertEquals("Lengths to not match. Expected 2, found 1.", e.getMessage());
+            assertEquals("bolt.runner.asserter.output.length.mismatch", e.getMessage());
         }
 
         asserter.assertFailure();
@@ -447,12 +474,12 @@ class RunnerTest extends RunnerInterfaces {
         }
         catch (Exception e) {
             assertTrue(e instanceof BoltAssertionException);
-            assertEquals("bolt.runner.assertion.expected.exception", e.getMessage());
+            assertEquals("bolt.runner.asserter.output.length.mismatch", e.getMessage());
         }
 
         var result = asserter.result();
         assertNull(result.exception().orElse(null));
-        assertEquals("Lengths to not match. Expected 2, found 1.", result.message().orElse(null));
+        assertEquals("bolt.runner.asserter.output.length.mismatch", result.message().orElse(null));
     }
 
     @Test
@@ -468,7 +495,7 @@ class RunnerTest extends RunnerInterfaces {
         }
         catch (Exception e) {
             assertTrue(e instanceof BoltAssertionException);
-            assertEquals("Line 1: Expected \"mismatch\". Found \"\"", e.getMessage());
+            assertEquals("bolt.runner.asserter.output.data.mismatch", e.getMessage());
         }
 
         asserter.assertFailure();
@@ -479,12 +506,12 @@ class RunnerTest extends RunnerInterfaces {
         }
         catch (Exception e) {
             assertTrue(e instanceof BoltAssertionException);
-            assertEquals("bolt.runner.assertion.expected.exception", e.getMessage());
+            assertEquals("bolt.runner.asserter.output.data.mismatch", e.getMessage());
         }
 
         var result = asserter.result();
         assertNull(result.exception().orElse(null));
-        assertEquals("Line 1: Expected \"mismatch\". Found \"\"", result.message().orElse(null));
+        assertEquals("bolt.runner.asserter.output.data.mismatch", result.message().orElse(null));
     }
 
     @Test
@@ -500,7 +527,7 @@ class RunnerTest extends RunnerInterfaces {
         }
         catch (Exception e) {
             assertTrue(e instanceof BoltAssertionException);
-            assertNull(e.getMessage());
+            assertEquals("bolt.runner.asserter.error.found", e.getMessage());
         }
 
         try {
@@ -509,7 +536,7 @@ class RunnerTest extends RunnerInterfaces {
         }
         catch (Exception e) {
             assertTrue(e instanceof BoltAssertionException);
-            assertEquals("thrown", e.getMessage());
+            assertEquals("bolt.runner.asserter.error.found", e.getMessage());
         }
 
         asserter.assertException();

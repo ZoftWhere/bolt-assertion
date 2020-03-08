@@ -13,7 +13,7 @@ class RunnerAsserterTest extends Runner {
     @Test
     void testResultSuccess() {
         var blank = new String[] {""};
-        final var result = new RunnerTestResult(blank, blank, null, null);
+        final var result = new RunnerTestResult(blank, blank);
         final var asserter = new RunnerAsserter(result);
 
         asserter.assertSuccess();
@@ -29,7 +29,7 @@ class RunnerAsserterTest extends Runner {
     @Test
     void testResultFailure() {
         var blank = new String[] {""};
-        final var result = new RunnerTestResult(blank, blank, "", null);
+        final var result = new RunnerTestResult(blank, blank, "");
         final var asserter = new RunnerAsserter(result);
 
         asserter.assertFailure();
@@ -45,7 +45,7 @@ class RunnerAsserterTest extends Runner {
     @Test
     void testResultException() {
         var blank = new String[] {""};
-        final var result = new RunnerTestResult(blank, blank, null, new Exception("Throwable?"));
+        final var result = new RunnerTestResult(blank, blank, new Exception("Throwable?"));
         final var asserter = new RunnerAsserter(result);
 
         asserter.assertException();
