@@ -40,7 +40,7 @@ class RunnerInterfaces {
 
     interface RunnerPreTest extends RunnerOutputCommon { }
 
-    interface RunnerOutputCommon extends Expected<RunnerAsserter> {
+    public interface RunnerOutputCommon extends Expected<RunnerAsserter> {
 
         String[] output();
 
