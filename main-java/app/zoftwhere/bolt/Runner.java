@@ -286,6 +286,7 @@ public class Runner implements RunnerInterfaces.IRunner {
      */
     private Scanner newScanner(InputStream inputStream, Charset charset) {
         // Scanner(InputStream, String) for backward compatibility.
+        Objects.requireNonNull(inputStream, "bolt.runner.load.input.input.stream.null");
         return new Scanner(inputStream, charset.name());
     }
 
