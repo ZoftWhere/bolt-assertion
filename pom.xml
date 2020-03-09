@@ -5,7 +5,7 @@
 
     <groupId>app.zoftwhere.bolt</groupId>
     <artifactId>bolt-assertion</artifactId>
-    <version>4.0.1</version>
+    <version>5.0.0</version>
 
     <properties>
         <!-- Settings: maven-resource-plugin -->
@@ -238,9 +238,9 @@
                             <addClasspath>false</addClasspath>
                         </manifest>
                         <manifestEntries>
-                            <Main-Class> </Main-Class>
-                            <Class-Path> </Class-Path>
-                            <Dependencies> </Dependencies>
+                            <Main-Class>&#032;</Main-Class>
+                            <Class-Path>&#032;</Class-Path>
+                            <Dependencies>&#032;</Dependencies>
                             <Implementation-Title>${project.artifactId}</Implementation-Title>
                             <Implementation-Vendor>${project.groupId}</Implementation-Vendor>
                             <Implementation-Version>${project.version}</Implementation-Version>

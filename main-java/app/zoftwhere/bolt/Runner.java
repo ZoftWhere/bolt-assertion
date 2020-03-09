@@ -8,11 +8,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
 
+import app.zoftwhere.bolt.RunnerInterfaces.AbstractTestResult;
 import app.zoftwhere.function.ThrowingConsumer1;
 import app.zoftwhere.function.ThrowingConsumer2;
 import app.zoftwhere.function.ThrowingConsumer3;
@@ -20,6 +22,7 @@ import app.zoftwhere.function.ThrowingFunction0;
 
 import static app.zoftwhere.bolt.RunnerReader.readArray;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Bolt Assertion Runner.
@@ -286,7 +289,7 @@ public class Runner implements RunnerInterfaces.IRunner {
      */
     private Scanner newScanner(InputStream inputStream, Charset charset) {
         // Scanner(InputStream, String) for backward compatibility.
-        Objects.requireNonNull(inputStream, "bolt.runner.load.input.input.stream.null");
+        requireNonNull(inputStream, "bolt.runner.load.input.input.stream.null");
         return new Scanner(inputStream, charset.name());
     }
 
@@ -417,48 +420,44 @@ public class Runner implements RunnerInterfaces.IRunner {
      *
      * @param expected   the expected program output
      * @param output     the actual program output
-     * @param throwable  {@code Nullable} throwable
+     * @param exception  {@code Nullable} exception
      * @param comparator {@code Nullable} comparator
      * @return {@code RunnerTestResult}
      */
     private RunnerTestResult buildTestResult( //
         String[] expected, //
         String[] output, //
-        Throwable throwable, //
+        Exception exception, //
         Comparator<String> comparator) //
     {
-        final Exception exception = fromThrowable(throwable);
-        final String message = throwable == null ? testMessage(expected, output, comparator) : null;
-        return new RunnerTestResult(output, expected, message, exception);
-    }
+        if (exception != null) {
+            return new RunnerTestResult(output, expected, exception);
+        }
 
-    /**
-     * Helper method for generating an error message (if needed).
-     *
-     * @param expected   expected program output
-     * @param output     actual program output
-     * @param comparator output comparator
-     * @return {@code String} test error message if error, null otherwise.
-     */
-    private String testMessage(String[] expected, String[] output, Comparator<String> comparator) {
         if (expected.length != output.length) {
-            return String.format("Lengths to not match. Expected %d, found %d.", expected.length, output.length);
+            int none = -1;
+            String message = "bolt.runner.asserter.output.length.mismatch";
+            return new RunnerTestResult(output, expected, none, message);
         }
         final int size = output.length;
         if (comparator == null) {
-            for (int i = 0; i < size; i++) {
-                if (!Objects.equals(expected[i], output[i])) {
-                    return String.format("Line %d: Expected \"%s\". Found \"%s\"", i + 1, expected[i], output[i]);
+            for (int index = 0; index < size; index++) {
+                if (!Objects.equals(expected[index], output[index])) {
+                    String message = "bolt.runner.asserter.output.data.mismatch";
+                    return new RunnerTestResult(output, expected, index, message);
                 }
             }
-            return null;
         }
-        for (int i = 0; i < size; i++) {
-            if (comparator.compare(expected[i], output[i]) != 0) {
-                return String.format("Line %d: Expected \"%s\". Found \"%s\"", i + 1, expected[i], output[i]);
+        else {
+            for (int index = 0; index < size; index++) {
+                if (comparator.compare(expected[index], output[index]) != 0) {
+                    String message = "bolt.runner.asserter.output.data.mismatch";
+                    return new RunnerTestResult(output, expected, index, message);
+                }
             }
         }
-        return null;
+
+        return new RunnerTestResult(output, expected);
     }
 
     public class RunnerPreProgram implements RunnerInterfaces.RunnerPreProgram {
@@ -750,7 +749,9 @@ public class Runner implements RunnerInterfaces.IRunner {
          */
         @Override
         public RunnerPreTest comparator(Comparator<String> comparator) {
-            return new RunnerPreTest(output(), exception(), comparator);
+            String[] output = ((RunnerOutputCommon) this).output;
+            Exception exception = ((RunnerOutputCommon) this).exception;
+            return new RunnerPreTest(output, exception, comparator);
         }
     }
 
@@ -769,22 +770,26 @@ public class Runner implements RunnerInterfaces.IRunner {
 
         private final Comparator<String> comparator;
 
-        RunnerOutputCommon(String[] output, Throwable throwable, Comparator<String> comparator) {
-            this.output = output;
-            this.exception = fromThrowable(throwable);
+        RunnerOutputCommon(String[] output, Exception exception, Comparator<String> comparator) {
+            this.output = requireNonNull(output);
+            this.exception = exception;
             this.comparator = comparator;
         }
 
         /**
-         * @return the program output
+         * Retrieve the actual program output.
+         *
+         * @return array copy of the program output
          * @since 1.0.0
          */
         @Override
         public String[] output() {
-            return output;
+            return Arrays.copyOf(output, output.length);
         }
 
         /**
+         * Retrieve the program error.
+         *
          * @return the program throwable and/or exception, if thrown, null otherwise
          * @since 1.0.0
          */
@@ -794,6 +799,8 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
 
         /**
+         * Specify the expected program output.
+         *
          * @param expected the expected program output
          * @return {@code RunnerAsserter}
          * @since 1.0.0
@@ -862,13 +869,13 @@ public class Runner implements RunnerInterfaces.IRunner {
         private RunnerAsserter create(ThrowingFunction0<InputStream> getInputStream, Charset charset) {
             try (InputStream inputStream = getInputStream.accept()) {
                 if (inputStream == null) {
-                    throw new NullPointerException("bolt.load.expectation.input.stream.null");
+                    throw new NullPointerException("bolt.runner.load.expectation.input.stream.null");
                 }
                 final String[] expected = readArray(() -> new RunnerReader(inputStream, charset));
                 return expected(expected);
             }
             catch (Throwable e) {
-                throw new BoltAssertionException("bolt.load.expectation.error", e);
+                throw new BoltAssertionException("bolt.runner.load.expectation.error", e);
             }
         }
     }
@@ -890,13 +897,13 @@ public class Runner implements RunnerInterfaces.IRunner {
          */
         @Override
         public void assertSuccess() {
-            if (result.isSuccess()) {
-                return;
+            if (result.isFailure()) {
+                throw new BoltAssertionException(result.message);
             }
 
-            final String message = result.message().orElse(null);
-            final Exception exception = result.exception().orElse(null);
-            throw new BoltAssertionException(message, exception);
+            if (result.isException()) {
+                throw new BoltAssertionException("bolt.runner.asserter.error.found");
+            }
         }
 
         /**
@@ -908,15 +915,13 @@ public class Runner implements RunnerInterfaces.IRunner {
          */
         @Override
         public void assertFailure() {
-            if (result.exception().isPresent()) {
-                throw new BoltAssertionException(result.exception().get());
+            if (result.isSuccess()) {
+                throw new BoltAssertionException("bolt.runner.asserter.success.found");
             }
 
-            if (result.message().isPresent() && result.isFailure()) {
-                return;
+            if (result.isException()) {
+                throw new BoltAssertionException("bolt.runner.asserter.error.found");
             }
-
-            throw new BoltAssertionException("bolt.runner.assertion.expected.failure", null);
         }
 
         /**
@@ -928,10 +933,13 @@ public class Runner implements RunnerInterfaces.IRunner {
          */
         @Override
         public void assertException() {
-            if (result.exception().isPresent()) {
-                return;
+            if (result.isSuccess()) {
+                throw new BoltAssertionException("bolt.runner.asserter.success.found");
             }
-            throw new BoltAssertionException("bolt.runner.assertion.expected.exception", null);
+
+            if (result.isFailure()) {
+                throw new BoltAssertionException(result.message);
+            }
         }
 
         /**
@@ -953,6 +961,26 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
 
         /**
+         * Asserts program behaviour with offence triggered consumer.
+         * <p>
+         * The consumer should throw a throwable for undesired behaviour.
+         *
+         * @param custom custom consumer
+         * @since 5.0.0
+         */
+        @Override
+        public void onOffence(ThrowingConsumer1<RunnerTestResult> custom) {
+            if (!result.isSuccess()) {
+                try {
+                    custom.accept(result);
+                }
+                catch (Throwable throwable) {
+                    throw new BoltAssertionException(throwable.getMessage(), throwable.getCause());
+                }
+            }
+        }
+
+        /**
          * @return the program test result
          * @since 1.0.0
          */
@@ -963,20 +991,40 @@ public class Runner implements RunnerInterfaces.IRunner {
     }
 
     @SuppressWarnings("InnerClassMayBeStatic")
-    public class RunnerTestResult extends RunnerInterfaces.AbstractTestResult {
+    public class RunnerTestResult extends AbstractTestResult implements RunnerInterfaces.RunnerTestResult {
 
         private final String[] output;
 
         private final String[] expected;
 
+        private final int offendingIndex;
+
         private final String message;
 
         private final Exception exception;
 
-        RunnerTestResult(String[] output, String[] expected, String message, Exception exception) {
-            this.output = output;
-            this.expected = expected;
+        RunnerTestResult(String[] output, String[] expected) {
+            this.output = requireNonNull(output);
+            this.expected = requireNonNull(expected);
+            this.offendingIndex = -1;
+            this.message = null;
+            this.exception = null;
+        }
+
+        RunnerTestResult(String[] output, String[] expected, int offendingIndex, String message) {
+            this.output = requireNonNull(output);
+            this.expected = requireNonNull(expected);
+            //noinspection ManualMinMaxCalculation
+            this.offendingIndex = offendingIndex >= -1 ? offendingIndex : -1;
             this.message = message;
+            this.exception = null;
+        }
+
+        RunnerTestResult(String[] output, String[] expected, Exception exception) {
+            this.output = requireNonNull(output);
+            this.expected = requireNonNull(expected);
+            this.offendingIndex = -1;
+            this.message = null;
             this.exception = exception;
         }
 
@@ -1014,25 +1062,35 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
 
         /**
-         * Actual program output.
+         * Retrieve actual program output.
          *
-         * @return actual program output
+         * @return array copy of actual program output
          * @since 1.0.0
          */
         @Override
         public String[] output() {
-            return output;
+            return Arrays.copyOf(output, output.length);
         }
 
         /**
-         * Expected program output.
+         * Retrieve expected program output.
          *
-         * @return expected program output
+         * @return array copy of expected program output
          * @since 1.0.0
          */
         @Override
         public String[] expected() {
-            return expected;
+            return Arrays.copyOf(expected, expected.length);
+        }
+
+        /**
+         * Retrieve the offending index for output comparison.
+         *
+         * @return array index for mismatch, -1 on length or none
+         * @since 5.0.0
+         */
+        public int offendingIndex() {
+            return offendingIndex;
         }
 
         /**
@@ -1047,9 +1105,9 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
 
         /**
-         * Check if the program has a failure message (on mismatch).
+         * Retrieve program message for failure or error.
          *
-         * @return {@code Optional} {@code String} for failure message
+         * @return {@code Optional} {@code String} for failure or error
          * @since 1.0.0
          */
         @Override
@@ -1063,8 +1121,8 @@ public class Runner implements RunnerInterfaces.IRunner {
      */
     static class BoltAssertionException extends RuntimeException {
 
-        BoltAssertionException(Throwable cause) {
-            super(cause);
+        BoltAssertionException(String message) {
+            super(message, null);
         }
 
         BoltAssertionException(String message, Throwable cause) {
