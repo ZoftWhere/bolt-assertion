@@ -6,6 +6,7 @@
     <groupId>app.zoftwhere.bolt</groupId>
     <artifactId>bolt-assertion</artifactId>
     <version>5.1.0-SNAPSHOT</version>
+    <name>zoftwhere.bolt.assertion</name>
 
     <properties>
         <!-- Settings: maven-resource-plugin -->
