@@ -5,4 +5,5 @@ module zoftwhere.bolt.assertion {
     uses app.zoftwhere.function.ThrowingConsumer3;
     uses app.zoftwhere.function.ThrowingFunction0;
     exports app.zoftwhere.bolt;
+    exports app.zoftwhere.bolt.api;
 }

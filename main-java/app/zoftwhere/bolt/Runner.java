@@ -14,7 +14,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
 
-import app.zoftwhere.bolt.RunnerInterfaces.AbstractTestResult;
 import app.zoftwhere.function.ThrowingConsumer1;
 import app.zoftwhere.function.ThrowingConsumer2;
 import app.zoftwhere.function.ThrowingConsumer3;
@@ -27,7 +26,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Bolt Assertion Runner.
  */
-public class Runner implements RunnerInterfaces.IRunner {
+public class Runner extends AbstractRunner {
 
     /**
      * This is an immutable runner (so get one, and run all the tests you need).
@@ -410,8 +409,8 @@ public class Runner implements RunnerInterfaces.IRunner {
      * @return {@code Exception}
      */
     private Exception fromThrowable(Throwable throwable) {
-        if (throwable == null) { return null;}
-        if (throwable instanceof Exception) { return (Exception) throwable;}
+        if (throwable == null) { return null; }
+        if (throwable instanceof Exception) { return (Exception) throwable; }
         return new Exception(throwable);
     }
 
@@ -460,7 +459,7 @@ public class Runner implements RunnerInterfaces.IRunner {
         return new RunnerTestResult(output, expected);
     }
 
-    public class RunnerPreProgram implements RunnerInterfaces.RunnerPreProgram {
+    public class RunnerPreProgram implements app.zoftwhere.bolt.api.RunnerPreProgram {
 
         private final ThrowingConsumer3<String[], InputStream, OutputStream> program;
 
@@ -484,7 +483,7 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
     }
 
-    public class RunnerProgram implements RunnerInterfaces.RunnerProgram {
+    public class RunnerProgram implements app.zoftwhere.bolt.api.RunnerProgram {
 
         private final ThrowingConsumer3<String[], InputStream, OutputStream> program;
 
@@ -589,7 +588,7 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
     }
 
-    public class RunnerInput implements RunnerInterfaces.RunnerInput {
+    public class RunnerInput implements app.zoftwhere.bolt.api.RunnerInput {
 
         private final ThrowingFunction0<InputStream> getInput;
         private final Charset inputCharset;
@@ -667,7 +666,7 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
     }
 
-    public class RunnerLoader implements RunnerInterfaces.RunnerLoader {
+    public class RunnerLoader implements app.zoftwhere.bolt.api.RunnerLoader {
 
         /** Program input {@code InputStream} function */
         private final ThrowingFunction0<InputStream> getInput;
@@ -734,7 +733,7 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
     }
 
-    public class RunnerOutput extends RunnerPreTest implements RunnerInterfaces.RunnerOutput {
+    public class RunnerOutput extends RunnerPreTest implements app.zoftwhere.bolt.api.RunnerOutput {
 
         RunnerOutput(String[] output, Exception exception) {
             super(output, exception, null);
@@ -755,14 +754,14 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
     }
 
-    public class RunnerPreTest extends RunnerOutputCommon implements RunnerInterfaces.RunnerPreTest {
+    public class RunnerPreTest extends RunnerOutputCommon implements app.zoftwhere.bolt.api.RunnerPreTest {
 
         RunnerPreTest(String[] found, Exception exception, Comparator<String> comparator) {
             super(found, exception, comparator);
         }
     }
 
-    class RunnerOutputCommon implements RunnerInterfaces.RunnerOutputCommon {
+    class RunnerOutputCommon implements app.zoftwhere.bolt.api.RunnerOutputCommon {
 
         private final String[] output;
 
@@ -880,7 +879,7 @@ public class Runner implements RunnerInterfaces.IRunner {
         }
     }
 
-    public class RunnerAsserter implements RunnerInterfaces.RunnerAsserter {
+    public class RunnerAsserter implements app.zoftwhere.bolt.api.RunnerAsserter {
 
         private final RunnerTestResult result;
 
@@ -991,7 +990,7 @@ public class Runner implements RunnerInterfaces.IRunner {
     }
 
     @SuppressWarnings("InnerClassMayBeStatic")
-    public class RunnerTestResult extends AbstractTestResult implements RunnerInterfaces.RunnerTestResult {
+    public class RunnerTestResult implements app.zoftwhere.bolt.api.RunnerTestResult {
 
         private final String[] output;
 
