@@ -9,7 +9,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.Comparator;
 
-import app.zoftwhere.bolt.api.RunnerOutput;
+import app.zoftwhere.bolt.api.RunnerProgramOutput;
 import app.zoftwhere.mutable.MutableValue;
 import org.junit.jupiter.api.Test;
 
@@ -56,16 +56,16 @@ class RunnerTest {
 
     @Test
     void testCallerFirst() {
-        RunnerOutput runnerOutput = runner
+        RunnerProgramOutput programOutput = runner
             .runConsole((scanner, bufferedWriter) -> {})
             .input();
 
-        assertNotNull(runnerOutput.output());
-        assertNull(runnerOutput.exception());
-        runnerOutput.expected().assertSuccess();
-        runnerOutput.expected("").assertSuccess();
+        assertNotNull(programOutput.output());
+        assertNull(programOutput.exception());
+        programOutput.expected().assertSuccess();
+        programOutput.expected("").assertSuccess();
 
-        RunnerOutput resultBlank = runner
+        RunnerProgramOutput resultBlank = runner
             .runConsole((scanner, bufferedWriter) -> {})
             .input("");
 
@@ -77,7 +77,7 @@ class RunnerTest {
 
     @Test
     void testInputFirst() {
-        RunnerOutput resultEmpty = runner
+        RunnerProgramOutput resultEmpty = runner
             .input()
             .runConsole((scanner, bufferedWriter) -> {});
 
@@ -86,7 +86,7 @@ class RunnerTest {
         resultEmpty.expected().assertSuccess();
         resultEmpty.expected("").assertSuccess();
 
-        RunnerOutput resultBlank = runner //
+        RunnerProgramOutput resultBlank = runner //
             .input("")
             .argument("")
             .runConsole((arguments, scanner, bufferedWriter) -> {});
@@ -99,7 +99,7 @@ class RunnerTest {
 
     @Test
     void testLoadingExpectation() {
-        RunnerOutput output = runner
+        RunnerProgramOutput output = runner
             .run((scanner, writer) -> {
                 writer.write("Hello World!\n");
                 writer.write("1 ≤ A[i] ≤ 1014\n");

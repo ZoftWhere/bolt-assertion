@@ -1,5 +1,8 @@
 package app.zoftwhere.bolt.api;
 
-import app.zoftwhere.bolt.Runner;
-
-public interface RunnerAsserter extends AbstractUnit.Assertions<Runner.RunnerTestResult> { }
+/**
+ * Runner program result asserter interface.
+ *
+ * @since 6.0.0
+ */
+public interface RunnerAsserter extends AbstractUnit.Assertions<RunnerProgramResult> { }

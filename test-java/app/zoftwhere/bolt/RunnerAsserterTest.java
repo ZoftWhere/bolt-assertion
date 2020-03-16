@@ -13,8 +13,8 @@ class RunnerAsserterTest extends Runner {
     @Test
     void testResultSuccess() {
         var blank = new String[] {""};
-        final var result = new RunnerTestResult(blank, blank);
-        final var asserter = new RunnerAsserter(result);
+        final var result = new BoltProgramResult(blank, blank);
+        final var asserter = new BoltAsserter(result);
 
         asserter.assertSuccess();
 
@@ -29,8 +29,8 @@ class RunnerAsserterTest extends Runner {
     @Test
     void testResultFailure() {
         var blank = new String[] {""};
-        final var result = new RunnerTestResult(blank, blank, -1, "");
-        final var asserter = new RunnerAsserter(result);
+        final var result = new BoltProgramResult(blank, blank, -1, "");
+        final var asserter = new BoltAsserter(result);
 
         asserter.assertFailure();
 
@@ -45,8 +45,8 @@ class RunnerAsserterTest extends Runner {
     @Test
     void testResultException() {
         var blank = new String[] {""};
-        final var result = new RunnerTestResult(blank, blank, new Exception("Throwable?"));
-        final var asserter = new RunnerAsserter(result);
+        final var result = new BoltProgramResult(blank, blank, new Exception("Throwable?"));
+        final var asserter = new BoltAsserter(result);
 
         asserter.assertException();
 

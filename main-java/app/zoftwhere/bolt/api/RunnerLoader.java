@@ -1,3 +1,8 @@
 package app.zoftwhere.bolt.api;
 
-public interface RunnerLoader extends AbstractUnit.RunWithArguments<RunnerOutput> { }
+/**
+ * Runner program loader interface.
+ *
+ * @since 6.0.0
+ */
+public interface RunnerLoader extends AbstractUnit.RunWithArguments<RunnerProgramOutput> { }

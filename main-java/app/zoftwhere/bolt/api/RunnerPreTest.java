@@ -1,3 +1,14 @@
 package app.zoftwhere.bolt.api;
 
-public interface RunnerPreTest extends RunnerOutputCommon { }
+/**
+ * Runner pre-test interface.
+ *
+ * @since 6.0.0
+ */
+public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter> {
+
+    String[] output();
+
+    Exception exception();
+
+}

@@ -1,3 +1,8 @@
 package app.zoftwhere.bolt.api;
 
-public interface RunnerInterface extends RunnerProgramFirst, RunnerInputFirst { }
+/**
+ * Runner instance interface.
+ *
+ * @since 6.0.0
+ */
+public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInput { }

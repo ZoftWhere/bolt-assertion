@@ -6,14 +6,19 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Scanner;
 
-import app.zoftwhere.bolt.api.RunnerInput;
 import app.zoftwhere.bolt.api.RunnerInterface;
 import app.zoftwhere.bolt.api.RunnerPreProgram;
 import app.zoftwhere.bolt.api.RunnerProgram;
+import app.zoftwhere.bolt.api.RunnerProgramInput;
 import app.zoftwhere.function.ThrowingConsumer2;
 import app.zoftwhere.function.ThrowingConsumer3;
 import app.zoftwhere.function.ThrowingFunction0;
 
+/**
+ * Runner abstract class.
+ *
+ * @since 6.0.0
+ */
 public abstract class AbstractRunner implements RunnerInterface {
 
     public AbstractRunner() {
@@ -45,18 +50,18 @@ public abstract class AbstractRunner implements RunnerInterface {
         ThrowingConsumer3<String[], InputStream, OutputStream> program);
 
     @Override
-    public abstract RunnerInput input(String... input);
+    public abstract RunnerProgramInput input(String... input);
 
     @Override
-    public abstract RunnerInput input(ThrowingFunction0<InputStream> getInputStream);
+    public abstract RunnerProgramInput input(ThrowingFunction0<InputStream> getInputStream);
 
     @Override
-    public abstract RunnerInput input(ThrowingFunction0<InputStream> getInputStream, Charset charset);
+    public abstract RunnerProgramInput input(ThrowingFunction0<InputStream> getInputStream, Charset charset);
 
     @Override
-    public abstract RunnerInput loadInput(String resourceName, Class<?> withClass);
+    public abstract RunnerProgramInput loadInput(String resourceName, Class<?> withClass);
 
     @Override
-    public abstract RunnerInput loadInput(String resourceName, Class<?> withClass, Charset charset);
+    public abstract RunnerProgramInput loadInput(String resourceName, Class<?> withClass, Charset charset);
 
 }

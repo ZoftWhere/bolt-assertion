@@ -6,12 +6,16 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Scanner;
 
+import app.zoftwhere.bolt.AbstractRunner;
 import app.zoftwhere.bolt.Runner;
+import app.zoftwhere.bolt.api.RunnerPreProgram;
+import app.zoftwhere.bolt.api.RunnerProgram;
+import app.zoftwhere.bolt.api.RunnerProgramInput;
 import app.zoftwhere.function.ThrowingConsumer2;
 import app.zoftwhere.function.ThrowingConsumer3;
 import app.zoftwhere.function.ThrowingFunction0;
 
-public class RunnerProxy extends Runner {
+public class RunnerProxy extends AbstractRunner {
 
     private final Runner runner = new Runner();
 
@@ -20,74 +24,74 @@ public class RunnerProxy extends Runner {
     }
 
     @Override
-    public Runner.RunnerInput input(String... input) {
+    public RunnerProgramInput input(String... input) {
         return runner.input(input);
     }
 
     @Override
-    public Runner.RunnerInput input(ThrowingFunction0<InputStream> getInputStream) {
+    public RunnerProgramInput input(ThrowingFunction0<InputStream> getInputStream) {
         return runner.input(getInputStream);
     }
 
     @Override
-    public Runner.RunnerInput input(ThrowingFunction0<InputStream> getInputStream, Charset decode) {
+    public RunnerProgramInput input(ThrowingFunction0<InputStream> getInputStream, Charset decode) {
         return runner.input(getInputStream, decode);
     }
 
     @Override
-    public Runner.RunnerInput loadInput(String resourceName, Class<?> withClass) {
+    public RunnerProgramInput loadInput(String resourceName, Class<?> withClass) {
         return runner.loadInput(resourceName, withClass);
     }
 
     @Override
-    public Runner.RunnerInput loadInput(String resourceName, Class<?> withClass, Charset decode) {
+    public RunnerProgramInput loadInput(String resourceName, Class<?> withClass, Charset decode) {
         return runner.loadInput(resourceName, withClass, decode);
     }
 
     @Override
-    public Runner.RunnerProgram run(ThrowingConsumer2<Scanner, BufferedWriter> program) {
+    public RunnerProgram run(ThrowingConsumer2<Scanner, BufferedWriter> program) {
         return runner.run(program);
     }
 
     @Override
-    public Runner.RunnerProgram run(Charset charset, ThrowingConsumer2<Scanner, BufferedWriter> program) {
+    public RunnerProgram run(Charset charset, ThrowingConsumer2<Scanner, BufferedWriter> program) {
         return runner.run(charset, program);
     }
 
     @Override
-    public Runner.RunnerPreProgram run(
+    public RunnerPreProgram run(
         ThrowingConsumer3<String[], Scanner, BufferedWriter> program)
     {
         return runner.run(program);
     }
 
     @Override
-    public Runner.RunnerPreProgram run(
+    public RunnerPreProgram run(
         Charset charset, ThrowingConsumer3<String[], Scanner, BufferedWriter> program)
     {
         return runner.run(charset, program);
     }
 
     @Override
-    public Runner.RunnerProgram runConsole(ThrowingConsumer2<InputStream, OutputStream> program) {
+    public RunnerProgram runConsole(ThrowingConsumer2<InputStream, OutputStream> program) {
         return runner.runConsole(program);
     }
 
     @Override
-    public Runner.RunnerProgram runConsole(Charset charset, ThrowingConsumer2<InputStream, OutputStream> program)
+    public RunnerProgram runConsole(Charset charset, ThrowingConsumer2<InputStream, OutputStream> program)
     {
         return runner.runConsole(charset, program);
     }
 
     @Override
-    public Runner.RunnerPreProgram runConsole(
+    public RunnerPreProgram runConsole(
         ThrowingConsumer3<String[], InputStream, OutputStream> program)
     {
         return runner.runConsole(program);
     }
 
     @Override
-    public Runner.RunnerPreProgram runConsole(Charset charset,
+    public RunnerPreProgram runConsole(Charset charset,
         ThrowingConsumer3<String[], InputStream, OutputStream> program)
     {
         return runner.runConsole(charset, program);
