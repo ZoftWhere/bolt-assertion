@@ -586,6 +586,15 @@ class RunnerTest extends RunnerInterfaces {
         assertEquals("thrown", exception.getMessage());
     }
 
+    @Test
+    void testOnOffenceFallThrough() {
+        runner //
+            .run((scanner, bufferedWriter) -> {})
+            .input("bolt.runner.on.offence.coverage")
+            .expected("", "")
+            .onOffence(testResult -> {});
+    }
+
     private static void echoConsole(InputStream inputStream, OutputStream outputStream) throws IOException {
         final var list = readList(() -> new RunnerReader(inputStream, UTF_8));
         final int size = list.size();
