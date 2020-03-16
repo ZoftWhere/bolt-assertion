@@ -60,6 +60,13 @@ abstract class AbstractUnit {
         T comparator(Comparator<C> comparator);
     }
 
+    interface Output {
+
+        String[] output();
+
+        Optional<Exception> exception();
+    }
+
     interface Expected<T> {
 
         T expected(String... expected);

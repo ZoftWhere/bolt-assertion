@@ -5,10 +5,4 @@ package app.zoftwhere.bolt.api;
  *
  * @since 6.0.0
  */
-public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter> {
-
-    String[] output();
-
-    Exception exception();
-
-}
+public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, AbstractUnit.Output { }
