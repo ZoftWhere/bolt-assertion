@@ -7,6 +7,8 @@ import java.nio.charset.Charset;
 
 /**
  * A RunnerInputStream for cross encoding use.
+ *
+ * @since 4.0.0
  */
 class RunnerInputStream extends InputStream {
 
@@ -25,6 +27,7 @@ class RunnerInputStream extends InputStream {
         this.reader = new InputStreamReader(inputStream, source);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int read() throws IOException {
         if (index >= size) {
@@ -39,6 +42,11 @@ class RunnerInputStream extends InputStream {
         return v;
     }
 
+    /**
+     * Fills the buffer with code-point-to-byte conversion.
+     *
+     * @throws IOException when cannot read from reader.
+     */
     private void fill() throws IOException {
         index = 0;
         size = 0;
@@ -59,6 +67,7 @@ class RunnerInputStream extends InputStream {
         size = buffer.length;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void close() throws IOException {
         reader.close();
