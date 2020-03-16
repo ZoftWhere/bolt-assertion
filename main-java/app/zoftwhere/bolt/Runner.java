@@ -874,7 +874,7 @@ public class Runner extends AbstractRunner {
                 return expected(expected);
             }
             catch (Throwable e) {
-                throw new BoltAssertionException("bolt.runner.load.expectation.error", e);
+                throw new RunnerException("bolt.runner.load.expectation.error", e);
             }
         }
     }
@@ -897,11 +897,11 @@ public class Runner extends AbstractRunner {
         @Override
         public void assertSuccess() {
             if (result.isFailure()) {
-                throw new BoltAssertionException(result.message);
+                throw new RunnerException(result.message);
             }
 
             if (result.isException()) {
-                throw new BoltAssertionException("bolt.runner.asserter.error.found");
+                throw new RunnerException("bolt.runner.asserter.error.found");
             }
         }
 
@@ -915,11 +915,11 @@ public class Runner extends AbstractRunner {
         @Override
         public void assertFailure() {
             if (result.isSuccess()) {
-                throw new BoltAssertionException("bolt.runner.asserter.success.found");
+                throw new RunnerException("bolt.runner.asserter.success.found");
             }
 
             if (result.isException()) {
-                throw new BoltAssertionException("bolt.runner.asserter.error.found");
+                throw new RunnerException("bolt.runner.asserter.error.found");
             }
         }
 
@@ -933,11 +933,11 @@ public class Runner extends AbstractRunner {
         @Override
         public void assertException() {
             if (result.isSuccess()) {
-                throw new BoltAssertionException("bolt.runner.asserter.success.found");
+                throw new RunnerException("bolt.runner.asserter.success.found");
             }
 
             if (result.isFailure()) {
-                throw new BoltAssertionException(result.message);
+                throw new RunnerException(result.message);
             }
         }
 
@@ -955,7 +955,7 @@ public class Runner extends AbstractRunner {
                 custom.accept(result);
             }
             catch (Throwable throwable) {
-                throw new BoltAssertionException(throwable.getMessage(), throwable.getCause());
+                throw new RunnerException(throwable.getMessage(), throwable.getCause());
             }
         }
 
@@ -974,7 +974,7 @@ public class Runner extends AbstractRunner {
                     custom.accept(result);
                 }
                 catch (Throwable throwable) {
-                    throw new BoltAssertionException(throwable.getMessage(), throwable.getCause());
+                    throw new RunnerException(throwable.getMessage(), throwable.getCause());
                 }
             }
         }
@@ -1112,20 +1112,6 @@ public class Runner extends AbstractRunner {
         @Override
         public Optional<String> message() {
             return Optional.ofNullable(message);
-        }
-    }
-
-    /**
-     * A Bolt Runner Assertion Exception class for internal exceptions.
-     */
-    static class BoltAssertionException extends RuntimeException {
-
-        BoltAssertionException(String message) {
-            super(message, null);
-        }
-
-        BoltAssertionException(String message, Throwable cause) {
-            super(message, cause);
         }
     }
 

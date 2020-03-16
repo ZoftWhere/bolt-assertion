@@ -9,7 +9,6 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.Comparator;
 
-import app.zoftwhere.bolt.Runner.BoltAssertionException;
 import app.zoftwhere.bolt.api.RunnerOutput;
 import app.zoftwhere.mutable.MutableValue;
 import org.junit.jupiter.api.Test;
@@ -202,7 +201,7 @@ class RunnerTest {
             fail("bolt.runner.test.error.exception.expected");
         }
         catch (Exception e) {
-            assertTrue(e instanceof BoltAssertionException);
+            assertTrue(e instanceof RunnerException);
             assertNotNull(e.getMessage());
             assertEquals("bolt.runner.load.expectation.error", e.getMessage());
             assertEquals("bolt.runner.load.expectation.input.stream.null", e.getCause().getMessage());
@@ -219,7 +218,7 @@ class RunnerTest {
             fail("bolt.runner.test.error.exception.expected");
         }
         catch (Exception e) {
-            assertTrue(e instanceof BoltAssertionException);
+            assertTrue(e instanceof RunnerException);
             assertNotNull(e.getMessage());
             assertEquals("bolt.runner.load.expectation.error", e.getMessage());
             assertEquals("bolt.runner.load.expectation.input.stream.null", e.getCause().getMessage());
@@ -284,7 +283,7 @@ class RunnerTest {
             fail("bolt.runner.test.error.exception.expected");
         }
         catch (Throwable throwable) {
-            assertTrue(throwable instanceof BoltAssertionException);
+            assertTrue(throwable instanceof RunnerException);
             // Lengths to not match. Expected 1, found 2.
             assertNotNull(throwable.getMessage());
             assertNull(throwable.getCause());
@@ -301,7 +300,7 @@ class RunnerTest {
             fail("bolt.runner.test.error.exception.expected");
         }
         catch (Throwable throwable) {
-            assertTrue(throwable instanceof BoltAssertionException);
+            assertTrue(throwable instanceof RunnerException);
             // Line 1: Expected "z". Found "a"
             assertNotNull(throwable.getMessage());
             assertNull(throwable.getCause());
@@ -318,7 +317,7 @@ class RunnerTest {
             fail("bolt.runner.test.error.exception.expected");
         }
         catch (Throwable throwable) {
-            assertTrue(throwable instanceof BoltAssertionException);
+            assertTrue(throwable instanceof RunnerException);
             assertEquals("bolt.runner.asserter.error.found", throwable.getMessage());
             assertNull(throwable.getCause());
         }
@@ -351,7 +350,7 @@ class RunnerTest {
             fail("bolt.runner.test.error.exception.expected");
         }
         catch (Throwable throwable) {
-            assertTrue(throwable instanceof BoltAssertionException);
+            assertTrue(throwable instanceof RunnerException);
         }
 
         try {
@@ -362,7 +361,7 @@ class RunnerTest {
             fail("bolt.runner.test.error.exception.expected");
         }
         catch (Throwable throwable) {
-            assertTrue(throwable instanceof BoltAssertionException);
+            assertTrue(throwable instanceof RunnerException);
         }
     }
 
@@ -378,7 +377,7 @@ class RunnerTest {
             fail("bolt.runner.test.error.exception.expected");
         }
         catch (Throwable throwable) {
-            assertTrue(throwable instanceof BoltAssertionException);
+            assertTrue(throwable instanceof RunnerException);
             assertEquals("bolt.runner.asserter.success.found", throwable.getMessage());
             assertNull(throwable.getCause());
         }
@@ -392,7 +391,7 @@ class RunnerTest {
             fail("bolt.runner.test.error.exception.expected");
         }
         catch (Throwable throwable) {
-            assertTrue(throwable instanceof BoltAssertionException);
+            assertTrue(throwable instanceof RunnerException);
             assertEquals("bolt.runner.asserter.output.length.mismatch", throwable.getMessage());
             assertNull(throwable.getCause());
         }
@@ -413,7 +412,7 @@ class RunnerTest {
             fail("bolt.runner.test.error.exception.expected");
         }
         catch (Throwable throwable) {
-            assertTrue(throwable instanceof BoltAssertionException);
+            assertTrue(throwable instanceof RunnerException);
             assertEquals("rethrow", throwable.getMessage());
             assertEquals("cause", throwable.getCause().getMessage());
         }
@@ -433,7 +432,7 @@ class RunnerTest {
             fail("bolt.runner.test.exception.expected");
         }
         catch (Exception e) {
-            assertTrue(e instanceof BoltAssertionException);
+            assertTrue(e instanceof RunnerException);
             assertEquals("bolt.runner.asserter.success.found", e.getMessage());
         }
 
@@ -442,7 +441,7 @@ class RunnerTest {
             fail("bolt.runner.test.exception.expected");
         }
         catch (Exception e) {
-            assertTrue(e instanceof BoltAssertionException);
+            assertTrue(e instanceof RunnerException);
             assertEquals("bolt.runner.asserter.success.found", e.getMessage());
         }
 
@@ -465,7 +464,7 @@ class RunnerTest {
             fail("bolt.runner.test.exception.expected");
         }
         catch (Exception e) {
-            assertTrue(e instanceof BoltAssertionException);
+            assertTrue(e instanceof RunnerException);
             assertEquals("bolt.runner.asserter.output.length.mismatch", e.getMessage());
         }
 
@@ -476,18 +475,18 @@ class RunnerTest {
             fail("bolt.runner.test.exception.expected");
         }
         catch (Exception e) {
-            assertTrue(e instanceof BoltAssertionException);
+            assertTrue(e instanceof RunnerException);
             assertEquals("bolt.runner.asserter.output.length.mismatch", e.getMessage());
         }
 
         try {
             asserter.onOffence(result -> {
-                throw new BoltAssertionException(result.message().orElse("null.message"));
+                throw new RunnerException(result.message().orElse("null.message"));
             });
             fail("bolt.runner.test.exception.expected");
         }
         catch (Exception e) {
-            assertTrue(e instanceof BoltAssertionException);
+            assertTrue(e instanceof RunnerException);
             assertEquals("bolt.runner.asserter.output.length.mismatch", e.getMessage());
         }
 
@@ -509,7 +508,7 @@ class RunnerTest {
             fail("bolt.runner.test.exception.expected");
         }
         catch (Exception e) {
-            assertTrue(e instanceof BoltAssertionException);
+            assertTrue(e instanceof RunnerException);
             assertEquals("bolt.runner.asserter.output.data.mismatch", e.getMessage());
         }
 
@@ -520,18 +519,18 @@ class RunnerTest {
             fail("bolt.runner.test.exception.expected");
         }
         catch (Exception e) {
-            assertTrue(e instanceof BoltAssertionException);
+            assertTrue(e instanceof RunnerException);
             assertEquals("bolt.runner.asserter.output.data.mismatch", e.getMessage());
         }
 
         try {
             asserter.onOffence(result -> {
-                throw new BoltAssertionException(result.message().orElse(null), null);
+                throw new RunnerException(result.message().orElse(null), null);
             });
             fail("bolt.runner.test.exception.expected");
         }
         catch (Exception e) {
-            assertTrue(e instanceof BoltAssertionException);
+            assertTrue(e instanceof RunnerException);
             assertEquals("bolt.runner.asserter.output.data.mismatch", e.getMessage());
         }
 
@@ -553,7 +552,7 @@ class RunnerTest {
             fail("bolt.runner.test.exception.expected");
         }
         catch (Exception e) {
-            assertTrue(e instanceof BoltAssertionException);
+            assertTrue(e instanceof RunnerException);
             assertEquals("bolt.runner.asserter.error.found", e.getMessage());
         }
 
@@ -562,7 +561,7 @@ class RunnerTest {
             fail("bolt.runner.test.exception.expected");
         }
         catch (Exception e) {
-            assertTrue(e instanceof BoltAssertionException);
+            assertTrue(e instanceof RunnerException);
             assertEquals("bolt.runner.asserter.error.found", e.getMessage());
         }
 
@@ -573,7 +572,7 @@ class RunnerTest {
             fail("bolt.runner.test.exception.expected");
         }
         catch (Exception e) {
-            assertTrue(e instanceof BoltAssertionException);
+            assertTrue(e instanceof RunnerException);
             assertEquals("thrown", e.getMessage());
         }
 

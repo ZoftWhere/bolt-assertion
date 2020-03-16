@@ -16,8 +16,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import app.zoftwhere.bolt.Runner.BoltAssertionException;
-
 /**
  * Runner Reader for parsing input in an editor-like fashion.
  *
@@ -43,7 +41,7 @@ class RunnerReader extends Reader implements Iterator<String> {
             return reader.list();
         }
         catch (Throwable e) {
-            throw new BoltAssertionException("bolt.runner.reader.read.list", e);
+            throw new RunnerException("bolt.runner.reader.read.list", e);
         }
     }
 
@@ -52,7 +50,7 @@ class RunnerReader extends Reader implements Iterator<String> {
             return reader.array();
         }
         catch (Throwable e) {
-            throw new BoltAssertionException("bolt.runner.reader.read.array", e);
+            throw new RunnerException("bolt.runner.reader.read.array", e);
         }
     }
 

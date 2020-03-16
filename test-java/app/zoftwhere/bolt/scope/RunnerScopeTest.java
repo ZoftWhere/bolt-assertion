@@ -11,6 +11,7 @@ import app.zoftwhere.bolt.Runner.RunnerPreProgram;
 import app.zoftwhere.bolt.Runner.RunnerPreTest;
 import app.zoftwhere.bolt.Runner.RunnerProgram;
 import app.zoftwhere.bolt.Runner.RunnerTestResult;
+import app.zoftwhere.bolt.RunnerException;
 import org.junit.jupiter.api.Test;
 
 import static app.zoftwhere.bolt.Runner.newRunner;
@@ -22,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 class RunnerScopeTest {
 
-    private final String boltExceptionName = Runner.class.getName() + "$BoltAssertionException";
+    private final String runnerException = RunnerException.class.getName();
 
     private final Runner runner = newRunner();
 
@@ -105,7 +106,7 @@ class RunnerScopeTest {
         }
         catch (Exception e) {
             String exceptionClassName = e.getClass().getName();
-            if (!boltExceptionName.equals(exceptionClassName)) {
+            if (!runnerException.equals(exceptionClassName)) {
                 fail("bolt.runner.scope.test.expected.bolt.assertion.exception");
             }
         }
@@ -115,7 +116,7 @@ class RunnerScopeTest {
         }
         catch (Exception e) {
             String exceptionClassName = e.getClass().getName();
-            if (!boltExceptionName.equals(exceptionClassName)) {
+            if (!runnerException.equals(exceptionClassName)) {
                 fail("bolt.runner.scope.test.expected.bolt.assertion.exception");
             }
         }
