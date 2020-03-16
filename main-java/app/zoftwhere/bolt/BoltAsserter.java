@@ -18,9 +18,10 @@ class BoltAsserter implements RunnerAsserter {
     }
 
     /**
-     * Asserts that the program run with expected output.
-     * <p>
-     * Throws {@code BoltAssertionException} for failure or error.
+     * <p>Asserts that the program run with expected output.
+     * </p>
+     * <p>Throws {@code BoltAssertionException} for failure or error.
+     * </p>
      *
      * @since 1.0.0
      */
@@ -36,9 +37,10 @@ class BoltAsserter implements RunnerAsserter {
     }
 
     /**
-     * Asserts that the program run unsuccessfully.
-     * <p>
-     * Throws {@code BoltAssertionException} for success or error.
+     * <p>Asserts that the program run unsuccessfully.
+     * </p>
+     * <p>Throws {@code BoltAssertionException} for success or error.
+     * </p>
      *
      * @since 4.0.0
      */
@@ -54,9 +56,10 @@ class BoltAsserter implements RunnerAsserter {
     }
 
     /**
-     * Asserts that the program terminated with an error.
-     * <p>
-     * Throws {@code BoltAssertionException} for success or failure.
+     * <p>Asserts that the program terminated with an error.
+     * </p>
+     * <p>Throws {@code BoltAssertionException} for success or failure.
+     * </p>
      *
      * @since 1.0.0
      */
@@ -72,9 +75,10 @@ class BoltAsserter implements RunnerAsserter {
     }
 
     /**
-     * Asserts program behaviour with custom consumer.
-     * <p>
-     * The consumer should throw a throwable for undesired behaviour.
+     * <p>Asserts program behaviour with custom consumer.
+     * </p>
+     * <p>The consumer should throw a throwable for undesired behaviour.
+     * </p>
      *
      * @param custom custom consumer
      * @since 1.0.0
@@ -90,9 +94,10 @@ class BoltAsserter implements RunnerAsserter {
     }
 
     /**
-     * Asserts program behaviour with offence triggered consumer.
-     * <p>
-     * The consumer should throw a throwable for undesired behaviour.
+     * <p>Asserts program behaviour with offence triggered consumer.
+     * </p>
+     * <p>The consumer should throw a throwable for undesired behaviour.
+     * </p>
      *
      * @param custom custom consumer
      * @since 5.0.0

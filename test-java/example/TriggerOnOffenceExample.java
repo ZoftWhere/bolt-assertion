@@ -5,9 +5,10 @@ import app.zoftwhere.bolt.Runner;
 import static java.lang.System.out;
 
 /**
- * This example shows how to handle failures or errors with the asserter consumer.
- * <p>
- * The program triggers an offence as the word "world" is expected to be with an upper case 'W'
+ * <p>This example shows how to handle failures or errors with the asserter consumer.
+ * </p>
+ * <p>The program triggers an offence as the word "world" is expected to be with an upper case 'W'
+ * </p>
  *
  * @since 5.0.0
  */
