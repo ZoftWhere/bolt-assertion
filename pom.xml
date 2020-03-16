@@ -101,6 +101,7 @@
                         <id>default-compile</id>
                         <phase>none</phase>
                         <configuration>
+                            <!-- default against test JDK API -->
                             <release>${maven.compiler.test-jdk}</release>
                         </configuration>
                     </execution>
@@ -111,7 +112,12 @@
                             <goal>compile</goal>
                         </goals>
                         <configuration>
+                            <!-- main compile against test JDK API with module-info -->
                             <release>${maven.compiler.test-jdk}</release>
+                            <compileSourceRoots>
+                                <sourceRoot>${project.basedir}/main-java</sourceRoot>
+                                <sourceRoot>${project.basedir}/main-jpms</sourceRoot>
+                            </compileSourceRoots>
                         </configuration>
                     </execution>
                     <execution>
@@ -352,26 +358,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>${maven-deploy-plugin.version}</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>add-jpms-source</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.basedir}/main-jpms</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
 
             <plugin>
