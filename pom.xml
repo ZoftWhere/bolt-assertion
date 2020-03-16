@@ -32,11 +32,11 @@
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-site-plugin.version>3.8.2</maven-site-plugin.version>
         <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
-        <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
         <maven-toolchains-plugin.version>3.0.0</maven-toolchains-plugin.version>
 
         <!-- > -->
-        <org.junit.5.version>5.4.2</org.junit.5.version>
+        <org.junit.5.version>5.6.0</org.junit.5.version>
     </properties>
 
     <dependencyManagement>
@@ -192,13 +192,28 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
-                <configuration>
-                    <!-- https://issues.apache.org/jira/browse/SUREFIRE-1534 -->
-                    <forkCount>0</forkCount>
-                    <reuseForks>false</reuseForks>
-                    <useSystemClassLoader>false</useSystemClassLoader>
-                    <printSummary>false</printSummary>
-                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-test</id>
+                        <configuration>
+                            <argLine>
+                                --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt=ALL-UNNAMED
+                                --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt.scope=ALL-UNNAMED
+                                --add-opens&#32;zoftwhere.bolt.assertion/example=ALL-UNNAMED
+                            </argLine>
+                            <forkCount>10</forkCount>
+                            <reuseForks>false</reuseForks>
+                            <printSummary>true</printSummary>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter-engine</artifactId>
+                        <version>${org.junit.5.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <plugin>
