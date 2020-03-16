@@ -428,7 +428,7 @@
       <option name="PRIMARY_KEY_NAME_TEMPLATE" value="{table}_{columns}_pk" />
     </SybaseCodeStyleSettings>
     <XML>
-      <option name="XML_KEEP_LINE_BREAKS_IN_TEXT" value="false" />
+      <option name="XML_KEEP_LINE_BREAKS" value="false" />
       <option name="XML_KEEP_BLANK_LINES" value="1" />
       <option name="XML_ALIGN_ATTRIBUTES" value="false" />
     </XML>
