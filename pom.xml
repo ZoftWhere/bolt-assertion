@@ -5,7 +5,8 @@
 
     <groupId>app.zoftwhere.bolt</groupId>
     <artifactId>bolt-assertion</artifactId>
-    <version>5.0.0</version>
+    <version>5.1.0</version>
+    <name>zoftwhere.bolt.assertion</name>
 
     <properties>
         <!-- Settings: maven-resource-plugin -->
@@ -16,6 +17,9 @@
         <!-- Settings: maven-compiler-plugin -->
         <maven.compiler.main-jdk>8</maven.compiler.main-jdk>
         <maven.compiler.test-jdk>11</maven.compiler.test-jdk>
+
+        <!-- Settings: maven-build -->
+        <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss'Z'</maven.build.timestamp.format>
 
         <!-- Settings: User defined plugin properties -->
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
@@ -28,11 +32,11 @@
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-site-plugin.version>3.8.2</maven-site-plugin.version>
         <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
-        <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
         <maven-toolchains-plugin.version>3.0.0</maven-toolchains-plugin.version>
 
         <!-- > -->
-        <org.junit.5.version>5.4.2</org.junit.5.version>
+        <org.junit.5.version>5.6.0</org.junit.5.version>
     </properties>
 
     <dependencyManagement>
@@ -97,6 +101,7 @@
                         <id>default-compile</id>
                         <phase>none</phase>
                         <configuration>
+                            <!-- default against test JDK API -->
                             <release>${maven.compiler.test-jdk}</release>
                         </configuration>
                     </execution>
@@ -107,7 +112,12 @@
                             <goal>compile</goal>
                         </goals>
                         <configuration>
+                            <!-- main compile against test JDK API with module-info -->
                             <release>${maven.compiler.test-jdk}</release>
+                            <compileSourceRoots>
+                                <sourceRoot>${project.basedir}/main-java</sourceRoot>
+                                <sourceRoot>${project.basedir}/main-jpms</sourceRoot>
+                            </compileSourceRoots>
                         </configuration>
                     </execution>
                     <execution>
@@ -182,13 +192,28 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
-                <configuration>
-                    <!-- https://issues.apache.org/jira/browse/SUREFIRE-1534 -->
-                    <forkCount>0</forkCount>
-                    <reuseForks>false</reuseForks>
-                    <useSystemClassLoader>false</useSystemClassLoader>
-                    <printSummary>false</printSummary>
-                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-test</id>
+                        <configuration>
+                            <argLine>
+                                --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt=ALL-UNNAMED
+                                --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt.scope=ALL-UNNAMED
+                                --add-opens&#32;zoftwhere.bolt.assertion/example=ALL-UNNAMED
+                            </argLine>
+                            <forkCount>10</forkCount>
+                            <reuseForks>false</reuseForks>
+                            <printSummary>true</printSummary>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter-engine</artifactId>
+                        <version>${org.junit.5.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <plugin>
@@ -216,6 +241,7 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
+                            <forceCreation>true</forceCreation>
                             <skipIfEmpty>false</skipIfEmpty>
                         </configuration>
                     </execution>
@@ -236,11 +262,12 @@
                         <addMavenDescriptor>false</addMavenDescriptor>
                         <manifest>
                             <addClasspath>false</addClasspath>
+                            <addDefaultEntries>true</addDefaultEntries>
+                            <addDefaultImplementationEntries>false</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>false</addDefaultSpecificationEntries>
                         </manifest>
                         <manifestEntries>
-                            <Main-Class>&#032;</Main-Class>
-                            <Class-Path>&#032;</Class-Path>
-                            <Dependencies>&#032;</Dependencies>
+                            <Build-DateTime>${maven.build.timestamp}</Build-DateTime>
                             <Implementation-Title>${project.artifactId}</Implementation-Title>
                             <Implementation-Vendor>${project.groupId}</Implementation-Vendor>
                             <Implementation-Version>${project.version}</Implementation-Version>
@@ -346,26 +373,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>${maven-deploy-plugin.version}</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>add-jpms-source</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.basedir}/main-jpms</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
 
             <plugin>

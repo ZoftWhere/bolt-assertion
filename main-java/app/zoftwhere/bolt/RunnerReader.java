@@ -19,6 +19,8 @@ import java.util.stream.StreamSupport;
 import app.zoftwhere.bolt.Runner.BoltAssertionException;
 
 /**
+ * Runner Reader for parsing input in an editor-like fashion.
+ *
  * @since 4.0.0
  */
 class RunnerReader extends Reader implements Iterator<String> {
@@ -63,6 +65,12 @@ class RunnerReader extends Reader implements Iterator<String> {
         this.lock = super.lock;
     }
 
+    /**
+     * <p>Check if there is another line of text.
+     * </p>
+     *
+     * @return Returns true if there is another line, false otherwise.
+     */
     public boolean hasNext() {
         try {
             synchronized (lock) {
@@ -74,6 +82,7 @@ class RunnerReader extends Reader implements Iterator<String> {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean ready() throws IOException {
         boolean flag;
@@ -83,6 +92,7 @@ class RunnerReader extends Reader implements Iterator<String> {
         return flag;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String next() {
         try {
@@ -155,18 +165,21 @@ class RunnerReader extends Reader implements Iterator<String> {
         return list().toArray(new String[] { });
     }
 
+    /** {@inheritDoc} */
     @Override
     @SuppressWarnings("RedundantThrows")
     public int read() throws IOException {
         return -1;
     }
 
+    /** {@inheritDoc} */
     @Override
     @SuppressWarnings("RedundantThrows")
     public int read(char[] chars, int offset, int length) throws IOException {
         return -1;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void close() throws IOException {
         synchronized (lock) {
