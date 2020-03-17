@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-class RunnerReaderTest {
+class BoltReaderTest {
 
     @Test
     void readLine() throws IOException {
@@ -36,13 +36,13 @@ class RunnerReaderTest {
 
     @Test
     void testReadBuffer() throws IOException {
-        var reader = new RunnerReader("".getBytes(), UTF_8);
+        var reader = new BoltReader("".getBytes(), UTF_8);
         assertEquals(-1, reader.read());
     }
 
     @Test
     void testRead() throws IOException {
-        var reader = new RunnerReader("".getBytes(), UTF_8);
+        var reader = new BoltReader("".getBytes(), UTF_8);
         var chars = new char[0];
         assertEquals(-1, reader.read(chars, 0, 0));
     }
@@ -50,7 +50,7 @@ class RunnerReaderTest {
     @Test
     void testNullPointer() {
         try {
-            new RunnerReader((byte[]) null, UTF_8);
+            new BoltReader((byte[]) null, UTF_8);
         }
         catch (Exception e) {
             assertTrue(e instanceof NullPointerException);
@@ -67,7 +67,7 @@ class RunnerReaderTest {
             }
         };
         try {
-            try (RunnerReader reader = new RunnerReader(inputStream, UTF_8)) {
+            try (BoltReader reader = new BoltReader(inputStream, UTF_8)) {
                 reader.readLine();
             }
 
@@ -85,7 +85,7 @@ class RunnerReaderTest {
             }
         };
 
-        var runner = new RunnerReader(stream, UTF_8) {
+        var runner = new BoltReader(stream, UTF_8) {
             @Override
             public boolean ready() throws IOException {
                 throw new IOException();
@@ -100,7 +100,7 @@ class RunnerReaderTest {
     void testNextFail() {
         var stream = new ByteArrayInputStream("".getBytes());
 
-        var runner = new RunnerReader(stream, UTF_8) {
+        var runner = new BoltReader(stream, UTF_8) {
             @Override
             String readLine() throws IOException {
                 throw new IOException();
@@ -123,7 +123,7 @@ class RunnerReaderTest {
         var stream = new ByteArrayInputStream(new byte[0]);
 
         try {
-            RunnerReader.readArray(() -> new RunnerReader(stream, UTF_8) {
+            BoltReader.readArray(() -> new BoltReader(stream, UTF_8) {
                 @Override
                 @SuppressWarnings("RedundantThrows")
                 public void close() throws IOException {
@@ -140,7 +140,7 @@ class RunnerReaderTest {
         var stream = new ByteArrayInputStream(new byte[0]);
 
         try {
-            RunnerReader.readList(() -> new RunnerReader(stream, UTF_8) {
+            BoltReader.readList(() -> new BoltReader(stream, UTF_8) {
                 @Override
                 @SuppressWarnings("RedundantThrows")
                 public void close() throws IOException {
@@ -155,9 +155,9 @@ class RunnerReaderTest {
     @Test
     void testByteArraySplitter() {
         final var string = "\r\n\r\n";
-        final Supplier<RunnerReader> supplier = () -> forString(string, UTF_8);
-        final var list = RunnerReader.readList(supplier);
-        final var array = RunnerReader.readArray(supplier);
+        final Supplier<BoltReader> supplier = () -> forString(string, UTF_8);
+        final var list = BoltReader.readList(supplier);
+        final var array = BoltReader.readArray(supplier);
         assertEquals(3, list.size());
         assertEquals(3, array.length);
     }
@@ -165,9 +165,9 @@ class RunnerReaderTest {
     @Test
     void testStringSplitter5() {
         final var string = "1\n1\n345";
-        final Supplier<RunnerReader> supplier = () -> forString(string, UTF_8);
-        final var list = RunnerReader.readList(supplier);
-        final var array = RunnerReader.readArray(supplier);
+        final Supplier<BoltReader> supplier = () -> forString(string, UTF_8);
+        final var list = BoltReader.readList(supplier);
+        final var array = BoltReader.readArray(supplier);
         assertEquals(3, list.size());
         assertEquals(3, array.length);
     }
@@ -191,7 +191,7 @@ class RunnerReaderTest {
             builder.append("\n").append(array[i]);
         }
         String input = builder.toString();
-        final var list = RunnerReader.readList(() -> forString(input, UTF_8));
+        final var list = BoltReader.readList(() -> forString(input, UTF_8));
 
         if (array.length != list.size()) {
             assertEquals(array.length, list.size(), test + " [" + Arrays.toString(list.toArray()) + "]");
@@ -210,9 +210,9 @@ class RunnerReaderTest {
         assertFalse(reader.hasNext());
     }
 
-    private RunnerReader forString(String string, Charset charset) {
+    private BoltReader forString(String string, Charset charset) {
         final var input = new ByteArrayInputStream(string.getBytes(charset));
-        return new RunnerReader(input, charset);
+        return new BoltReader(input, charset);
     }
 
 }

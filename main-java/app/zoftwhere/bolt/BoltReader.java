@@ -21,7 +21,7 @@ import java.util.stream.StreamSupport;
  *
  * @since 4.0.0
  */
-class RunnerReader extends Reader implements Iterator<String> {
+class BoltReader extends Reader implements Iterator<String> {
 
     @SuppressWarnings("FieldCanBeLocal")
     private final int defaultExpectedLineLength = 80;
@@ -36,8 +36,8 @@ class RunnerReader extends Reader implements Iterator<String> {
     /** If the next character is a line feed (\n), skip it. */
     private boolean skipLF = false;
 
-    static List<String> readList(Supplier<RunnerReader> supplier) {
-        try (RunnerReader reader = supplier.get()) {
+    static List<String> readList(Supplier<BoltReader> supplier) {
+        try (BoltReader reader = supplier.get()) {
             return reader.list();
         }
         catch (Throwable e) {
@@ -45,8 +45,8 @@ class RunnerReader extends Reader implements Iterator<String> {
         }
     }
 
-    static String[] readArray(Supplier<RunnerReader> supplier) {
-        try (RunnerReader reader = supplier.get()) {
+    static String[] readArray(Supplier<BoltReader> supplier) {
+        try (BoltReader reader = supplier.get()) {
             return reader.array();
         }
         catch (Throwable e) {
@@ -54,11 +54,11 @@ class RunnerReader extends Reader implements Iterator<String> {
         }
     }
 
-    RunnerReader(byte[] data, Charset charset) {
+    BoltReader(byte[] data, Charset charset) {
         this(new ByteArrayInputStream(data), charset);
     }
 
-    RunnerReader(InputStream inputStream, Charset charset) {
+    BoltReader(InputStream inputStream, Charset charset) {
         this.reader = new InputStreamReader(inputStream, charset);
         this.lock = super.lock;
     }

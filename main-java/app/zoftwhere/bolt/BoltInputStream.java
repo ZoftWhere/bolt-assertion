@@ -10,7 +10,7 @@ import java.nio.charset.Charset;
  *
  * @since 4.0.0
  */
-class RunnerInputStream extends InputStream {
+class BoltInputStream extends InputStream {
 
     private final InputStreamReader reader;
 
@@ -22,7 +22,7 @@ class RunnerInputStream extends InputStream {
 
     private int size = 0;
 
-    RunnerInputStream(InputStream inputStream, Charset source, Charset destination) {
+    BoltInputStream(InputStream inputStream, Charset source, Charset destination) {
         this.destination = destination;
         this.reader = new InputStreamReader(inputStream, source);
     }

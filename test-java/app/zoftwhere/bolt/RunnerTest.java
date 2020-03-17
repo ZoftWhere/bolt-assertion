@@ -14,7 +14,7 @@ import app.zoftwhere.function.PlaceHolder;
 import org.junit.jupiter.api.Test;
 
 import static app.zoftwhere.bolt.Runner.newRunner;
-import static app.zoftwhere.bolt.RunnerReader.readList;
+import static app.zoftwhere.bolt.BoltReader.readList;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_16;
 import static java.nio.charset.StandardCharsets.UTF_16BE;
@@ -596,7 +596,7 @@ class RunnerTest {
     }
 
     private static void echoConsole(InputStream inputStream, OutputStream outputStream) throws IOException {
-        final var list = readList(() -> new RunnerReader(inputStream, UTF_8));
+        final var list = readList(() -> new BoltReader(inputStream, UTF_8));
         final int size = list.size();
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, UTF_8))) {
             if (size > 0) {

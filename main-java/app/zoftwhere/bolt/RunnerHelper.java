@@ -17,7 +17,7 @@ import app.zoftwhere.bolt.api.RunnerInterface.RunStandard;
 import app.zoftwhere.bolt.api.RunnerInterface.RunStandardArgued;
 import app.zoftwhere.bolt.api.RunnerProgramOutput;
 
-import static app.zoftwhere.bolt.RunnerReader.readArray;
+import static app.zoftwhere.bolt.BoltReader.readArray;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 
@@ -118,7 +118,7 @@ class RunnerHelper {
         }
 
         final byte[] data = outputStream.toByteArray();
-        final String[] output = readArray(() -> new RunnerReader(data, outputCharset));
+        final String[] output = readArray(() -> new BoltReader(data, outputCharset));
         return new BoltProgramOutput(output, fromThrowable(throwable));
     }
 
@@ -153,7 +153,7 @@ class RunnerHelper {
         }
 
         final byte[] data = outputStream.toByteArray();
-        final String[] output = readArray(() -> new RunnerReader(data, outputCharset));
+        final String[] output = readArray(() -> new BoltReader(data, outputCharset));
         return new BoltProgramOutput(output, fromThrowable(throwable));
     }
 
@@ -208,7 +208,7 @@ class RunnerHelper {
             return input;
         }
 
-        return () -> new RunnerInputStream(input.get(), charset, decode);
+        return () -> new BoltInputStream(input.get(), charset, decode);
     }
 
     /**

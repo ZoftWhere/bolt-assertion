@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-class RunnerInputStreamTest {
+class BoltInputStreamTest {
 
     @Test
     void testSameCodec() throws IOException {
@@ -116,12 +116,12 @@ class RunnerInputStreamTest {
     }
 
     private InputStream forString(String string, Charset charset, Charset decode) {
-        return new RunnerInputStream(forString(string, charset), charset, decode);
+        return new BoltInputStream(forString(string, charset), charset, decode);
     }
 
     @SuppressWarnings("SameParameterValue")
     private InputStream forString(String string, Charset charset, Charset decode, PlaceHolder<Boolean> closeFlag) {
-        return new RunnerInputStream(forString(string, charset), charset, decode) {
+        return new BoltInputStream(forString(string, charset), charset, decode) {
             @Override
             public void close() throws IOException {
                 closeFlag.set(true);

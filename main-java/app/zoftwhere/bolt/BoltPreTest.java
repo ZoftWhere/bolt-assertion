@@ -11,7 +11,7 @@ import app.zoftwhere.bolt.api.RunnerAsserter;
 import app.zoftwhere.bolt.api.RunnerInterface;
 import app.zoftwhere.bolt.api.RunnerPreTest;
 
-import static app.zoftwhere.bolt.RunnerReader.readArray;
+import static app.zoftwhere.bolt.BoltReader.readArray;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 
@@ -83,7 +83,7 @@ class BoltPreTest implements RunnerPreTest {
             if (inputStream == null) {
                 throw new NullPointerException("bolt.runner.load.expectation.input.stream.null");
             }
-            final String[] expected = readArray(() -> new RunnerReader(inputStream, charset));
+            final String[] expected = readArray(() -> new BoltReader(inputStream, charset));
             return expected(expected);
         }
         catch (Throwable e) {
