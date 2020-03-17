@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import app.zoftwhere.bolt.api.RunnerAsserter;
-import app.zoftwhere.bolt.api.RunnerInterface;
+import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 import app.zoftwhere.bolt.api.RunnerPreTest;
 import app.zoftwhere.bolt.api.RunnerProgramOutput;
 
@@ -64,12 +64,12 @@ class BoltProgramOutput implements RunnerProgramOutput {
     }
 
     @Override
-    public RunnerAsserter expected(RunnerInterface.InputStreamSupplier streamSupplier) {
+    public RunnerAsserter expected(InputStreamSupplier streamSupplier) {
         return create(streamSupplier, UTF_8);
     }
 
     @Override
-    public RunnerAsserter expected(RunnerInterface.InputStreamSupplier streamSupplier, Charset charset) {
+    public RunnerAsserter expected(InputStreamSupplier streamSupplier, Charset charset) {
         return create(streamSupplier, charset);
     }
 
@@ -90,7 +90,7 @@ class BoltProgramOutput implements RunnerProgramOutput {
      * @param charset        the charset of the {@code InputStream}
      * @return a {@link RunnerAsserter} instance
      */
-    private RunnerAsserter create(RunnerInterface.InputStreamSupplier getInputStream, Charset charset) {
+    private RunnerAsserter create(InputStreamSupplier getInputStream, Charset charset) {
         try (InputStream inputStream = getInputStream.get()) {
             if (inputStream == null) {
                 throw new NullPointerException("bolt.runner.load.expectation.input.stream.null");

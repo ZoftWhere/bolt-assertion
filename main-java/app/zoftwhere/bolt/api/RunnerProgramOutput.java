@@ -4,6 +4,8 @@ import java.nio.charset.Charset;
 import java.util.Comparator;
 import java.util.Optional;
 
+import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
+
 /**
  * Runner program execution output interface.
  *
@@ -33,10 +35,10 @@ public interface RunnerProgramOutput
     RunnerAsserter expected(String... expected);
 
     @Override
-    RunnerAsserter expected(RunnerInterface.InputStreamSupplier supplier);
+    RunnerAsserter expected(InputStreamSupplier supplier);
 
     @Override
-    RunnerAsserter expected(RunnerInterface.InputStreamSupplier supplier, Charset charset);
+    RunnerAsserter expected(InputStreamSupplier supplier, Charset charset);
 
     @Override
     RunnerAsserter loadExpectation(String resourceName, Class<?> withClass);

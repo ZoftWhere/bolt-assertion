@@ -2,7 +2,7 @@ package app.zoftwhere.bolt;
 
 import java.nio.charset.Charset;
 
-import app.zoftwhere.bolt.api.RunnerInterface;
+import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 import app.zoftwhere.bolt.api.RunnerInterface.RunConsole;
 import app.zoftwhere.bolt.api.RunnerInterface.RunConsoleArgued;
 import app.zoftwhere.bolt.api.RunnerInterface.RunStandard;
@@ -95,12 +95,12 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
     }
 
     @Override
-    public RunnerProgramOutput input(RunnerInterface.InputStreamSupplier getInputStream) {
+    public RunnerProgramOutput input(InputStreamSupplier getInputStream) {
         return executeProgram(UTF_8, getInputStream);
     }
 
     @Override
-    public RunnerProgramOutput input(RunnerInterface.InputStreamSupplier supplier, Charset charset) {
+    public RunnerProgramOutput input(InputStreamSupplier supplier, Charset charset) {
         return executeProgram(charset, supplier);
     }
 
@@ -128,9 +128,7 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
         return new BoltProvideProgram(executor, charset);
     }
 
-    private BoltProgramOutput executeProgram(Charset inputCharset,
-        RunnerInterface.InputStreamSupplier inputStreamSupplier)
-    {
+    private BoltProgramOutput executeProgram(Charset inputCharset, InputStreamSupplier inputStreamSupplier) {
         return buildProgramOutput(argumentArray, inputCharset, inputStreamSupplier, outputCharset, executor);
     }
 

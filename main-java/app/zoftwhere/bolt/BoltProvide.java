@@ -10,7 +10,7 @@ import java.nio.charset.Charset;
 import java.util.Objects;
 import java.util.Scanner;
 
-import app.zoftwhere.bolt.api.RunnerInterface;
+import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 import app.zoftwhere.bolt.api.RunnerInterface.RunConsoleArgued;
 import app.zoftwhere.bolt.api.RunnerInterface.RunStandardArgued;
 
@@ -23,7 +23,7 @@ interface BoltProvide {
         return value != null ? value : new String[0];
     }
 
-    default RunnerInterface.InputStreamSupplier newInputStreamSupplier(String... input) {
+    default InputStreamSupplier newInputStreamSupplier(String... input) {
         return () -> {
             if (input == null || input.length <= 0) {
                 return new ByteArrayInputStream(new byte[0]);
@@ -61,7 +61,7 @@ interface BoltProvide {
 
     default Throwable executeStandardArgued(String[] arguments,
         Charset inputCharset,
-        RunnerInterface.InputStreamSupplier inputStreamSupplier,
+        InputStreamSupplier inputStreamSupplier,
         Charset outputCharset,
         OutputStream outputStream,
         RunStandardArgued program)
@@ -92,7 +92,7 @@ interface BoltProvide {
 
     default Throwable executeConsoleArgued(String[] arguments,
         Charset inputCharset,
-        RunnerInterface.InputStreamSupplier inputStreamSupplier,
+        InputStreamSupplier inputStreamSupplier,
         Charset outputCharset,
         OutputStream outputStream,
         RunConsoleArgued program)
@@ -121,7 +121,7 @@ interface BoltProvide {
 
     default BoltProgramOutput buildProgramOutput(String[] arguments,
         Charset inputCharset,
-        RunnerInterface.InputStreamSupplier streamSupplier,
+        InputStreamSupplier streamSupplier,
         Charset outputCharset,
         BoltProgramExecutor executor)
     {
