@@ -114,15 +114,15 @@ abstract class AbstractUnit {
 
         boolean isException();
 
-        int offendingIndex();
-
         String[] output();
 
         String[] expected();
 
-        Optional<Exception> exception();
+        int offendingIndex();
 
         Optional<String> message();
+
+        Optional<Exception> exception();
     }
 
     @SuppressWarnings({"EmptyMethod", "unused"})
