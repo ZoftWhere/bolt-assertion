@@ -8,17 +8,21 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.Comparator;
+import java.util.function.Supplier;
 
+import app.zoftwhere.bolt.api.RunnerAsserter;
 import app.zoftwhere.bolt.api.RunnerProgramOutput;
+import app.zoftwhere.bolt.api.RunnerProgramResult;
 import app.zoftwhere.function.PlaceHolder;
 import org.junit.jupiter.api.Test;
 
-import static app.zoftwhere.bolt.Runner.newRunner;
 import static app.zoftwhere.bolt.BoltReader.readList;
+import static app.zoftwhere.bolt.Runner.newRunner;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_16;
 import static java.nio.charset.StandardCharsets.UTF_16BE;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -37,7 +41,7 @@ class RunnerTest {
         assertNotNull(closedFlag.get());
         assertFalse(closedFlag.get());
 
-        final InputStream inputStream = new ByteArrayInputStream("–Great–".getBytes(charset)) {
+        final Supplier<InputStream> inputStream = () -> new ByteArrayInputStream("–Great–".getBytes(charset)) {
             @Override
             public void close() throws IOException {
                 closedFlag.set(Boolean.TRUE);
@@ -45,29 +49,153 @@ class RunnerTest {
             }
         };
 
-        runner.input(() -> inputStream, charset)
-            .runConsole((input, output) -> {})
-            .expected();
+        {
+            // process caller first run UTF-8
+            closedFlag.set(false);
+            runner.input(inputStream::get, charset).run((scanner, writer) -> {});
 
-        assertNotNull(closedFlag);
-        assertNotNull(closedFlag);
-        assertTrue(closedFlag.get());
+            assertNotNull(closedFlag);
+            assertNotNull(closedFlag.get());
+            assertTrue(closedFlag.get());
+
+            // process caller first run charset
+            closedFlag.set(false);
+            runner.input(inputStream::get, charset).run(charset, (scanner, writer) -> {});
+
+            assertNotNull(closedFlag);
+            assertNotNull(closedFlag.get());
+            assertTrue(closedFlag.get());
+
+            // process caller first run console UTF-8
+            closedFlag.set(false);
+            runner.input(inputStream::get, charset).runConsole((input, output) -> {});
+
+            assertNotNull(closedFlag);
+            assertNotNull(closedFlag.get());
+            assertTrue(closedFlag.get());
+
+            // process caller first run console charset
+            closedFlag.set(false);
+            runner.input(inputStream::get, charset).runConsole(charset, (input, output) -> {});
+
+            assertNotNull(closedFlag);
+            assertNotNull(closedFlag.get());
+            assertTrue(closedFlag.get());
+        }
+        {
+            // process caller first run argument UTF-8
+            closedFlag.set(false);
+            runner.input(inputStream::get, charset).argument("").run((strings, scanner, writer) -> {});
+
+            assertNotNull(closedFlag);
+            assertNotNull(closedFlag.get());
+            assertTrue(closedFlag.get());
+
+            // process caller first run argument charset
+            closedFlag.set(false);
+            runner.input(inputStream::get, charset).argument("").run(charset, (strings, scanner, writer) -> {});
+
+            assertNotNull(closedFlag);
+            assertNotNull(closedFlag.get());
+            assertTrue(closedFlag.get());
+
+            // process caller first run console argument UTF-8
+            closedFlag.set(false);
+            runner.input(inputStream::get, charset).argument("").runConsole((strings, input, output) -> {});
+
+            assertNotNull(closedFlag);
+            assertNotNull(closedFlag.get());
+            assertTrue(closedFlag.get());
+
+            // process caller first run console argument charset
+            closedFlag.set(false);
+            runner.input(inputStream::get, charset).argument("").runConsole(charset, (strings, input, output) -> {});
+
+            assertNotNull(closedFlag);
+            assertNotNull(closedFlag.get());
+            assertTrue(closedFlag.get());
+        }
+        {
+            // process input first run UTF-8
+            closedFlag.set(false);
+            runner.input(inputStream::get, charset).run((scanner, writer) -> {});
+
+            assertNotNull(closedFlag);
+            assertNotNull(closedFlag.get());
+            assertTrue(closedFlag.get());
+
+
+            // process input first run charset
+            closedFlag.set(false);
+            runner.input(inputStream::get, charset).run(charset, (scanner, writer) -> {});
+
+            assertNotNull(closedFlag);
+            assertNotNull(closedFlag.get());
+            assertTrue(closedFlag.get());
+
+            // process input first run console UTF-8
+            closedFlag.set(false);
+            runner.input(inputStream::get, charset).runConsole((input, output) -> {});
+
+            assertNotNull(closedFlag);
+            assertNotNull(closedFlag.get());
+            assertTrue(closedFlag.get());
+
+            // process input first run console  charset
+            closedFlag.set(false);
+            runner.input(inputStream::get, charset).runConsole(charset, (input, output) -> {});
+
+            assertNotNull(closedFlag);
+            assertNotNull(closedFlag.get());
+            assertTrue(closedFlag.get());
+        }
+        {
+            // process input first run argument UTF-8
+            closedFlag.set(false);
+            runner.input(inputStream::get, charset).argument("").run((strings, scanner, writer) -> {});
+
+            assertNotNull(closedFlag);
+            assertNotNull(closedFlag.get());
+            assertTrue(closedFlag.get());
+
+            // process input first run argument charset
+            closedFlag.set(false);
+            runner.input(inputStream::get, charset).argument("").run(charset, (strings, scanner, writer) -> {});
+
+            assertNotNull(closedFlag);
+            assertNotNull(closedFlag.get());
+            assertTrue(closedFlag.get());
+
+            // process input first run console argument UTF-8
+            closedFlag.set(false);
+            runner.input(inputStream::get, charset).argument("").runConsole((strings, input, output) -> {});
+
+            assertNotNull(closedFlag);
+            assertNotNull(closedFlag.get());
+            assertTrue(closedFlag.get());
+
+            // process input first run console argument charset
+            closedFlag.set(false);
+            runner.input(inputStream::get, charset).argument("").runConsole(charset, (strings, input, output) -> {});
+
+            assertNotNull(closedFlag);
+            assertNotNull(closedFlag.get());
+            assertTrue(closedFlag.get());
+        }
     }
 
     @Test
     void testCallerFirst() {
-        RunnerProgramOutput programOutput = runner
-            .runConsole((scanner, bufferedWriter) -> {})
-            .input();
+        RunnerProgramOutput runnerProgramOutput = runner.run((scanner, writer) -> writer.write("Test")).input();
 
-        assertNotNull(programOutput.output());
-        assertNull(programOutput.exception().orElse(null));
-        programOutput.expected().assertSuccess();
-        programOutput.expected("").assertSuccess();
+        assertNotNull(runnerProgramOutput.output());
+        assertArrayEquals(new String[] {"Test"}, runnerProgramOutput.output());
+        assertNull(runnerProgramOutput.exception().orElse(null));
+        runnerProgramOutput.expected().assertFailure();
+        runnerProgramOutput.expected("").assertFailure();
+        runnerProgramOutput.expected("Test").assertSuccess();
 
-        RunnerProgramOutput resultBlank = runner
-            .runConsole((scanner, bufferedWriter) -> {})
-            .input("");
+        RunnerProgramOutput resultBlank = runner.runConsole((inputStream, outputStream) -> {}).input("");
 
         assertNotNull(resultBlank.output());
         assertNull(resultBlank.exception().orElse(null));
@@ -173,7 +301,7 @@ class RunnerTest {
         asserter.assertException();
         final var result = asserter.result();
         final var exception = result.exception().orElse(null);
-        assertTrue(exception instanceof NullPointerException);
+        assertTrue(exception instanceof RunnerException);
         assertEquals("bolt.runner.load.input.input.stream.null", exception.getMessage());
     }
 
@@ -187,7 +315,34 @@ class RunnerTest {
         asserter.assertException();
         final var result = asserter.result();
         final var exception = result.exception().orElse(null);
-        assertTrue(exception instanceof NullPointerException);
+        assertTrue(exception instanceof RunnerException);
+        assertEquals("bolt.runner.load.input.input.stream.null", exception.getMessage());
+    }
+
+    @Test
+    void testExecuteRunConsoleFirstNullInput() {
+        final RunnerProgramOutput output = runner.input(() -> null).runConsole((inputStream, outputStream) -> {});
+
+        assertNotNull(output.exception().orElse(null));
+
+        final RunnerAsserter asserter = output.expected("");
+
+        asserter.assertException();
+        final RunnerProgramResult result = asserter.result();
+        final Exception exception = result.exception().orElse(null);
+        assertTrue(exception instanceof RunnerException);
+        assertEquals("bolt.runner.load.input.input.stream.null", exception.getMessage());
+    }
+
+    @Test
+    void testExecuteConsoleInputFirstNullInput() {
+        final RunnerAsserter asserter = runner.input(() -> null).runConsole((inputStream, outputStream) -> {})
+            .expected("");
+
+        asserter.assertException();
+        final RunnerProgramResult result = asserter.result();
+        final Exception exception = result.exception().orElse(null);
+        assertTrue(exception instanceof RunnerException);
         assertEquals("bolt.runner.load.input.input.stream.null", exception.getMessage());
     }
 
