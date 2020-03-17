@@ -65,6 +65,11 @@ class BoltProgramResult implements RunnerProgramResult {
     }
 
     @Override
+    public int offendingIndex() {
+        return offendingIndex;
+    }
+
+    @Override
     public String[] output() {
         return Arrays.copyOf(output, output.length);
     }
@@ -74,18 +79,14 @@ class BoltProgramResult implements RunnerProgramResult {
         return Arrays.copyOf(expected, expected.length);
     }
 
-    public int offendingIndex() {
-        return offendingIndex;
+    @Override
+    public Optional<String> message() {
+        return Optional.ofNullable(message);
     }
 
     @Override
     public Optional<Exception> exception() {
         return Optional.ofNullable(exception);
-    }
-
-    @Override
-    public Optional<String> message() {
-        return Optional.ofNullable(message);
     }
 
 }
