@@ -41,68 +41,67 @@ public class Runner extends AbstractRunner {
 
     @Override
     public RunnerProgram run(RunStandard program) {
-        return new BoltProgram(forProgram(program, UTF_8), UTF_8);
+        return new BoltProvideProgram().run(program);
     }
 
     @Override
     public RunnerProgram run(Charset charset, RunStandard program) {
-        return new BoltProgram(forProgram(program, charset), charset);
-    }
-
-    @Override
-    public RunnerPreProgram run(RunStandardArgued program) {
-        return new BoltPreProgram(forProgram(program, UTF_8), UTF_8);
-    }
-
-    @Override
-    public RunnerPreProgram run(Charset charset, RunStandardArgued program) {
-        return new BoltPreProgram(forProgram(program, charset), charset);
+        return new BoltProvideProgram().run(charset, program);
     }
 
     @Override
     public RunnerProgram runConsole(RunConsole program) {
-        return new BoltProgram(program, UTF_8);
+        return new BoltProvideProgram().runConsole(program);
     }
 
     @Override
     public RunnerProgram runConsole(Charset charset, RunConsole program) {
-        return new BoltProgram(program, charset);
+        return new BoltProvideProgram().runConsole(charset, program);
+    }
+
+    @Override
+    public RunnerPreProgram run(RunStandardArgued program) {
+        return new BoltProvideProgram().run(program);
+    }
+
+    @Override
+    public RunnerPreProgram run(Charset charset, RunStandardArgued program) {
+        return new BoltProvideProgram().run(charset, program);
     }
 
     @Override
     public RunnerPreProgram runConsole(RunConsoleArgued program) {
-        return new BoltPreProgram(program, UTF_8);
+        return new BoltProvideProgram().runConsole(program);
     }
 
     @Override
     public RunnerPreProgram runConsole(Charset charset, RunConsoleArgued program) {
-        return new BoltPreProgram(program, charset);
+        return new BoltProvideProgram().runConsole(charset, program);
     }
 
     @Override
     public RunnerProgramInput input(String... input) {
-        return new BoltProgramInput(() -> forInput(input), UTF_8);
+        return new BoltProvideInput().input(input);
     }
 
     @Override
     public RunnerProgramInput input(InputStreamSupplier getInputStream) {
-        return new BoltProgramInput(getInputStream, UTF_8);
+        return new BoltProvideInput().input(getInputStream);
     }
 
     @Override
     public RunnerProgramInput input(InputStreamSupplier getInputStream, Charset charset) {
-        return new BoltProgramInput(getInputStream, charset);
+        return new BoltProvideInput().input(getInputStream, charset);
     }
 
     @Override
     public RunnerProgramInput loadInput(String resourceName, Class<?> withClass) {
-        return new BoltProgramInput(() -> withClass.getResourceAsStream(resourceName), UTF_8);
+        return new BoltProvideInput().loadInput(resourceName, withClass);
     }
 
     @Override
     public RunnerProgramInput loadInput(String resourceName, Class<?> withClass, Charset charset) {
-        final InputStreamSupplier resource = () -> withClass.getResourceAsStream(resourceName);
-        return new BoltProgramInput(resource, charset);
+        return new BoltProvideInput().loadInput(resourceName, withClass, charset);
     }
 
 }
