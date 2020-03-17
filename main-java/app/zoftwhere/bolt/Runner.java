@@ -6,10 +6,6 @@ import app.zoftwhere.bolt.api.RunnerPreProgram;
 import app.zoftwhere.bolt.api.RunnerProgram;
 import app.zoftwhere.bolt.api.RunnerProgramInput;
 
-import static app.zoftwhere.bolt.RunnerHelper.forInput;
-import static app.zoftwhere.bolt.RunnerHelper.forProgram;
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 /**
  * Bolt Assertion Runner.
  *
