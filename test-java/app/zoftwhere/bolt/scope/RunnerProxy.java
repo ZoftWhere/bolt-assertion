@@ -52,16 +52,12 @@ public class RunnerProxy extends AbstractRunner {
     }
 
     @Override
-    public RunnerPreProgram run(
-        RunStandardArgued program)
-    {
+    public RunnerPreProgram run(RunStandardArgued program) {
         return runner.run(program);
     }
 
     @Override
-    public RunnerPreProgram run(
-        Charset charset, RunStandardArgued program)
-    {
+    public RunnerPreProgram run(Charset charset, RunStandardArgued program) {
         return runner.run(charset, program);
     }
 
@@ -71,22 +67,17 @@ public class RunnerProxy extends AbstractRunner {
     }
 
     @Override
-    public RunnerProgram runConsole(Charset charset, RunConsole program)
-    {
+    public RunnerProgram runConsole(Charset charset, RunConsole program) {
         return runner.runConsole(charset, program);
     }
 
     @Override
-    public RunnerPreProgram runConsole(
-        RunConsoleArgued program)
-    {
+    public RunnerPreProgram runConsole(RunConsoleArgued program) {
         return runner.runConsole(program);
     }
 
     @Override
-    public RunnerPreProgram runConsole(Charset charset,
-        RunConsoleArgued program)
-    {
+    public RunnerPreProgram runConsole(Charset charset, RunConsoleArgued program) {
         return runner.runConsole(charset, program);
     }
 
