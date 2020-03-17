@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
 /**
- * A RunnerInputStream for cross encoding use.
+ * A Bolt {@link InputStream} for cross encoding use.
  *
  * @since 4.0.0
  */
