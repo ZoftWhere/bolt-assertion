@@ -57,11 +57,22 @@ class BoltProvideInput implements RunnerProvideInput, RunnerProgramInput, Runner
 
     @Override
     public RunnerProgramInput loadInput(String resourceName, Class<?> withClass) {
-        return new BoltProvideInput(UTF_8, () -> withClass.getResourceAsStream(resourceName));
+        return loadInput(resourceName, withClass, UTF_8);
     }
 
     @Override
     public RunnerProgramInput loadInput(String resourceName, Class<?> withClass, Charset charset) {
+        if (resourceName == null) {
+            return new BoltProvideInput(charset, () -> {
+                throw new RunnerException("bolt.runner.load.input.resource.name.null");
+            });
+        }
+        if (withClass == null) {
+            return new BoltProvideInput(charset, () -> {
+                throw new RunnerException("bolt.runner.load.input.resource.class.null");
+            });
+        }
+
         return new BoltProvideInput(charset, () -> withClass.getResourceAsStream(resourceName));
     }
 

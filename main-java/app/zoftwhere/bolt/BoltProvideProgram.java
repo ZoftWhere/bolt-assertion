@@ -106,11 +106,22 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
 
     @Override
     public RunnerProgramOutput loadInput(String resourceName, Class<?> withClass) {
-        return executeProgram(UTF_8, () -> withClass.getResourceAsStream(resourceName));
+        return loadInput(resourceName, withClass, UTF_8);
     }
 
     @Override
     public RunnerProgramOutput loadInput(String resourceName, Class<?> withClass, Charset charset) {
+        if (resourceName == null) {
+            return executeProgram(charset, () -> {
+                throw new RunnerException("bolt.runner.load.input.resource.name.null");
+            });
+        }
+        if (withClass == null) {
+            return executeProgram(charset, () -> {
+                throw new RunnerException("bolt.runner.load.input.resource.class.null");
+            });
+        }
+
         return executeProgram(charset, () -> withClass.getResourceAsStream(resourceName));
     }
 
