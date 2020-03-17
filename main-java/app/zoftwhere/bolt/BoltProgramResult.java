@@ -37,7 +37,7 @@ class BoltProgramResult implements RunnerProgramResult {
         this.expected = requireNonNull(expected);
         //noinspection ManualMinMaxCalculation
         this.offendingIndex = offendingIndex >= -1 ? offendingIndex : -1;
-        this.message = message;
+        this.message = requireNonNull(message);
         this.exception = null;
     }
 
