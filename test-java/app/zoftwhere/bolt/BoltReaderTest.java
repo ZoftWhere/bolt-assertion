@@ -2,6 +2,7 @@ package app.zoftwhere.bolt;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -53,7 +54,30 @@ class BoltReaderTest {
             new BoltReader((byte[]) null, UTF_8);
         }
         catch (Exception e) {
-            assertTrue(e instanceof NullPointerException);
+            assertTrue(e instanceof RunnerException);
+            assertEquals(e.getMessage(), "bolt.runner.reader.data.null");
+        }
+    }
+
+    @Test
+    void testNullCharset() {
+        try {
+            new BoltReader(new byte[0], null);
+        }
+        catch (Exception e) {
+            assertTrue(e instanceof RunnerException);
+            assertEquals(e.getMessage(), "bolt.runner.reader.charset.null");
+        }
+    }
+
+    @Test
+    void testNullInputStream() {
+        try {
+            new BoltReader((InputStream) null, UTF_8);
+        }
+        catch (Exception e) {
+            assertTrue(e instanceof RunnerException);
+            assertEquals(e.getMessage(), "bolt.runner.reader.input.stream.null");
         }
     }
 
@@ -98,9 +122,9 @@ class BoltReaderTest {
 
     @Test
     void testNextFail() {
-        var stream = new ByteArrayInputStream("".getBytes());
+        ByteArrayInputStream stream = new ByteArrayInputStream("".getBytes());
 
-        var runner = new BoltReader(stream, UTF_8) {
+        BoltReader reader = new BoltReader(stream, UTF_8) {
             @Override
             String readLine() throws IOException {
                 throw new IOException();
@@ -108,7 +132,7 @@ class BoltReaderTest {
         };
 
         try {
-            runner.next();
+            reader.next();
             fail("UncheckedIOException expected.");
         }
         catch (RuntimeException e) {
