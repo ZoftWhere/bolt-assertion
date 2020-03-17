@@ -7,8 +7,23 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-class RunnerAsserterTest extends Runner {
+class BoltAsserterTest {
+
+    @Test
+    void testConstructorNullResult() {
+        try {
+            new BoltAsserter(null);
+            fail("bolt.asserter.null.constructor.exception.expected");
+        }
+        catch (Exception e) {
+            assertTrue(e instanceof RunnerException);
+            assertNotNull(e.getMessage());
+            assertEquals("bolt.runner.asserter.result.null", e.getMessage());
+            assertNull(e.getCause());
+        }
+    }
 
     @Test
     void testResultSuccess() {

@@ -14,13 +14,17 @@ class BoltAsserter implements RunnerAsserter {
     private final BoltProgramResult result;
 
     BoltAsserter(BoltProgramResult result) {
+        if (result == null) {
+            throw new RunnerException("bolt.runner.asserter.result.null");
+        }
+
         this.result = result;
     }
 
     @Override
     public void assertSuccess() {
         if (result.isFailure()) {
-            throw new RunnerException(result.message().orElse(null));
+            throw new RunnerException(result.message().orElse(""));
         }
 
         if (result.isException()) {
@@ -46,7 +50,7 @@ class BoltAsserter implements RunnerAsserter {
         }
 
         if (result.isFailure()) {
-            throw new RunnerException(result.message().orElse(null));
+            throw new RunnerException(result.message().orElse(""));
         }
     }
 
