@@ -13,6 +13,11 @@ import app.zoftwhere.bolt.api.RunnerInterface.RunnerResultConsumer;
 
 abstract class AbstractUnit {
 
+    @SuppressWarnings("unused")
+    public AbstractUnit() {
+    }
+
+    @SuppressWarnings("unused")
     interface RunNoArguments<T> {
 
         T run(RunStandard program);
@@ -24,6 +29,7 @@ abstract class AbstractUnit {
         T runConsole(Charset charset, RunConsole program);
     }
 
+    @SuppressWarnings("unused")
     interface RunWithArguments<T> {
 
         T run(RunStandardArgued program);
@@ -35,11 +41,13 @@ abstract class AbstractUnit {
         T runConsole(Charset charset, RunConsoleArgued program);
     }
 
+    @SuppressWarnings("unused")
     interface Arguments<T> {
 
         T argument(String... arguments);
     }
 
+    @SuppressWarnings("unused")
     interface Input<T> {
 
         T input(String... input);
@@ -53,11 +61,13 @@ abstract class AbstractUnit {
         T loadInput(String resourceName, Class<?> withClass, Charset charset);
     }
 
+    @SuppressWarnings("unused")
     interface Comparison<T, C> {
 
         T comparator(Comparator<C> comparator);
     }
 
+    @SuppressWarnings("unused")
     interface Output {
 
         String[] output();
@@ -65,6 +75,7 @@ abstract class AbstractUnit {
         Optional<Exception> exception();
     }
 
+    @SuppressWarnings("unused")
     interface Expected<T> {
 
         T expected(String... expected);
@@ -78,6 +89,7 @@ abstract class AbstractUnit {
         T loadExpectation(String resourceName, Class<?> withClass, Charset charset);
     }
 
+    @SuppressWarnings("unused")
     interface Assertions<T extends TestResult> {
 
         void assertSuccess();
@@ -93,6 +105,7 @@ abstract class AbstractUnit {
         T result();
     }
 
+    @SuppressWarnings("unused")
     interface TestResult {
 
         boolean isSuccess();
@@ -112,24 +125,28 @@ abstract class AbstractUnit {
         Optional<String> message();
     }
 
+    @SuppressWarnings({"EmptyMethod", "unused"})
     @FunctionalInterface
     interface CallerNoArguments<T1, T2> {
 
         void call(T1 t1, T2 t2) throws Throwable;
     }
 
+    @SuppressWarnings({"EmptyMethod", "unused"})
     @FunctionalInterface
     interface CallerWithArguments<T1, T2> {
 
         void call(String[] arguments, T1 t1, T2 t2) throws Throwable;
     }
 
+    @SuppressWarnings({"EmptyMethod", "unused"})
     @FunctionalInterface
     interface ThrowingSupplier<T> {
 
         T get() throws Throwable;
     }
 
+    @SuppressWarnings({"EmptyMethod", "unused"})
     @FunctionalInterface
     interface ThrowingConsumer<T> {
 
