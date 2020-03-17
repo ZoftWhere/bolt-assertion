@@ -15,8 +15,6 @@ The source code can be compiled with Java language version 8.  It has been teste
 
 The project is Maven based, so executing the ```mvn install``` should install the library to the local repository (Requires at least JDK11).  It has been tested with Apache Maven v3.6.1.
 
-The source code has a compile dependency on the [ZoftWhere Mutable Library](http://github.com/ZoftWhere/mutable-library).  Ensure that this dependency is installed.
-
 If the project needs to be installed against JDK8, it can be accomplished by calling the following Maven command:
 
 ``` shell script
@@ -131,8 +129,8 @@ class ConsoleOutputExampleTest {
     }
 
     /** Not Thread Safe **/
-    private static ThrowingConsumer3<String[], InputStream, OutputStream> redirect(
-        final ThrowingConsumer1<String[]> program)
+    private static RunConsoleArgued redirect(
+        final ThrowingConsumer<String[]> program)
     {
         return (arguments, inputStream, outputStream) -> {
             var systemIn = System.in;
@@ -152,6 +150,11 @@ class ConsoleOutputExampleTest {
                 System.setErr(systemError);
             }
         };
+    }
+
+    private interface ThrowingConsumer<T> {
+
+        void accept(T value) throws Throwable;
     }
 
 }
