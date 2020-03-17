@@ -16,7 +16,7 @@ public interface RunnerProgramOutput
     /**
      * Specify the comparator.
      *
-     * @param comparator {@code String} comparator
+     * @param comparator {@link String} {@link Comparator} for program line output
      * @return {@link RunnerPreTest}
      * @since 1.0.0
      */

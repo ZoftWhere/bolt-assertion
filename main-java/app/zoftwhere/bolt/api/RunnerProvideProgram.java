@@ -28,6 +28,7 @@ public interface RunnerProvideProgram
      * @return {@link RunnerProgram}
      * @since 6.0.0
      */
+    @Override
     RunnerProgram run(RunStandard program);
 
     /**
@@ -38,6 +39,7 @@ public interface RunnerProvideProgram
      * @return {@link RunnerProgram}
      * @since 6.0.0
      */
+    @Override
     RunnerProgram run(Charset charset, RunStandard program);
 
     /**
@@ -47,6 +49,7 @@ public interface RunnerProvideProgram
      * @return {@link RunnerProgram}
      * @since 6.0.0
      */
+    @Override
     RunnerProgram runConsole(RunConsole program);
 
     /**
@@ -57,6 +60,7 @@ public interface RunnerProvideProgram
      * @return {@link RunnerProgram}
      * @since 6.0.0
      */
+    @Override
     RunnerProgram runConsole(Charset charset, RunConsole program);
 
     /**
@@ -66,6 +70,7 @@ public interface RunnerProvideProgram
      * @return {@link RunnerProgram}
      * @since 6.0.0
      */
+    @Override
     RunnerPreProgram run(RunStandardArgued program);
 
     /**
@@ -76,6 +81,7 @@ public interface RunnerProvideProgram
      * @return {@link RunnerProgram}
      * @since 6.0.0
      */
+    @Override
     RunnerPreProgram run(Charset charset, RunStandardArgued program);
 
     /**
@@ -85,6 +91,7 @@ public interface RunnerProvideProgram
      * @return {@link RunnerProgram}
      * @since 6.0.0
      */
+    @Override
     RunnerPreProgram runConsole(RunConsoleArgued program);
 
     /**
@@ -95,6 +102,7 @@ public interface RunnerProvideProgram
      * @return {@link RunnerProgram}
      * @since 6.0.0
      */
+    @Override
     RunnerPreProgram runConsole(Charset charset, RunConsoleArgued program);
 
 }

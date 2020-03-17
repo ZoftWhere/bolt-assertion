@@ -42,7 +42,6 @@ public interface RunnerProgramResult extends AbstractUnit.TestResult {
      * @return array copy of actual program output
      * @since 1.0.0
      */
-
     @Override
     String[] output();
 

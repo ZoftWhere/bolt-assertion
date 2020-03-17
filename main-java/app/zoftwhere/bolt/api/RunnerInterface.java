@@ -86,6 +86,7 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
      *
      * @since 6.0.0
      */
+    @FunctionalInterface
     interface RunStandard extends AbstractUnit.CallerNoArguments<Scanner, BufferedWriter> {
 
         /**

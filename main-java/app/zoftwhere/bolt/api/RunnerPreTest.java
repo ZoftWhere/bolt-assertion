@@ -44,7 +44,7 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
     /**
      * Specify the expected program output.
      *
-     * @param supplier {@code InputStream} function for expected program output
+     * @param supplier {@link InputStream} supplier for program input
      * @return {@link RunnerAsserter}
      * @since 6.0.0
      */
