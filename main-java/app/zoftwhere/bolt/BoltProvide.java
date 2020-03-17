@@ -29,6 +29,12 @@ interface BoltProvide {
                 return new ByteArrayInputStream(new byte[0]);
             }
 
+            for (String item : input) {
+                if (item == null) {
+                    throw new RunnerException("bolt.runner.variable.array.input.has.null");
+                }
+            }
+
             final ByteArrayOutputStream output = new ByteArrayOutputStream();
             try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(output, UTF_8))) {
                 bufferedWriter.write(input[0]);
