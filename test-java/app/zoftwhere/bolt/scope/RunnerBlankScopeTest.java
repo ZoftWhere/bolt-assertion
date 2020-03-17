@@ -41,7 +41,7 @@ class RunnerBlankScopeTest {
     }
 
     private void testProgramFirst(RunnerProvideProgram runner) {
-        testProgramInput(runner.run(((scanner, bufferedWriter) -> {})));
+        testProgramInput(runner.run((scanner, bufferedWriter) -> {}));
         testProgramInput(runner.run(UTF_8, ((scanner, bufferedWriter) -> {})));
         testProgramInput(runner.runConsole(((inputStream, outputStream) -> {})));
         testProgramInput(runner.runConsole(UTF_8, ((inputStream, outputStream) -> {})));
