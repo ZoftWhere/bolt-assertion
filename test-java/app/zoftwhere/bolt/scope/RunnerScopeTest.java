@@ -27,7 +27,7 @@ class RunnerScopeTest {
 
     private final Runner runner = newRunner();
 
-    @SuppressWarnings({"ThrowableNotThrown", "unused"})
+    @SuppressWarnings("unused")
     @Test
     void testProgramFirstScope() {
 
@@ -74,7 +74,6 @@ class RunnerScopeTest {
         catch (Exception ignore) {}
     }
 
-    @SuppressWarnings("ThrowableNotThrown")
     @Test
     void testInputFirstScope() {
         RunnerProgramInput r2a = runner.input();
