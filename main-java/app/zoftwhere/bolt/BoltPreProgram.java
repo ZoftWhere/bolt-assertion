@@ -22,14 +22,6 @@ class BoltPreProgram implements RunnerPreProgram {
         this.outputCharset = outputCharset;
     }
 
-    /**
-     * Specify program arguments.
-     *
-     * @param arguments program arguments
-     * @return {@link RunnerProgram}
-     * @since 1.0.0
-     */
-    @Override
     public RunnerProgram argument(String... arguments) {
         return new BoltProgram(program, arguments, outputCharset);
     }

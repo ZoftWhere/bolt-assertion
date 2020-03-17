@@ -34,91 +34,40 @@ class BoltCommonOutput implements RunnerPreTest {
         this.comparator = comparator;
     }
 
-    /**
-     * Retrieve the actual program output.
-     *
-     * @return array copy of the program output
-     * @since 1.0.0
-     */
     @Override
     public String[] output() {
         return Arrays.copyOf(output, output.length);
     }
 
-    /**
-     * Retrieve the program error.
-     *
-     * @return the program throwable and/or exception, if thrown, null otherwise
-     * @since 6.0.0
-     */
     @Override
     public Optional<Exception> exception() {
         return Optional.ofNullable(exception);
     }
 
-    /**
-     * Specify the expected program output.
-     *
-     * @param expected the expected program output
-     * @return {@link RunnerAsserter}
-     * @since 1.0.0
-     */
     public RunnerAsserter expected(String... expected) {
         final String[] expectation = expected != null && expected.length > 0 ? expected : new String[] {""};
         final BoltProgramResult testResult = buildTestResult(expectation, output, exception, comparator);
         return new BoltAsserter(testResult);
     }
 
-    /**
-     * Specify the expected program output.
-     *
-     * @param streamSupplier {@code InputStreamSupplier} for expected program output
-     * @return {@link RunnerAsserter}
-     * @since 6.0.0
-     */
     public RunnerAsserter expected(InputStreamSupplier streamSupplier) {
         return create(streamSupplier, UTF_8);
     }
 
-    /**
-     * Specify the expected program output.
-     *
-     * @param streamSupplier the {@code InputStreamSupplier} for the expected program output
-     * @param charset        the {@code InputStream} character set encoding
-     * @return {@link RunnerAsserter}
-     * @since 6.0.0
-     */
     public RunnerAsserter expected(InputStreamSupplier streamSupplier, Charset charset) {
         return create(streamSupplier, charset);
     }
 
-    /**
-     * Specify the resource to load as expected program output.
-     *
-     * @param resourceName the resource name to load as expected program output
-     * @param withClass    the class to load the resource with
-     * @return {@link RunnerAsserter}
-     * @since 1.0.0
-     */
     public RunnerAsserter loadExpectation(String resourceName, Class<?> withClass) {
         return create(() -> withClass.getResourceAsStream(resourceName), UTF_8);
     }
 
-    /**
-     * Specify the resource to load as expected program output.
-     *
-     * @param resourceName the resource name to load as expected program output
-     * @param withClass    the class to load the resource with
-     * @param charset      the character set encoding of the resource
-     * @return {@link RunnerAsserter}
-     * @since 1.0.0
-     */
     public RunnerAsserter loadExpectation(String resourceName, Class<?> withClass, Charset charset) {
         return create(() -> withClass.getResourceAsStream(resourceName), charset);
     }
 
     /**
-     * Creates a {@link RunnerAsserter} for the expected result {@code InputStream}.
+     * Helper method to create a {@link RunnerAsserter} for the expected result {@code InputStream}.
      *
      * @param getInputStream function to return the {@code InputStream} for the expected result
      * @param charset        the charset of the {@code InputStream}

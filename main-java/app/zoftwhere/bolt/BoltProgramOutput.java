@@ -22,13 +22,6 @@ class BoltProgramOutput extends BoltPreTest implements RunnerProgramOutput {
         this.exception = exception;
     }
 
-    /**
-     * Specify the comparator.
-     *
-     * @param comparator {@code String} comparator
-     * @return {@link RunnerPreTest}
-     * @since 1.0.0
-     */
     @Override
     public RunnerPreTest comparator(Comparator<String> comparator) {
         return new BoltPreTest(output, exception, comparator);
