@@ -1,40 +1,38 @@
 package app.zoftwhere.bolt.api;
 
-import java.io.BufferedWriter;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Comparator;
 import java.util.Optional;
-import java.util.Scanner;
 
-import app.zoftwhere.function.ThrowingConsumer1;
-import app.zoftwhere.function.ThrowingConsumer2;
-import app.zoftwhere.function.ThrowingConsumer3;
-import app.zoftwhere.function.ThrowingFunction0;
+import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
+import app.zoftwhere.bolt.api.RunnerInterface.RunConsole;
+import app.zoftwhere.bolt.api.RunnerInterface.RunConsoleArgued;
+import app.zoftwhere.bolt.api.RunnerInterface.RunStandard;
+import app.zoftwhere.bolt.api.RunnerInterface.RunStandardArgued;
+import app.zoftwhere.bolt.api.RunnerInterface.RunnerResultConsumer;
 
 abstract class AbstractUnit {
 
     interface RunNoArguments<T> {
 
-        T run(ThrowingConsumer2<Scanner, BufferedWriter> program);
+        T run(RunStandard program);
 
-        T run(Charset charset, ThrowingConsumer2<Scanner, BufferedWriter> program);
+        T run(Charset charset, RunStandard program);
 
-        T runConsole(ThrowingConsumer2<InputStream, OutputStream> program);
+        T runConsole(RunConsole program);
 
-        T runConsole(Charset charset, ThrowingConsumer2<InputStream, OutputStream> program);
+        T runConsole(Charset charset, RunConsole program);
     }
 
     interface RunWithArguments<T> {
 
-        T run(ThrowingConsumer3<String[], Scanner, BufferedWriter> program);
+        T run(RunStandardArgued program);
 
-        T run(Charset charset, ThrowingConsumer3<String[], Scanner, BufferedWriter> program);
+        T run(Charset charset, RunStandardArgued program);
 
-        T runConsole(ThrowingConsumer3<String[], InputStream, OutputStream> program);
+        T runConsole(RunConsoleArgued program);
 
-        T runConsole(Charset charset, ThrowingConsumer3<String[], InputStream, OutputStream> program);
+        T runConsole(Charset charset, RunConsoleArgued program);
     }
 
     interface Arguments<T> {
@@ -46,9 +44,9 @@ abstract class AbstractUnit {
 
         T input(String... input);
 
-        T input(ThrowingFunction0<InputStream> getInputStream);
+        T input(InputStreamSupplier supplier);
 
-        T input(ThrowingFunction0<InputStream> getInputStream, Charset charset);
+        T input(InputStreamSupplier supplier, Charset charset);
 
         T loadInput(String resourceName, Class<?> withClass);
 
@@ -71,9 +69,9 @@ abstract class AbstractUnit {
 
         T expected(String... expected);
 
-        T expected(ThrowingFunction0<InputStream> getInputStream);
+        T expected(InputStreamSupplier supplier);
 
-        T expected(ThrowingFunction0<InputStream> getInputStream, Charset charset);
+        T expected(InputStreamSupplier supplier, Charset charset);
 
         T loadExpectation(String resourceName, Class<?> withClass);
 
@@ -88,9 +86,9 @@ abstract class AbstractUnit {
 
         void assertException();
 
-        void assertCheck(ThrowingConsumer1<T> consumer);
+        void assertCheck(RunnerResultConsumer consumer);
 
-        void onOffence(ThrowingConsumer1<T> consumer);
+        void onOffence(RunnerResultConsumer consumer);
 
         T result();
     }
@@ -112,6 +110,30 @@ abstract class AbstractUnit {
         Optional<Exception> exception();
 
         Optional<String> message();
+    }
+
+    @FunctionalInterface
+    interface CallerNoArguments<T1, T2> {
+
+        void call(T1 t1, T2 t2) throws Throwable;
+    }
+
+    @FunctionalInterface
+    interface CallerWithArguments<T1, T2> {
+
+        void call(String[] arguments, T1 t1, T2 t2) throws Throwable;
+    }
+
+    @FunctionalInterface
+    interface ThrowingSupplier<T> {
+
+        T get() throws Throwable;
+    }
+
+    @FunctionalInterface
+    interface ThrowingConsumer<T> {
+
+        void accept(T input) throws Throwable;
     }
 
 }

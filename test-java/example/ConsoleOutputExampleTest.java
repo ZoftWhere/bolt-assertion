@@ -1,12 +1,9 @@
 package example;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
 
 import app.zoftwhere.bolt.Runner;
-import app.zoftwhere.function.ThrowingConsumer1;
-import app.zoftwhere.function.ThrowingConsumer3;
+import app.zoftwhere.bolt.api.RunnerInterface.RunConsoleArgued;
 import org.junit.jupiter.api.Test;
 
 class ConsoleOutputExampleTest {
@@ -24,8 +21,8 @@ class ConsoleOutputExampleTest {
     }
 
     /** Not Thread Safe **/
-    private static ThrowingConsumer3<String[], InputStream, OutputStream> redirect(
-        final ThrowingConsumer1<String[]> program)
+    private static RunConsoleArgued redirect(
+        final ThrowingConsumer<String[]> program)
     {
         return (arguments, inputStream, outputStream) -> {
             var systemIn = System.in;
@@ -47,4 +44,8 @@ class ConsoleOutputExampleTest {
         };
     }
 
+    private interface ThrowingConsumer<T> {
+
+        void accept(T value) throws RuntimeException;
+    }
 }

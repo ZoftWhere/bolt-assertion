@@ -10,7 +10,7 @@ import java.nio.charset.Charset;
 import java.util.Comparator;
 
 import app.zoftwhere.bolt.api.RunnerProgramOutput;
-import app.zoftwhere.mutable.MutableValue;
+import app.zoftwhere.function.PlaceHolder;
 import org.junit.jupiter.api.Test;
 
 import static app.zoftwhere.bolt.Runner.newRunner;
@@ -33,8 +33,8 @@ class RunnerTest {
     @Test
     void testInputStreamClose() {
         final Charset charset = UTF_16BE;
-        final MutableValue<Boolean> closedFlag = new MutableValue<>(Boolean.FALSE);
-        assertTrue(closedFlag.isPresent());
+        final PlaceHolder<Boolean> closedFlag = new PlaceHolder<>(Boolean.FALSE);
+        assertNotNull(closedFlag.get());
         assertFalse(closedFlag.get());
 
         final InputStream inputStream = new ByteArrayInputStream("–Great–".getBytes(charset)) {
@@ -50,7 +50,7 @@ class RunnerTest {
             .expected();
 
         assertNotNull(closedFlag);
-        assertTrue(closedFlag.isPresent());
+        assertNotNull(closedFlag);
         assertTrue(closedFlag.get());
     }
 
@@ -61,7 +61,7 @@ class RunnerTest {
             .input();
 
         assertNotNull(programOutput.output());
-        assertNull(programOutput.exception());
+        assertNull(programOutput.exception().orElse(null));
         programOutput.expected().assertSuccess();
         programOutput.expected("").assertSuccess();
 
@@ -70,7 +70,7 @@ class RunnerTest {
             .input("");
 
         assertNotNull(resultBlank.output());
-        assertNull(resultBlank.exception());
+        assertNull(resultBlank.exception().orElse(null));
         resultBlank.expected().assertSuccess();
         resultBlank.expected("").assertSuccess();
     }
@@ -82,7 +82,7 @@ class RunnerTest {
             .runConsole((scanner, bufferedWriter) -> {});
 
         assertNotNull(resultEmpty.output());
-        assertNull(resultEmpty.exception());
+        assertNull(resultEmpty.exception().orElse(null));
         resultEmpty.expected().assertSuccess();
         resultEmpty.expected("").assertSuccess();
 
@@ -92,7 +92,7 @@ class RunnerTest {
             .runConsole((arguments, scanner, bufferedWriter) -> {});
 
         assertNotNull(resultBlank.output());
-        assertNull(resultBlank.exception());
+        assertNull(resultBlank.exception().orElse(null));
         resultBlank.expected().assertSuccess();
         resultBlank.expected("").assertSuccess();
     }

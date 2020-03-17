@@ -10,10 +10,12 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.Scanner;
 
+import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
+import app.zoftwhere.bolt.api.RunnerInterface.RunConsole;
+import app.zoftwhere.bolt.api.RunnerInterface.RunConsoleArgued;
+import app.zoftwhere.bolt.api.RunnerInterface.RunStandard;
+import app.zoftwhere.bolt.api.RunnerInterface.RunStandardArgued;
 import app.zoftwhere.bolt.api.RunnerProgramOutput;
-import app.zoftwhere.function.ThrowingConsumer2;
-import app.zoftwhere.function.ThrowingConsumer3;
-import app.zoftwhere.function.ThrowingFunction0;
 
 import static app.zoftwhere.bolt.RunnerReader.readArray;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -53,14 +55,14 @@ class RunnerHelper {
      * @param charset the program character set encoding
      * @return standard {@code InputStream}, {@code OutputStream} consumer
      */
-    static ThrowingConsumer2<InputStream, OutputStream> forProgram( //
-        ThrowingConsumer2<Scanner, BufferedWriter> program, //
+    static RunConsole forProgram( //
+        RunStandard program, //
         Charset charset) //
     {
         return (inputStream, outputStream) -> {
             try (Scanner scanner = newScanner(inputStream, charset)) {
                 try (BufferedWriter writer = newWriter(outputStream, charset)) {
-                    program.accept(scanner, writer);
+                    program.call(scanner, writer);
                 }
             }
         };
@@ -73,14 +75,14 @@ class RunnerHelper {
      * @param charset the program character set encoding
      * @return standard {@code InputStream}, {@code OutputStream} consumer
      */
-    static ThrowingConsumer3<String[], InputStream, OutputStream> forProgram( //
-        ThrowingConsumer3<String[], Scanner, BufferedWriter> program, //
+    static RunConsoleArgued forProgram( //
+        RunStandardArgued program, //
         Charset charset) //
     {
         return (array, inputStream, outputStream) -> {
             try (Scanner scanner = newScanner(inputStream, charset)) {
                 try (BufferedWriter writer = newWriter(outputStream, charset)) {
-                    program.accept(array, scanner, writer);
+                    program.call(array, scanner, writer);
                 }
             }
         };
@@ -97,19 +99,19 @@ class RunnerHelper {
      * @return {@link RunnerProgramOutput}
      */
     static BoltProgramOutput executeRun( //
-        ThrowingConsumer3<String[], Scanner, BufferedWriter> program, //
+        RunStandardArgued program, //
         Charset outputCharset, //
         String[] arguments, //
-        ThrowingFunction0<InputStream> input, //
+        InputStreamSupplier input, //
         Charset inputCharset) //
     {
         ByteArrayOutputStream outputStream = newOutputStream();
         Throwable throwable = null;
 
         try (BufferedWriter writer = newWriter(outputStream, outputCharset); //
-            Scanner scanner = newScanner(input.accept(), inputCharset)) //
+            Scanner scanner = newScanner(input.get(), inputCharset)) //
         {
-            program.accept(arguments, scanner, writer);
+            program.call(arguments, scanner, writer);
         }
         catch (Throwable e) {
             throwable = e;
@@ -131,20 +133,20 @@ class RunnerHelper {
      * @return {@link BoltProgramOutput}
      */
     static BoltProgramOutput executeRunConsole( //
-        ThrowingConsumer3<String[], InputStream, OutputStream> program, //
+        RunConsoleArgued program, //
         Charset outputCharset, //
         String[] arguments, //
-        ThrowingFunction0<InputStream> input, //
+        InputStreamSupplier input, //
         Charset inputCharset) //
     {
         ByteArrayOutputStream outputStream = newOutputStream();
         Throwable throwable = null;
 
-        try (InputStream inputStream = newInputStreamSupplier(input, inputCharset, outputCharset).accept()) {
+        try (InputStream inputStream = newInputStreamSupplier(input, inputCharset, outputCharset).get()) {
             if (inputStream == null) {
                 throw new NullPointerException("bolt.runner.load.input.input.stream.null");
             }
-            program.accept(arguments, inputStream, outputStream);
+            program.call(arguments, inputStream, outputStream);
         }
         catch (Throwable e) {
             throwable = e;
@@ -197,8 +199,8 @@ class RunnerHelper {
      * @param decode  the desired character set encoding
      * @return {@code InputStream} with desired character set as encoding
      */
-    private static ThrowingFunction0<InputStream> newInputStreamSupplier( //
-        ThrowingFunction0<InputStream> input, //
+    private static InputStreamSupplier newInputStreamSupplier( //
+        InputStreamSupplier input, //
         Charset charset, //
         Charset decode) //
     {
@@ -206,7 +208,7 @@ class RunnerHelper {
             return input;
         }
 
-        return () -> new RunnerInputStream(input.accept(), charset, decode);
+        return () -> new RunnerInputStream(input.get(), charset, decode);
     }
 
     /**

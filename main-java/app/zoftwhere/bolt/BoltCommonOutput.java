@@ -5,10 +5,11 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.Optional;
 
 import app.zoftwhere.bolt.api.RunnerAsserter;
+import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 import app.zoftwhere.bolt.api.RunnerPreTest;
-import app.zoftwhere.function.ThrowingFunction0;
 
 import static app.zoftwhere.bolt.RunnerReader.readArray;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -48,11 +49,11 @@ class BoltCommonOutput implements RunnerPreTest {
      * Retrieve the program error.
      *
      * @return the program throwable and/or exception, if thrown, null otherwise
-     * @since 1.0.0
+     * @since 6.0.0
      */
     @Override
-    public Exception exception() {
-        return exception;
+    public Optional<Exception> exception() {
+        return Optional.ofNullable(exception);
     }
 
     /**
@@ -71,24 +72,24 @@ class BoltCommonOutput implements RunnerPreTest {
     /**
      * Specify the expected program output.
      *
-     * @param getInputStream {@code InputStream} function for expected program output
+     * @param streamSupplier {@code InputStreamSupplier} for expected program output
      * @return {@link RunnerAsserter}
-     * @since 1.0.0
+     * @since 6.0.0
      */
-    public RunnerAsserter expected(ThrowingFunction0<InputStream> getInputStream) {
-        return create(getInputStream, UTF_8);
+    public RunnerAsserter expected(InputStreamSupplier streamSupplier) {
+        return create(streamSupplier, UTF_8);
     }
 
     /**
      * Specify the expected program output.
      *
-     * @param getInputStream {@code InputStream} function for the expected program output.
+     * @param streamSupplier the {@code InputStreamSupplier} for the expected program output
      * @param charset        the {@code InputStream} character set encoding
      * @return {@link RunnerAsserter}
-     * @since 1.0.0
+     * @since 6.0.0
      */
-    public RunnerAsserter expected(ThrowingFunction0<InputStream> getInputStream, Charset charset) {
-        return create(getInputStream, charset);
+    public RunnerAsserter expected(InputStreamSupplier streamSupplier, Charset charset) {
+        return create(streamSupplier, charset);
     }
 
     /**
@@ -123,8 +124,8 @@ class BoltCommonOutput implements RunnerPreTest {
      * @param charset        the charset of the {@code InputStream}
      * @return a {@link RunnerAsserter} instance
      */
-    private RunnerAsserter create(ThrowingFunction0<InputStream> getInputStream, Charset charset) {
-        try (InputStream inputStream = getInputStream.accept()) {
+    private RunnerAsserter create(InputStreamSupplier getInputStream, Charset charset) {
+        try (InputStream inputStream = getInputStream.get()) {
             if (inputStream == null) {
                 throw new NullPointerException("bolt.runner.load.expectation.input.stream.null");
             }

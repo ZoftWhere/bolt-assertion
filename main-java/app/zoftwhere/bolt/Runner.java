@@ -1,17 +1,11 @@
 package app.zoftwhere.bolt;
 
 import java.io.BufferedWriter;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.Scanner;
 
 import app.zoftwhere.bolt.api.RunnerPreProgram;
 import app.zoftwhere.bolt.api.RunnerProgram;
 import app.zoftwhere.bolt.api.RunnerProgramInput;
-import app.zoftwhere.function.ThrowingConsumer2;
-import app.zoftwhere.function.ThrowingConsumer3;
-import app.zoftwhere.function.ThrowingFunction0;
 
 import static app.zoftwhere.bolt.RunnerHelper.forInput;
 import static app.zoftwhere.bolt.RunnerHelper.forProgram;
@@ -19,6 +13,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Bolt Assertion Runner.
+ *
+ * @since 1.0.0
  */
 public class Runner extends AbstractRunner {
 
@@ -48,10 +44,10 @@ public class Runner extends AbstractRunner {
      *
      * @param program the program
      * @return {@link RunnerProgram}
-     * @since 1.0.0
+     * @since 6.0.0
      */
     @Override
-    public RunnerProgram run(ThrowingConsumer2<Scanner, BufferedWriter> program) {
+    public RunnerProgram run(RunStandard program) {
         return new BoltProgram(forProgram(program, UTF_8), UTF_8);
     }
 
@@ -61,10 +57,10 @@ public class Runner extends AbstractRunner {
      * @param charset the charset for {@link BufferedWriter}
      * @param program the program
      * @return {@link RunnerProgram}
-     * @since 4.0.0
+     * @since 6.0.0
      */
     @Override
-    public RunnerProgram run(Charset charset, ThrowingConsumer2<Scanner, BufferedWriter> program) {
+    public RunnerProgram run(Charset charset, RunStandard program) {
         return new BoltProgram(forProgram(program, charset), charset);
     }
 
@@ -73,10 +69,10 @@ public class Runner extends AbstractRunner {
      *
      * @param program the program
      * @return {@link RunnerPreProgram}
-     * @since 1.0.0
+     * @since 6.0.0
      */
     @Override
-    public RunnerPreProgram run(ThrowingConsumer3<String[], Scanner, BufferedWriter> program) {
+    public RunnerPreProgram run(RunStandardArgued program) {
         return new BoltPreProgram(forProgram(program, UTF_8), UTF_8);
     }
 
@@ -86,10 +82,10 @@ public class Runner extends AbstractRunner {
      * @param charset the charset for {@link BufferedWriter}
      * @param program the program
      * @return {@link RunnerPreProgram}
-     * @since 4.0.0
+     * @since 6.0.0
      */
     @Override
-    public RunnerPreProgram run(Charset charset, ThrowingConsumer3<String[], Scanner, BufferedWriter> program) {
+    public RunnerPreProgram run(Charset charset, RunStandardArgued program) {
         return new BoltPreProgram(forProgram(program, charset), charset);
     }
 
@@ -98,10 +94,10 @@ public class Runner extends AbstractRunner {
      *
      * @param program the program
      * @return {@link RunnerProgram}
-     * @since 1.0.0
+     * @since 6.0.0
      */
     @Override
-    public RunnerProgram runConsole(ThrowingConsumer2<InputStream, OutputStream> program) {
+    public RunnerProgram runConsole(RunConsole program) {
         return new BoltProgram(program, UTF_8);
     }
 
@@ -111,10 +107,10 @@ public class Runner extends AbstractRunner {
      * @param charset the charset for {@code InputStream} and {@code OutputStream}
      * @param program the program
      * @return {@link RunnerProgram}
-     * @since 2.0.0
+     * @since 6.0.0
      */
     @Override
-    public RunnerProgram runConsole(Charset charset, ThrowingConsumer2<InputStream, OutputStream> program) {
+    public RunnerProgram runConsole(Charset charset, RunConsole program) {
         return new BoltProgram(program, charset);
     }
 
@@ -123,10 +119,10 @@ public class Runner extends AbstractRunner {
      *
      * @param program the program
      * @return {@link RunnerPreProgram}
-     * @since 1.0.0
+     * @since 6.0.0
      */
     @Override
-    public RunnerPreProgram runConsole(ThrowingConsumer3<String[], InputStream, OutputStream> program) {
+    public RunnerPreProgram runConsole(RunConsoleArgued program) {
         return new BoltPreProgram(program, UTF_8);
     }
 
@@ -136,11 +132,11 @@ public class Runner extends AbstractRunner {
      * @param charset the charset for {@code InputStream} and {@code OutputStream}
      * @param program the program
      * @return {@link RunnerPreProgram}
-     * @since 2.0.0
+     * @since 6.0.0
      */
     @Override
     public RunnerPreProgram runConsole(Charset charset,
-        ThrowingConsumer3<String[], InputStream, OutputStream> program)
+        RunConsoleArgued program)
     {
         return new BoltPreProgram(program, charset);
     }
@@ -162,10 +158,10 @@ public class Runner extends AbstractRunner {
      *
      * @param getInputStream {@code InputStream} function for input
      * @return {@link RunnerProgramInput}
-     * @since 1.0.0
+     * @since 6.0.0
      */
     @Override
-    public RunnerProgramInput input(ThrowingFunction0<InputStream> getInputStream) {
+    public RunnerProgramInput input(InputStreamSupplier getInputStream) {
         return new BoltProgramInput(getInputStream, UTF_8);
     }
 
@@ -175,10 +171,10 @@ public class Runner extends AbstractRunner {
      * @param getInputStream {@code InputStream} function for input
      * @param charset        character set encoding for the program
      * @return {@link RunnerProgramInput}
-     * @since 1.0.0
+     * @since 6.0.0
      */
     @Override
-    public RunnerProgramInput input(ThrowingFunction0<InputStream> getInputStream, Charset charset) {
+    public RunnerProgramInput input(InputStreamSupplier getInputStream, Charset charset) {
         return new BoltProgramInput(getInputStream, charset);
     }
 
@@ -206,7 +202,7 @@ public class Runner extends AbstractRunner {
      */
     @Override
     public RunnerProgramInput loadInput(String resourceName, Class<?> withClass, Charset charset) {
-        final ThrowingFunction0<InputStream> resource = () -> withClass.getResourceAsStream(resourceName);
+        final InputStreamSupplier resource = () -> withClass.getResourceAsStream(resourceName);
         return new BoltProgramInput(resource, charset);
     }
 

@@ -1,18 +1,11 @@
 package app.zoftwhere.bolt;
 
-import java.io.BufferedWriter;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.Scanner;
 
 import app.zoftwhere.bolt.api.RunnerInterface;
 import app.zoftwhere.bolt.api.RunnerPreProgram;
 import app.zoftwhere.bolt.api.RunnerProgram;
 import app.zoftwhere.bolt.api.RunnerProgramInput;
-import app.zoftwhere.function.ThrowingConsumer2;
-import app.zoftwhere.function.ThrowingConsumer3;
-import app.zoftwhere.function.ThrowingFunction0;
 
 /**
  * Runner abstract class.
@@ -25,38 +18,37 @@ public abstract class AbstractRunner implements RunnerInterface {
     }
 
     @Override
-    public abstract RunnerProgram run(ThrowingConsumer2<Scanner, BufferedWriter> program);
+    public abstract RunnerProgram run(RunStandard program);
 
     @Override
-    public abstract RunnerProgram run(Charset charset, ThrowingConsumer2<Scanner, BufferedWriter> program);
+    public abstract RunnerProgram run(Charset charset, RunStandard program);
 
     @Override
-    public abstract RunnerProgram runConsole(ThrowingConsumer2<InputStream, OutputStream> program);
+    public abstract RunnerProgram runConsole(RunConsole program);
 
     @Override
-    public abstract RunnerProgram runConsole(Charset charset, ThrowingConsumer2<InputStream, OutputStream> program);
+    public abstract RunnerProgram runConsole(Charset charset, RunConsole program);
 
     @Override
-    public abstract RunnerPreProgram run(ThrowingConsumer3<String[], Scanner, BufferedWriter> program);
+    public abstract RunnerPreProgram run(RunStandardArgued program);
 
     @Override
-    public abstract RunnerPreProgram run(Charset charset, ThrowingConsumer3<String[], Scanner, BufferedWriter> program);
+    public abstract RunnerPreProgram run(Charset charset, RunStandardArgued program);
 
     @Override
-    public abstract RunnerPreProgram runConsole(ThrowingConsumer3<String[], InputStream, OutputStream> program);
+    public abstract RunnerPreProgram runConsole(RunConsoleArgued program);
 
     @Override
-    public abstract RunnerPreProgram runConsole(Charset charset,
-        ThrowingConsumer3<String[], InputStream, OutputStream> program);
+    public abstract RunnerPreProgram runConsole(Charset charset, RunConsoleArgued program);
 
     @Override
     public abstract RunnerProgramInput input(String... input);
 
     @Override
-    public abstract RunnerProgramInput input(ThrowingFunction0<InputStream> getInputStream);
+    public abstract RunnerProgramInput input(InputStreamSupplier getInputStream);
 
     @Override
-    public abstract RunnerProgramInput input(ThrowingFunction0<InputStream> getInputStream, Charset charset);
+    public abstract RunnerProgramInput input(InputStreamSupplier getInputStream, Charset charset);
 
     @Override
     public abstract RunnerProgramInput loadInput(String resourceName, Class<?> withClass);

@@ -1,17 +1,16 @@
 package app.zoftwhere.bolt;
 
 import java.io.BufferedWriter;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.Scanner;
 
+import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
+import app.zoftwhere.bolt.api.RunnerInterface.RunConsole;
+import app.zoftwhere.bolt.api.RunnerInterface.RunConsoleArgued;
+import app.zoftwhere.bolt.api.RunnerInterface.RunStandard;
+import app.zoftwhere.bolt.api.RunnerInterface.RunStandardArgued;
 import app.zoftwhere.bolt.api.RunnerLoader;
 import app.zoftwhere.bolt.api.RunnerProgramInput;
 import app.zoftwhere.bolt.api.RunnerProgramOutput;
-import app.zoftwhere.function.ThrowingConsumer2;
-import app.zoftwhere.function.ThrowingConsumer3;
-import app.zoftwhere.function.ThrowingFunction0;
 
 import static app.zoftwhere.bolt.RunnerHelper.forProgram;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -23,11 +22,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  */
 class BoltProgramInput implements RunnerProgramInput {
 
-    private final ThrowingFunction0<InputStream> getInput;
+    private final InputStreamSupplier getInput;
 
     private final Charset inputCharset;
 
-    BoltProgramInput(ThrowingFunction0<InputStream> getInputStream, Charset charset) {
+    BoltProgramInput(InputStreamSupplier getInputStream, Charset charset) {
         this.getInput = getInputStream;
         this.inputCharset = charset;
     }
@@ -49,25 +48,26 @@ class BoltProgramInput implements RunnerProgramInput {
      *
      * @param program the program
      * @return {@link RunnerProgramOutput}
-     * @since 1.0.0
+     * @since 6.0.0
      */
-    public RunnerProgramOutput run(ThrowingConsumer2<Scanner, BufferedWriter> program) {
-        ThrowingConsumer3<String[], Scanner, BufferedWriter> internal = /**/
-            (strings, scanner, writer) -> program.accept(scanner, writer);
+    @Override
+    public RunnerProgramOutput run(RunStandard program) {
+        RunStandardArgued internal = /**/
+            (strings, scanner, writer) -> program.call(scanner, writer);
         return RunnerHelper.executeRun(internal, UTF_8, null, getInput, inputCharset);
     }
-
     /**
      * Specify the program.
      *
      * @param program the program
      * @param charset the charset for {@link BufferedWriter}
      * @return {@link RunnerProgramOutput}
-     * @since 4.0.0
+     * @since 6.0.0
      */
-    public RunnerProgramOutput run(Charset charset, ThrowingConsumer2<Scanner, BufferedWriter> program) {
-        ThrowingConsumer3<String[], InputStream, OutputStream> internal = /**/
-            (strings, inputStream, outputStream) -> forProgram(program, charset).accept(inputStream, outputStream);
+    @Override
+    public RunnerProgramOutput run(Charset charset, RunStandard program) {
+        RunConsoleArgued internal = /**/
+            (strings, inputStream, outputStream) -> forProgram(program, charset).call(inputStream, outputStream);
         return RunnerHelper.executeRunConsole(internal, charset, null, getInput, inputCharset);
     }
 
@@ -76,11 +76,12 @@ class BoltProgramInput implements RunnerProgramInput {
      *
      * @param program the program
      * @return {@link RunnerProgramOutput}
-     * @since 1.0.0
+     * @since 6.0.0
      */
-    public RunnerProgramOutput runConsole(ThrowingConsumer2<InputStream, OutputStream> program) {
-        ThrowingConsumer3<String[], InputStream, OutputStream> internal = /**/
-            (strings, inputStream, outputStream) -> program.accept(inputStream, outputStream);
+    @Override
+    public RunnerProgramOutput runConsole(RunConsole program) {
+        RunConsoleArgued internal = /**/
+            (strings, inputStream, outputStream) -> program.call(inputStream, outputStream);
         return RunnerHelper.executeRunConsole(internal, UTF_8, null, getInput, inputCharset);
     }
 
@@ -90,12 +91,12 @@ class BoltProgramInput implements RunnerProgramInput {
      * @param charset the charset for {@code InputStream} and {@code OutputStream}
      * @param program the program
      * @return {@link RunnerProgramOutput}
-     * @since 1.0.0
+     * @since 6.0.0
      */
     @Override
-    public RunnerProgramOutput runConsole(Charset charset, ThrowingConsumer2<InputStream, OutputStream> program) {
-        ThrowingConsumer3<String[], InputStream, OutputStream> internal = /**/
-            (strings, inputStream, outputStream) -> program.accept(inputStream, outputStream);
+    public RunnerProgramOutput runConsole(Charset charset, RunConsole program) {
+        RunConsoleArgued internal = /**/
+            (strings, inputStream, outputStream) -> program.call(inputStream, outputStream);
         return RunnerHelper.executeRunConsole(internal, charset, null, getInput, inputCharset);
     }
 

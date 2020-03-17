@@ -8,6 +8,5 @@ package app.zoftwhere.bolt.api;
  *
  * @since 6.0.0
  */
-public interface RunnerProvideProgram extends //
-    AbstractUnit.RunWithArguments<RunnerPreProgram>,
-    AbstractUnit.RunNoArguments<RunnerProgram> { }
+public interface RunnerProvideProgram
+    extends AbstractUnit.RunNoArguments<RunnerProgram>, AbstractUnit.RunWithArguments<RunnerPreProgram> { }

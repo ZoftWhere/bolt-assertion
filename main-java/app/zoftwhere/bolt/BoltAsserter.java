@@ -1,8 +1,8 @@
 package app.zoftwhere.bolt;
 
 import app.zoftwhere.bolt.api.RunnerAsserter;
+import app.zoftwhere.bolt.api.RunnerInterface.RunnerResultConsumer;
 import app.zoftwhere.bolt.api.RunnerProgramResult;
-import app.zoftwhere.function.ThrowingConsumer1;
 
 /**
  * Bolt program result asserter.
@@ -80,13 +80,13 @@ class BoltAsserter implements RunnerAsserter {
      * <p>The consumer should throw a throwable for undesired behaviour.
      * </p>
      *
-     * @param custom custom consumer
+     * @param consumer custom consumer
      * @since 1.0.0
      */
     @Override
-    public void assertCheck(ThrowingConsumer1<RunnerProgramResult> custom) {
+    public void assertCheck(RunnerResultConsumer consumer) {
         try {
-            custom.accept(result);
+            consumer.accept(result);
         }
         catch (Throwable throwable) {
             throw new RunnerException(throwable.getMessage(), throwable.getCause());
@@ -99,14 +99,14 @@ class BoltAsserter implements RunnerAsserter {
      * <p>The consumer should throw a throwable for undesired behaviour.
      * </p>
      *
-     * @param custom custom consumer
+     * @param consumer custom consumer
      * @since 5.0.0
      */
     @Override
-    public void onOffence(ThrowingConsumer1<RunnerProgramResult> custom) {
+    public void onOffence(RunnerResultConsumer consumer) {
         if (!result.isSuccess()) {
             try {
-                custom.accept(result);
+                consumer.accept(result);
             }
             catch (Throwable throwable) {
                 throw new RunnerException(throwable.getMessage(), throwable.getCause());
