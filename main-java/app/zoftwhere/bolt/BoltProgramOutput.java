@@ -29,9 +29,10 @@ class BoltProgramOutput implements RunnerProgramOutput {
 
     private final Comparator<String> comparator;
 
-    BoltProgramOutput(String[] output, Exception exception) {
+    BoltProgramOutput(String[] output, Throwable throwable) {
+        requireNonNull(output);
         this.output = output;
-        this.exception = exception;
+        this.exception = fromThrowable(throwable);
         this.comparator = null;
     }
 
@@ -59,8 +60,7 @@ class BoltProgramOutput implements RunnerProgramOutput {
     @Override
     public RunnerAsserter expected(String... expected) {
         final String[] expectation = expected != null && expected.length > 0 ? expected : new String[] {""};
-        final BoltProgramResult testResult = buildTestResult(expectation, output, exception, comparator);
-        return new BoltAsserter(testResult);
+        return new BoltAsserter(buildTestResult(expectation, output, exception, comparator));
     }
 
     @Override
@@ -96,7 +96,7 @@ class BoltProgramOutput implements RunnerProgramOutput {
                 throw new NullPointerException("bolt.runner.load.expectation.input.stream.null");
             }
             final String[] expected = readArray(() -> new BoltReader(inputStream, charset));
-            return expected(expected);
+            return new BoltAsserter(buildTestResult(expected, output, exception, comparator));
         }
         catch (Throwable e) {
             throw new RunnerException("bolt.runner.load.expectation.error", e);
@@ -146,6 +146,21 @@ class BoltProgramOutput implements RunnerProgramOutput {
         }
 
         return new BoltProgramResult(output, expected);
+    }
+
+    /**
+     * Helper method to convert {@code Throwable} to {@code Exception}.
+     *
+     * @param throwable the throwable
+     * @return {@code Exception}
+     */
+    private Exception fromThrowable(Throwable throwable) {
+        if (throwable == null) { return null; }
+        if (throwable instanceof Exception) { return (Exception) throwable; }
+        if (throwable.getCause() == null) {
+            return new Exception(throwable.getMessage(), throwable);
+        }
+        return new Exception(throwable.getMessage(), throwable.getCause());
     }
 
 }

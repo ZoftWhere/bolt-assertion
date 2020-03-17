@@ -131,19 +131,7 @@ interface BoltProvide {
         final byte[] data = outputStream.toByteArray();
         final String[] output = outputCharset != null ? readArray(
             () -> new BoltReader(data, outputCharset)) : new String[0];
-        return new BoltProgramOutput(output, fromThrowable(throwable));
-    }
-
-    /**
-     * Helper method to convert {@code Throwable} to {@code Exception}.
-     *
-     * @param throwable the throwable
-     * @return {@code Exception}
-     */
-    default Exception fromThrowable(Throwable throwable) {
-        if (throwable == null) { return null; }
-        if (throwable instanceof Exception) { return (Exception) throwable; }
-        return new Exception(throwable.getMessage(), throwable.getCause());
+        return new BoltProgramOutput(output, throwable);
     }
 
 }
