@@ -192,6 +192,7 @@
                         <configuration>
                             <argLine>
                                 --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt=ALL-UNNAMED
+                                --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt.api=ALL-UNNAMED
                                 --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt.scope=ALL-UNNAMED
                                 --add-opens&#32;zoftwhere.bolt.assertion/example=ALL-UNNAMED
                             </argLine>
