@@ -321,7 +321,9 @@ class RunnerTest {
 
     @Test
     void testExecuteRunConsoleFirstNullInput() {
-        final RunnerProgramOutput output = runner.input(() -> null).runConsole((inputStream, outputStream) -> {});
+        final RunnerProgramOutput output = runner
+            .input(() -> null)
+            .runConsole((inputStream, outputStream) -> {});
 
         assertNotNull(output.exception().orElse(null));
 
@@ -336,7 +338,9 @@ class RunnerTest {
 
     @Test
     void testExecuteConsoleInputFirstNullInput() {
-        final RunnerAsserter asserter = runner.input(() -> null).runConsole((inputStream, outputStream) -> {})
+        final RunnerAsserter asserter = runner
+            .input(() -> null)
+            .runConsole((inputStream, outputStream) -> {})
             .expected("");
 
         asserter.assertException();
@@ -344,6 +348,111 @@ class RunnerTest {
         final Exception exception = result.exception().orElse(null);
         assertTrue(exception instanceof RunnerException);
         assertEquals("bolt.runner.load.input.input.stream.null", exception.getMessage());
+    }
+
+    @Test
+    void testRunStandardOutputNullCharset() {
+        final var e = runner //
+            .run(null, (scanner, bufferedWriter) -> {})
+            .input(() -> new ByteArrayInputStream(new byte[0]), US_ASCII)
+            .expected("")
+            .result().exception().orElse(null);
+
+        assertNotNull(e);
+        assertTrue(e instanceof RunnerException);
+        assertNotNull(e.getMessage());
+        assertEquals("bolt.runner.output.charset.null", e.getMessage());
+        assertNull(e.getCause());
+    }
+
+    @Test
+    void testConsoleOutputNullCharset() {
+        final var e = runner //
+            .runConsole(null, (scanner, bufferedWriter) -> {})
+            .input(() -> new ByteArrayInputStream(new byte[0]), US_ASCII)
+            .expected("")
+            .result().exception().orElse(null);
+
+        assertNotNull(e);
+        assertTrue(e instanceof RunnerException);
+        assertNotNull(e.getMessage());
+        assertEquals("bolt.runner.output.charset.null", e.getMessage());
+        assertNull(e.getCause());
+    }
+
+    @Test
+    void testRunStandardInputNullCharset() {
+        final var e = runner //
+            .run(US_ASCII, (scanner, bufferedWriter) -> {})
+            .input(() -> new ByteArrayInputStream(new byte[0]), null)
+            .expected("")
+            .result().exception().orElse(null);
+
+        assertNotNull(e);
+        assertTrue(e instanceof RunnerException);
+        assertNotNull(e.getMessage());
+        assertEquals("bolt.runner.input.charset.null", e.getMessage());
+        assertNull(e.getCause());
+    }
+
+    @Test
+    void testConsoleInputNullCharset() {
+        final var e = runner //
+            .runConsole(US_ASCII, (scanner, bufferedWriter) -> {})
+            .input(() -> new ByteArrayInputStream(new byte[0]), null)
+            .expected("")
+            .result().exception().orElse(null);
+
+        assertNotNull(e);
+        assertTrue(e instanceof RunnerException);
+        assertNotNull(e.getMessage());
+        assertEquals("bolt.runner.input.charset.null", e.getMessage());
+        assertNull(e.getCause());
+    }
+
+    @Test
+    void testStandardThrowableCause() {
+        final var s = "Ensure Throwable to Exception";
+        final var c = "Ensure Throwable to Exception Cause";
+        final var e = runner //
+            .run((scanner, writer) -> {
+                throw new Throwable(s, new RuntimeException(c));
+            })
+            .input("")
+            .expected("")
+            .result()
+            .exception()
+            .orElse(null);
+
+        assertNotNull(e);
+        assertTrue(e instanceof Exception);
+        assertNotNull(e.getMessage());
+        assertEquals(s, e.getMessage());
+
+        assertNotNull(e.getCause());
+        assertTrue(e.getCause() instanceof Exception);
+        assertNotNull(e.getCause().getMessage());
+        assertEquals(c, e.getCause().getMessage());
+    }
+
+    @Test
+    void testStandardException() {
+        final var s = "Ensure RuntimeException";
+        final var e = runner //
+            .run((scanner, writer) -> {
+                throw new RuntimeException(s, null);
+            })
+            .input("")
+            .expected("")
+            .result()
+            .exception()
+            .orElse(null);
+
+        assertNotNull(e);
+        assertTrue(e instanceof RuntimeException);
+        assertNotNull(e.getMessage());
+        assertEquals(s, e.getMessage());
+        assertNull(e.getCause());
     }
 
     @Test

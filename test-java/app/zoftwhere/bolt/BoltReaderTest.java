@@ -68,6 +68,14 @@ class BoltReaderTest {
             assertTrue(e instanceof RunnerException);
             assertEquals(e.getMessage(), "bolt.runner.reader.charset.null");
         }
+
+        try {
+            new BoltReader(new ByteArrayInputStream(new byte[0]), null);
+        }
+        catch (Exception e) {
+            assertTrue(e instanceof RunnerException);
+            assertEquals(e.getMessage(), "bolt.runner.reader.charset.null");
+        }
     }
 
     @Test
