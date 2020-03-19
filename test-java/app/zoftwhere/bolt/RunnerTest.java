@@ -330,10 +330,13 @@ class RunnerTest {
 
     @Test
     void testExecuteInputFirstNullInput() {
-        final var asserter = runner
+        final var output = runner
             .input(() -> null)
-            .run((scanner, bufferedWriter) -> {})
-            .expected("");
+            .run((scanner, bufferedWriter) -> {});
+
+        assertNotNull(output.exception().orElse(null));
+
+        final RunnerAsserter asserter = output.expected("");
 
         asserter.assertException();
         final var result = asserter.result();
