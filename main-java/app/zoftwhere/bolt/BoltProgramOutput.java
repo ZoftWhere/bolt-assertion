@@ -157,10 +157,7 @@ class BoltProgramOutput implements RunnerProgramOutput {
     private Exception fromThrowable(Throwable throwable) {
         if (throwable == null) { return null; }
         if (throwable instanceof Exception) { return (Exception) throwable; }
-        if (throwable.getCause() == null) {
-            return new Exception(throwable.getMessage(), throwable);
-        }
-        return new Exception(throwable.getMessage(), throwable.getCause());
+        return new RunnerException("bolt.runner.throwable.as.cause", throwable);
     }
 
 }

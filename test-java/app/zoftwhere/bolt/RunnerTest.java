@@ -447,10 +447,9 @@ class RunnerTest {
     @Test
     void testStandardThrowableCause() {
         final var s = "Ensure Throwable to Exception";
-        final var c = "Ensure Throwable to Exception Cause";
         final var e = runner //
             .run((scanner, writer) -> {
-                throw new Throwable(s, new RuntimeException(c));
+                throw new Throwable(s, new RuntimeException("ignore"));
             })
             .input("")
             .expected("")
@@ -459,14 +458,14 @@ class RunnerTest {
             .orElse(null);
 
         assertNotNull(e);
-        assertTrue(e instanceof Exception);
+        assertEquals(RunnerException.class.getName(), e.getClass().getName());
         assertNotNull(e.getMessage());
-        assertEquals(s, e.getMessage());
+        assertEquals("bolt.runner.throwable.as.cause", e.getMessage());
 
         assertNotNull(e.getCause());
-        assertTrue(e.getCause() instanceof Exception);
+        assertEquals(Throwable.class.getName(), e.getCause().getClass().getName());
         assertNotNull(e.getCause().getMessage());
-        assertEquals(c, e.getCause().getMessage());
+        assertEquals(s, e.getCause().getMessage());
     }
 
     @Test
