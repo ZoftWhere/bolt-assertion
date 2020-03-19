@@ -10,11 +10,11 @@ import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
 
+import static app.zoftwhere.bolt.BoltTestHelper.assertClass;
 import static java.nio.charset.StandardCharsets.UTF_16;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class BoltReaderTest {
@@ -54,7 +54,7 @@ class BoltReaderTest {
             new BoltReader((byte[]) null, UTF_8);
         }
         catch (Exception e) {
-            assertTrue(e instanceof RunnerException);
+            assertClass(RunnerException.class, e);
             assertEquals(e.getMessage(), "bolt.runner.reader.data.null");
         }
     }
@@ -65,7 +65,7 @@ class BoltReaderTest {
             new BoltReader(new byte[0], null);
         }
         catch (Exception e) {
-            assertTrue(e instanceof RunnerException);
+            assertClass(RunnerException.class, e);
             assertEquals(e.getMessage(), "bolt.runner.reader.charset.null");
         }
 
@@ -73,7 +73,7 @@ class BoltReaderTest {
             new BoltReader(new ByteArrayInputStream(new byte[0]), null);
         }
         catch (Exception e) {
-            assertTrue(e instanceof RunnerException);
+            assertClass(RunnerException.class, e);
             assertEquals(e.getMessage(), "bolt.runner.reader.charset.null");
         }
     }
@@ -84,7 +84,7 @@ class BoltReaderTest {
             new BoltReader((InputStream) null, UTF_8);
         }
         catch (Exception e) {
-            assertTrue(e instanceof RunnerException);
+            assertClass(RunnerException.class, e);
             assertEquals(e.getMessage(), "bolt.runner.reader.input.stream.null");
         }
     }
@@ -144,9 +144,7 @@ class BoltReaderTest {
             fail("UncheckedIOException expected.");
         }
         catch (RuntimeException e) {
-            if (!(e instanceof UncheckedIOException)) {
-                throw e;
-            }
+            assertClass(UncheckedIOException.class, e);
         }
     }
 

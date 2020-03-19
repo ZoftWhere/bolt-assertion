@@ -2,6 +2,7 @@ package app.zoftwhere.bolt;
 
 import org.junit.jupiter.api.Test;
 
+import static app.zoftwhere.bolt.BoltTestHelper.assertClass;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,7 +19,7 @@ class BoltAsserterTest {
             fail("bolt.asserter.null.constructor.exception.expected");
         }
         catch (Exception e) {
-            assertTrue(e instanceof RunnerException);
+            assertClass(RunnerException.class, e);
             assertNotNull(e.getMessage());
             assertEquals("bolt.runner.asserter.result.null", e.getMessage());
             assertNull(e.getCause());
