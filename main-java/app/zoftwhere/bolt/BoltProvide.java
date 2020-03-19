@@ -134,9 +134,12 @@ interface BoltProvide {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Throwable throwable = executor.execute(arguments, inputCharset, streamSupplier, outputCharset, outputStream);
 
+        if (inputCharset == null || outputCharset == null) {
+            return new BoltProgramOutput(new String[] {""}, throwable);
+        }
+
         final byte[] data = outputStream.toByteArray();
-        final String[] output = outputCharset != null ? readArray(
-            () -> new BoltReader(data, outputCharset)) : new String[0];
+        final String[] output = readArray(() -> new BoltReader(data, outputCharset));
         return new BoltProgramOutput(output, throwable);
     }
 
