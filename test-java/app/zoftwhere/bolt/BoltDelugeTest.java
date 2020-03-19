@@ -1,125 +1,94 @@
 package app.zoftwhere.bolt;
 
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.zoftwhere.bolt.deluge.DelugeControl;
-import app.zoftwhere.bolt.deluge.DelugeData;
-import app.zoftwhere.bolt.deluge.DelugeProgram;
-import app.zoftwhere.bolt.deluge.DelugeProgram.ProgramType;
-import app.zoftwhere.bolt.deluge.DelugeSettings;
+import app.zoftwhere.bolt.deluge.DelugeBuilder;
+import app.zoftwhere.bolt.deluge.DelugeException;
+import app.zoftwhere.bolt.deluge.DelugeProgramType;
 import org.junit.jupiter.api.Test;
 
-import static app.zoftwhere.bolt.deluge.DelugeControl.from;
-import static app.zoftwhere.bolt.deluge.DelugeData.forResource;
+import static app.zoftwhere.bolt.BoltTestHelper.array;
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_16BE;
 import static java.nio.charset.StandardCharsets.UTF_16LE;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 class BoltDelugeTest {
 
     @Test
     void barrageTest() {
-        ProgramType[] programTypes = ProgramType.values();
+        DelugeProgramType[] programTypes = DelugeProgramType.values();
 
-        List<DelugeData> dataList = expansiveData();
-        List<DelugeSettings> settingsList = expansiveSettings();
-        for (DelugeSettings settings : settingsList) {
-            for (ProgramType programType : programTypes) {
-                if (DelugeProgram.hasArgument(programType)) {
-                    if (!settings.hasArgumentArray()) {
-                        continue;
-                    }
-                }
-                else {
-                    if (settings.hasArgumentArray()) {
-                        continue;
-                    }
+        for (DelugeBuilder builder : expansiveSettings()) {
+            for (DelugeProgramType programType : programTypes) {
+                if (programType.isArgued() != builder.hasArgumentArray()) {
+                    continue;
                 }
 
-                for (DelugeData data : dataList) {
-                    DelugeControl control = from(programType, data, settings);
-                    control.runTest();
+                for (DelugeBuilder unit : expansiveData(builder.forProgram(programType))) {
+                    if (!unit.hasProgramType() || !unit.hasSettings() || !unit.hasData()) {
+                        throw new DelugeException("deluge.builder.failed");
+                    }
+
+                    unit.runTest();
                 }
             }
         }
     }
 
-    @Test
-    void testDelugeDataFlagging() {
-        DelugeData data = DelugeData.forInputStream(BoltTestHelper.array("1", "2", "3"));
-        assertNotNull(data.stream());
-        assertFalse(data.isOpened());
-        assertFalse(data.isClosed());
-        try (InputStream inputStream = data.stream().get()) {
-            assertNotNull(inputStream);
-            assertTrue(data.isOpened());
-            assertFalse(data.isClosed());
-        }
-        catch (Throwable e) {
-            fail(e);
-        }
-        assertTrue(data.isOpened());
-        assertTrue(data.isOpened());
-    }
+    private List<DelugeBuilder> expansiveData(DelugeBuilder builder) {
+        List<DelugeBuilder> list = new ArrayList<>();
 
-    private List<DelugeData> expansiveData() {
-        List<DelugeData> list = new ArrayList<>();
+        list.addAll(listForData(builder, null));
+        list.addAll(listForData(builder, array()));
+        list.addAll(listForData(builder, array("Test")));
+        list.addAll(listForData(builder, array("Hello World!\n\r\n", "Unicode(\ud801\udc10)", "")));
 
-        list.addAll(listForData(null));
-        list.addAll(listForData(BoltTestHelper.array()));
-        list.addAll(listForData(BoltTestHelper.array("Test")));
-        list.addAll(listForData(BoltTestHelper.array("Hello World!\n\r\n", "Unicode(\ud801\udc10)", "")));
+        list.addAll(listForData(builder, array("<", null)));
+        list.addAll(listForData(builder, array(null, ">")));
 
-        list.addAll(listForData(BoltTestHelper.array("<", null)));
-        list.addAll(listForData(BoltTestHelper.array(null, ">")));
+        list.add(builder.forResource("<null>", Runner.class, array()));
+        list.add(builder.forResource("<null>", null, array()));
+        list.add(builder.forResource(null, Runner.class, array()));
+        list.add(builder.forResource(null, null, array()));
 
-        list.add(DelugeData.forResource("<null>", Runner.class, BoltTestHelper.array()));
-        list.add(DelugeData.forResource("<null>", null, BoltTestHelper.array()));
-        list.add(DelugeData.forResource(null, Runner.class, BoltTestHelper.array()));
-        list.add(DelugeData.forResource(null, null, BoltTestHelper.array()));
+        list.add(builder.forResource("<null>", Runner.class, array(), UTF_8));
+        list.add(builder.forResource("<null>", null, array(), UTF_8));
+        list.add(builder.forResource(null, Runner.class, array(), UTF_8));
+        list.add(builder.forResource(null, null, array(), UTF_8));
+        list.add(builder.forResource("RunnerTest.txt", null, array("")));
+        list.add(builder.forResource("RunnerTest.txt", null, array(""), null));
+        list.add(builder.forResource("RunnerTest.txt", null, array(""), ISO_8859_1));
 
-        list.add(DelugeData.forResource("<null>", Runner.class, BoltTestHelper.array(), UTF_8));
-        list.add(DelugeData.forResource("<null>", null, BoltTestHelper.array(), UTF_8));
-        list.add(DelugeData.forResource(null, Runner.class, BoltTestHelper.array(), UTF_8));
-        list.add(DelugeData.forResource(null, null, BoltTestHelper.array(), UTF_8));
+        list.add(builder.forResource("RunnerBlankScopeTest.txt", Runner.class, array()));
+        list.add(builder.forResource("RunnerBlankScopeTest.txt", Runner.class, array(), US_ASCII));
 
-        list.add(DelugeData.forResource("RunnerBlankScopeTest.txt", Runner.class, BoltTestHelper.array()));
-        list.add(DelugeData.forResource("RunnerBlankScopeTest.txt", Runner.class, BoltTestHelper.array(), null));
-        list.add(DelugeData.forResource("RunnerBlankScopeTest.txt", Runner.class, BoltTestHelper.array(), US_ASCII));
-        list.add(DelugeData.forResource("RunnerTest.txt", Runner.class, BoltTestHelper.array("Hello World!", "1 ≤ A[i] ≤ 1014", "")));
-        list.add(
-            DelugeData.forResource("RunnerTest.txt", Runner.class, BoltTestHelper.array("Hello World!", "1 ≤ A[i] ≤ 1014", ""), UTF_8));
-        list.add(DelugeData.forResource("RunnerTest.txt", null, BoltTestHelper.array("")));
-        list.add(DelugeData.forResource("RunnerTest.txt", null, BoltTestHelper.array(""), ISO_8859_1));
+        String[] helloWorld = array("Hello World!", "1 ≤ A[i] ≤ 1014", "");
+        list.add(builder.forResource("RunnerTest.txt", Runner.class, helloWorld));
+        list.add(builder.forResource("RunnerTest.txt", Runner.class, helloWorld, UTF_8));
 
         String[] oneToEight = {"1", "2", "3", "4", "5", "6", "7", "8"};
-        list.add(DelugeData.forResource("RunnerTestUTF16.txt", Runner.class, oneToEight, UTF_16BE));
+        list.add(builder.forResource("RunnerTestUTF16.txt", Runner.class, oneToEight, UTF_16BE));
 
         return list;
     }
 
-    private List<DelugeData> listForData(String[] data) {
-        List<DelugeData> list = new ArrayList<>();
+    private List<DelugeBuilder> listForData(DelugeBuilder builder, String[] data) {
+        List<DelugeBuilder> list = new ArrayList<>();
         Charset[] encodingArray = {null, UTF_8, UTF_16LE, UTF_16BE};
-        list.add(DelugeData.forStringArray(data));
-        list.add(DelugeData.forInputStream(data));
+        list.add(builder.forStringArray(data));
+        list.add(builder.forInputStream(data));
         for (Charset encoding : encodingArray) {
-            list.add(DelugeData.forInputStream(data, encoding));
+            list.add(builder.forInputStream(data, encoding));
         }
         return list;
     }
 
-    private List<DelugeSettings> expansiveSettings() {
-        List<DelugeSettings> list = new ArrayList<>();
+    private List<DelugeBuilder> expansiveSettings() {
+        List<DelugeBuilder> list = new ArrayList<>();
         Charset[] encodingArray = {null, UTF_8, UTF_16LE, UTF_16BE};
         Throwable[] throwableArray = {
             new Exception("deluge.exception.test"),
@@ -134,35 +103,36 @@ class BoltDelugeTest {
         return list;
     }
 
-    private List<DelugeSettings> listForArgument(Charset[] charsets, Throwable[] throwables, String... arguments) {
-        List<DelugeSettings> list = new ArrayList<>();
+    private List<DelugeBuilder> listForArgument(Charset[] charsets, Throwable[] throwables, String... arguments) {
+        List<DelugeBuilder> list = new ArrayList<>();
+        DelugeBuilder builder = new DelugeBuilder();
 
         // Add with no charset, no throwable.
-        list.add(DelugeSettings.from(arguments));
+        list.add(builder.withSettings(arguments));
 
         // Add with charset, no throwable.
         for (Charset charset : charsets) {
-            list.add(DelugeSettings.from(arguments, charset));
+            list.add(builder.withSettings(arguments, charset));
         }
 
         // Add with no charset, throwing.
         for (Throwable throwable : throwables) {
             if (throwable != null) {
-                list.add(DelugeSettings.from(throwable));
+                list.add(builder.withSettings(throwable));
             }
         }
 
         // Add with no charset, argument, and throwing.
         for (Throwable throwable : throwables) {
-            list.add(DelugeSettings.from(arguments, throwable));
+            list.add(builder.withSettings(arguments, throwable));
         }
 
         // Add with charset, throwing.
         for (Charset charset : charsets) {
             if (charset != null) {
                 for (Throwable throwable : throwables) {
-                    list.add(DelugeSettings.from(throwable, charset));
-                    list.add(DelugeSettings.from(arguments, throwable, charset));
+                    list.add(builder.withSettings(throwable, charset));
+                    list.add(builder.withSettings(arguments, throwable, charset));
                 }
             }
         }

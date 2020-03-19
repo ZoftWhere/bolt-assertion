@@ -5,9 +5,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Objects;
 import java.util.Scanner;
 
+import app.zoftwhere.bolt.BoltLineScanner;
 import app.zoftwhere.bolt.api.RunnerInterface.RunConsole;
 import app.zoftwhere.bolt.api.RunnerInterface.RunConsoleArgued;
 import app.zoftwhere.bolt.api.RunnerInterface.RunStandard;
@@ -19,7 +19,6 @@ import app.zoftwhere.bolt.api.RunnerProgramInput;
 import app.zoftwhere.bolt.api.RunnerProgramOutput;
 import app.zoftwhere.bolt.api.RunnerProvideInput;
 import app.zoftwhere.bolt.api.RunnerProvideProgram;
-import app.zoftwhere.bolt.BoltLineScanner;
 
 import static app.zoftwhere.bolt.Runner.newRunner;
 import static app.zoftwhere.bolt.deluge.DelugeData.DataType.ARRAY;
@@ -27,55 +26,42 @@ import static app.zoftwhere.bolt.deluge.DelugeData.DataType.RESOURCE;
 import static app.zoftwhere.bolt.deluge.DelugeData.DataType.RESOURCE_ENCODED;
 import static app.zoftwhere.bolt.deluge.DelugeData.DataType.STREAM;
 import static app.zoftwhere.bolt.deluge.DelugeData.DataType.STREAM_ENCODED;
-import static app.zoftwhere.bolt.deluge.DelugeProgram.ProgramType.INPUT_CONSOLE;
-import static app.zoftwhere.bolt.deluge.DelugeProgram.ProgramType.INPUT_CONSOLE_ARGUED;
-import static app.zoftwhere.bolt.deluge.DelugeProgram.ProgramType.INPUT_STANDARD;
-import static app.zoftwhere.bolt.deluge.DelugeProgram.ProgramType.INPUT_STANDARD_ARGUED;
-import static app.zoftwhere.bolt.deluge.DelugeProgram.ProgramType.PROGRAM_CONSOLE;
-import static app.zoftwhere.bolt.deluge.DelugeProgram.ProgramType.PROGRAM_CONSOLE_ARGUED;
-import static app.zoftwhere.bolt.deluge.DelugeProgram.ProgramType.PROGRAM_STANDARD;
-import static app.zoftwhere.bolt.deluge.DelugeProgram.ProgramType.PROGRAM_STANDARD_ARGUED;
+import static app.zoftwhere.bolt.deluge.DelugeProgramType.INPUT_CONSOLE;
+import static app.zoftwhere.bolt.deluge.DelugeProgramType.INPUT_CONSOLE_ARGUED;
+import static app.zoftwhere.bolt.deluge.DelugeProgramType.INPUT_STANDARD;
+import static app.zoftwhere.bolt.deluge.DelugeProgramType.INPUT_STANDARD_ARGUED;
+import static app.zoftwhere.bolt.deluge.DelugeProgramType.PROGRAM_CONSOLE;
+import static app.zoftwhere.bolt.deluge.DelugeProgramType.PROGRAM_CONSOLE_ARGUED;
+import static app.zoftwhere.bolt.deluge.DelugeProgramType.PROGRAM_STANDARD;
+import static app.zoftwhere.bolt.deluge.DelugeProgramType.PROGRAM_STANDARD_ARGUED;
 
-@SuppressWarnings("WeakerAccess")
-public class DelugeProgram {
+class DelugeProgram {
 
-    private final ProgramType type;
+    private final DelugeProgramType type;
 
     private final DelugeData data;
 
     private final DelugeSettings settings;
 
-    public static DelugeProgram from(ProgramType type, DelugeData data, DelugeSettings settings) {
+    static DelugeProgram from(DelugeProgramType type, DelugeData data, DelugeSettings settings) {
         return new DelugeProgram(type, data, settings);
     }
 
-    public static boolean hasArgument(ProgramType programType) {
-        ProgramType[] array = {
-            INPUT_STANDARD_ARGUED, INPUT_CONSOLE_ARGUED, PROGRAM_STANDARD_ARGUED, PROGRAM_CONSOLE_ARGUED
-        };
-        return objectInArray(programType, array);
-    }
-
-    private DelugeProgram(ProgramType type, DelugeData data, DelugeSettings settings) {
+    private DelugeProgram(DelugeProgramType type, DelugeData data, DelugeSettings settings) {
         this.type = type;
         this.data = data;
         this.settings = settings;
 
-        if (hasArgument(type) && !settings.hasArgumentArray()) {
+        if (type.isArgued() && !settings.hasArgumentArray()) {
             throw new IllegalArgumentException("deluge.no.argument.for.argued.type");
         }
-        if (!hasArgument(type) && settings.hasArgumentArray()) {
+        if (!type.isArgued() && settings.hasArgumentArray()) {
             throw new IllegalArgumentException("deluge.program.found.argument.for.argument-free.type");
         }
     }
 
-    private boolean isProgramFirst(ProgramType type) {
-        ProgramType[] array = {PROGRAM_STANDARD, PROGRAM_CONSOLE, PROGRAM_STANDARD_ARGUED, PROGRAM_CONSOLE_ARGUED};
-        return objectInArray(type, array);
-    }
-
-    public DelugeResult buildProgramResult() {
-        if (isProgramFirst(type)) {
+    DelugeResult buildProgramResult() {
+        if (type.isProgramFirst()) {
             return testProgramFirst(newRunner());
         }
         else {
@@ -176,7 +162,7 @@ public class DelugeProgram {
     }
 
     private DelugeResult testProgramInput(RunnerProgramInput next) {
-        if (hasArgument(type)) {
+        if (type.isArgued()) {
             return testProgramWithArguments(next.argument(settings.argumentArray()));
         }
         else {
@@ -305,31 +291,6 @@ public class DelugeProgram {
             writer.newLine();
             writer.write(String.format("Line: \"%s\"", BoltLineScanner.escapeString(line)));
         }
-    }
-
-    private static <T> boolean objectInArray(T item, T[] array) {
-        if (array == null || array.length == 0) {
-            return false;
-        }
-
-        for (T test : array) {
-            if (Objects.equals(test, item)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public enum ProgramType {
-        INPUT_STANDARD,
-        INPUT_STANDARD_ARGUED,
-        INPUT_CONSOLE,
-        INPUT_CONSOLE_ARGUED,
-        PROGRAM_STANDARD,
-        PROGRAM_STANDARD_ARGUED,
-        PROGRAM_CONSOLE,
-        PROGRAM_CONSOLE_ARGUED
     }
 
 }

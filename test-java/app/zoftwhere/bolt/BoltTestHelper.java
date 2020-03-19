@@ -37,4 +37,18 @@ public class BoltTestHelper {
         }
     }
 
+    public static <T> boolean objectInArray(T item, T[] array) {
+        if (array == null || array.length == 0) {
+            return false;
+        }
+
+        for (T test : array) {
+            if (Objects.equals(test, item)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

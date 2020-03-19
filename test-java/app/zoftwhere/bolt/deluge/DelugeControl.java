@@ -8,10 +8,9 @@ import java.util.function.Function;
 
 import app.zoftwhere.bolt.BoltLineScanner;
 import app.zoftwhere.bolt.BoltSingleReturn;
-import app.zoftwhere.bolt.deluge.DelugeProgram.ProgramType;
 
-import static app.zoftwhere.bolt.BoltTestHelper.array;
 import static app.zoftwhere.bolt.BoltLineScanner.escapeString;
+import static app.zoftwhere.bolt.BoltTestHelper.array;
 import static app.zoftwhere.bolt.BoltTestHelper.isOrHasNull;
 import static app.zoftwhere.bolt.deluge.DelugeData.DataType.ARRAY;
 import static app.zoftwhere.bolt.deluge.DelugeData.DataType.RESOURCE;
@@ -20,27 +19,25 @@ import static app.zoftwhere.bolt.deluge.DelugeData.DataType.STREAM;
 import static app.zoftwhere.bolt.deluge.DelugeData.DataType.STREAM_ENCODED;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-@SuppressWarnings("ALL")
-public
 class DelugeControl {
 
     private final DelugeData data;
 
     private final DelugeSettings settings;
 
-    private final ProgramType programType;
+    private final DelugeProgramType programType;
 
-    public static DelugeControl from(ProgramType programType, DelugeData data, DelugeSettings settings) {
-        return new DelugeControl(programType, data, settings);
+    static DelugeControl from(DelugeProgramType programType, DelugeSettings settings, DelugeData data) {
+        return new DelugeControl(programType, settings, data);
     }
 
-    private DelugeControl(ProgramType programType, DelugeData data, DelugeSettings settings) {
+    private DelugeControl(DelugeProgramType programType, DelugeSettings settings, DelugeData data) {
         this.programType = programType;
         this.data = data;
         this.settings = settings;
     }
 
-    public void runTest() {
+    void runTest() {
         DelugeProgram program = DelugeProgram.from(programType, data, settings);
 
         if (data.stream() != null) {
@@ -48,7 +45,7 @@ class DelugeControl {
         }
 
         DelugeResult actual = program.buildProgramResult();
-        DelugeResult expected = buildExpectation(actual);
+        DelugeResult expected = buildExpectation();
 
         BoltSingleReturn<String> switcher = new BoltSingleReturn<>();
 
@@ -63,45 +60,39 @@ class DelugeControl {
             else {
                 return !data.isClosed() ? null : "deluge.program.data.input.stream.auto.closing.unopened";
             }
-        });
-
-        switcher.block(() -> {
-            return runComparison(expected, actual);
-        });
+        }).block(
+            () -> runComparison(expected, actual)
+        );
 
         String message = switcher.end();
         if (message != null) {
-            program.buildProgramResult();
             throw new DelugeException(message, actual.exception());
         }
     }
 
     private String runComparison(DelugeResult expected, DelugeResult actual) {
-        BoltSingleReturn<String> switcher = new BoltSingleReturn<String>();
-        switcher.block(() -> {
-            return compareException(expected, actual, DelugeResult::exceptionClass,
-                "deluge.program.exception.expected",
-                "deluge.program.exception.found",
-                "deluge.program.exception.mismatch");
-        });
-        switcher.block(() -> {
-            return compareException(expected, actual, DelugeResult::exceptionMessage,
-                "deluge.program.exception.message.expected",
-                "deluge.program.exception.message.found",
-                "deluge.program.exception.message.mismatch");
-        });
-        switcher.block(() -> {
-            return compareException(expected, actual, DelugeResult::causeClass,
-                "deluge.program.exception.cause.expected",
-                "deluge.program.exception.cause.found",
-                "deluge.program.exception.cause.mismatch");
-        });
-        switcher.block(() -> {
-            return compareException(expected, actual, DelugeResult::causeMessage,
-                "deluge.program.exception.cause.message.expected",
-                "deluge.program.exception.cause.message.found",
-                "deluge.program.exception.cause.message.mismatch");
-        });
+        BoltSingleReturn<String> switcher = new BoltSingleReturn<>();
+
+        switcher.block(() -> compareException(expected, actual, DelugeResult::exceptionClass,
+            "deluge.program.exception.expected",
+            "deluge.program.exception.found",
+            "deluge.program.exception.mismatch"));
+
+        switcher.block(() -> compareException(expected, actual, DelugeResult::exceptionMessage,
+            "deluge.program.exception.message.expected",
+            "deluge.program.exception.message.found",
+            "deluge.program.exception.message.mismatch"));
+
+        switcher.block(() -> compareException(expected, actual, DelugeResult::causeClass,
+            "deluge.program.exception.cause.expected",
+            "deluge.program.exception.cause.found",
+            "deluge.program.exception.cause.mismatch"));
+
+        switcher.block(() -> compareException(expected, actual, DelugeResult::causeMessage,
+            "deluge.program.exception.cause.message.expected",
+            "deluge.program.exception.cause.message.found",
+            "deluge.program.exception.cause.message.mismatch"));
+
         switcher.block(() -> {
             if (expected.output() == null) {
                 return "deluge.program.expectation.output.null";
@@ -133,16 +124,13 @@ class DelugeControl {
         String actualString = getter.apply(actual);
         try {
             if (expectedString != null && actualString == null) {
-                //consumer.accept(noActual);
                 return noActual;
             }
             if (expectedString == null && actualString != null) {
-                //consumer.accept(noExpected);
                 return noExpected;
             }
-            if (expectedString != null && actualString != null) {
-                if (Objects.equals(expectedString, actualString) == false) {
-                    //consumer.accept(noMatch);
+            if (expectedString != null) {
+                if (!Objects.equals(expectedString, actualString)) {
                     return noMatch;
                 }
             }
@@ -154,31 +142,27 @@ class DelugeControl {
         }
     }
 
-    @SuppressWarnings("ConstantConditions")
-    private DelugeResult buildExpectation(DelugeResult actual) {
+    private DelugeResult buildExpectation() {
 
         if (STREAM_ENCODED == data.type() || RESOURCE_ENCODED == data.type()) {
             if (data.charset() == null) {
                 String exceptionClass = "app.zoftwhere.bolt.RunnerException";
                 String exceptionMessage = "bolt.runner.input.charset.null";
-                Throwable cause = null;
-                return new DelugeResult(array(""), exceptionClass, exceptionMessage, cause);
+                return new DelugeResult(array(""), exceptionClass, exceptionMessage, null);
             }
         }
 
         if (settings.hasCharSet() && settings.charset() == null) {
             String exceptionClass = "app.zoftwhere.bolt.RunnerException";
             String exceptionMessage = "bolt.runner.output.charset.null";
-            Throwable cause = null;
-            return new DelugeResult(array(""), exceptionClass, exceptionMessage, cause);
+            return new DelugeResult(array(""), exceptionClass, exceptionMessage, null);
         }
 
         if (ARRAY == data.type()) {
             if (data.array() != null && isOrHasNull(data.array())) {
                 String exceptionClass = "app.zoftwhere.bolt.RunnerException";
                 String exceptionMessage = "bolt.runner.variable.array.input.has.null";
-                Throwable cause = null;
-                return new DelugeResult(array(""), exceptionClass, exceptionMessage, cause);
+                return new DelugeResult(array(""), exceptionClass, exceptionMessage, null);
             }
         }
 
@@ -186,23 +170,20 @@ class DelugeControl {
             if (data.resource() == null) {
                 String exceptionClass = "app.zoftwhere.bolt.RunnerException";
                 String exceptionMessage = "bolt.runner.load.input.resource.name.null";
-                Throwable cause = null;
-                return new DelugeResult(array(""), exceptionClass, exceptionMessage, cause);
+                return new DelugeResult(array(""), exceptionClass, exceptionMessage, null);
             }
 
             if (data.withClass() == null) {
                 String exceptionClass = "app.zoftwhere.bolt.RunnerException";
                 String exceptionMessage = "bolt.runner.load.input.resource.class.null";
-                Throwable cause = null;
-                return new DelugeResult(array(""), exceptionClass, exceptionMessage, cause);
+                return new DelugeResult(array(""), exceptionClass, exceptionMessage, null);
             }
 
             final var url = data.withClass().getResource(data.resource());
             if (url == null) {
                 String exceptionClass = "app.zoftwhere.bolt.RunnerException";
                 String exceptionMessage = "bolt.runner.load.input.input.stream.null";
-                Throwable cause = null;
-                return new DelugeResult(array(""), exceptionClass, exceptionMessage, cause);
+                return new DelugeResult(array(""), exceptionClass, exceptionMessage, null);
             }
         }
 
@@ -211,8 +192,7 @@ class DelugeControl {
             if (data.array() == null) {
                 String exceptionClass = "app.zoftwhere.bolt.RunnerException";
                 String exceptionMessage = "bolt.runner.load.input.input.stream.null";
-                Throwable cause = null;
-                return new DelugeResult(array(""), exceptionClass, exceptionMessage, cause);
+                return new DelugeResult(array(""), exceptionClass, exceptionMessage, null);
             }
         }
 
@@ -241,7 +221,7 @@ class DelugeControl {
             return list;
         }
 
-        if (!DelugeProgram.hasArgument(programType)) {
+        if (!programType.isArgued()) {
             list.add("Argument: <null>");
         }
         else if (settings.argumentArray() == null) {

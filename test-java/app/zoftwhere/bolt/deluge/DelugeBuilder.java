@@ -2,15 +2,13 @@ package app.zoftwhere.bolt.deluge;
 
 import java.nio.charset.Charset;
 
-import app.zoftwhere.bolt.deluge.DelugeProgram.ProgramType;
-
 public class DelugeBuilder {
 
     private final DelugeData data;
 
     private final DelugeSettings settings;
 
-    private final ProgramType programType;
+    private final DelugeProgramType programType;
 
     public DelugeBuilder() {
         this.data = null;
@@ -18,13 +16,13 @@ public class DelugeBuilder {
         this.settings = null;
     }
 
-    private DelugeBuilder(ProgramType programType, DelugeData data, DelugeSettings settings) {
+    private DelugeBuilder(DelugeProgramType programType, DelugeData data, DelugeSettings settings) {
         this.data = data;
         this.settings = settings;
         this.programType = programType;
     }
 
-    public DelugeBuilder forProgram(ProgramType programType) {
+    public DelugeBuilder forProgram(DelugeProgramType programType) {
         return new DelugeBuilder(programType, this.data, this.settings);
     }
 
@@ -76,6 +74,26 @@ public class DelugeBuilder {
     public DelugeBuilder withSettings(String[] argumentArray, Throwable throwable, Charset charset) {
         DelugeSettings settings = DelugeSettings.from(argumentArray, throwable, charset);
         return new DelugeBuilder(this.programType, this.data, settings);
+    }
+
+    public boolean hasProgramType() {
+        return programType != null;
+    }
+
+    public boolean hasSettings() {
+        return settings != null;
+    }
+
+    public boolean hasData() {
+        return data != null;
+    }
+
+    public boolean hasArgumentArray() {
+        return settings != null && settings.hasArgumentArray();
+    }
+
+    public void runTest() {
+        DelugeControl.from(programType, settings, data).runTest();
     }
 
 }

@@ -9,9 +9,8 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.Objects;
 
-import app.zoftwhere.bolt.BoltTestHelper;
-import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 import app.zoftwhere.bolt.BoltPlaceHolder;
+import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 
 import static app.zoftwhere.bolt.BoltTestHelper.isOrHasNull;
 import static app.zoftwhere.bolt.deluge.DelugeData.DataType.ARRAY;
@@ -21,7 +20,7 @@ import static app.zoftwhere.bolt.deluge.DelugeData.DataType.STREAM;
 import static app.zoftwhere.bolt.deluge.DelugeData.DataType.STREAM_ENCODED;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class DelugeData {
+class DelugeData {
 
     private final DataType type;
 
@@ -39,24 +38,23 @@ public class DelugeData {
 
     private final BoltPlaceHolder<Boolean> closedFlag = new BoltPlaceHolder<>(false);
 
-    public static DelugeData forStringArray(String[] data) {
+    static DelugeData forStringArray(String[] data) {
         return new DelugeData(ARRAY, data, null, null, false, UTF_8);
     }
 
-    public static DelugeData forInputStream(String[] data) {
+    static DelugeData forInputStream(String[] data) {
         return new DelugeData(STREAM, data, null, null, false, UTF_8);
     }
 
-    public static DelugeData forInputStream(String[] data, Charset charset) {
+    static DelugeData forInputStream(String[] data, Charset charset) {
         return new DelugeData(STREAM_ENCODED, data, null, null, true, charset);
     }
 
-    public static DelugeData forResource(String resource, Class<?> withClass, String[] data) {
+    static DelugeData forResource(String resource, Class<?> withClass, String[] data) {
         return new DelugeData(RESOURCE, Objects.requireNonNull(data), resource, withClass, false, UTF_8);
     }
 
-    @SuppressWarnings("SameParameterValue")
-    public static DelugeData forResource(String resource, Class<?> withClass, String[] data, Charset charset) {
+    static DelugeData forResource(String resource, Class<?> withClass, String[] data, Charset charset) {
         return new DelugeData(RESOURCE_ENCODED, Objects.requireNonNull(data), resource, withClass, true, charset);
     }
 
@@ -84,40 +82,40 @@ public class DelugeData {
         }
     }
 
-    public DataType type() {
+    DataType type() {
         return type;
     }
 
-    public String[] array() {
+    String[] array() {
         return array;
     }
 
-    public InputStreamSupplier stream() {
+    InputStreamSupplier stream() {
         return supplier;
     }
 
-    public String resource() {
+    String resource() {
         return resource;
     }
 
-    public Class<?> withClass() {
+    Class<?> withClass() {
         return withClass;
     }
 
-    public Charset charset() {
+    Charset charset() {
         return charset;
     }
 
-    public void resetFlags() {
+    void resetFlags() {
         openFlag.set(false);
         closedFlag.set(false);
     }
 
-    public boolean isOpened() {
+    boolean isOpened() {
         return openFlag.get();
     }
 
-    public boolean isClosed() {
+    boolean isClosed() {
         return closedFlag.get();
     }
 
@@ -157,7 +155,7 @@ public class DelugeData {
         };
     }
 
-    public enum DataType {
+    enum DataType {
         ARRAY,
         STREAM,
         STREAM_ENCODED,

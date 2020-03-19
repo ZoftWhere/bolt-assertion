@@ -4,8 +4,6 @@ import java.nio.charset.Charset;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-@SuppressWarnings("WeakerAccess")
-public
 class DelugeSettings {
 
     private final boolean hasArgumentArray;
@@ -20,27 +18,27 @@ class DelugeSettings {
 
     private final Charset charset;
 
-    public static DelugeSettings from(String[] argumentArray) {
+    static DelugeSettings from(String[] argumentArray) {
         return new DelugeSettings(true, argumentArray, false, null, false, UTF_8);
     }
 
-    public static DelugeSettings from(Throwable throwable) {
+    static DelugeSettings from(Throwable throwable) {
         return new DelugeSettings(false, null, true, throwable, false, UTF_8);
     }
 
-    public static DelugeSettings from(String[] argumentArray, Throwable throwable) {
+    static DelugeSettings from(String[] argumentArray, Throwable throwable) {
         return new DelugeSettings(true, argumentArray, true, throwable, false, UTF_8);
     }
 
-    public static DelugeSettings from(String[] argumentArray, Charset charset) {
+    static DelugeSettings from(String[] argumentArray, Charset charset) {
         return new DelugeSettings(true, argumentArray, false, null, true, charset);
     }
 
-    public static DelugeSettings from(Throwable throwable, Charset charset) {
+    static DelugeSettings from(Throwable throwable, Charset charset) {
         return new DelugeSettings(false, null, true, throwable, true, charset);
     }
 
-    public static DelugeSettings from(String[] argumentArray, Throwable throwable, Charset charset) {
+    static DelugeSettings from(String[] argumentArray, Throwable throwable, Charset charset) {
         return new DelugeSettings(true, argumentArray, true, throwable, true, charset);
     }
 
@@ -72,27 +70,28 @@ class DelugeSettings {
         }
     }
 
-    public boolean hasArgumentArray() {
+    boolean hasArgumentArray() {
         return hasArgumentArray;
     }
 
-    public String[] argumentArray() {
+    String[] argumentArray() {
         return argumentArray;
     }
 
-    public boolean hasThrowable() {
+    boolean hasThrowable() {
         return hasThrowable;
     }
 
-    public Throwable throwable() {
+    Throwable throwable() {
         return throwable;
     }
 
-    public boolean hasCharSet() {
+    boolean hasCharSet() {
         return hasCharSet;
     }
 
-    public Charset charset() {
+    Charset charset() {
         return charset;
     }
+
 }

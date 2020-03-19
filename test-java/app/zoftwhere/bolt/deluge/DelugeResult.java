@@ -1,7 +1,7 @@
 package app.zoftwhere.bolt.deluge;
 
 @SuppressWarnings("unused")
-public class DelugeResult {
+class DelugeResult {
 
     private final String[] output;
 
@@ -17,7 +17,7 @@ public class DelugeResult {
 
     private final String causeMessage;
 
-    public DelugeResult(String[] output) {
+    DelugeResult(String[] output) {
         this.output = output;
         this.exception = null;
         this.exceptionClass = null;
@@ -27,7 +27,7 @@ public class DelugeResult {
         this.causeMessage = null;
     }
 
-    public DelugeResult(String[] output, Exception e) {
+    DelugeResult(String[] output, Exception e) {
         this.output = output;
         this.exception = e;
         this.exceptionClass = getClass(e);
@@ -37,7 +37,7 @@ public class DelugeResult {
         this.causeMessage = getMessage(cause);
     }
 
-    public DelugeResult(String[] output, String exceptionClass, String exceptionMessage, Throwable cause) {
+    DelugeResult(String[] output, String exceptionClass, String exceptionMessage, Throwable cause) {
         this.output = output;
         this.exception = new Exception(exceptionMessage, cause);
         this.exceptionClass = exceptionClass;
@@ -47,24 +47,32 @@ public class DelugeResult {
         this.causeMessage = getMessage(cause);
     }
 
-    public String[] output() {
+    String[] output() {
         return output;
     }
 
-    public Exception exception() {
+    Exception exception() {
         return exception;
     }
 
-    public String exceptionClass() {
+    String exceptionClass() {
         return exceptionClass;
     }
 
-    public String exceptionMessage() {
+    String exceptionMessage() {
         return exceptionMessage;
     }
 
-    public Throwable cause() {
+    Throwable cause() {
         return cause;
+    }
+
+    String causeClass() {
+        return this.causeClass;
+    }
+
+    String causeMessage() {
+        return this.causeClass;
     }
 
     private String getClass(Throwable throwable) {
@@ -79,14 +87,6 @@ public class DelugeResult {
             return null;
         }
         return throwable.getMessage();
-    }
-
-    public String causeClass() {
-        return this.causeClass;
-    }
-
-    public String causeMessage() {
-        return this.causeClass;
     }
 
 }
