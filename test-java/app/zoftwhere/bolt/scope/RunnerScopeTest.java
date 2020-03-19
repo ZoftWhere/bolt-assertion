@@ -27,8 +27,8 @@ class RunnerScopeTest {
 
     private final Runner runner = newRunner();
 
-    @SuppressWarnings("unused")
     @Test
+    @SuppressWarnings("unused")
     void testProgramFirstScope() {
 
         RunnerPreProgram r2a;

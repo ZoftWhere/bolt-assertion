@@ -125,29 +125,29 @@ abstract class AbstractUnit {
         Optional<Exception> exception();
     }
 
-    @SuppressWarnings({"EmptyMethod", "unused"})
     @FunctionalInterface
+    @SuppressWarnings({"EmptyMethod", "unused"})
     interface CallerNoArguments<T1, T2> {
 
         void call(T1 t1, T2 t2) throws Throwable;
     }
 
-    @SuppressWarnings({"EmptyMethod", "unused"})
     @FunctionalInterface
+    @SuppressWarnings({"EmptyMethod", "unused"})
     interface CallerWithArguments<T1, T2> {
 
         void call(String[] arguments, T1 t1, T2 t2) throws Throwable;
     }
 
-    @SuppressWarnings({"EmptyMethod", "unused"})
     @FunctionalInterface
+    @SuppressWarnings({"EmptyMethod", "unused"})
     interface ThrowingSupplier<T> {
 
         T get() throws Throwable;
     }
 
-    @SuppressWarnings({"EmptyMethod", "unused"})
     @FunctionalInterface
+    @SuppressWarnings({"EmptyMethod", "unused"})
     interface ThrowingConsumer<T> {
 
         void accept(T input) throws Throwable;
