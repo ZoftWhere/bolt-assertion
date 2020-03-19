@@ -6,6 +6,10 @@
     <groupId>app.zoftwhere.bolt</groupId>
     <artifactId>bolt-assertion</artifactId>
     <version>6.0.0-SNAPSHOT</version>
+    <organization>
+        <name>ZoftWhere</name>
+        <url>zoftwhere.app</url>
+    </organization>
     <name>zoftwhere.bolt.assertion</name>
 
     <properties>
@@ -193,6 +197,7 @@
                             <argLine>
                                 --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt=ALL-UNNAMED
                                 --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt.api=ALL-UNNAMED
+                                --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt.deluge=ALL-UNNAMED
                                 --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt.scope=ALL-UNNAMED
                                 --add-opens&#32;zoftwhere.bolt.assertion/example=ALL-UNNAMED
                             </argLine>
@@ -306,6 +311,21 @@
                 <configuration>
                     <quiet>true</quiet>
                     <failOnError>true</failOnError>
+                    <archive>
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                        <manifest>
+                            <addClasspath>false</addClasspath>
+                        </manifest>
+                        <manifestEntries>
+                            <Build-DateTime>${maven.build.timestamp}</Build-DateTime>
+                            <Implementation-Title>${project.artifactId}</Implementation-Title>
+                            <Implementation-Vendor>${project.groupId}</Implementation-Vendor>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Specification-Title>${project.artifactId}</Specification-Title>
+                            <Specification-Vendor>${project.groupId}</Specification-Vendor>
+                            <Specification-Version>${project.version}</Specification-Version>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
 
