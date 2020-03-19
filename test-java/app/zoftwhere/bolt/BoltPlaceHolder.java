@@ -1,10 +1,10 @@
-package app.zoftwhere.function;
+package app.zoftwhere.bolt;
 
-public class PlaceHolder<T> {
+public class BoltPlaceHolder<T> {
 
     private T value;
 
-    public PlaceHolder(T value) {
+    public BoltPlaceHolder(T value) {
         this.value = value;
     }
 

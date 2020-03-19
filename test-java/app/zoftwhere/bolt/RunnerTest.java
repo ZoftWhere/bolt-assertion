@@ -13,7 +13,6 @@ import java.util.function.Supplier;
 import app.zoftwhere.bolt.api.RunnerAsserter;
 import app.zoftwhere.bolt.api.RunnerProgramOutput;
 import app.zoftwhere.bolt.api.RunnerProgramResult;
-import app.zoftwhere.function.PlaceHolder;
 import org.junit.jupiter.api.Test;
 
 import static app.zoftwhere.bolt.BoltReader.readList;
@@ -37,7 +36,7 @@ class RunnerTest {
     @Test
     void testInputStreamClose() {
         final Charset charset = UTF_16BE;
-        final PlaceHolder<Boolean> closedFlag = new PlaceHolder<>(Boolean.FALSE);
+        final BoltPlaceHolder<Boolean> closedFlag = new BoltPlaceHolder<>(Boolean.FALSE);
         assertNotNull(closedFlag.get());
         assertFalse(closedFlag.get());
 
