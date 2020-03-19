@@ -52,7 +52,8 @@ class RunnerTest {
         {
             // process caller first run UTF-8
             closedFlag.set(false);
-            runner.input(inputStream::get, charset).run((scanner, writer) -> {});
+            runner.input(inputStream::get, charset)
+                .run((scanner, writer) -> {});
 
             assertNotNull(closedFlag);
             assertNotNull(closedFlag.get());
@@ -60,7 +61,8 @@ class RunnerTest {
 
             // process caller first run charset
             closedFlag.set(false);
-            runner.input(inputStream::get, charset).run(charset, (scanner, writer) -> {});
+            runner.input(inputStream::get, charset)
+                .run(charset, (scanner, writer) -> {});
 
             assertNotNull(closedFlag);
             assertNotNull(closedFlag.get());
@@ -68,7 +70,8 @@ class RunnerTest {
 
             // process caller first run console UTF-8
             closedFlag.set(false);
-            runner.input(inputStream::get, charset).runConsole((input, output) -> {});
+            runner.input(inputStream::get, charset)
+                .runConsole((input, output) -> {});
 
             assertNotNull(closedFlag);
             assertNotNull(closedFlag.get());
@@ -76,7 +79,8 @@ class RunnerTest {
 
             // process caller first run console charset
             closedFlag.set(false);
-            runner.input(inputStream::get, charset).runConsole(charset, (input, output) -> {});
+            runner.input(inputStream::get, charset)
+                .runConsole(charset, (input, output) -> {});
 
             assertNotNull(closedFlag);
             assertNotNull(closedFlag.get());
@@ -85,7 +89,9 @@ class RunnerTest {
         {
             // process caller first run argument UTF-8
             closedFlag.set(false);
-            runner.input(inputStream::get, charset).argument("").run((strings, scanner, writer) -> {});
+            runner.input(inputStream::get, charset)
+                .argument("")
+                .run((strings, scanner, writer) -> {});
 
             assertNotNull(closedFlag);
             assertNotNull(closedFlag.get());
@@ -93,7 +99,9 @@ class RunnerTest {
 
             // process caller first run argument charset
             closedFlag.set(false);
-            runner.input(inputStream::get, charset).argument("").run(charset, (strings, scanner, writer) -> {});
+            runner.input(inputStream::get, charset)
+                .argument("")
+                .run(charset, (strings, scanner, writer) -> {});
 
             assertNotNull(closedFlag);
             assertNotNull(closedFlag.get());
@@ -101,7 +109,9 @@ class RunnerTest {
 
             // process caller first run console argument UTF-8
             closedFlag.set(false);
-            runner.input(inputStream::get, charset).argument("").runConsole((strings, input, output) -> {});
+            runner.input(inputStream::get, charset)
+                .argument("")
+                .runConsole((strings, input, output) -> {});
 
             assertNotNull(closedFlag);
             assertNotNull(closedFlag.get());
@@ -109,7 +119,9 @@ class RunnerTest {
 
             // process caller first run console argument charset
             closedFlag.set(false);
-            runner.input(inputStream::get, charset).argument("").runConsole(charset, (strings, input, output) -> {});
+            runner.input(inputStream::get, charset)
+                .argument("")
+                .runConsole(charset, (strings, input, output) -> {});
 
             assertNotNull(closedFlag);
             assertNotNull(closedFlag.get());
@@ -118,16 +130,17 @@ class RunnerTest {
         {
             // process input first run UTF-8
             closedFlag.set(false);
-            runner.input(inputStream::get, charset).run((scanner, writer) -> {});
+            runner.input(inputStream::get, charset)
+                .run((scanner, writer) -> {});
 
             assertNotNull(closedFlag);
             assertNotNull(closedFlag.get());
             assertTrue(closedFlag.get());
 
-
             // process input first run charset
             closedFlag.set(false);
-            runner.input(inputStream::get, charset).run(charset, (scanner, writer) -> {});
+            runner.input(inputStream::get, charset)
+                .run(charset, (scanner, writer) -> {});
 
             assertNotNull(closedFlag);
             assertNotNull(closedFlag.get());
@@ -135,7 +148,8 @@ class RunnerTest {
 
             // process input first run console UTF-8
             closedFlag.set(false);
-            runner.input(inputStream::get, charset).runConsole((input, output) -> {});
+            runner.input(inputStream::get, charset)
+                .runConsole((input, output) -> {});
 
             assertNotNull(closedFlag);
             assertNotNull(closedFlag.get());
@@ -143,7 +157,8 @@ class RunnerTest {
 
             // process input first run console  charset
             closedFlag.set(false);
-            runner.input(inputStream::get, charset).runConsole(charset, (input, output) -> {});
+            runner.input(inputStream::get, charset)
+                .runConsole(charset, (input, output) -> {});
 
             assertNotNull(closedFlag);
             assertNotNull(closedFlag.get());
@@ -152,7 +167,9 @@ class RunnerTest {
         {
             // process input first run argument UTF-8
             closedFlag.set(false);
-            runner.input(inputStream::get, charset).argument("").run((strings, scanner, writer) -> {});
+            runner.input(inputStream::get, charset)
+                .argument("")
+                .run((strings, scanner, writer) -> {});
 
             assertNotNull(closedFlag);
             assertNotNull(closedFlag.get());
@@ -160,7 +177,9 @@ class RunnerTest {
 
             // process input first run argument charset
             closedFlag.set(false);
-            runner.input(inputStream::get, charset).argument("").run(charset, (strings, scanner, writer) -> {});
+            runner.input(inputStream::get, charset)
+                .argument("")
+                .run(charset, (strings, scanner, writer) -> {});
 
             assertNotNull(closedFlag);
             assertNotNull(closedFlag.get());
@@ -168,7 +187,9 @@ class RunnerTest {
 
             // process input first run console argument UTF-8
             closedFlag.set(false);
-            runner.input(inputStream::get, charset).argument("").runConsole((strings, input, output) -> {});
+            runner.input(inputStream::get, charset)
+                .argument("")
+                .runConsole((strings, input, output) -> {});
 
             assertNotNull(closedFlag);
             assertNotNull(closedFlag.get());
@@ -176,7 +197,9 @@ class RunnerTest {
 
             // process input first run console argument charset
             closedFlag.set(false);
-            runner.input(inputStream::get, charset).argument("").runConsole(charset, (strings, input, output) -> {});
+            runner.input(inputStream::get, charset)
+                .argument("")
+                .runConsole(charset, (strings, input, output) -> {});
 
             assertNotNull(closedFlag);
             assertNotNull(closedFlag.get());
@@ -356,7 +379,9 @@ class RunnerTest {
             .run(null, (scanner, bufferedWriter) -> {})
             .input(() -> new ByteArrayInputStream(new byte[0]), US_ASCII)
             .expected("")
-            .result().exception().orElse(null);
+            .result()
+            .exception()
+            .orElse(null);
 
         assertNotNull(e);
         assertTrue(e instanceof RunnerException);
@@ -371,7 +396,9 @@ class RunnerTest {
             .runConsole(null, (scanner, bufferedWriter) -> {})
             .input(() -> new ByteArrayInputStream(new byte[0]), US_ASCII)
             .expected("")
-            .result().exception().orElse(null);
+            .result()
+            .exception()
+            .orElse(null);
 
         assertNotNull(e);
         assertTrue(e instanceof RunnerException);
@@ -386,7 +413,9 @@ class RunnerTest {
             .run(US_ASCII, (scanner, bufferedWriter) -> {})
             .input(() -> new ByteArrayInputStream(new byte[0]), null)
             .expected("")
-            .result().exception().orElse(null);
+            .result()
+            .exception()
+            .orElse(null);
 
         assertNotNull(e);
         assertTrue(e instanceof RunnerException);
@@ -401,7 +430,9 @@ class RunnerTest {
             .runConsole(US_ASCII, (scanner, bufferedWriter) -> {})
             .input(() -> new ByteArrayInputStream(new byte[0]), null)
             .expected("")
-            .result().exception().orElse(null);
+            .result()
+            .exception()
+            .orElse(null);
 
         assertNotNull(e);
         assertTrue(e instanceof RunnerException);
