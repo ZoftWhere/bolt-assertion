@@ -68,5 +68,5 @@ class RunnerExceptionTest {
         builder.append(")");
         return builder.toString();
     }
-}
 
+}
