@@ -3,8 +3,7 @@ package app.zoftwhere.bolt;
 /**
  * A Runner Assertion Exception class for API exceptions.
  */
-@SuppressWarnings("WeakerAccess")
-public final class RunnerException extends RuntimeException {
+public class RunnerException extends RuntimeException {
 
     static final long serialVersionUID = 0x407c5c6e5485db90L;
 
@@ -15,7 +14,7 @@ public final class RunnerException extends RuntimeException {
      *
      * @param message error message
      */
-    RunnerException(String message) {
+    public RunnerException(String message) {
         super(message, null);
     }
 
@@ -26,7 +25,7 @@ public final class RunnerException extends RuntimeException {
      * @param message error message
      * @param cause   error cause
      */
-    RunnerException(String message, Throwable cause) {
+    public RunnerException(String message, Throwable cause) {
         super(message, cause);
     }
 
