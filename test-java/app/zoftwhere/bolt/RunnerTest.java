@@ -214,6 +214,7 @@ class RunnerTest {
         assertNotNull(runnerProgramOutput.output());
         assertArrayEquals(new String[] {"Test"}, runnerProgramOutput.output());
         assertNull(runnerProgramOutput.exception().orElse(null));
+        runnerProgramOutput.expected((String[]) null).assertFailure();
         runnerProgramOutput.expected().assertFailure();
         runnerProgramOutput.expected("").assertFailure();
         runnerProgramOutput.expected("Test").assertSuccess();
@@ -222,6 +223,7 @@ class RunnerTest {
 
         assertNotNull(resultBlank.output());
         assertNull(resultBlank.exception().orElse(null));
+        resultBlank.expected((String[]) null).assertSuccess();
         resultBlank.expected().assertSuccess();
         resultBlank.expected("").assertSuccess();
     }
