@@ -287,12 +287,12 @@ class RunnerTest {
             .orElse(null);
 
         assertNotNull(e);
-        assertEquals(RunnerException.class.getName(), e.getClass().getName());
+        assertClass(RunnerException.class, e);
         assertNotNull(e.getMessage());
         assertEquals("bolt.runner.throwable.as.cause", e.getMessage());
 
         assertNotNull(e.getCause());
-        assertEquals(Throwable.class.getName(), e.getCause().getClass().getName());
+        assertClass(Throwable.class, e.getCause());
         assertNotNull(e.getCause().getMessage());
         assertEquals(s, e.getCause().getMessage());
     }
