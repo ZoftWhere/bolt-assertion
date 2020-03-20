@@ -31,65 +31,6 @@ class RunnerTest {
     private final Runner runner = newRunner();
 
     @Test
-    void testCallerFirst() {
-        RunnerProgramOutput runnerProgramOutput = runner.run((scanner, writer) -> writer.write("Test")).input();
-
-        assertNotNull(runnerProgramOutput.output());
-        assertArrayEquals(new String[] {"Test"}, runnerProgramOutput.output());
-        assertNull(runnerProgramOutput.exception().orElse(null));
-        runnerProgramOutput.expected((String[]) null).assertFailure();
-        runnerProgramOutput.expected().assertFailure();
-        runnerProgramOutput.expected("").assertFailure();
-        runnerProgramOutput.expected("Test").assertSuccess();
-
-        RunnerProgramOutput resultBlank = runner.runConsole((inputStream, outputStream) -> {}).input("");
-
-        assertNotNull(resultBlank.output());
-        assertNull(resultBlank.exception().orElse(null));
-        resultBlank.expected((String[]) null).assertSuccess();
-        resultBlank.expected().assertSuccess();
-        resultBlank.expected("").assertSuccess();
-    }
-
-    @Test
-    void testInputFirst() {
-        RunnerProgramOutput resultEmpty = runner
-            .input()
-            .runConsole((scanner, bufferedWriter) -> {});
-
-        assertNotNull(resultEmpty.output());
-        assertNull(resultEmpty.exception().orElse(null));
-        resultEmpty.expected().assertSuccess();
-        resultEmpty.expected("").assertSuccess();
-
-        RunnerProgramOutput resultBlank = runner //
-            .input("")
-            .argument("")
-            .runConsole((arguments, scanner, bufferedWriter) -> {});
-
-        assertNotNull(resultBlank.output());
-        assertNull(resultBlank.exception().orElse(null));
-        resultBlank.expected().assertSuccess();
-        resultBlank.expected("").assertSuccess();
-    }
-
-    @Test
-    void testLoadingExpectation() {
-        RunnerProgramOutput output = runner
-            .run((scanner, writer) -> {
-                writer.write("Hello World!\n");
-                writer.write("1 ≤ A[i] ≤ 1014\n");
-            })
-            .input();
-
-        output.loadExpectation("RunnerTest.txt", getClass())
-            .assertSuccess();
-
-        output.loadExpectation("RunnerTest.txt", getClass(), UTF_8)
-            .assertSuccess();
-    }
-
-    @Test
     void testRunProgram() {
         runner.run((scanner, bufferedWriter) -> {})
             .input("")
