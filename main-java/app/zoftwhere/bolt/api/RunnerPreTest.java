@@ -32,7 +32,13 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
     Optional<Exception> exception();
 
     /**
-     * Specify the expected program output.
+     * <p>Specify the expected program output.
+     * </p>
+     * <p>The expectation will only be loaded if the program output does not contain an exception.
+     * </p>
+     * <p>If the expectation is loaded, and the array contains a null, the program result will be loaded with a
+     * corresponding exception.
+     * </p>
      *
      * @param expected variable argument for expected program line output
      * @return {@link RunnerAsserter}
@@ -42,7 +48,13 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
     RunnerAsserter expected(String... expected);
 
     /**
-     * Specify the expected program output.
+     * <p>Specify the expected program output.
+     * </p>
+     * <p>The expectation will only be loaded if the program output does not contain an exception.
+     * </p>
+     * <p>If the expectation is loading, and an exception occurs, the program result will be loaded with a corresponding
+     * exception.
+     * </p>
      *
      * @param supplier {@link InputStream} supplier for program input
      * @return {@link RunnerAsserter}
@@ -52,7 +64,13 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
     RunnerAsserter expected(InputStreamSupplier supplier);
 
     /**
-     * Specify the expected program output.
+     * <p>Specify the expected program output.
+     * </p>
+     * <p>The expectation will only be loaded if the program output does not contain an exception.
+     * </p>
+     * <p>If the expectation is loading, and an exception occurs, the program result will be loaded with a corresponding
+     * exception.
+     * </p>
      *
      * @param supplier {@link InputStream} supplier for expected program output
      * @param charset  {@link Charset} for {@link InputStream}
@@ -63,7 +81,13 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
     RunnerAsserter expected(InputStreamSupplier supplier, Charset charset);
 
     /**
-     * Specify the resource to load as expected program output.
+     * <p>Specify the resource to load as expected program output.
+     * </p>
+     * <p>The expectation will only be loaded if the program output does not contain an exception.
+     * </p>
+     * <p>If the expectation is loading, and an exception occurs, the program result will be loaded with a corresponding
+     * exception.
+     * </p>
      *
      * @param resourceName resource name of resource to be loaded as expected program output
      * @param withClass    {@link Class} with which its {@link ClassLoader} will load the expected program output
@@ -74,7 +98,13 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
     RunnerAsserter loadExpectation(String resourceName, Class<?> withClass);
 
     /**
-     * Specify the resource to load as expected program output.
+     * <p>Specify the resource to load as expected program output.
+     * </p>
+     * <p>The expectation will only be loaded if the program output does not contain an exception.
+     * </p>
+     * <p>If the expectation is loading, and an exception occurs, the program result will be loaded with a corresponding
+     * exception.
+     * </p>
      *
      * @param resourceName resource name of resource to be loaded as expected program output
      * @param withClass    {@link Class} with which its {@link ClassLoader} will load the expected program output

@@ -495,40 +495,6 @@ class RunnerTest {
     }
 
     @Test
-    void testExecuteRunFirstNullExpectation() {
-        try {
-            runner //
-                .run((scanner, bufferedWriter) -> {})
-                .input("")
-                .expected(() -> null);
-            fail("bolt.runner.test.error.exception.expected");
-        }
-        catch (Exception e) {
-            assertClass(RunnerException.class, e);
-            assertNotNull(e.getMessage());
-            assertEquals("bolt.runner.load.expectation.error", e.getMessage());
-            assertEquals("bolt.runner.load.expectation.input.stream.null", e.getCause().getMessage());
-        }
-    }
-
-    @Test
-    void testExecuteInputFirstNullExpectation() {
-        try {
-            runner //
-                .input("")
-                .run((scanner, bufferedWriter) -> {})
-                .expected(() -> null);
-            fail("bolt.runner.test.error.exception.expected");
-        }
-        catch (Exception e) {
-            assertClass(RunnerException.class, e);
-            assertNotNull(e.getMessage());
-            assertEquals("bolt.runner.load.expectation.error", e.getMessage());
-            assertEquals("bolt.runner.load.expectation.input.stream.null", e.getCause().getMessage());
-        }
-    }
-
-    @Test
     void testLoadingInputAll() {
         runner //
             .runConsole(RunnerTest::echoConsole)
