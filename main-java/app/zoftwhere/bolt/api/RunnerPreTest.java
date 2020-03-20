@@ -52,8 +52,8 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
      * </p>
      * <p>The expectation will only be loaded if the program output does not contain an exception.
      * </p>
-     * <p>If the expectation is loading, and an exception occurs, the program result will be loaded with a corresponding
-     * exception.
+     * <p>If the expectation is loading, and an exception occurs, the program result will be loaded with a
+     * corresponding exception.
      * </p>
      *
      * @param supplier {@link InputStream} supplier for program input
@@ -68,8 +68,8 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
      * </p>
      * <p>The expectation will only be loaded if the program output does not contain an exception.
      * </p>
-     * <p>If the expectation is loading, and an exception occurs, the program result will be loaded with a corresponding
-     * exception.
+     * <p>If the expectation is loading, and an exception occurs, the program result will be loaded with a
+     * corresponding exception.
      * </p>
      *
      * @param supplier {@link InputStream} supplier for expected program output
@@ -85,8 +85,8 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
      * </p>
      * <p>The expectation will only be loaded if the program output does not contain an exception.
      * </p>
-     * <p>If the expectation is loading, and an exception occurs, the program result will be loaded with a corresponding
-     * exception.
+     * <p>If the expectation is loading, and an exception occurs, the program result will be loaded with a
+     * corresponding exception.
      * </p>
      *
      * @param resourceName resource name of resource to be loaded as expected program output
@@ -102,8 +102,8 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
      * </p>
      * <p>The expectation will only be loaded if the program output does not contain an exception.
      * </p>
-     * <p>If the expectation is loading, and an exception occurs, the program result will be loaded with a corresponding
-     * exception.
+     * <p>If the expectation is loading, and an exception occurs, the program result will be loaded with a
+     * corresponding exception.
      * </p>
      *
      * @param resourceName resource name of resource to be loaded as expected program output
