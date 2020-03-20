@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
 import java.util.Comparator;
-import java.util.function.Supplier;
 
 import app.zoftwhere.bolt.api.RunnerAsserter;
 import app.zoftwhere.bolt.api.RunnerProgramOutput;
@@ -24,188 +22,13 @@ import static java.nio.charset.StandardCharsets.UTF_16BE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class RunnerTest {
 
     private final Runner runner = newRunner();
-
-    @Test
-    void testInputStreamClose() {
-        final Charset charset = UTF_16BE;
-        final BoltPlaceHolder<Boolean> closedFlag = new BoltPlaceHolder<>(Boolean.FALSE);
-        assertNotNull(closedFlag.get());
-        assertFalse(closedFlag.get());
-
-        final Supplier<InputStream> inputStream = () -> new ByteArrayInputStream("–Great–".getBytes(charset)) {
-            @Override
-            public void close() throws IOException {
-                closedFlag.set(Boolean.TRUE);
-                super.close();
-            }
-        };
-
-        {
-            // process caller first run UTF-8
-            closedFlag.set(false);
-            runner.input(inputStream::get, charset)
-                .run((scanner, writer) -> {});
-
-            assertNotNull(closedFlag);
-            assertNotNull(closedFlag.get());
-            assertTrue(closedFlag.get());
-
-            // process caller first run charset
-            closedFlag.set(false);
-            runner.input(inputStream::get, charset)
-                .run(charset, (scanner, writer) -> {});
-
-            assertNotNull(closedFlag);
-            assertNotNull(closedFlag.get());
-            assertTrue(closedFlag.get());
-
-            // process caller first run console UTF-8
-            closedFlag.set(false);
-            runner.input(inputStream::get, charset)
-                .runConsole((input, output) -> {});
-
-            assertNotNull(closedFlag);
-            assertNotNull(closedFlag.get());
-            assertTrue(closedFlag.get());
-
-            // process caller first run console charset
-            closedFlag.set(false);
-            runner.input(inputStream::get, charset)
-                .runConsole(charset, (input, output) -> {});
-
-            assertNotNull(closedFlag);
-            assertNotNull(closedFlag.get());
-            assertTrue(closedFlag.get());
-        }
-        {
-            // process caller first run argument UTF-8
-            closedFlag.set(false);
-            runner.input(inputStream::get, charset)
-                .argument("")
-                .run((strings, scanner, writer) -> {});
-
-            assertNotNull(closedFlag);
-            assertNotNull(closedFlag.get());
-            assertTrue(closedFlag.get());
-
-            // process caller first run argument charset
-            closedFlag.set(false);
-            runner.input(inputStream::get, charset)
-                .argument("")
-                .run(charset, (strings, scanner, writer) -> {});
-
-            assertNotNull(closedFlag);
-            assertNotNull(closedFlag.get());
-            assertTrue(closedFlag.get());
-
-            // process caller first run console argument UTF-8
-            closedFlag.set(false);
-            runner.input(inputStream::get, charset)
-                .argument("")
-                .runConsole((strings, input, output) -> {});
-
-            assertNotNull(closedFlag);
-            assertNotNull(closedFlag.get());
-            assertTrue(closedFlag.get());
-
-            // process caller first run console argument charset
-            closedFlag.set(false);
-            runner.input(inputStream::get, charset)
-                .argument("")
-                .runConsole(charset, (strings, input, output) -> {});
-
-            assertNotNull(closedFlag);
-            assertNotNull(closedFlag.get());
-            assertTrue(closedFlag.get());
-        }
-        {
-            // process input first run UTF-8
-            closedFlag.set(false);
-            runner.input(inputStream::get, charset)
-                .run((scanner, writer) -> {});
-
-            assertNotNull(closedFlag);
-            assertNotNull(closedFlag.get());
-            assertTrue(closedFlag.get());
-
-            // process input first run charset
-            closedFlag.set(false);
-            runner.input(inputStream::get, charset)
-                .run(charset, (scanner, writer) -> {});
-
-            assertNotNull(closedFlag);
-            assertNotNull(closedFlag.get());
-            assertTrue(closedFlag.get());
-
-            // process input first run console UTF-8
-            closedFlag.set(false);
-            runner.input(inputStream::get, charset)
-                .runConsole((input, output) -> {});
-
-            assertNotNull(closedFlag);
-            assertNotNull(closedFlag.get());
-            assertTrue(closedFlag.get());
-
-            // process input first run console  charset
-            closedFlag.set(false);
-            runner.input(inputStream::get, charset)
-                .runConsole(charset, (input, output) -> {});
-
-            assertNotNull(closedFlag);
-            assertNotNull(closedFlag.get());
-            assertTrue(closedFlag.get());
-        }
-        {
-            // process input first run argument UTF-8
-            closedFlag.set(false);
-            runner.input(inputStream::get, charset)
-                .argument("")
-                .run((strings, scanner, writer) -> {});
-
-            assertNotNull(closedFlag);
-            assertNotNull(closedFlag.get());
-            assertTrue(closedFlag.get());
-
-            // process input first run argument charset
-            closedFlag.set(false);
-            runner.input(inputStream::get, charset)
-                .argument("")
-                .run(charset, (strings, scanner, writer) -> {});
-
-            assertNotNull(closedFlag);
-            assertNotNull(closedFlag.get());
-            assertTrue(closedFlag.get());
-
-            // process input first run console argument UTF-8
-            closedFlag.set(false);
-            runner.input(inputStream::get, charset)
-                .argument("")
-                .runConsole((strings, input, output) -> {});
-
-            assertNotNull(closedFlag);
-            assertNotNull(closedFlag.get());
-            assertTrue(closedFlag.get());
-
-            // process input first run console argument charset
-            closedFlag.set(false);
-            runner.input(inputStream::get, charset)
-                .argument("")
-                .runConsole(charset, (strings, input, output) -> {});
-
-            assertNotNull(closedFlag);
-            assertNotNull(closedFlag.get());
-            assertTrue(closedFlag.get());
-        }
-    }
 
     @Test
     void testCallerFirst() {
