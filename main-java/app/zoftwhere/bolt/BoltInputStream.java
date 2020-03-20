@@ -6,11 +6,11 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
 /**
- * A RunnerInputStream for cross encoding use.
+ * A Bolt {@link InputStream} for cross encoding use.
  *
  * @since 4.0.0
  */
-class RunnerInputStream extends InputStream {
+class BoltInputStream extends InputStream {
 
     private final InputStreamReader reader;
 
@@ -22,7 +22,7 @@ class RunnerInputStream extends InputStream {
 
     private int size = 0;
 
-    RunnerInputStream(InputStream inputStream, Charset source, Charset destination) {
+    BoltInputStream(InputStream inputStream, Charset source, Charset destination) {
         this.destination = destination;
         this.reader = new InputStreamReader(inputStream, source);
     }

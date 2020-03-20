@@ -1,19 +1,23 @@
 package example;
 
 import app.zoftwhere.bolt.Runner;
+import org.junit.jupiter.api.Test;
 
 import static java.lang.System.out;
 
 /**
- * This example shows how to handle failures or errors with the asserter consumer.
- * <p>
- * The program triggers an offence as the word "world" is expected to be with an upper case 'W'
+ * <p>This example shows how to handle failures or errors with the asserter consumer.
+ * </p>
+ * <p>The program triggers an offence as the word "world" is expected to be with an upper case 'W'
+ * </p>
  *
  * @since 5.0.0
  */
+@SuppressWarnings("WeakerAccess")
 public class TriggerOnOffenceExample {
 
-    public static void main(String[] args) {
+    @Test
+    void testCase() {
         // Program output does not meet expectation.
         // Output line number: 2
         // Program output: Hello world!
@@ -23,7 +27,7 @@ public class TriggerOnOffenceExample {
             .run((scanner, bufferedWriter) -> {
                 bufferedWriter.write("test:");
                 bufferedWriter.newLine();
-                bufferedWriter.write(helloWorld());
+                bufferedWriter.write("Hello world!");
             })
             .input()
             .expected("test:", "Hello World!")
@@ -47,10 +51,6 @@ public class TriggerOnOffenceExample {
                 out.println(String.format("Program output: %s", testResult.output()[index]));
                 out.println(String.format("Expected output: %s", testResult.expected()[index]));
             });
-    }
-
-    private static String helloWorld() {
-        return "Hello world!";
     }
 
 }

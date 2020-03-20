@@ -16,14 +16,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import app.zoftwhere.bolt.Runner.BoltAssertionException;
-
 /**
  * Runner Reader for parsing input in an editor-like fashion.
  *
  * @since 4.0.0
  */
-class RunnerReader extends Reader implements Iterator<String> {
+class BoltReader extends Reader implements Iterator<String> {
 
     @SuppressWarnings("FieldCanBeLocal")
     private final int defaultExpectedLineLength = 80;
@@ -38,29 +36,42 @@ class RunnerReader extends Reader implements Iterator<String> {
     /** If the next character is a line feed (\n), skip it. */
     private boolean skipLF = false;
 
-    static List<String> readList(Supplier<RunnerReader> supplier) {
-        try (RunnerReader reader = supplier.get()) {
+    static List<String> readList(Supplier<BoltReader> supplier) {
+        try (BoltReader reader = supplier.get()) {
             return reader.list();
         }
         catch (Throwable e) {
-            throw new BoltAssertionException("bolt.runner.reader.read.list", e);
+            throw new RunnerException("bolt.runner.reader.read.list", e);
         }
     }
 
-    static String[] readArray(Supplier<RunnerReader> supplier) {
-        try (RunnerReader reader = supplier.get()) {
+    static String[] readArray(Supplier<BoltReader> supplier) {
+        try (BoltReader reader = supplier.get()) {
             return reader.array();
         }
         catch (Throwable e) {
-            throw new BoltAssertionException("bolt.runner.reader.read.array", e);
+            throw new RunnerException("bolt.runner.reader.read.array", e);
         }
     }
 
-    RunnerReader(byte[] data, Charset charset) {
-        this(new ByteArrayInputStream(data), charset);
+    BoltReader(byte[] data, Charset charset) {
+        if (data == null) {
+            throw new RunnerException("bolt.runner.reader.data.null");
+        }
+        if (charset == null) {
+            throw new RunnerException("bolt.runner.reader.charset.null");
+        }
+        this.reader = new InputStreamReader(new ByteArrayInputStream(data), charset);
+        this.lock = super.lock;
     }
 
-    RunnerReader(InputStream inputStream, Charset charset) {
+    BoltReader(InputStream inputStream, Charset charset) {
+        if (inputStream == null) {
+            throw new RunnerException("bolt.runner.reader.input.stream.null");
+        }
+        if (charset == null) {
+            throw new RunnerException("bolt.runner.reader.charset.null");
+        }
         this.reader = new InputStreamReader(inputStream, charset);
         this.lock = super.lock;
     }

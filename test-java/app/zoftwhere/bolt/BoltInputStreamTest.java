@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import app.zoftwhere.mutable.MutableValue;
 import org.junit.jupiter.api.Test;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
@@ -21,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-class RunnerInputStreamTest {
+class BoltInputStreamTest {
 
     @Test
     void testSameCodec() throws IOException {
@@ -87,9 +86,9 @@ class RunnerInputStreamTest {
         // UTF_16 does not work here; UTF_16BE and UTF_16LE is listed instead.
         final var codec = List.of(US_ASCII, UTF_8, UTF_16LE, UTF_16BE);
         final var string = "Test Close.\n\n\n";
-        final var closedFlag = new MutableValue<>(Boolean.FALSE);
+        final var closedFlag = new BoltPlaceHolder<>(Boolean.FALSE);
 
-        assertTrue(closedFlag.isPresent());
+        assertNotNull(closedFlag.get());
 
         for (var from : codec) {
             for (var to : codec) {
@@ -105,7 +104,7 @@ class RunnerInputStreamTest {
                 }
 
                 assertNotNull(closedFlag);
-                assertTrue(closedFlag.isPresent());
+                assertNotNull(closedFlag.get());
                 assertTrue(closedFlag.get());
             }
         }
@@ -116,12 +115,12 @@ class RunnerInputStreamTest {
     }
 
     private InputStream forString(String string, Charset charset, Charset decode) {
-        return new RunnerInputStream(forString(string, charset), charset, decode);
+        return new BoltInputStream(forString(string, charset), charset, decode);
     }
 
     @SuppressWarnings("SameParameterValue")
-    private InputStream forString(String string, Charset charset, Charset decode, MutableValue<Boolean> closeFlag) {
-        return new RunnerInputStream(forString(string, charset), charset, decode) {
+    private InputStream forString(String string, Charset charset, Charset decode, BoltPlaceHolder<Boolean> closeFlag) {
+        return new BoltInputStream(forString(string, charset), charset, decode) {
             @Override
             public void close() throws IOException {
                 closeFlag.set(true);

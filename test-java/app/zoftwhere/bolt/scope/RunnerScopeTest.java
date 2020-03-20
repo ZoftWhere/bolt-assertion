@@ -1,16 +1,18 @@
 package app.zoftwhere.bolt.scope;
 
 import java.io.ByteArrayInputStream;
+import java.util.Comparator;
 
 import app.zoftwhere.bolt.Runner;
-import app.zoftwhere.bolt.Runner.RunnerAsserter;
-import app.zoftwhere.bolt.Runner.RunnerInput;
-import app.zoftwhere.bolt.Runner.RunnerLoader;
-import app.zoftwhere.bolt.Runner.RunnerOutput;
-import app.zoftwhere.bolt.Runner.RunnerPreProgram;
-import app.zoftwhere.bolt.Runner.RunnerPreTest;
-import app.zoftwhere.bolt.Runner.RunnerProgram;
-import app.zoftwhere.bolt.Runner.RunnerTestResult;
+import app.zoftwhere.bolt.RunnerException;
+import app.zoftwhere.bolt.api.RunnerAsserter;
+import app.zoftwhere.bolt.api.RunnerLoader;
+import app.zoftwhere.bolt.api.RunnerPreProgram;
+import app.zoftwhere.bolt.api.RunnerPreTest;
+import app.zoftwhere.bolt.api.RunnerProgram;
+import app.zoftwhere.bolt.api.RunnerProgramInput;
+import app.zoftwhere.bolt.api.RunnerProgramOutput;
+import app.zoftwhere.bolt.api.RunnerProgramResult;
 import org.junit.jupiter.api.Test;
 
 import static app.zoftwhere.bolt.Runner.newRunner;
@@ -22,12 +24,12 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 class RunnerScopeTest {
 
-    private final String boltExceptionName = Runner.class.getName() + "$BoltAssertionException";
+    private final String runnerException = RunnerException.class.getName();
 
     private final Runner runner = newRunner();
 
-    @SuppressWarnings({"ThrowableNotThrown", "unused"})
     @Test
+    @SuppressWarnings("unused")
     void testProgramFirstScope() {
 
         RunnerPreProgram r2a;
@@ -36,8 +38,8 @@ class RunnerScopeTest {
         RunnerProgram r3a = runner.run((scanner, writer) -> {});
         RunnerProgram r3b = r2b.argument();
 
-        RunnerOutput r4a = r3a.input();
-        RunnerOutput r4b = r3b.input();
+        RunnerProgramOutput r4a = r3a.input();
+        RunnerProgramOutput r4b = r3b.input();
 
         r4a.output();
         r4b.output();
@@ -73,16 +75,15 @@ class RunnerScopeTest {
         catch (Exception ignore) {}
     }
 
-    @SuppressWarnings("ThrowableNotThrown")
     @Test
     void testInputFirstScope() {
-        RunnerInput r2a = runner.input();
+        RunnerProgramInput r2a = runner.input();
 
         RunnerLoader r3a = r2a.argument();
 
-        RunnerOutput r4a = r3a.run((strings, scanner, writer) -> {});
+        RunnerProgramOutput r4a = r3a.run((strings, scanner, writer) -> {});
 
-        RunnerOutput r4b = r2a.run((scanner, writer) -> {});
+        RunnerProgramOutput r4b = r2a.run((scanner, writer) -> {});
 
         r4a.output();
         r4b.output();
@@ -105,7 +106,7 @@ class RunnerScopeTest {
         }
         catch (Exception e) {
             String exceptionClassName = e.getClass().getName();
-            if (!boltExceptionName.equals(exceptionClassName)) {
+            if (!runnerException.equals(exceptionClassName)) {
                 fail("bolt.runner.scope.test.expected.bolt.assertion.exception");
             }
         }
@@ -115,7 +116,7 @@ class RunnerScopeTest {
         }
         catch (Exception e) {
             String exceptionClassName = e.getClass().getName();
-            if (!boltExceptionName.equals(exceptionClassName)) {
+            if (!runnerException.equals(exceptionClassName)) {
                 fail("bolt.runner.scope.test.expected.bolt.assertion.exception");
             }
         }
@@ -149,7 +150,7 @@ class RunnerScopeTest {
         assertNotNull(runner.loadInput(resourceName1, runner.getClass()));
         assertNotNull(runner.loadInput(resourceName2, program.getClass(), UTF_8));
 
-        RunnerInput input = runner.input();
+        RunnerProgramInput input = runner.input();
         assertNotNull(input.run((scanner, writer) -> {}));
         assertNotNull(input.runConsole((inputStream, outputStream) -> {}));
         assertNotNull(input.runConsole(UTF_8, (inputStream, outputStream) -> {}));
@@ -159,11 +160,11 @@ class RunnerScopeTest {
         assertNotNull(loader.runConsole((strings, inputStream, outputStream) -> {}));
         assertNotNull(loader.runConsole(UTF_8, (strings, inputStream, outputStream) -> {}));
 
-        RunnerOutput output = program.input();
+        RunnerProgramOutput output = program.input();
         assertNotNull(output);
 
         String expectationResource = "RunnerScopeTest.txt";
-        RunnerPreTest preTest = output.comparator(null);
+        RunnerPreTest preTest = output.comparator(Comparator.naturalOrder());
         assertNotNull(preTest.expected());
         assertNotNull(preTest.expected(() -> new ByteArrayInputStream(new byte[0])));
         assertNotNull(preTest.expected(() -> new ByteArrayInputStream(new byte[0]), UTF_8));
@@ -176,7 +177,7 @@ class RunnerScopeTest {
         try { asserter.assertException(); }
         catch (Exception ignored) { }
 
-        RunnerTestResult result = asserter.result();
+        RunnerProgramResult result = asserter.result();
         assertNotNull(result.expected());
         assertNotNull(result.output());
         assertTrue(result.isSuccess());

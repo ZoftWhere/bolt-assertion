@@ -5,6 +5,17 @@ import java.io.InputStream;
 import java.util.Comparator;
 
 import app.zoftwhere.bolt.Runner;
+import app.zoftwhere.bolt.api.RunnerAsserter;
+import app.zoftwhere.bolt.api.RunnerInterface;
+import app.zoftwhere.bolt.api.RunnerLoader;
+import app.zoftwhere.bolt.api.RunnerPreProgram;
+import app.zoftwhere.bolt.api.RunnerPreTest;
+import app.zoftwhere.bolt.api.RunnerProgram;
+import app.zoftwhere.bolt.api.RunnerProgramInput;
+import app.zoftwhere.bolt.api.RunnerProgramOutput;
+import app.zoftwhere.bolt.api.RunnerProgramResult;
+import app.zoftwhere.bolt.api.RunnerProvideInput;
+import app.zoftwhere.bolt.api.RunnerProvideProgram;
 import org.junit.jupiter.api.Test;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -17,20 +28,20 @@ class RunnerBlankScopeTest {
 
     @Test
     void testRunner() {
-        final Runner runner = new Runner();
+        final RunnerInterface runner = new Runner();
         testProgramFirst(runner);
         testInputFirst(runner);
     }
 
     @Test
     void testProxy() {
-        final RunnerProxy proxy = new RunnerProxy();
+        final RunnerInterface proxy = new RunnerProxy();
         testProgramFirst(proxy);
         testInputFirst(proxy);
     }
 
-    private void testProgramFirst(Runner runner) {
-        testProgramInput(runner.run(((scanner, bufferedWriter) -> {})));
+    private void testProgramFirst(RunnerProvideProgram runner) {
+        testProgramInput(runner.run((scanner, bufferedWriter) -> {}));
         testProgramInput(runner.run(UTF_8, ((scanner, bufferedWriter) -> {})));
         testProgramInput(runner.runConsole(((inputStream, outputStream) -> {})));
         testProgramInput(runner.runConsole(UTF_8, ((inputStream, outputStream) -> {})));
@@ -41,11 +52,11 @@ class RunnerBlankScopeTest {
         testProgramArgument(runner.runConsole(UTF_8, (strings, inputStream, outputStream) -> {}));
     }
 
-    private void testProgramArgument(Runner.RunnerPreProgram preProgram) {
+    private void testProgramArgument(RunnerPreProgram preProgram) {
         testProgramInput(preProgram.argument(""));
     }
 
-    private void testProgramInput(Runner.RunnerProgram program) {
+    private void testProgramInput(RunnerProgram program) {
         testOptionalComparator(program.input(""));
         testOptionalComparator(program.input(() -> new ByteArrayInputStream(new byte[0])));
         testOptionalComparator(program.input(() -> new ByteArrayInputStream(new byte[0]), UTF_8));
@@ -53,7 +64,7 @@ class RunnerBlankScopeTest {
         testOptionalComparator(program.loadInput("RunnerBlankScopeTest.txt", Runner.class, UTF_8));
     }
 
-    private void testInputFirst(Runner runner) {
+    private void testInputFirst(RunnerProvideInput runner) {
         testOptionalArgument(runner.input(""));
         testOptionalArgument(runner.input(() -> new ByteArrayInputStream(new byte[0])));
         testOptionalArgument(runner.input(() -> new ByteArrayInputStream(new byte[0]), UTF_8));
@@ -61,7 +72,7 @@ class RunnerBlankScopeTest {
         testOptionalArgument(runner.loadInput("RunnerBlankScopeTest.txt", Runner.class, UTF_8));
     }
 
-    private void testOptionalArgument(Runner.RunnerInput next) {
+    private void testOptionalArgument(RunnerProgramInput next) {
         testProgramThree(next.argument(""));
 
         testProgramTwo(next.run((scanner, bufferedWriter) -> {}));
@@ -70,23 +81,23 @@ class RunnerBlankScopeTest {
         testProgramTwo(next.runConsole(UTF_8, (inputStream, outputStream) -> {}));
     }
 
-    private void testProgramTwo(Runner.RunnerOutput output) {
+    private void testProgramTwo(RunnerProgramOutput output) {
         testOptionalComparator(output);
     }
 
-    private void testProgramThree(Runner.RunnerLoader loader) {
+    private void testProgramThree(RunnerLoader loader) {
         testOptionalComparator(loader.run((strings, scanner, bufferedWriter) -> {}));
         testOptionalComparator(loader.run(UTF_8, (strings, scanner, bufferedWriter) -> {}));
         testOptionalComparator(loader.runConsole((strings, inputStream, outputStream) -> {}));
         testOptionalComparator(loader.runConsole(UTF_8, (strings, inputStream, outputStream) -> {}));
     }
 
-    private void testOptionalComparator(Runner.RunnerOutput output) {
+    private void testOptionalComparator(RunnerProgramOutput output) {
         testRunnerOutput(output);
         testRunnerOutput(output.comparator(Comparator.nullsFirst(Comparator.naturalOrder())));
     }
 
-    private void testRunnerOutput(Runner.RunnerPreTest preTest) {
+    private void testRunnerOutput(RunnerPreTest preTest) {
         testAsserter(preTest.expected(""));
         testAsserter(preTest.expected(this::blankStream));
         testAsserter(preTest.expected(this::blankStream, UTF_8));
@@ -94,7 +105,7 @@ class RunnerBlankScopeTest {
         testAsserter(preTest.loadExpectation("RunnerBlankScopeTest.txt", Runner.class, UTF_8));
     }
 
-    private void testAsserter(Runner.RunnerAsserter asserter) {
+    private void testAsserter(RunnerAsserter asserter) {
         asserter.assertSuccess();
         try {
             asserter.assertFailure();
@@ -112,7 +123,7 @@ class RunnerBlankScopeTest {
         asserter.assertCheck(this::testResult);
     }
 
-    private void testResult(Runner.RunnerTestResult testResult) {
+    private void testResult(RunnerProgramResult testResult) {
         assertTrue(testResult.isSuccess());
         assertFalse(testResult.isFailure());
         assertFalse(testResult.message().isPresent());

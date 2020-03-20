@@ -46,7 +46,7 @@ public class ScanEveryLineExample {
      * @param writer  writer
      * @throws IOException in the event an IOException occurs
      */
-    public static void getEveryLine(Scanner scanner, BufferedWriter writer)
+    private static void getEveryLine(Scanner scanner, BufferedWriter writer)
     throws IOException
     {
         String line = firstLine(scanner);

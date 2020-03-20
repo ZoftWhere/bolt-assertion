@@ -5,7 +5,11 @@
 
     <groupId>app.zoftwhere.bolt</groupId>
     <artifactId>bolt-assertion</artifactId>
-    <version>5.1.0</version>
+    <version>6.0.0</version>
+    <organization>
+        <name>ZoftWhere</name>
+        <url>https://www.zoftwhere.app</url>
+    </organization>
     <name>zoftwhere.bolt.assertion</name>
 
     <properties>
@@ -52,12 +56,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>app.zoftwhere.mutable</groupId>
-            <artifactId>mutable-library</artifactId>
-            <version>2.0.0</version>
-        </dependency>
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
@@ -198,6 +196,8 @@
                         <configuration>
                             <argLine>
                                 --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt=ALL-UNNAMED
+                                --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt.api=ALL-UNNAMED
+                                --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt.deluge=ALL-UNNAMED
                                 --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt.scope=ALL-UNNAMED
                                 --add-opens&#32;zoftwhere.bolt.assertion/example=ALL-UNNAMED
                             </argLine>
@@ -311,6 +311,21 @@
                 <configuration>
                     <quiet>true</quiet>
                     <failOnError>true</failOnError>
+                    <archive>
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                        <manifest>
+                            <addClasspath>false</addClasspath>
+                        </manifest>
+                        <manifestEntries>
+                            <Build-DateTime>${maven.build.timestamp}</Build-DateTime>
+                            <Implementation-Title>${project.artifactId}</Implementation-Title>
+                            <Implementation-Vendor>${project.groupId}</Implementation-Vendor>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Specification-Title>${project.artifactId}</Specification-Title>
+                            <Specification-Vendor>${project.groupId}</Specification-Vendor>
+                            <Specification-Version>${project.version}</Specification-Version>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
 
@@ -340,8 +355,6 @@
                         </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                </configuration>
             </plugin>
 
             <plugin>
