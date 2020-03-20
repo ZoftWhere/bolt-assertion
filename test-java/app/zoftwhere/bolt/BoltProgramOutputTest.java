@@ -18,6 +18,35 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class BoltProgramOutputTest {
 
     @Test
+    void testLoadComparator() {
+        var output = new BoltProgramOutput(new String[]{""}, null);
+        var test = output.comparator(null);
+        assertClass(BoltProgramOutput.class, test);
+        var exception = test.exception().orElse(null);
+        assertNotNull(exception);
+        assertClass(RunnerException.class, exception);
+        var errorReason = "bolt.runner.expectation.comparator.null";
+        assertEquals(errorReason, exception.getMessage());
+        assertNull(exception.getCause());
+    }
+
+    @Test
+    void testLoadComparatorSkip() throws Throwable {
+        var throwable = new NullPointerException("comparator.load.skip");
+        var output = new BoltProgramOutput(new String[]{""}, throwable).comparator(null);
+
+        ThrowingConsumer<RunnerProgramOutput> check = programOutput -> {
+                Exception exception = programOutput.exception().orElse(null);
+                assertNotNull(exception);
+                assertClass(NullPointerException.class, exception);
+                assertEquals("comparator.load.skip", exception.getMessage());
+                assertNull(exception.getCause());
+        };
+
+        check.accept((RunnerProgramOutput) output);
+    }
+
+    @Test
     void testLoadResource() throws Throwable {
         var programOutput = new BoltProgramOutput(new String[] {""}, null);
         var names = new String[] {null, "notFound", "RunnerTest.txt"};
