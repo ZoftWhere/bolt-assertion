@@ -1,14 +1,16 @@
 package app.zoftwhere.bolt;
 
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 import app.zoftwhere.bolt.api.RunnerAsserter;
+import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 import app.zoftwhere.bolt.api.RunnerProgramOutput;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 
 import static app.zoftwhere.bolt.BoltTestHelper.assertClass;
+import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -19,7 +21,7 @@ class BoltProgramOutputTest {
 
     @Test
     void testLoadComparator() {
-        var output = new BoltProgramOutput(new String[]{""}, null);
+        var output = new BoltProgramOutput(new String[] {""}, null);
         var test = output.comparator(null);
         assertClass(BoltProgramOutput.class, test);
         var exception = test.exception().orElse(null);
@@ -33,14 +35,14 @@ class BoltProgramOutputTest {
     @Test
     void testLoadComparatorSkip() throws Throwable {
         var throwable = new NullPointerException("comparator.load.skip");
-        var output = new BoltProgramOutput(new String[]{""}, throwable).comparator(null);
+        var output = new BoltProgramOutput(new String[] {""}, throwable).comparator(null);
 
         ThrowingConsumer<RunnerProgramOutput> check = programOutput -> {
-                Exception exception = programOutput.exception().orElse(null);
-                assertNotNull(exception);
-                assertClass(NullPointerException.class, exception);
-                assertEquals("comparator.load.skip", exception.getMessage());
-                assertNull(exception.getCause());
+            Exception exception = programOutput.exception().orElse(null);
+            assertNotNull(exception);
+            assertClass(NullPointerException.class, exception);
+            assertEquals("comparator.load.skip", exception.getMessage());
+            assertNull(exception.getCause());
         };
 
         check.accept((RunnerProgramOutput) output);
@@ -48,10 +50,10 @@ class BoltProgramOutputTest {
 
     @Test
     void testLoadResource() throws Throwable {
-        var programOutput = new BoltProgramOutput(new String[] {""}, null);
+        var output = new BoltProgramOutput(new String[] {""}, null);
         var names = new String[] {null, "notFound", "RunnerTest.txt"};
         var withClasses = new Class<?>[] {null, Runner.class, RunnerProgramOutput.class};
-        var charsets = new Charset[] {null, StandardCharsets.UTF_8, StandardCharsets.US_ASCII};
+        var charsets = new Charset[] {null, UTF_8, US_ASCII};
         var errorMessageHolder = new BoltPlaceHolder<String>(null);
 
         final ThrowingConsumer<RunnerAsserter> check;
@@ -60,7 +62,8 @@ class BoltProgramOutputTest {
 
             if (errorMessage != null) {
                 asserter.assertCheck(result -> {
-                    assertTrue(result.isException());
+                    assertNotNull(result.expected());
+                    assertEquals(0, result.expected().length);
                     Exception exception = result.exception().orElse(null);
                     assertNotNull(exception);
                     assertClass(RunnerException.class, exception);
@@ -71,6 +74,8 @@ class BoltProgramOutputTest {
             else {
                 asserter.assertFailure();
                 asserter.assertCheck(result -> {
+                    assertNotNull(result.expected());
+                    assertTrue(result.expected().length > 0);
                     assertFalse(result.isException());
                     assertTrue(result.isFailure());
                     String failureReason = "bolt.runner.asserter.output.length.mismatch";
@@ -81,7 +86,7 @@ class BoltProgramOutputTest {
 
         for (String name : names) {
             for (Class<?> withClass : withClasses) {
-                var asserter = programOutput.loadExpectation(name, withClass);
+                var asserter = output.loadExpectation(name, withClass);
                 String errorMessage = name == null ? "bolt.runner.load.expectation.resource.name.null"
                     : withClass == null ? "bolt.runner.load.expectation.resource.class.null"
                     : withClass.getResource(name) == null ? "bolt.runner.load.expectation.resource.not.found"
@@ -94,7 +99,7 @@ class BoltProgramOutputTest {
         for (String name : names) {
             for (Class<?> withClass : withClasses) {
                 for (Charset charset : charsets) {
-                    var asserter = programOutput.loadExpectation(name, withClass, charset);
+                    var asserter = output.loadExpectation(name, withClass, charset);
                     String errorMessage = charset == null ? "bolt.runner.load.expectation.charset.null"
                         : name == null ? "bolt.runner.load.expectation.resource.name.null"
                         : withClass == null ? "bolt.runner.load.expectation.resource.class.null"
@@ -113,15 +118,17 @@ class BoltProgramOutputTest {
         var programOutput = new BoltProgramOutput(new String[] {""}, throwable);
         var names = new String[] {null, "notFound", "RunnerTest.txt"};
         var withClasses = new Class<?>[] {null, Runner.class, RunnerProgramOutput.class};
-        var charsets = new Charset[] {null, StandardCharsets.UTF_8, StandardCharsets.US_ASCII};
+        var charsets = new Charset[] {null, UTF_8, US_ASCII};
 
         ThrowingConsumer<RunnerAsserter> check = asserter -> {
             asserter.assertException();
             asserter.assertCheck(result -> {
+                assertNotNull(result.expected());
+                assertEquals(0, result.expected().length);
                 Exception exception = result.exception().orElse(null);
                 assertNotNull(exception);
-                assertClass(NullPointerException.class, exception);
-                assertEquals("resource.load.skip", exception.getMessage());
+                assertClass(throwable.getClass(), exception);
+                assertEquals(throwable.getMessage(), exception.getMessage());
                 assertNull(exception.getCause());
             });
         };

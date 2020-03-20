@@ -47,6 +47,10 @@ class BoltProgramResult implements RunnerProgramResult {
         this.offendingIndex = -1;
         this.message = null;
         this.exception = exception;
+
+        if (exception != null && expected.length != 0) {
+            throw new RunnerException("bolt.runner.expected.expectation.length.zero");
+        }
     }
 
     @Override

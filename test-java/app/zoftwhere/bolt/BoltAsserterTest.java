@@ -61,7 +61,8 @@ class BoltAsserterTest {
     @Test
     void testResultException() {
         var blank = new String[] {""};
-        final var result = new BoltProgramResult(blank, blank, new Exception("Throwable?"));
+        var empty = new String[0];
+        final var result = new BoltProgramResult(blank, empty, new Exception("Throwable?"));
         final var asserter = new BoltAsserter(result);
 
         asserter.assertException();
