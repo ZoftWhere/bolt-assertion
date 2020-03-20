@@ -74,11 +74,11 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
         /**
          * A program test result consumer for asserting a test result.
          *
-         * @param input program test result
+         * @param result program test result
          * @throws Throwable consumer throwable on test failure and/or error
          */
         @Override
-        void accept(RunnerProgramResult input) throws Throwable;
+        void accept(RunnerProgramResult result) throws Throwable;
     }
 
     /**
