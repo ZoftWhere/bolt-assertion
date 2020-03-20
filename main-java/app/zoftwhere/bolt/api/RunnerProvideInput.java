@@ -29,7 +29,7 @@ public interface RunnerProvideInput extends AbstractUnit.Input<RunnerProgramInpu
      *
      * @param supplier {@code InputStream} function for input
      * @return {@link RunnerProgramOutput}
-     * @since 1.0.0
+     * @since 6.0.0
      */
     @Override
     RunnerProgramInput input(InputStreamSupplier supplier);
@@ -40,7 +40,7 @@ public interface RunnerProvideInput extends AbstractUnit.Input<RunnerProgramInpu
      * @param supplier {@code InputStream} function for input
      * @param charset  the {@code InputStream} character set encoding
      * @return {@link RunnerProgramOutput}
-     * @since 1.0.0
+     * @since 6.0.0
      */
     @Override
     RunnerProgramInput input(InputStreamSupplier supplier, Charset charset);
