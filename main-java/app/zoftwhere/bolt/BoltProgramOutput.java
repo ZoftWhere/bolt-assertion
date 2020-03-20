@@ -87,12 +87,8 @@ class BoltProgramOutput implements RunnerProgramOutput {
     }
 
     @Override
-    public RunnerAsserter expected(InputStreamSupplier streamSupplier) {
-        if (exception != null) {
-            return new BoltAsserter(new BoltProgramResult(output, new String[0], exception));
-        }
-
-        return create(UTF_8, streamSupplier);
+    public RunnerAsserter expected(InputStreamSupplier supplier) {
+        return expected(supplier, UTF_8);
     }
 
     @Override
@@ -140,11 +136,11 @@ class BoltProgramOutput implements RunnerProgramOutput {
     /**
      * Helper method to create a {@link RunnerAsserter} for the expected result {@code InputStream}.
      *
-     * @param charset        the charset of the {@code InputStream}
-     * @param getInputStream function to return the {@code InputStream} for the expected result
+     * @param charset  the charset of the {@code InputStream}
+     * @param supplier function to return the {@code InputStream} for the expected result
      * @return a {@link RunnerAsserter} instance
      */
-    private RunnerAsserter create(Charset charset, InputStreamSupplier getInputStream) {
+    private RunnerAsserter create(Charset charset, InputStreamSupplier supplier) {
         if (exception != null) {
             return new BoltAsserter(buildTestResult(new String[0], output, exception, comparator));
         }
@@ -152,10 +148,14 @@ class BoltProgramOutput implements RunnerProgramOutput {
             RunnerException exception = new RunnerException("bolt.runner.load.expectation.charset.null");
             return new BoltAsserter(buildTestResult(new String[0], output, exception, comparator));
         }
+        if (supplier == null) {
+            RunnerException exception = new RunnerException("bolt.runner.load.expectation.supplier.null");
+            return new BoltAsserter(buildTestResult(new String[0], output, exception, comparator));
+        }
 
-        try (InputStream inputStream = getInputStream.get()) {
+        try (InputStream inputStream = supplier.get()) {
             if (inputStream == null) {
-                throw new RunnerException("bolt.runner.load.expectation.expectation.stream.null");
+                throw new RunnerException("bolt.runner.load.expectation.stream.null");
             }
             final String[] expected = readArray(() -> new BoltReader(inputStream, charset));
             return new BoltAsserter(buildTestResult(expected, output, null, comparator));
