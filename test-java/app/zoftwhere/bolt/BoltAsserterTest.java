@@ -2,6 +2,7 @@ package app.zoftwhere.bolt;
 
 import org.junit.jupiter.api.Test;
 
+import static app.zoftwhere.bolt.BoltTestHelper.array;
 import static app.zoftwhere.bolt.BoltTestHelper.assertClass;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -28,7 +29,7 @@ class BoltAsserterTest {
 
     @Test
     void testResultSuccess() {
-        var blank = new String[] {""};
+        final var blank = new String[] {""};
         final var result = new BoltProgramResult(blank, blank);
         final var asserter = new BoltAsserter(result);
 
@@ -66,8 +67,8 @@ class BoltAsserterTest {
 
     @Test
     void testResultFailure() {
-        var blank = new String[] {""};
-        var customMessage = "bolt.asserter.custom.message";
+        final var blank = new String[] {""};
+        final var customMessage = "bolt.asserter.custom.message";
         final var result = new BoltProgramResult(blank, blank, -1, customMessage);
         final var asserter = new BoltAsserter(result);
 
@@ -105,12 +106,12 @@ class BoltAsserterTest {
 
     @Test
     void testResultException() {
-        var blank = new String[] {""};
-        var empty = new String[0];
-        var errorMessage = "Throwable?";
-        var exception = new Exception(errorMessage, null);
+        final var blank = new String[] {""};
+        final var empty = new String[0];
+        final var errorMessage = "Throwable?";
+        final var exception = new Exception(errorMessage, null);
         final var result = new BoltProgramResult(blank, empty, exception);
-         var asserter = new BoltAsserter(result);
+        final var asserter = new BoltAsserter(result);
 
         asserter.assertException();
 
@@ -146,6 +147,104 @@ class BoltAsserterTest {
             assertEquals("bolt.runner.asserter.error.found", e.getMessage());
             assertNull(e.getCause());
         }
+    }
+
+    @Test
+    void testRunTestFailureExpectedLength() {
+        var outputLines = array("");
+        var expectedLines = array("", "");
+        final var programOutput = new BoltProgramOutput(outputLines, null);
+        final var asserter = programOutput.expected(expectedLines);
+
+        try {
+            asserter.assertSuccess();
+            fail("bolt.runner.test.exception.expected");
+        }
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertEquals("bolt.runner.asserter.output.length.mismatch", e.getMessage());
+        }
+
+        asserter.assertFailure();
+
+        try {
+            asserter.assertException();
+            fail("bolt.runner.test.exception.expected");
+        }
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertEquals("bolt.runner.asserter.output.length.mismatch", e.getMessage());
+        }
+
+        try {
+            asserter.onOffence(result -> {
+                throw new RunnerException(result.message().orElse("null.message"));
+            });
+            fail("bolt.runner.test.exception.expected");
+        }
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertEquals("bolt.runner.asserter.output.length.mismatch", e.getMessage());
+        }
+
+        var result = asserter.result();
+        assertEquals(-1, result.offendingIndex());
+        assertNull(result.exception().orElse(null));
+        assertEquals("bolt.runner.asserter.output.length.mismatch", result.message().orElse(null));
+    }
+
+    @Test
+    void testRunTestFailureComparisonFailure() {
+        var outputLines = array("");
+        var expectedLines = array("mismatch");
+        final var programOutput = new BoltProgramOutput(outputLines, null);
+        final var asserter = programOutput.expected(expectedLines);
+
+        try {
+            asserter.assertSuccess();
+            fail("bolt.runner.test.exception.expected");
+        }
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertEquals("bolt.runner.asserter.output.data.mismatch", e.getMessage());
+        }
+
+        asserter.assertFailure();
+
+        try {
+            asserter.assertException();
+            fail("bolt.runner.test.exception.expected");
+        }
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertEquals("bolt.runner.asserter.output.data.mismatch", e.getMessage());
+        }
+
+        try {
+            asserter.onOffence(result -> {
+                throw new RunnerException(result.message().orElse(null), null);
+            });
+            fail("bolt.runner.test.exception.expected");
+        }
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertEquals("bolt.runner.asserter.output.data.mismatch", e.getMessage());
+        }
+
+        var result = asserter.result();
+        assertEquals(0, result.offendingIndex());
+        assertNull(result.exception().orElse(null));
+        assertEquals("bolt.runner.asserter.output.data.mismatch", result.message().orElse(null));
+    }
+
+    @Test
+    void testOnOffenceFallThrough() {
+        final var blank = new String[] {""};
+        final var empty = new String[0];
+        final var result = new BoltProgramResult(blank, empty);
+        final var asserter = new BoltAsserter(result);
+
+        asserter.onOffence(testResult -> {});
     }
 
 }

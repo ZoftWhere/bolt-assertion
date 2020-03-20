@@ -1,26 +1,19 @@
 package app.zoftwhere.bolt;
 
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Comparator;
 
-import app.zoftwhere.bolt.api.RunnerAsserter;
-import app.zoftwhere.bolt.api.RunnerProgramOutput;
-import app.zoftwhere.bolt.api.RunnerProgramResult;
 import org.junit.jupiter.api.Test;
 
 import static app.zoftwhere.bolt.BoltReader.readList;
 import static app.zoftwhere.bolt.BoltTestHelper.assertClass;
 import static app.zoftwhere.bolt.Runner.newRunner;
 import static java.nio.charset.StandardCharsets.US_ASCII;
-import static java.nio.charset.StandardCharsets.UTF_16;
-import static java.nio.charset.StandardCharsets.UTF_16BE;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -282,94 +275,6 @@ class RunnerTest {
     }
 
     @Test
-    void testRunTestFailureExpectedLength() {
-        var asserter = runner //
-            .runConsole((inputStream, outputStream) -> {})
-            .input("")
-            .expected("", "");
-
-        try {
-            asserter.assertSuccess();
-            fail("bolt.runner.test.exception.expected");
-        }
-        catch (Exception e) {
-            assertClass(RunnerException.class, e);
-            assertEquals("bolt.runner.asserter.output.length.mismatch", e.getMessage());
-        }
-
-        asserter.assertFailure();
-
-        try {
-            asserter.assertException();
-            fail("bolt.runner.test.exception.expected");
-        }
-        catch (Exception e) {
-            assertClass(RunnerException.class, e);
-            assertEquals("bolt.runner.asserter.output.length.mismatch", e.getMessage());
-        }
-
-        try {
-            asserter.onOffence(result -> {
-                throw new RunnerException(result.message().orElse("null.message"));
-            });
-            fail("bolt.runner.test.exception.expected");
-        }
-        catch (Exception e) {
-            assertClass(RunnerException.class, e);
-            assertEquals("bolt.runner.asserter.output.length.mismatch", e.getMessage());
-        }
-
-        var result = asserter.result();
-        assertEquals(-1, result.offendingIndex());
-        assertNull(result.exception().orElse(null));
-        assertEquals("bolt.runner.asserter.output.length.mismatch", result.message().orElse(null));
-    }
-
-    @Test
-    void testRunTestFailureComparisonFailure() {
-        var asserter = runner //
-            .runConsole((inputStream, outputStream) -> {})
-            .input("")
-            .expected("mismatch");
-
-        try {
-            asserter.assertSuccess();
-            fail("bolt.runner.test.exception.expected");
-        }
-        catch (Exception e) {
-            assertClass(RunnerException.class, e);
-            assertEquals("bolt.runner.asserter.output.data.mismatch", e.getMessage());
-        }
-
-        asserter.assertFailure();
-
-        try {
-            asserter.assertException();
-            fail("bolt.runner.test.exception.expected");
-        }
-        catch (Exception e) {
-            assertClass(RunnerException.class, e);
-            assertEquals("bolt.runner.asserter.output.data.mismatch", e.getMessage());
-        }
-
-        try {
-            asserter.onOffence(result -> {
-                throw new RunnerException(result.message().orElse(null), null);
-            });
-            fail("bolt.runner.test.exception.expected");
-        }
-        catch (Exception e) {
-            assertClass(RunnerException.class, e);
-            assertEquals("bolt.runner.asserter.output.data.mismatch", e.getMessage());
-        }
-
-        var result = asserter.result();
-        assertEquals(0, result.offendingIndex());
-        assertNull(result.exception().orElse(null));
-        assertEquals("bolt.runner.asserter.output.data.mismatch", result.message().orElse(null));
-    }
-
-    @Test
     void testRunThrowException() {
         var asserter = runner //
             .runConsole((inputStream, outputStream) -> { throw new Exception("thrown"); })
@@ -413,15 +318,6 @@ class RunnerTest {
         assertNotNull(exception);
         assertClass(Exception.class, exception);
         assertEquals("thrown", exception.getMessage());
-    }
-
-    @Test
-    void testOnOffenceFallThrough() {
-        runner //
-            .run((scanner, bufferedWriter) -> {})
-            .input("bolt.runner.on.offence.coverage")
-            .expected("", "")
-            .onOffence(testResult -> {});
     }
 
     private static void echoConsole(InputStream inputStream, OutputStream outputStream) throws IOException {
