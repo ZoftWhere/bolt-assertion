@@ -72,6 +72,11 @@ class BoltProvideInput implements RunnerProvideInput, RunnerProgramInput, Runner
                 throw new RunnerException("bolt.runner.load.input.resource.class.null");
             });
         }
+        if (withClass.getResource(resourceName) == null) {
+            return new BoltProvideInput(charset, () -> {
+                throw new RunnerException("bolt.runner.load.input.resource.not.found");
+            });
+        }
 
         return new BoltProvideInput(charset, () -> withClass.getResourceAsStream(resourceName));
     }

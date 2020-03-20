@@ -121,6 +121,11 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
                 throw new RunnerException("bolt.runner.load.input.resource.class.null");
             });
         }
+        if (withClass.getResource(resourceName) == null) {
+            return executeProgram(charset, () -> {
+                throw new RunnerException("bolt.runner.load.input.resource.not.found");
+            });
+        }
 
         return executeProgram(charset, () -> withClass.getResourceAsStream(resourceName));
     }

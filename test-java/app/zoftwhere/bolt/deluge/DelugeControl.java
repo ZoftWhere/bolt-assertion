@@ -182,7 +182,7 @@ class DelugeControl {
             final var url = data.withClass().getResource(data.resource());
             if (url == null) {
                 String exceptionClass = "app.zoftwhere.bolt.RunnerException";
-                String exceptionMessage = "bolt.runner.load.input.input.stream.null";
+                String exceptionMessage = "bolt.runner.load.input.resource.not.found";
                 return new DelugeResult(array(""), exceptionClass, exceptionMessage, null);
             }
         }
