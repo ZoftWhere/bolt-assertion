@@ -90,7 +90,7 @@ class DelugeData {
         return array;
     }
 
-    InputStreamSupplier stream() {
+    InputStreamSupplier streamSupplier() {
         return supplier;
     }
 

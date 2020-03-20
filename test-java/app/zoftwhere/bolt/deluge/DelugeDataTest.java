@@ -16,10 +16,10 @@ class DelugeDataTest {
     @Test
     void testDelugeDataFlagging() {
         DelugeData data = forInputStream(array("1", "2", "3"));
-        assertNotNull(data.stream());
+        assertNotNull(data.streamSupplier());
         assertFalse(data.isOpened());
         assertFalse(data.isClosed());
-        try (InputStream inputStream = data.stream().get()) {
+        try (InputStream inputStream = data.streamSupplier().get()) {
             assertNotNull(inputStream);
             assertTrue(data.isOpened());
             assertFalse(data.isClosed());

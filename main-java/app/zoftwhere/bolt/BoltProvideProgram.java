@@ -95,8 +95,8 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
     }
 
     @Override
-    public RunnerProgramOutput input(InputStreamSupplier getInputStream) {
-        return executeProgram(UTF_8, getInputStream);
+    public RunnerProgramOutput input(InputStreamSupplier supplier) {
+        return executeProgram(UTF_8, supplier);
     }
 
     @Override
@@ -144,8 +144,8 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
         return new BoltProvideProgram(executor, charset);
     }
 
-    private BoltProgramOutput executeProgram(Charset inputCharset, InputStreamSupplier inputStreamSupplier) {
-        return buildProgramOutput(argumentArray, inputCharset, inputStreamSupplier, outputCharset, executor);
+    private BoltProgramOutput executeProgram(Charset inputCharset, InputStreamSupplier streamSupplier) {
+        return buildProgramOutput(argumentArray, inputCharset, streamSupplier, outputCharset, executor);
     }
 
 }

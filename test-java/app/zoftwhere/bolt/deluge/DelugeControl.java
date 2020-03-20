@@ -40,7 +40,7 @@ class DelugeControl {
     void runTest() {
         DelugeProgram program = DelugeProgram.from(programType, data, settings);
 
-        if (data.stream() != null) {
+        if (data.streamSupplier() != null) {
             data.resetFlags();
         }
 
@@ -50,7 +50,7 @@ class DelugeControl {
         BoltSingleReturn<String> switcher = new BoltSingleReturn<>();
 
         switcher.block(() -> {
-            if (data.stream() == null) {
+            if (data.streamSupplier() == null) {
                 return null;
             }
 

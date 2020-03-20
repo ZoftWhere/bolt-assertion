@@ -67,7 +67,7 @@ interface BoltProvide {
 
     default Throwable executeStandardArgued(String[] arguments,
         Charset inputCharset,
-        InputStreamSupplier inputStreamSupplier,
+        InputStreamSupplier streamSupplier,
         Charset outputCharset,
         OutputStream outputStream,
         RunStandardArgued program)
@@ -79,7 +79,7 @@ interface BoltProvide {
             return new RunnerException("bolt.runner.output.charset.null");
         }
 
-        try (InputStream inputStream = inputStreamSupplier.get()) {
+        try (InputStream inputStream = streamSupplier.get()) {
             if (inputStream == null) {
                 return new RunnerException("bolt.runner.load.input.input.stream.null");
             }
@@ -98,7 +98,7 @@ interface BoltProvide {
 
     default Throwable executeConsoleArgued(String[] arguments,
         Charset inputCharset,
-        InputStreamSupplier inputStreamSupplier,
+        InputStreamSupplier streamSupplier,
         Charset outputCharset,
         OutputStream outputStream,
         RunConsoleArgued program)
@@ -110,7 +110,7 @@ interface BoltProvide {
             return new RunnerException("bolt.runner.output.charset.null");
         }
 
-        try (InputStream baseInputStream = inputStreamSupplier.get()) {
+        try (InputStream baseInputStream = streamSupplier.get()) {
             if (baseInputStream == null) {
                 return new RunnerException("bolt.runner.load.input.input.stream.null");
             }

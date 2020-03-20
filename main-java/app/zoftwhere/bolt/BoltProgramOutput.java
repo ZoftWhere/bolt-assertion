@@ -92,12 +92,12 @@ class BoltProgramOutput implements RunnerProgramOutput {
     }
 
     @Override
-    public RunnerAsserter expected(InputStreamSupplier streamSupplier, Charset charset) {
+    public RunnerAsserter expected(InputStreamSupplier supplier, Charset charset) {
         if (exception != null) {
             return new BoltAsserter(new BoltProgramResult(output, new String[0], exception));
         }
 
-        return create(charset, streamSupplier);
+        return create(charset, supplier);
     }
 
     @Override

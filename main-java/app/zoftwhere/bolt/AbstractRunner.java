@@ -45,10 +45,10 @@ public abstract class AbstractRunner implements RunnerInterface {
     public abstract RunnerProgramInput input(String... input);
 
     @Override
-    public abstract RunnerProgramInput input(InputStreamSupplier getInputStream);
+    public abstract RunnerProgramInput input(InputStreamSupplier supplier);
 
     @Override
-    public abstract RunnerProgramInput input(InputStreamSupplier getInputStream, Charset charset);
+    public abstract RunnerProgramInput input(InputStreamSupplier supplier, Charset charset);
 
     @Override
     public abstract RunnerProgramInput loadInput(String resourceName, Class<?> withClass);

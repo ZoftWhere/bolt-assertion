@@ -22,13 +22,13 @@ public class RunnerProxy extends AbstractRunner {
     }
 
     @Override
-    public RunnerProgramInput input(InputStreamSupplier getInputStream) {
-        return runner.input(getInputStream);
+    public RunnerProgramInput input(InputStreamSupplier supplier) {
+        return runner.input(supplier);
     }
 
     @Override
-    public RunnerProgramInput input(InputStreamSupplier getInputStream, Charset decode) {
-        return runner.input(getInputStream, decode);
+    public RunnerProgramInput input(InputStreamSupplier supplier, Charset decode) {
+        return runner.input(supplier, decode);
     }
 
     @Override

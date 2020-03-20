@@ -18,25 +18,25 @@ class BoltProvideInput implements RunnerProvideInput, RunnerProgramInput, Runner
 
     private final Charset inputCharset;
 
-    private final InputStreamSupplier streamSupplier;
+    private final InputStreamSupplier supplier;
 
     private final String[] arguments;
 
     BoltProvideInput() {
         inputCharset = UTF_8;
-        streamSupplier = () -> null;
+        supplier = () -> null;
         arguments = null;
     }
 
-    private BoltProvideInput(Charset inputCharset, InputStreamSupplier streamSupplier) {
+    private BoltProvideInput(Charset inputCharset, InputStreamSupplier supplier) {
         this.inputCharset = inputCharset;
-        this.streamSupplier = streamSupplier;
+        this.supplier = supplier;
         this.arguments = null;
     }
 
-    private BoltProvideInput(Charset inputCharset, InputStreamSupplier streamSupplier, String[] arguments) {
+    private BoltProvideInput(Charset inputCharset, InputStreamSupplier supplier, String[] arguments) {
         this.inputCharset = inputCharset;
-        this.streamSupplier = streamSupplier;
+        this.supplier = supplier;
         this.arguments = arguments;
     }
 
@@ -83,7 +83,7 @@ class BoltProvideInput implements RunnerProvideInput, RunnerProgramInput, Runner
 
     @Override
     public RunnerLoader argument(String... arguments) {
-        return new BoltProvideInput(inputCharset, streamSupplier, emptyOnNull(arguments));
+        return new BoltProvideInput(inputCharset, supplier, emptyOnNull(arguments));
     }
 
     @Override
@@ -134,14 +134,14 @@ class BoltProvideInput implements RunnerProvideInput, RunnerProgramInput, Runner
         BoltProgramExecutor executor = (arguments, inputCharset, supplier, outputCharset, outputStream) -> //
             executeStandardArgued(arguments, inputCharset, supplier, outputCharset, outputStream, program);
 
-        return buildProgramOutput(arguments, inputCharset, streamSupplier, charset, executor);
+        return buildProgramOutput(arguments, inputCharset, supplier, charset, executor);
     }
 
     private BoltProgramOutput buildConsoleOutput(Charset charset, RunConsoleArgued program) {
         BoltProgramExecutor executor = (arguments, inputCharset, supplier, outputCharset, outputStream) -> //
             executeConsoleArgued(arguments, inputCharset, supplier, outputCharset, outputStream, program);
 
-        return buildProgramOutput(arguments, inputCharset, streamSupplier, charset, executor);
+        return buildProgramOutput(arguments, inputCharset, supplier, charset, executor);
     }
 
 }

@@ -124,10 +124,10 @@ class DelugeProgram {
             return outputToResult(program.input(data.array()));
         }
         else if (STREAM == data.type()) {
-            return outputToResult(program.input(data.stream()));
+            return outputToResult(program.input(data.streamSupplier()));
         }
         else if (STREAM_ENCODED == data.type()) {
-            return outputToResult(program.input(data.stream(), data.charset()));
+            return outputToResult(program.input(data.streamSupplier(), data.charset()));
         }
         else if (RESOURCE == data.type()) {
             return outputToResult(program.loadInput(data.resource(), data.withClass()));
@@ -145,10 +145,10 @@ class DelugeProgram {
             return testProgramInput(runner.input(data.array()));
         }
         else if (STREAM == data.type()) {
-            return testProgramInput(runner.input(data.stream()));
+            return testProgramInput(runner.input(data.streamSupplier()));
         }
         else if (STREAM_ENCODED == data.type()) {
-            return testProgramInput(runner.input(data.stream(), data.charset()));
+            return testProgramInput(runner.input(data.streamSupplier(), data.charset()));
         }
         else if (RESOURCE == data.type()) {
             return testProgramInput(runner.loadInput(data.resource(), data.withClass()));
