@@ -141,9 +141,6 @@ class BoltProgramOutput implements RunnerProgramOutput {
      * @return a {@link RunnerAsserter} instance
      */
     private RunnerAsserter create(Charset charset, InputStreamSupplier supplier) {
-        if (exception != null) {
-            return new BoltAsserter(buildTestResult(new String[0], output, exception, comparator));
-        }
         if (charset == null) {
             RunnerException exception = new RunnerException("bolt.runner.load.expectation.charset.null");
             return new BoltAsserter(buildTestResult(new String[0], output, exception, comparator));
