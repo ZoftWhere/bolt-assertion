@@ -16,7 +16,12 @@ public interface RunnerProgramOutput
 {
 
     /**
-     * Specify the comparator.
+     * <p>Specify the comparator.
+     * </p>
+     * <p>The comparator will only be loaded if the program output does not contain an exception.
+     * </p>
+     * <p>The program result will contain an exception if the loaded comparator is null.
+     * </p>
      *
      * @param comparator {@link String} {@link Comparator} for program line output
      * @return {@link RunnerPreTest}

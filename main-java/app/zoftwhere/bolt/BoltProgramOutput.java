@@ -54,7 +54,16 @@ class BoltProgramOutput implements RunnerProgramOutput {
 
     @Override
     public RunnerPreTest comparator(Comparator<String> comparator) {
-        return new BoltProgramOutput(output, exception, comparator);
+        if (exception != null) {
+            return this;
+        }
+
+        if (comparator == null) {
+            RunnerException exception = new RunnerException("bolt.runner.expectation.comparator.null");
+            return new BoltProgramOutput(output, exception, null);
+        }
+
+        return new BoltProgramOutput(output, null, comparator);
     }
 
     @Override

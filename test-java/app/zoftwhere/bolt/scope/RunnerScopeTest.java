@@ -1,6 +1,7 @@
 package app.zoftwhere.bolt.scope;
 
 import java.io.ByteArrayInputStream;
+import java.util.Comparator;
 
 import app.zoftwhere.bolt.Runner;
 import app.zoftwhere.bolt.RunnerException;
@@ -163,7 +164,7 @@ class RunnerScopeTest {
         assertNotNull(output);
 
         String expectationResource = "RunnerScopeTest.txt";
-        RunnerPreTest preTest = output.comparator(null);
+        RunnerPreTest preTest = output.comparator(Comparator.naturalOrder());
         assertNotNull(preTest.expected());
         assertNotNull(preTest.expected(() -> new ByteArrayInputStream(new byte[0])));
         assertNotNull(preTest.expected(() -> new ByteArrayInputStream(new byte[0]), UTF_8));
