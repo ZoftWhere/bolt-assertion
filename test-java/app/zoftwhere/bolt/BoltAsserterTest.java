@@ -40,12 +40,35 @@ class BoltAsserterTest {
 
         assertNull(result.message().orElse(null));
         assertNull(result.exception().orElse(null));
+
+        try {
+            asserter.assertFailure();
+            fail("bolt.runner.asserter.success.found.expected");
+        }
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertNotNull(e.getMessage());
+            assertEquals("bolt.runner.asserter.success.found", e.getMessage());
+            assertNull(e.getCause());
+        }
+
+        try {
+            asserter.assertException();
+            fail("bolt.runner.asserter.success.found.expected");
+        }
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertNotNull(e.getMessage());
+            assertEquals("bolt.runner.asserter.success.found", e.getMessage());
+            assertNull(e.getCause());
+        }
     }
 
     @Test
     void testResultFailure() {
         var blank = new String[] {""};
-        final var result = new BoltProgramResult(blank, blank, -1, "");
+        var customMessage = "bolt.asserter.custom.message";
+        final var result = new BoltProgramResult(blank, blank, -1, customMessage);
         final var asserter = new BoltAsserter(result);
 
         asserter.assertFailure();
@@ -56,14 +79,38 @@ class BoltAsserterTest {
 
         assertNotNull(result.message().orElse(null));
         assertNull(result.exception().orElse(null));
+
+        try {
+            asserter.assertSuccess();
+            fail("bolt.runner.asserter.failure.found.expected");
+        }
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertNotNull(e.getMessage());
+            assertEquals(customMessage, e.getMessage());
+            assertNull(e.getCause());
+        }
+
+        try {
+            asserter.assertException();
+            fail("bolt.runner.asserter.success.found.expected");
+        }
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertNotNull(e.getMessage());
+            assertEquals(customMessage, e.getMessage());
+            assertNull(e.getCause());
+        }
     }
 
     @Test
     void testResultException() {
         var blank = new String[] {""};
         var empty = new String[0];
-        final var result = new BoltProgramResult(blank, empty, new Exception("Throwable?"));
-        final var asserter = new BoltAsserter(result);
+        var errorMessage = "Throwable?";
+        var exception = new Exception(errorMessage, null);
+        final var result = new BoltProgramResult(blank, empty, exception);
+         var asserter = new BoltAsserter(result);
 
         asserter.assertException();
 
@@ -73,10 +120,32 @@ class BoltAsserterTest {
 
         assertNull(result.message().orElse(null));
 
-        Exception e = result.exception().orElse(null);
-        assertNotNull(e);
-        assertEquals("Throwable?", e.getMessage());
-        assertEquals(Exception.class.getName(), e.getClass().getName());
+        Exception foundException = result.exception().orElse(null);
+        assertNotNull(foundException);
+        assertClass(exception.getClass(), foundException);
+        assertEquals("Throwable?", foundException.getMessage());
+
+        try {
+            asserter.assertSuccess();
+            fail("bolt.runner.asserter.error.found.expected");
+        }
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertNotNull(e.getMessage());
+            assertEquals("bolt.runner.asserter.error.found", e.getMessage());
+            assertNull(e.getCause());
+        }
+
+        try {
+            asserter.assertFailure();
+            fail("bolt.runner.asserter.error.found.expected");
+        }
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertNotNull(e.getMessage());
+            assertEquals("bolt.runner.asserter.error.found", e.getMessage());
+            assertNull(e.getCause());
+        }
     }
 
 }
