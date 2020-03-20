@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import app.zoftwhere.bolt.api.RunnerAsserter;
 import app.zoftwhere.bolt.api.RunnerProgramOutput;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 
 import static app.zoftwhere.bolt.BoltTestHelper.assertClass;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,57 +18,99 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class BoltProgramOutputTest {
 
     @Test
-    void testLoadResourceNull() {
-        String[] output = new String[] {""};
-        String[] names = {null, "notFound", "RunnerTest.txt"};
-        Class<?>[] withClasses = {null, Runner.class, RunnerProgramOutput.class};
-        Charset[] charsets = new Charset[] {null, StandardCharsets.UTF_8, StandardCharsets.US_ASCII};
+    void testLoadResource() throws Throwable {
+        var programOutput = new BoltProgramOutput(new String[] {""}, null);
+        var names = new String[] {null, "notFound", "RunnerTest.txt"};
+        var withClasses = new Class<?>[] {null, Runner.class, RunnerProgramOutput.class};
+        var charsets = new Charset[] {null, StandardCharsets.UTF_8, StandardCharsets.US_ASCII};
+        var errorMessageHolder = new BoltPlaceHolder<String>(null);
+
+        final ThrowingConsumer<RunnerAsserter> check;
+        check = asserter -> {
+            var errorMessage = errorMessageHolder.get();
+
+            if (errorMessage != null) {
+                asserter.assertCheck(result -> {
+                    assertTrue(result.isException());
+                    Exception exception = result.exception().orElse(null);
+                    assertNotNull(exception);
+                    assertClass(RunnerException.class, exception);
+                    assertEquals(errorMessage, exception.getMessage());
+                    assertNull(exception.getCause());
+                });
+            }
+            else {
+                asserter.assertFailure();
+                asserter.assertCheck(result -> {
+                    assertFalse(result.isException());
+                    assertTrue(result.isFailure());
+                    String failureReason = "bolt.runner.asserter.output.length.mismatch";
+                    assertEquals(failureReason, result.message().orElse(null));
+                });
+            }
+        };
 
         for (String name : names) {
             for (Class<?> withClass : withClasses) {
-                var programOutput = new BoltProgramOutput(output, null);
                 var asserter = programOutput.loadExpectation(name, withClass);
-                final String errorMessage = name == null ? "bolt.runner.load.expectation.resource.name.null"
+                String errorMessage = name == null ? "bolt.runner.load.expectation.resource.name.null"
                     : withClass == null ? "bolt.runner.load.expectation.resource.class.null"
                     : withClass.getResource(name) == null ? "bolt.runner.load.expectation.resource.not.found"
                     : null;
-                assertAsserterFailure(asserter, errorMessage);
+                errorMessageHolder.set(errorMessage);
+                check.accept(asserter);
             }
         }
 
         for (String name : names) {
             for (Class<?> withClass : withClasses) {
                 for (Charset charset : charsets) {
-                    var programOutput = new BoltProgramOutput(output, null);
                     var asserter = programOutput.loadExpectation(name, withClass, charset);
-                    final String errorMessage = charset == null ? "bolt.runner.load.expectation.charset.null"
+                    String errorMessage = charset == null ? "bolt.runner.load.expectation.charset.null"
                         : name == null ? "bolt.runner.load.expectation.resource.name.null"
                         : withClass == null ? "bolt.runner.load.expectation.resource.class.null"
                         : withClass.getResource(name) == null ? "bolt.runner.load.expectation.resource.not.found"
                         : null;
-                    assertAsserterFailure(asserter, errorMessage);
+                    errorMessageHolder.set(errorMessage);
+                    check.accept(asserter);
                 }
             }
         }
     }
 
-    private void assertAsserterFailure(RunnerAsserter asserter, String errorMessage) {
-        if (errorMessage != null) {
+    @Test
+    void testLoadResourceSkip() throws Throwable {
+        var throwable = new NullPointerException("resource.load.skip");
+        var programOutput = new BoltProgramOutput(new String[] {""}, throwable);
+        var names = new String[] {null, "notFound", "RunnerTest.txt"};
+        var withClasses = new Class<?>[] {null, Runner.class, RunnerProgramOutput.class};
+        var charsets = new Charset[] {null, StandardCharsets.UTF_8, StandardCharsets.US_ASCII};
+
+        ThrowingConsumer<RunnerAsserter> check = asserter -> {
+            asserter.assertException();
             asserter.assertCheck(result -> {
-                assertTrue(result.isException());
                 Exception exception = result.exception().orElse(null);
                 assertNotNull(exception);
-                assertClass(RunnerException.class, exception);
-                assertEquals(errorMessage, exception.getMessage());
+                assertClass(NullPointerException.class, exception);
+                assertEquals("resource.load.skip", exception.getMessage());
                 assertNull(exception.getCause());
             });
+        };
+
+        for (String name : names) {
+            for (Class<?> withClass : withClasses) {
+                var asserter = programOutput.loadExpectation(name, withClass);
+                check.accept(asserter);
+            }
         }
-        else {
-            asserter.assertFailure();
-            asserter.assertCheck(result -> {
-                assertFalse(result.isException());
-                assertTrue(result.isFailure());
-            });
+
+        for (String name : names) {
+            for (Class<?> withClass : withClasses) {
+                for (Charset charset : charsets) {
+                    var asserter = programOutput.loadExpectation(name, withClass, charset);
+                    check.accept(asserter);
+                }
+            }
         }
     }
 
