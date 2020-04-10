@@ -12,13 +12,13 @@ class ExceptionExample {
     void testCase() {
 
         // Run with programs that should throw exceptions.
-        runner.runConsole((scanner, writer) -> programWithError())
+        runner.runConsole((inputStream, outputStream) -> programWithError())
             .input()
             .expected()
             .assertException();
 
         // Run with a custom assertion check.
-        runner.runConsole((scanner, writer) -> programWithError())
+        runner.runConsole((inputStream, outputStream) -> programWithError())
             .input()
             .expected()
             .assertCheck((testResult) -> {
