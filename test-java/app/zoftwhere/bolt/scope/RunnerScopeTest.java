@@ -133,6 +133,8 @@ class RunnerScopeTest {
     void testScope() {
         assertNotNull(runner.run((scanner, out) -> {}));
         assertNotNull(runner.run((arguments, scanner, out) -> {}));
+        assertNotNull(runner.run(UTF_8, (scanner, out) -> {}));
+        assertNotNull(runner.run(UTF_8, (arguments, scanner, out) -> {}));
         assertNotNull(runner.runConsole((inputStream, outputStream) -> {}));
         assertNotNull(runner.runConsole((arguments, inputStream, outputStream) -> {}));
         assertNotNull(runner.runConsole(UTF_8, (inputStream, outputStream) -> {}));
@@ -152,11 +154,13 @@ class RunnerScopeTest {
 
         RunnerProgramInput input = runner.input();
         assertNotNull(input.run((scanner, out) -> {}));
+        assertNotNull(input.run(UTF_8, (scanner, out) -> {}));
         assertNotNull(input.runConsole((inputStream, outputStream) -> {}));
         assertNotNull(input.runConsole(UTF_8, (inputStream, outputStream) -> {}));
 
         RunnerLoader loader = input.argument();
         assertNotNull(loader.run((arguments, scanner, out) -> {}));
+        assertNotNull(loader.run(UTF_8, (arguments, scanner, out) -> {}));
         assertNotNull(loader.runConsole((arguments, inputStream, outputStream) -> {}));
         assertNotNull(loader.runConsole(UTF_8, (arguments, inputStream, outputStream) -> {}));
 
