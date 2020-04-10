@@ -1,11 +1,12 @@
 package app.zoftwhere.bolt;
 
-import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Objects;
 import java.util.Scanner;
@@ -35,16 +36,17 @@ interface BoltProvide {
                 }
             }
 
-            final ByteArrayOutputStream output = new ByteArrayOutputStream();
-            try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(output, UTF_8))) {
-                bufferedWriter.write(input[0]);
-                for (int i = 1, s = input.length; i < s; i++) {
-                    bufferedWriter.newLine();
-                    bufferedWriter.write(input[i]);
+            try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+                try (OutputStreamWriter writer = new OutputStreamWriter(output, UTF_8)) {
+                    writer.append(input[0]);
+                    for (int i = 1, s = input.length; i < s; i++) {
+                        writer.append(System.lineSeparator());
+                        writer.append(input[i]);
+                    }
+                    writer.flush();
                 }
-                bufferedWriter.flush();
+                return new ByteArrayInputStream(output.toByteArray());
             }
-            return new ByteArrayInputStream(output.toByteArray());
         };
     }
 
@@ -61,8 +63,11 @@ interface BoltProvide {
         return new Scanner(inputStream, charset.name());
     }
 
-    default BufferedWriter newWriter(OutputStream outputStream, Charset charset) {
-        return new BufferedWriter(new OutputStreamWriter(outputStream, charset));
+    default PrintStream newPrintStream(OutputStream outputStream, Charset charset)
+    throws UnsupportedEncodingException
+    {
+        // Charset.name() for backwards compatibility.
+        return new PrintStream(outputStream, false, charset.name());
     }
 
     default Throwable executeStandardArgued(String[] arguments,
@@ -84,8 +89,8 @@ interface BoltProvide {
                 return new RunnerException("bolt.runner.load.input.input.stream.null");
             }
             try (Scanner scanner = newScanner(inputStream, inputCharset)) {
-                try (BufferedWriter bufferedWriter = newWriter(outputStream, outputCharset)) {
-                    program.call(arguments, scanner, bufferedWriter);
+                try (PrintStream printStream = newPrintStream(outputStream, outputCharset)) {
+                    program.call(arguments, scanner, printStream);
                 }
             }
         }

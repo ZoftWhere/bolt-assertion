@@ -1,6 +1,6 @@
 package example;
 
-import java.io.BufferedWriter;
+import java.io.PrintStream;
 import java.util.Scanner;
 
 import app.zoftwhere.bolt.Runner;
@@ -17,8 +17,8 @@ public class HelloWorldExample {
 
         // Hello World lambda.
         runner.run(
-            (Scanner scanner, BufferedWriter writer) -> {
-                writer.write("Hello World!");
+            (Scanner scanner, PrintStream printStream) -> {
+                printStream.print("Hello World!");
             })
             .input()
             .expected("Hello World!")

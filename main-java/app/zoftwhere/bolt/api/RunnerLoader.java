@@ -19,7 +19,7 @@ public interface RunnerLoader extends AbstractUnit.RunWithArguments<RunnerProgra
      *
      * @param program scanner-writer program with arguments
      * @return {@link RunnerProgramOutput}
-     * @since 6.0.0
+     * @since 7.0.0
      */
     @Override
     RunnerProgramOutput run(RunStandardArgued program);
@@ -30,7 +30,7 @@ public interface RunnerLoader extends AbstractUnit.RunWithArguments<RunnerProgra
      * @param program scanner-writer program with arguments
      * @param charset program {@link BufferedWriter} {@link Charset}
      * @return {@link RunnerProgramOutput}
-     * @since 6.0.0
+     * @since 7.0.0
      */
     @Override
     RunnerProgramOutput run(Charset charset, RunStandardArgued program);

@@ -1,7 +1,6 @@
 package example;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Scanner;
 
 import app.zoftwhere.bolt.Runner;
@@ -15,20 +14,20 @@ class BasicExample {
     @Test
     void testCase() {
 
-        // Start with defining a application (must accept scanner and writer).
+        // Start with defining a application (must accept scanner and print stream).
         runner.run(BasicExample::basic)
             .input()
             .expected("Hello World?")
             .assertSuccess();
 
-        // Start with defining the application input (application must still accept scanner and writer).
+        // Start with defining the application input (application must still accept scanner and print stream).
         runner.input()
             .run(BasicExample::basic)
             .expected("Hello World?")
             .assertSuccess();
 
         // Run a simple lambda.
-        runner.run((scanner, bufferedWriter) -> bufferedWriter.write("Hello World!"))
+        runner.run((scanner, printStream) -> printStream.print("Hello World!"))
             .input()
             .expected("Hello World!")
             .assertSuccess();
@@ -49,27 +48,23 @@ class BasicExample {
 
         // Run with a difference method.
         runner.input()
-            .run((scanner, bufferedWriter) -> {
+            .run((scanner, printStream) -> {
                 String result = runProcess();
-                bufferedWriter.write(result);
+                printStream.print(result);
             })
             .expected("Success!")
             .assertSuccess();
     }
 
-    private static void basic(Scanner scanner, BufferedWriter writer)
-    throws IOException
-    {
-        writer.write("Hello World?");
+    private static void basic(Scanner scanner, PrintStream printStream) {
+        printStream.print("Hello World?");
     }
 
-    private static void main(String[] argumentArray, Scanner scanner, BufferedWriter writer)
-    throws IOException
-    {
-        writer.write("Program arguments:");
+    private static void main(String[] argumentArray, Scanner scanner, PrintStream printStream) {
+        printStream.print("Program arguments:");
         for (String line : argumentArray) {
-            writer.newLine();
-            writer.write(line);
+            printStream.println();
+            printStream.print(line);
         }
     }
 

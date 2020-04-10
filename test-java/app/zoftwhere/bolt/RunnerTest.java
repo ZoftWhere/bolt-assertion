@@ -1,10 +1,8 @@
 package app.zoftwhere.bolt;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.util.Comparator;
 
 import org.junit.jupiter.api.Test;
@@ -25,23 +23,23 @@ class RunnerTest {
 
     @Test
     void testRunProgram() {
-        runner.run((scanner, bufferedWriter) -> {})
+        runner.run((scanner, printStream) -> {})
             .input("")
             .expected("")
             .assertSuccess();
 
-        runner.run(US_ASCII, (scanner, bufferedWriter) -> {})
+        runner.run(US_ASCII, (scanner, printStream) -> {})
             .input("")
             .expected("")
             .assertSuccess();
 
-        runner.run(((strings, scanner, bufferedWriter) -> {}))
+        runner.run(((strings, scanner, printStream) -> {}))
             .argument("")
             .input("")
             .expected("")
             .assertSuccess();
 
-        runner.run(US_ASCII, ((strings, scanner, bufferedWriter) -> {}))
+        runner.run(US_ASCII, ((strings, scanner, printStream) -> {}))
             .argument("")
             .input("")
             .expected("")
@@ -52,7 +50,7 @@ class RunnerTest {
     void testStandardThrowableCause() {
         final var s = "Ensure Throwable to Exception";
         final var e = runner //
-            .run((scanner, writer) -> {
+            .run((scanner, printStream) -> {
                 throw new Throwable(s, new RuntimeException("ignore"));
             })
             .input("")
@@ -63,12 +61,10 @@ class RunnerTest {
 
         assertNotNull(e);
         assertClass(RunnerException.class, e);
-        assertNotNull(e.getMessage());
         assertEquals("bolt.runner.throwable.as.cause", e.getMessage());
 
         assertNotNull(e.getCause());
         assertClass(Throwable.class, e.getCause());
-        assertNotNull(e.getCause().getMessage());
         assertEquals(s, e.getCause().getMessage());
     }
 
@@ -76,7 +72,7 @@ class RunnerTest {
     void testStandardException() {
         final var s = "Ensure RuntimeException";
         final var e = runner //
-            .run((scanner, writer) -> {
+            .run((scanner, printStream) -> {
                 throw new RuntimeException(s, null);
             })
             .input("")
@@ -87,7 +83,6 @@ class RunnerTest {
 
         assertNotNull(e);
         assertClass(RuntimeException.class, e);
-        assertNotNull(e.getMessage());
         assertEquals(s, e.getMessage());
         assertNull(e.getCause());
     }
@@ -235,8 +230,15 @@ class RunnerTest {
         }
         catch (Throwable throwable) {
             assertClass(RunnerException.class, throwable);
-            assertEquals("rethrow", throwable.getMessage());
-            assertEquals("cause", throwable.getCause().getMessage());
+            assertEquals("bolt.runner.assert.check", throwable.getMessage());
+
+            assertNotNull(throwable.getCause());
+            assertClass(RuntimeException.class, throwable.getCause());
+            assertEquals("rethrow", throwable.getCause().getMessage());
+
+            assertNotNull(throwable.getCause().getCause());
+            assertClass(Exception.class, throwable.getCause().getCause());
+            assertEquals("cause", throwable.getCause().getCause().getMessage());
         }
     }
 
@@ -307,7 +309,10 @@ class RunnerTest {
         }
         catch (Exception e) {
             assertClass(RunnerException.class, e);
-            assertEquals("thrown", e.getMessage());
+            assertEquals("bolt.runner.on.offence", e.getMessage());
+            assertNotNull(e.getCause());
+            assertClass(Exception.class, e.getCause());
+            assertEquals("thrown", e.getCause().getMessage());
         }
 
         asserter.assertException();
@@ -320,18 +325,18 @@ class RunnerTest {
         assertEquals("thrown", exception.getMessage());
     }
 
-    private static void echoConsole(InputStream inputStream, OutputStream outputStream) throws IOException {
+    private static void echoConsole(InputStream inputStream, OutputStream outputStream) {
         final var list = readList(() -> new BoltReader(inputStream, UTF_8));
         final int size = list.size();
-        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, UTF_8))) {
+        try (PrintStream printStream = new PrintStream(outputStream, false, UTF_8)) {
             if (size > 0) {
-                writer.write(list.get(0));
+                printStream.print(list.get(0));
             }
             for (int i = 1; i < size; i++) {
-                writer.newLine();
-                writer.write(list.get(i));
+                printStream.println();
+                printStream.print(list.get(i));
             }
-            writer.flush();
+            printStream.flush();
         }
     }
 

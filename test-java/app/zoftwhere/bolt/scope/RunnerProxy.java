@@ -8,11 +8,11 @@ import app.zoftwhere.bolt.api.RunnerPreProgram;
 import app.zoftwhere.bolt.api.RunnerProgram;
 import app.zoftwhere.bolt.api.RunnerProgramInput;
 
+@SuppressWarnings("WeakerAccess")
 public class RunnerProxy extends AbstractRunner {
 
     private final Runner runner = new Runner();
 
-    @SuppressWarnings("WeakerAccess")
     public RunnerProxy() {
     }
 
