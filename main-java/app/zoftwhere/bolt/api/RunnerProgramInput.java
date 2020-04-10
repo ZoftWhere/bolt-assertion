@@ -31,7 +31,7 @@ public interface RunnerProgramInput
      *
      * @param program scanner-writer program without arguments
      * @return {@link RunnerProgramOutput}
-     * @since 6.0.0
+     * @since 7.0.0
      */
     @Override
     RunnerProgramOutput run(RunStandard program);
@@ -42,7 +42,7 @@ public interface RunnerProgramInput
      * @param charset program {@link BufferedWriter} {@link Charset}
      * @param program scanner-writer program without arguments
      * @return {@link RunnerProgramOutput}
-     * @since 6.0.0
+     * @since 7.0.0
      */
     @Override
     RunnerProgramOutput run(Charset charset, RunStandard program);

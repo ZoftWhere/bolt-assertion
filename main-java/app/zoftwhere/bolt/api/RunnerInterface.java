@@ -84,7 +84,7 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     /**
      * {@link RunStandard} provides a functional interfaces for creating program calls.
      *
-     * @since 6.0.0
+     * @since 7.0.0
      */
     @FunctionalInterface
     interface RunStandard extends AbstractUnit.CallerNoArguments<Scanner, PrintStream> {
@@ -101,7 +101,7 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     /**
      * {@link RunStandardArgued} provides a functional interfaces for creating program calls.
      *
-     * @since 6.0.0
+     * @since 7.0.0
      */
     @FunctionalInterface
     interface RunStandardArgued extends AbstractUnit.CallerWithArguments<Scanner, PrintStream> {
