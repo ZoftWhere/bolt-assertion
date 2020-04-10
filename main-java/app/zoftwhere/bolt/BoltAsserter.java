@@ -60,7 +60,7 @@ class BoltAsserter implements RunnerAsserter {
             consumer.accept(result);
         }
         catch (Throwable throwable) {
-            throw new RunnerException(throwable.getMessage(), throwable.getCause());
+            throw new RunnerException("bolt.runner.assert.check", throwable);
         }
     }
 
@@ -71,7 +71,7 @@ class BoltAsserter implements RunnerAsserter {
                 consumer.accept(result);
             }
             catch (Throwable throwable) {
-                throw new RunnerException(throwable.getMessage(), throwable.getCause());
+                throw new RunnerException("bolt.runner.on.offence", throwable);
             }
         }
     }

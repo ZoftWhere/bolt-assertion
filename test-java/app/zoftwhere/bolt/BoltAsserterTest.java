@@ -171,13 +171,16 @@ class BoltAsserterTest {
 
         try {
             asserter.onOffence(result -> {
-                throw new RunnerException(result.message().orElse("null.message"));
+                throw new IllegalStateException(result.message().orElse("null.message"));
             });
             fail("bolt.runner.test.exception.expected");
         }
         catch (Exception e) {
             assertClass(RunnerException.class, e);
-            assertEquals("bolt.runner.asserter.output.length.mismatch", e.getMessage());
+            assertEquals("bolt.runner.on.offence", e.getMessage());
+            assertNotNull(e.getCause());
+            assertClass(IllegalStateException.class, e.getCause());
+            assertEquals("bolt.runner.asserter.output.length.mismatch", e.getCause().getMessage());
         }
 
         var result = asserter.result();
@@ -215,13 +218,16 @@ class BoltAsserterTest {
 
         try {
             asserter.onOffence(result -> {
-                throw new RunnerException(result.message().orElse(null), null);
+                throw new IllegalStateException(result.message().orElse(null), null);
             });
             fail("bolt.runner.test.exception.expected");
         }
         catch (Exception e) {
             assertClass(RunnerException.class, e);
-            assertEquals("bolt.runner.asserter.output.data.mismatch", e.getMessage());
+            assertEquals("bolt.runner.on.offence", e.getMessage());
+            assertNotNull(e.getCause());
+            assertClass(IllegalStateException.class, e.getCause());
+            assertEquals("bolt.runner.asserter.output.data.mismatch", e.getCause().getMessage());
         }
 
         var result = asserter.result();
@@ -232,9 +238,11 @@ class BoltAsserterTest {
 
     @Test
     void testOnOffenceFallThrough() {
-        final var blank = new String[] {""};
-        final var empty = new String[0];
-        final var result = new BoltProgramResult(blank, empty);
+        final var one = new String[] {"one"};
+        final var two = new String[] {"two"};
+        final var offendingIndex = 0;
+        final var message = "mismatch";
+        final var result = new BoltProgramResult(one, two, offendingIndex, message);
         final var asserter = new BoltAsserter(result);
 
         asserter.onOffence(testResult -> {});

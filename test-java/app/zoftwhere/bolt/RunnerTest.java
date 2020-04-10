@@ -230,8 +230,15 @@ class RunnerTest {
         }
         catch (Throwable throwable) {
             assertClass(RunnerException.class, throwable);
-            assertEquals("rethrow", throwable.getMessage());
-            assertEquals("cause", throwable.getCause().getMessage());
+            assertEquals("bolt.runner.assert.check", throwable.getMessage());
+
+            assertNotNull(throwable.getCause());
+            assertClass(RuntimeException.class, throwable.getCause());
+            assertEquals("rethrow", throwable.getCause().getMessage());
+
+            assertNotNull(throwable.getCause().getCause());
+            assertClass(Exception.class, throwable.getCause().getCause());
+            assertEquals("cause", throwable.getCause().getCause().getMessage());
         }
     }
 
@@ -302,7 +309,10 @@ class RunnerTest {
         }
         catch (Exception e) {
             assertClass(RunnerException.class, e);
-            assertEquals("thrown", e.getMessage());
+            assertEquals("bolt.runner.on.offence", e.getMessage());
+            assertNotNull(e.getCause());
+            assertClass(Exception.class, e.getCause());
+            assertEquals("thrown", e.getCause().getMessage());
         }
 
         asserter.assertException();
