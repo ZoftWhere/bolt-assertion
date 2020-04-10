@@ -41,15 +41,15 @@ class RunnerBlankScopeTest {
     }
 
     private void testProgramFirst(RunnerProvideProgram runner) {
-        testProgramInput(runner.run((scanner, bufferedWriter) -> {}));
-        testProgramInput(runner.run(UTF_8, ((scanner, bufferedWriter) -> {})));
+        testProgramInput(runner.run((scanner, out) -> {}));
+        testProgramInput(runner.run(UTF_8, ((scanner, out) -> {})));
         testProgramInput(runner.runConsole(((inputStream, outputStream) -> {})));
         testProgramInput(runner.runConsole(UTF_8, ((inputStream, outputStream) -> {})));
 
-        testProgramArgument(runner.run((strings, scanner, writer) -> {}));
-        testProgramArgument(runner.run(UTF_8, (strings, scanner, writer) -> {}));
-        testProgramArgument(runner.runConsole((strings, inputStream, outputStream) -> {}));
-        testProgramArgument(runner.runConsole(UTF_8, (strings, inputStream, outputStream) -> {}));
+        testProgramArgument(runner.run((arguments, scanner, out) -> {}));
+        testProgramArgument(runner.run(UTF_8, (arguments, scanner, out) -> {}));
+        testProgramArgument(runner.runConsole((arguments, inputStream, outputStream) -> {}));
+        testProgramArgument(runner.runConsole(UTF_8, (arguments, inputStream, outputStream) -> {}));
     }
 
     private void testProgramArgument(RunnerPreProgram preProgram) {
@@ -75,8 +75,8 @@ class RunnerBlankScopeTest {
     private void testOptionalArgument(RunnerProgramInput next) {
         testProgramThree(next.argument(""));
 
-        testProgramTwo(next.run((scanner, bufferedWriter) -> {}));
-        testProgramTwo(next.run(UTF_8, (scanner, bufferedWriter) -> {}));
+        testProgramTwo(next.run((scanner, out) -> {}));
+        testProgramTwo(next.run(UTF_8, (scanner, out) -> {}));
         testProgramTwo(next.runConsole((inputStream, outputStream) -> {}));
         testProgramTwo(next.runConsole(UTF_8, (inputStream, outputStream) -> {}));
     }
@@ -86,10 +86,10 @@ class RunnerBlankScopeTest {
     }
 
     private void testProgramThree(RunnerLoader loader) {
-        testOptionalComparator(loader.run((strings, scanner, bufferedWriter) -> {}));
-        testOptionalComparator(loader.run(UTF_8, (strings, scanner, bufferedWriter) -> {}));
-        testOptionalComparator(loader.runConsole((strings, inputStream, outputStream) -> {}));
-        testOptionalComparator(loader.runConsole(UTF_8, (strings, inputStream, outputStream) -> {}));
+        testOptionalComparator(loader.run((arguments, scanner, out) -> {}));
+        testOptionalComparator(loader.run(UTF_8, (arguments, scanner, out) -> {}));
+        testOptionalComparator(loader.runConsole((arguments, inputStream, outputStream) -> {}));
+        testOptionalComparator(loader.runConsole(UTF_8, (arguments, inputStream, outputStream) -> {}));
     }
 
     private void testOptionalComparator(RunnerProgramOutput output) {

@@ -17,8 +17,8 @@ public class HelloWorldExample {
 
         // Hello World lambda.
         runner.run(
-            (Scanner scanner, PrintStream printStream) -> {
-                printStream.print("Hello World!");
+            (Scanner scanner, PrintStream out) -> {
+                out.print("Hello World!");
             })
             .input()
             .expected("Hello World!")

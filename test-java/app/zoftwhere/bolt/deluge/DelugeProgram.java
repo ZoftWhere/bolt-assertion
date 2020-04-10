@@ -69,7 +69,7 @@ class DelugeProgram {
 
     private DelugeResult testProgramFirst(RunnerProvideProgram runner) {
         if (PROGRAM_STANDARD == type) {
-            RunStandard program = (scanner, printStream) -> process(null, scanner, printStream);
+            RunStandard program = (scanner, out) -> process(null, scanner, out);
 
             if (settings.hasCharSet()) {
                 return testProgramInput(runner.run(settings.charset(), program));
@@ -170,7 +170,7 @@ class DelugeProgram {
 
     private DelugeResult testProgramNoArguments(RunnerProgramInput runner) {
         if (INPUT_STANDARD == type) {
-            RunStandard program = (scanner, printStream) -> process(null, scanner, printStream);
+            RunStandard program = (scanner, out) -> process(null, scanner, out);
 
             if (settings.hasCharSet()) {
                 return outputToResult(runner.run(settings.charset(), program));
@@ -234,8 +234,8 @@ class DelugeProgram {
 
         //noinspection CaughtExceptionImmediatelyRethrown
         try (BoltLineScanner scanner = new BoltLineScanner(inputStream, settings.charset())) {
-            try (PrintStream printStream = new PrintStream(outputStream, false, settings.charset())) {
-                process(arguments, scanner, printStream);
+            try (PrintStream out = new PrintStream(outputStream, false, settings.charset())) {
+                process(arguments, scanner, out);
             }
         }
         catch (Throwable throwable) {
@@ -243,49 +243,49 @@ class DelugeProgram {
         }
     }
 
-    private void process(String[] arguments, Scanner scanner, PrintStream printStream) throws Throwable {
-        process(arguments, new BoltLineScanner(scanner), printStream);
+    private void process(String[] arguments, Scanner scanner, PrintStream out) throws Throwable {
+        process(arguments, new BoltLineScanner(scanner), out);
     }
 
-    private void process(String[] arguments, BoltLineScanner scanner, PrintStream printStream) throws Throwable {
+    private void process(String[] arguments, BoltLineScanner scanner, PrintStream out) throws Throwable {
         if (settings.hasThrowable()) {
             throw settings.throwable();
         }
 
         if (arguments == null) {
-            printStream.print("Argument: <null>");
+            out.print("Argument: <null>");
         }
         else if (arguments.length == 0) {
-            printStream.print("Argument: <none>");
+            out.print("Argument: <none>");
         }
         else {
             if (arguments[0] == null) {
-                printStream.print("Argument: <null>");
+                out.print("Argument: <null>");
             }
             else {
-                printStream.print(String.format("Argument: \"%s\"", BoltLineScanner.escapeString(arguments[0])));
+                out.print(String.format("Argument: \"%s\"", BoltLineScanner.escapeString(arguments[0])));
             }
 
             for (int i = 1, s = arguments.length; i < s; i++) {
-                printStream.println();
+                out.println();
 
                 if (arguments[i] == null) {
-                    printStream.print("Argument: <null>");
+                    out.print("Argument: <null>");
                 }
                 else {
-                    printStream.print(String.format("Argument: \"%s\"", BoltLineScanner.escapeString(arguments[i])));
+                    out.print(String.format("Argument: \"%s\"", BoltLineScanner.escapeString(arguments[i])));
                 }
             }
         }
 
         String line = scanner.firstLine();
-        printStream.println();
-        printStream.print(String.format("Line: \"%s\"", BoltLineScanner.escapeString(line)));
+        out.println();
+        out.print(String.format("Line: \"%s\"", BoltLineScanner.escapeString(line)));
 
         while (scanner.hasNextLine()) {
             line = scanner.nextLine();
-            printStream.println();
-            printStream.print(String.format("Line: \"%s\"", BoltLineScanner.escapeString(line)));
+            out.println();
+            out.print(String.format("Line: \"%s\"", BoltLineScanner.escapeString(line)));
         }
     }
 

@@ -22,7 +22,7 @@ public class TriggerOnOffenceExample {
     @Test
     void testCase() {
         newRunner()
-            .run((scanner, printStream) -> run(printStream))
+            .run((scanner, out) -> run(out))
             .input()
             .expected(
                 "Program output does not meet expectation.",

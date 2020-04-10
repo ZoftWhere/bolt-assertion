@@ -23,23 +23,23 @@ class RunnerTest {
 
     @Test
     void testRunProgram() {
-        runner.run((scanner, printStream) -> {})
+        runner.run((scanner, out) -> {})
             .input("")
             .expected("")
             .assertSuccess();
 
-        runner.run(US_ASCII, (scanner, printStream) -> {})
+        runner.run(US_ASCII, (scanner, out) -> {})
             .input("")
             .expected("")
             .assertSuccess();
 
-        runner.run(((strings, scanner, printStream) -> {}))
+        runner.run(((arguments, scanner, out) -> {}))
             .argument("")
             .input("")
             .expected("")
             .assertSuccess();
 
-        runner.run(US_ASCII, ((strings, scanner, printStream) -> {}))
+        runner.run(US_ASCII, ((arguments, scanner, out) -> {}))
             .argument("")
             .input("")
             .expected("")
@@ -50,7 +50,7 @@ class RunnerTest {
     void testStandardThrowableCause() {
         final var s = "Ensure Throwable to Exception";
         final var e = runner //
-            .run((scanner, printStream) -> {
+            .run((scanner, out) -> {
                 throw new Throwable(s, new RuntimeException("ignore"));
             })
             .input("")
@@ -72,7 +72,7 @@ class RunnerTest {
     void testStandardException() {
         final var s = "Ensure RuntimeException";
         final var e = runner //
-            .run((scanner, printStream) -> {
+            .run((scanner, out) -> {
                 throw new RuntimeException(s, null);
             })
             .input("")
@@ -328,15 +328,15 @@ class RunnerTest {
     private static void echoConsole(InputStream inputStream, OutputStream outputStream) {
         final var list = readList(() -> new BoltReader(inputStream, UTF_8));
         final int size = list.size();
-        try (PrintStream printStream = new PrintStream(outputStream, false, UTF_8)) {
+        try (PrintStream out = new PrintStream(outputStream, false, UTF_8)) {
             if (size > 0) {
-                printStream.print(list.get(0));
+                out.print(list.get(0));
             }
             for (int i = 1; i < size; i++) {
-                printStream.println();
-                printStream.print(list.get(i));
+                out.println();
+                out.print(list.get(i));
             }
-            printStream.flush();
+            out.flush();
         }
     }
 

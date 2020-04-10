@@ -42,14 +42,14 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
 
     @Override
     public RunnerProgram run(RunStandard program) {
-        return buildStandard(UTF_8, (arguments, scanner, bufferedWriter) -> //
-            program.call(scanner, bufferedWriter));
+        return buildStandard(UTF_8, (arguments, scanner, out) -> //
+            program.call(scanner, out));
     }
 
     @Override
     public RunnerProgram run(Charset charset, RunStandard program) {
-        return buildStandard(charset, (arguments, scanner, bufferedWriter) -> //
-            program.call(scanner, bufferedWriter));
+        return buildStandard(charset, (arguments, scanner, out) -> //
+            program.call(scanner, out));
     }
 
     @Override

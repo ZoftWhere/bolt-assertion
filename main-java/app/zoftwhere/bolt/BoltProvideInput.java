@@ -88,14 +88,14 @@ class BoltProvideInput implements RunnerProvideInput, RunnerProgramInput, Runner
 
     @Override
     public RunnerProgramOutput run(RunStandard program) {
-        return buildStandardOutput(UTF_8, ((arguments, scanner, writer) -> //
-            program.call(scanner, writer)));
+        return buildStandardOutput(UTF_8, ((arguments, scanner, out) -> //
+            program.call(scanner, out)));
     }
 
     @Override
     public RunnerProgramOutput run(Charset charset, RunStandard program) {
-        return buildStandardOutput(charset, ((arguments, scanner, writer) -> //
-            program.call(scanner, writer)));
+        return buildStandardOutput(charset, ((arguments, scanner, out) -> //
+            program.call(scanner, out)));
     }
 
     @Override

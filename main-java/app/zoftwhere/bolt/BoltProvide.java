@@ -89,8 +89,8 @@ interface BoltProvide {
                 return new RunnerException("bolt.runner.load.input.input.stream.null");
             }
             try (Scanner scanner = newScanner(inputStream, inputCharset)) {
-                try (PrintStream printStream = newPrintStream(outputStream, outputCharset)) {
-                    program.call(arguments, scanner, printStream);
+                try (PrintStream out = newPrintStream(outputStream, outputCharset)) {
+                    program.call(arguments, scanner, out);
                 }
             }
         }

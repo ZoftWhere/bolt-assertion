@@ -33,9 +33,9 @@ class RunnerScopeTest {
     void testProgramFirstScope() {
 
         RunnerPreProgram r2a;
-        RunnerPreProgram r2b = runner.run((strings, scanner, printStream) -> {});
+        RunnerPreProgram r2b = runner.run((arguments, scanner, out) -> {});
 
-        RunnerProgram r3a = runner.run((scanner, printStream) -> {});
+        RunnerProgram r3a = runner.run((scanner, out) -> {});
         RunnerProgram r3b = r2b.argument();
 
         RunnerProgramOutput r4a = r3a.input();
@@ -81,9 +81,9 @@ class RunnerScopeTest {
 
         RunnerLoader r3a = r2a.argument();
 
-        RunnerProgramOutput r4a = r3a.run((strings, scanner, printStream) -> {});
+        RunnerProgramOutput r4a = r3a.run((arguments, scanner, out) -> {});
 
-        RunnerProgramOutput r4b = r2a.run((scanner, printStream) -> {});
+        RunnerProgramOutput r4b = r2a.run((scanner, out) -> {});
 
         r4a.output();
         r4b.output();
@@ -126,19 +126,19 @@ class RunnerScopeTest {
     @Test
     void todoRealTestCase() {
         RunnerProxy proxy = new RunnerProxy();
-        proxy.run((scanner, printStream) -> printStream.print(""));
+        proxy.run((scanner, out) -> out.print(""));
     }
 
     @Test
     void testScope() {
-        assertNotNull(runner.run((scanner, printStream) -> {}));
-        assertNotNull(runner.run((strings, scanner, printStream) -> {}));
+        assertNotNull(runner.run((scanner, out) -> {}));
+        assertNotNull(runner.run((arguments, scanner, out) -> {}));
         assertNotNull(runner.runConsole((inputStream, outputStream) -> {}));
-        assertNotNull(runner.runConsole((strings, inputStream, outputStream) -> {}));
+        assertNotNull(runner.runConsole((arguments, inputStream, outputStream) -> {}));
         assertNotNull(runner.runConsole(UTF_8, (inputStream, outputStream) -> {}));
-        assertNotNull(runner.runConsole(UTF_8, (strings, inputStream, outputStream) -> {}));
+        assertNotNull(runner.runConsole(UTF_8, (arguments, inputStream, outputStream) -> {}));
 
-        RunnerPreProgram preProgram = runner.run((strings, scanner, printStream) -> {});
+        RunnerPreProgram preProgram = runner.run((arguments, scanner, out) -> {});
         RunnerProgram program = preProgram.argument();
         assertNotNull(program.input());
         assertNotNull(program.input(() -> null));
@@ -151,14 +151,14 @@ class RunnerScopeTest {
         assertNotNull(runner.loadInput(resourceName2, program.getClass(), UTF_8));
 
         RunnerProgramInput input = runner.input();
-        assertNotNull(input.run((scanner, printStream) -> {}));
+        assertNotNull(input.run((scanner, out) -> {}));
         assertNotNull(input.runConsole((inputStream, outputStream) -> {}));
         assertNotNull(input.runConsole(UTF_8, (inputStream, outputStream) -> {}));
 
         RunnerLoader loader = input.argument();
-        assertNotNull(loader.run((strings, scanner, printStream) -> {}));
-        assertNotNull(loader.runConsole((strings, inputStream, outputStream) -> {}));
-        assertNotNull(loader.runConsole(UTF_8, (strings, inputStream, outputStream) -> {}));
+        assertNotNull(loader.run((arguments, scanner, out) -> {}));
+        assertNotNull(loader.runConsole((arguments, inputStream, outputStream) -> {}));
+        assertNotNull(loader.runConsole(UTF_8, (arguments, inputStream, outputStream) -> {}));
 
         RunnerProgramOutput output = program.input();
         assertNotNull(output);
