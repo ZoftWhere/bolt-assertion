@@ -24,10 +24,9 @@ public class TriggerOnOffenceExample {
         // Expected output: Hello World!
 
         Runner.newRunner()
-            .run((scanner, bufferedWriter) -> {
-                bufferedWriter.write("test:");
-                bufferedWriter.newLine();
-                bufferedWriter.write("Hello world!");
+            .run((scanner, printStream) -> {
+                printStream.println("test:");
+                printStream.print("Hello world!");
             })
             .input()
             .expected("test:", "Hello World!")

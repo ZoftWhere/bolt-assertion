@@ -1,7 +1,6 @@
 package example;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Scanner;
 
 import app.zoftwhere.bolt.Runner;
@@ -42,20 +41,17 @@ public class ScanEveryLineExample {
     /**
      * Example for running a program with scanner against fixed/file/resource input.
      *
-     * @param scanner scanner
-     * @param writer  writer
-     * @throws IOException in the event an IOException occurs
+     * @param scanner     scanner
+     * @param printStream print stream
      */
-    private static void getEveryLine(Scanner scanner, BufferedWriter writer)
-    throws IOException
-    {
+    private static void getEveryLine(Scanner scanner, PrintStream printStream) {
         String line = firstLine(scanner);
-        writer.write("[" + line + "]");
+        printStream.print("[" + line + "]");
 
         while (hasNextLine(scanner)) {
             line = nextLine(scanner);
-            writer.newLine();
-            writer.write("[" + line + "]");
+            printStream.println();
+            printStream.print("[" + line + "]");
         }
     }
 

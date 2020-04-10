@@ -1,8 +1,8 @@
 package app.zoftwhere.bolt.api;
 
-import java.io.BufferedWriter;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Scanner;
 
 /**
@@ -87,15 +87,15 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
      * @since 6.0.0
      */
     @FunctionalInterface
-    interface RunStandard extends AbstractUnit.CallerNoArguments<Scanner, BufferedWriter> {
+    interface RunStandard extends AbstractUnit.CallerNoArguments<Scanner, PrintStream> {
 
         /**
-         * @param scanner scanner
-         * @param writer  buffered writer
+         * @param scanner     scanner
+         * @param printStream print stream
          * @throws Throwable program {@link Throwable} on error
          */
         @Override
-        void call(Scanner scanner, BufferedWriter writer) throws Throwable;
+        void call(Scanner scanner, PrintStream printStream) throws Throwable;
     }
 
     /**
@@ -104,16 +104,16 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
      * @since 6.0.0
      */
     @FunctionalInterface
-    interface RunStandardArgued extends AbstractUnit.CallerWithArguments<Scanner, BufferedWriter> {
+    interface RunStandardArgued extends AbstractUnit.CallerWithArguments<Scanner, PrintStream> {
 
         /**
-         * @param arguments program argument array
-         * @param scanner   scanner
-         * @param writer    buffered writer
+         * @param arguments   program argument array
+         * @param scanner     scanner
+         * @param printStream print stream
          * @throws Throwable program {@link Throwable} on error
          */
         @Override
-        void call(String[] arguments, Scanner scanner, BufferedWriter writer) throws Throwable;
+        void call(String[] arguments, Scanner scanner, PrintStream printStream) throws Throwable;
     }
 
 }

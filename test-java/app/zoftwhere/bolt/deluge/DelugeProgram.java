@@ -1,10 +1,8 @@
 package app.zoftwhere.bolt.deluge;
 
-import java.io.BufferedWriter;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.PrintStream;
 import java.util.Scanner;
 
 import app.zoftwhere.bolt.BoltLineScanner;
@@ -71,7 +69,7 @@ class DelugeProgram {
 
     private DelugeResult testProgramFirst(RunnerProvideProgram runner) {
         if (PROGRAM_STANDARD == type) {
-            RunStandard program = (scanner, bufferedWriter) -> process(null, scanner, bufferedWriter);
+            RunStandard program = (scanner, printStream) -> process(null, scanner, printStream);
 
             if (settings.hasCharSet()) {
                 return testProgramInput(runner.run(settings.charset(), program));
@@ -172,7 +170,7 @@ class DelugeProgram {
 
     private DelugeResult testProgramNoArguments(RunnerProgramInput runner) {
         if (INPUT_STANDARD == type) {
-            RunStandard program = (scanner, bufferedWriter) -> process(null, scanner, bufferedWriter);
+            RunStandard program = (scanner, printStream) -> process(null, scanner, printStream);
 
             if (settings.hasCharSet()) {
                 return outputToResult(runner.run(settings.charset(), program));
@@ -236,10 +234,8 @@ class DelugeProgram {
 
         //noinspection CaughtExceptionImmediatelyRethrown
         try (BoltLineScanner scanner = new BoltLineScanner(inputStream, settings.charset())) {
-            try (Writer writer = new OutputStreamWriter(outputStream, settings.charset())) {
-                try (BufferedWriter bufferedWriter = new BufferedWriter(writer)) {
-                    process(arguments, scanner, bufferedWriter);
-                }
+            try (PrintStream printStream = new PrintStream(outputStream, false, settings.charset())) {
+                process(arguments, scanner, printStream);
             }
         }
         catch (Throwable throwable) {
@@ -247,49 +243,49 @@ class DelugeProgram {
         }
     }
 
-    private void process(String[] arguments, Scanner scanner, BufferedWriter writer) throws Throwable {
-        process(arguments, new BoltLineScanner(scanner), writer);
+    private void process(String[] arguments, Scanner scanner, PrintStream printStream) throws Throwable {
+        process(arguments, new BoltLineScanner(scanner), printStream);
     }
 
-    private void process(String[] arguments, BoltLineScanner scanner, BufferedWriter writer) throws Throwable {
+    private void process(String[] arguments, BoltLineScanner scanner, PrintStream printStream) throws Throwable {
         if (settings.hasThrowable()) {
             throw settings.throwable();
         }
 
         if (arguments == null) {
-            writer.write("Argument: <null>");
+            printStream.print("Argument: <null>");
         }
         else if (arguments.length == 0) {
-            writer.write("Argument: <none>");
+            printStream.print("Argument: <none>");
         }
         else {
             if (arguments[0] == null) {
-                writer.write("Argument: <null>");
+                printStream.print("Argument: <null>");
             }
             else {
-                writer.write(String.format("Argument: \"%s\"", BoltLineScanner.escapeString(arguments[0])));
+                printStream.print(String.format("Argument: \"%s\"", BoltLineScanner.escapeString(arguments[0])));
             }
 
             for (int i = 1, s = arguments.length; i < s; i++) {
-                writer.newLine();
+                printStream.println();
 
                 if (arguments[i] == null) {
-                    writer.write("Argument: <null>");
+                    printStream.print("Argument: <null>");
                 }
                 else {
-                    writer.write(String.format("Argument: \"%s\"", BoltLineScanner.escapeString(arguments[i])));
+                    printStream.print(String.format("Argument: \"%s\"", BoltLineScanner.escapeString(arguments[i])));
                 }
             }
         }
 
         String line = scanner.firstLine();
-        writer.newLine();
-        writer.write(String.format("Line: \"%s\"", BoltLineScanner.escapeString(line)));
+        printStream.println();
+        printStream.print(String.format("Line: \"%s\"", BoltLineScanner.escapeString(line)));
 
         while (scanner.hasNextLine()) {
             line = scanner.nextLine();
-            writer.newLine();
-            writer.write(String.format("Line: \"%s\"", BoltLineScanner.escapeString(line)));
+            printStream.println();
+            printStream.print(String.format("Line: \"%s\"", BoltLineScanner.escapeString(line)));
         }
     }
 
