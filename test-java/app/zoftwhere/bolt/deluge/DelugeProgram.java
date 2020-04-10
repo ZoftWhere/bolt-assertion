@@ -259,34 +259,30 @@ class DelugeProgram {
             out.print("Argument: <none>");
         }
         else {
-            if (arguments[0] == null) {
-                out.print("Argument: <null>");
-            }
-            else {
-                out.print(String.format("Argument: \"%s\"", BoltLineScanner.escapeString(arguments[0])));
-            }
+            out.printf("Argument: %s", escapeString(arguments[0]));
 
             for (int i = 1, s = arguments.length; i < s; i++) {
                 out.println();
-
-                if (arguments[i] == null) {
-                    out.print("Argument: <null>");
-                }
-                else {
-                    out.print(String.format("Argument: \"%s\"", BoltLineScanner.escapeString(arguments[i])));
-                }
+                out.printf("Argument: %s", escapeString(arguments[i]));
             }
         }
 
         String line = scanner.firstLine();
         out.println();
-        out.print(String.format("Line: \"%s\"", BoltLineScanner.escapeString(line)));
+        out.printf("Line: %s", escapeString(line));
 
         while (scanner.hasNextLine()) {
             line = scanner.nextLine();
             out.println();
-            out.print(String.format("Line: \"%s\"", BoltLineScanner.escapeString(line)));
+            out.printf("Line: %s", escapeString(line));
         }
+    }
+
+    private String escapeString(String value) {
+        if (value == null) {
+            return "<null>";
+        }
+        return '"' + BoltLineScanner.escapeString(value) + '"';
     }
 
 }
