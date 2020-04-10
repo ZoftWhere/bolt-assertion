@@ -24,7 +24,7 @@ mvn clean compiler:compile@main-compile-jdk8 jar:jar@main-jar source:jar@main-so
 
 ## Release Notes
 
-The [ZoftWhere Bolt Assertion Release Notes](https://github.com/ZoftWhere/bolt-assertion/tree/master/main-github/release-notes) are available for viewing/download [here](https://github.com/ZoftWhere/bolt-assertion/tree/main-github/release-notes).
+The [ZoftWhere Bolt Assertion Release Notes](/main-github/release-notes) are available for viewing/download [here](/main-github/release-notes).
 
 
 ## Examples
@@ -43,8 +43,8 @@ public class HelloWorldExample {
 
         // Hello World lambda.
         runner.run(
-            (Scanner scanner, BufferedWriter writer) -> {
-                writer.write("Hello World!");
+            (Scanner scanner, PrintStream printStream) -> {
+                printStream.print("Hello World!");
             })
             .input()
             .expected("Hello World!")
@@ -62,21 +62,16 @@ public class CommandLineExample {
 
     public static void main(String[] args) throws Exception {
         try (Scanner scanner = new Scanner(System.in)) {
-            try (FileWriter fileWriter = new FileWriter(System.getenv("OUTPUT_PATH"))) {
-                try (BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
-                    main(args, scanner, bufferedWriter);
-                }
+            try (PrintStream printStream = new PrintStream(System.getenv("OUTPUT_PATH"))) {
+                main(args, scanner, printStream);
             }
         }
     }
 
     // Make a proxy method to decrease boilerplate, and simplify.
-    static void main(String[] arguments, Scanner scanner, BufferedWriter bufferedWriter)
-    throws IOException
-    {
+    static void main(String[] arguments, Scanner scanner, PrintStream printStream) {
         String name = scanner.nextLine();
-        bufferedWriter.write(String.format("Hello %s!", name));
-        bufferedWriter.newLine();
+        printStream.println(String.format("Hello %s!", name));
     }
 
 }
@@ -162,12 +157,12 @@ class ConsoleOutputExampleTest {
 
 ### More Examples
 
-The source code for the [ZoftWhere Bolt Assertion Examples](https://github.com/ZoftWhere/bolt-assertion/tree/master/test-java/example), and more, are available for download [here](https://github.com/ZoftWhere/bolt-assertion/tree/master/test-java/example).
+The source code for the [ZoftWhere Bolt Assertion Examples](/test-java/example), and more, are available for download [here](/test-java/example).
 
 
 ## License
 
-Copyright (C) 2020 ZoftWhere
+Copyright (c) 2020 ZoftWhere
 
 Licensed under the MIT License
 
