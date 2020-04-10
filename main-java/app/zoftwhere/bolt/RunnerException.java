@@ -1,7 +1,9 @@
 package app.zoftwhere.bolt;
 
 /**
- * A Runner Assertion Exception class for API exceptions.
+ * Runner runtime-exception class for API exceptions.
+ *
+ * @since 6.0.0
  */
 public class RunnerException extends RuntimeException {
 
@@ -13,6 +15,7 @@ public class RunnerException extends RuntimeException {
      * <p>The cause is automatically set to null.</p>
      *
      * @param message error message
+     * @since 6.0.0
      */
     public RunnerException(String message) {
         super(message, null);
@@ -24,6 +27,7 @@ public class RunnerException extends RuntimeException {
      *
      * @param message error message
      * @param cause   error cause
+     * @since 6.0.0
      */
     public RunnerException(String message, Throwable cause) {
         super(message, cause);
