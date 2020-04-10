@@ -17,7 +17,7 @@ public class CommandLineExample {
     // Make a proxy method to decrease boilerplate, and simplify.
     static void main(String[] arguments, Scanner scanner, PrintStream out) {
         String name = scanner.nextLine();
-        out.println(String.format("Hello %s!", name));
+        out.printf("Hello %s!%n", name);
     }
 
 }

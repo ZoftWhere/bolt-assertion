@@ -37,8 +37,7 @@ public class TriggerOnOffenceExample {
     private static void run(PrintStream err) {
         newRunner()
             .run((scanner, out) -> {
-                out.print("test:");
-                out.println();
+                out.println("test:");
                 out.print("Hello world!");
             })
             .input()
@@ -52,17 +51,17 @@ public class TriggerOnOffenceExample {
                 // If offending index is -1, then it must be the output lengths.
                 if (testResult.offendingIndex() == -1) {
                     err.println("Program output does not meet expectation.");
-                    err.println(String.format("Program outputted %d lines.", testResult.output().length));
-                    err.println(String.format("Expected outputted is %d lines.", testResult.expected().length));
+                    err.printf("Program outputted %d lines.%n", testResult.output().length);
+                    err.printf("Expected outputted is %d lines.%n", testResult.expected().length);
                     return;
                 }
 
                 // Otherwise it must be a comparison flag.
                 int index = testResult.offendingIndex();
                 err.println("Program output does not meet expectation.");
-                err.println(String.format("Output line number: %d", index + 1));
-                err.println(String.format("Program output: %s", testResult.output()[index]));
-                err.println(String.format("Expected output: %s", testResult.expected()[index]));
+                err.printf("Output line number: %d%n", index + 1);
+                err.printf("Program output: %s%n", testResult.output()[index]);
+                err.printf("Expected output: %s%n", testResult.expected()[index]);
             });
     }
 
