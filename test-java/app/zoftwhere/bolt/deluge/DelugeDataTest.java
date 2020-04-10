@@ -28,7 +28,7 @@ class DelugeDataTest {
             fail(e);
         }
         assertTrue(data.isOpened());
-        assertTrue(data.isOpened());
+        assertTrue(data.isClosed());
     }
 
 }
