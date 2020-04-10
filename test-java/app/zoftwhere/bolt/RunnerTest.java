@@ -61,12 +61,10 @@ class RunnerTest {
 
         assertNotNull(e);
         assertClass(RunnerException.class, e);
-        assertNotNull(e.getMessage());
         assertEquals("bolt.runner.throwable.as.cause", e.getMessage());
 
         assertNotNull(e.getCause());
         assertClass(Throwable.class, e.getCause());
-        assertNotNull(e.getCause().getMessage());
         assertEquals(s, e.getCause().getMessage());
     }
 
@@ -85,7 +83,6 @@ class RunnerTest {
 
         assertNotNull(e);
         assertClass(RuntimeException.class, e);
-        assertNotNull(e.getMessage());
         assertEquals(s, e.getMessage());
         assertNull(e.getCause());
     }

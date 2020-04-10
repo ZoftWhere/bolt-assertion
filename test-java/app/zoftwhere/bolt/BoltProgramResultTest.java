@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import static app.zoftwhere.bolt.BoltTestHelper.assertClass;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -20,7 +19,6 @@ class BoltProgramResultTest {
         }
         catch (Exception e) {
             assertClass(RunnerException.class, e);
-            assertNotNull(e.getMessage());
             assertEquals("bolt.runner.expected.expectation.length.zero", e.getMessage());
             assertNull(e.getCause());
         }

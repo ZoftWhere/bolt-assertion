@@ -21,7 +21,6 @@ class BoltAsserterTest {
         }
         catch (Exception e) {
             assertClass(RunnerException.class, e);
-            assertNotNull(e.getMessage());
             assertEquals("bolt.runner.asserter.result.null", e.getMessage());
             assertNull(e.getCause());
         }
@@ -48,7 +47,6 @@ class BoltAsserterTest {
         }
         catch (Exception e) {
             assertClass(RunnerException.class, e);
-            assertNotNull(e.getMessage());
             assertEquals("bolt.runner.asserter.success.found", e.getMessage());
             assertNull(e.getCause());
         }
@@ -59,7 +57,6 @@ class BoltAsserterTest {
         }
         catch (Exception e) {
             assertClass(RunnerException.class, e);
-            assertNotNull(e.getMessage());
             assertEquals("bolt.runner.asserter.success.found", e.getMessage());
             assertNull(e.getCause());
         }
@@ -87,7 +84,6 @@ class BoltAsserterTest {
         }
         catch (Exception e) {
             assertClass(RunnerException.class, e);
-            assertNotNull(e.getMessage());
             assertEquals(customMessage, e.getMessage());
             assertNull(e.getCause());
         }
@@ -98,7 +94,6 @@ class BoltAsserterTest {
         }
         catch (Exception e) {
             assertClass(RunnerException.class, e);
-            assertNotNull(e.getMessage());
             assertEquals(customMessage, e.getMessage());
             assertNull(e.getCause());
         }
@@ -132,7 +127,6 @@ class BoltAsserterTest {
         }
         catch (Exception e) {
             assertClass(RunnerException.class, e);
-            assertNotNull(e.getMessage());
             assertEquals("bolt.runner.asserter.error.found", e.getMessage());
             assertNull(e.getCause());
         }
@@ -143,7 +137,6 @@ class BoltAsserterTest {
         }
         catch (Exception e) {
             assertClass(RunnerException.class, e);
-            assertNotNull(e.getMessage());
             assertEquals("bolt.runner.asserter.error.found", e.getMessage());
             assertNull(e.getCause());
         }
