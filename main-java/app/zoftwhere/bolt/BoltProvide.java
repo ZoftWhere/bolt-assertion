@@ -1,6 +1,5 @@
 package app.zoftwhere.bolt;
 
-import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -37,16 +36,17 @@ interface BoltProvide {
                 }
             }
 
-            final ByteArrayOutputStream output = new ByteArrayOutputStream();
-            try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(output, UTF_8))) {
-                bufferedWriter.write(input[0]);
-                for (int i = 1, s = input.length; i < s; i++) {
-                    bufferedWriter.newLine();
-                    bufferedWriter.write(input[i]);
+            try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+                try (OutputStreamWriter writer = new OutputStreamWriter(output, UTF_8)) {
+                    writer.append(input[0]);
+                    for (int i = 1, s = input.length; i < s; i++) {
+                        writer.append(System.lineSeparator());
+                        writer.append(input[i]);
+                    }
+                    writer.flush();
                 }
-                bufferedWriter.flush();
+                return new ByteArrayInputStream(output.toByteArray());
             }
-            return new ByteArrayInputStream(output.toByteArray());
         };
     }
 
