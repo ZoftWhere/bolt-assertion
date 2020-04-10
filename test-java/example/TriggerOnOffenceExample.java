@@ -1,31 +1,44 @@
 package example;
 
-import app.zoftwhere.bolt.Runner;
+import java.io.PrintStream;
+
 import org.junit.jupiter.api.Test;
 
-import static java.lang.System.out;
+import static app.zoftwhere.bolt.Runner.newRunner;
 
 /**
  * <p>This example shows how to handle failures or errors with the asserter consumer.
  * </p>
  * <p>The program triggers an offence as the word "world" is expected to be with an upper case 'W'
  * </p>
- *
- * @since 5.0.0
  */
 @SuppressWarnings("WeakerAccess")
 public class TriggerOnOffenceExample {
 
+    public static void main(String[] args) {
+        run(System.out);
+    }
+
     @Test
     void testCase() {
-        // Program output does not meet expectation.
-        // Output line number: 2
-        // Program output: Hello world!
-        // Expected output: Hello World!
+        newRunner()
+            .run((scanner, printStream) -> run(printStream))
+            .input()
+            .expected(
+                "Program output does not meet expectation.",
+                "Output line number: 2",
+                "Program output: Hello world!",
+                "Expected output: Hello World!",
+                ""
+            )
+            .assertSuccess();
+    }
 
-        Runner.newRunner()
+    private static void run(PrintStream out) {
+        newRunner()
             .run((scanner, printStream) -> {
-                printStream.println("test:");
+                printStream.print("test:");
+                printStream.println();
                 printStream.print("Hello world!");
             })
             .input()
@@ -41,6 +54,7 @@ public class TriggerOnOffenceExample {
                     out.println("Program output does not meet expectation.");
                     out.println(String.format("Program outputted %d lines.", testResult.output().length));
                     out.println(String.format("Expected outputted is %d lines.", testResult.expected().length));
+                    return;
                 }
 
                 // Otherwise it must be a comparison flag.
