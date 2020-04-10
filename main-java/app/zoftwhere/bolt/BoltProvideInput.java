@@ -14,6 +14,11 @@ import app.zoftwhere.bolt.api.RunnerProvideInput;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * Bolt Provide Input class.
+ *
+ * @since 6.0.0
+ */
 class BoltProvideInput implements RunnerProvideInput, RunnerProgramInput, RunnerLoader, BoltProvide {
 
     private final Charset inputCharset;
