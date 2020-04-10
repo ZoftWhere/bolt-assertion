@@ -1,6 +1,5 @@
 package app.zoftwhere.bolt.deluge;
 
-import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -130,27 +129,27 @@ class DelugeData {
             @Override
             public InputStream get() throws Throwable {
                 openFlag.set(true);
-                final ByteArrayOutputStream output = new ByteArrayOutputStream();
-                if (input.length > 0 && !isOrHasNull(input)) {
 
-                    try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(output, charset))) {
-                        bufferedWriter.write(input[0]);
-
-                        for (int i = 1, s = input.length; i < s; i++) {
-                            bufferedWriter.newLine();
-                            bufferedWriter.write(input[i]);
+                try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+                    if (input.length > 0 && !isOrHasNull(input)) {
+                        try (OutputStreamWriter writer = new OutputStreamWriter(output, charset)) {
+                            writer.append(input[0]);
+                            for (int i = 1, s = input.length; i < s; i++) {
+                                writer.append(System.lineSeparator());
+                                writer.append(input[i]);
+                            }
+                            writer.flush();
                         }
-                        bufferedWriter.flush();
                     }
-                }
 
-                return new ByteArrayInputStream(output.toByteArray()) {
-                    @Override
-                    public void close() throws IOException {
-                        closedFlag.set(true);
-                        super.close();
-                    }
-                };
+                    return new ByteArrayInputStream(output.toByteArray()) {
+                        @Override
+                        public void close() throws IOException {
+                            closedFlag.set(true);
+                            super.close();
+                        }
+                    };
+                }
             }
         };
     }
