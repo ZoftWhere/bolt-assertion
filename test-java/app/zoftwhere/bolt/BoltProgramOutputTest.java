@@ -5,6 +5,7 @@ import java.nio.charset.Charset;
 import app.zoftwhere.bolt.api.RunnerAsserter;
 import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 import app.zoftwhere.bolt.api.RunnerProgramOutput;
+import app.zoftwhere.bolt.api.RunnerProgramResult;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 
@@ -48,6 +49,33 @@ class BoltProgramOutputTest {
         check.accept((RunnerProgramOutput) output);
     }
 
+    /** Test loading empty, blank, and null expectation. */
+    @Test
+    void testSpaceLoad() throws Throwable {
+        ThrowingConsumer<RunnerAsserter> check = asserter -> {
+            RunnerProgramResult result = asserter.result();
+            Exception exception = result.exception().orElse(null);
+            String[] output = result.output();
+            String[] expected = result.expected();
+
+            assertEquals(1, expected.length);
+            assertEquals("", expected[0]);
+            assertNotNull(output);
+            assertEquals(1, output.length);
+            assertEquals("", output[0]);
+        };
+
+        var programOutput = new BoltProgramOutput(new String[] {""}, null);
+        var emptyArray = new String[] { };
+        var blankArray = new String[] {""};
+
+        check.accept(programOutput.expected((String[]) null));
+        check.accept(programOutput.expected());
+        check.accept(programOutput.expected(""));
+        check.accept(programOutput.expected(emptyArray));
+        check.accept(programOutput.expected(blankArray));
+    }
+
     @Test
     void testLoad() throws Throwable {
         var output = new BoltProgramOutput(new String[] {""}, null);
@@ -67,6 +95,8 @@ class BoltProgramOutputTest {
         };
 
         errorMessage.set("bolt.runner.variable.array.expected.has.null");
+        var nullArray = new String[] {null};
+        check.accept(output.expected(nullArray));
         check.accept(output.expected("", null, ""));
 
         errorMessage.set("bolt.runner.load.expectation.supplier.null");

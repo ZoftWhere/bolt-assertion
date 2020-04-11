@@ -26,6 +26,10 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 class RunnerBlankScopeTest {
 
+    private final String[] emptyArray = new String[] { };
+
+    private final String[] blankArray = new String[] {""};
+
     @Test
     void testRunner() {
         final RunnerInterface runner = new Runner();
@@ -98,7 +102,10 @@ class RunnerBlankScopeTest {
     }
 
     private void testRunnerOutput(RunnerPreTest preTest) {
+        testAsserter(preTest.expected());
         testAsserter(preTest.expected(""));
+        testAsserter(preTest.expected(emptyArray));
+        testAsserter(preTest.expected(blankArray));
         testAsserter(preTest.expected(this::blankStream));
         testAsserter(preTest.expected(this::blankStream, UTF_8));
         testAsserter(preTest.loadExpectation("RunnerBlankScopeTest.txt", Runner.class));
