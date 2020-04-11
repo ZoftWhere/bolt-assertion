@@ -17,7 +17,10 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * Runner Reader for parsing input in an editor-like fashion.
+ * <p>Bolt Reader for parsing input in an editor-like fashion.
+ * </p>
+ * <p>This is a package-private class for providing this functionality.
+ * </p>
  *
  * @since 4.0.0
  */
