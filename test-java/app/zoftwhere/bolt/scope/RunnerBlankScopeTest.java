@@ -87,7 +87,10 @@ class RunnerBlankScopeTest {
     }
 
     private void testOptionalArgument(RunnerProgramInput next) {
+        testProgramThree(next.argument());
         testProgramThree(next.argument(""));
+        testProgramThree(next.argument(emptyArray));
+        testProgramThree(next.argument(blankArray));
 
         testProgramTwo(next.run((scanner, out) -> {}));
         testProgramTwo(next.run(UTF_8, (scanner, out) -> {}));
