@@ -73,22 +73,22 @@ class DelugeControl {
     private String runComparison(DelugeResult expected, DelugeResult actual) {
         BoltSingleReturn<String> switcher = new BoltSingleReturn<>();
 
-        switcher.block(() -> compareException(expected, actual, DelugeResult::exceptionClass,
+        switcher.block(() -> compareResult(expected, actual, DelugeResult::exceptionClass,
             "deluge.program.exception.expected",
             "deluge.program.exception.found",
             "deluge.program.exception.mismatch"));
 
-        switcher.block(() -> compareException(expected, actual, DelugeResult::exceptionMessage,
+        switcher.block(() -> compareResult(expected, actual, DelugeResult::exceptionMessage,
             "deluge.program.exception.message.expected",
             "deluge.program.exception.message.found",
             "deluge.program.exception.message.mismatch"));
 
-        switcher.block(() -> compareException(expected, actual, DelugeResult::causeClass,
+        switcher.block(() -> compareResult(expected, actual, DelugeResult::causeClass,
             "deluge.program.exception.cause.expected",
             "deluge.program.exception.cause.found",
             "deluge.program.exception.cause.mismatch"));
 
-        switcher.block(() -> compareException(expected, actual, DelugeResult::causeMessage,
+        switcher.block(() -> compareResult(expected, actual, DelugeResult::causeMessage,
             "deluge.program.exception.cause.message.expected",
             "deluge.program.exception.cause.message.found",
             "deluge.program.exception.cause.message.mismatch"));
@@ -117,7 +117,7 @@ class DelugeControl {
         return switcher.end();
     }
 
-    private String compareException(DelugeResult expected, DelugeResult actual, Function<DelugeResult, String> getter,
+    private String compareResult(DelugeResult expected, DelugeResult actual, Function<DelugeResult, String> getter,
         String noActual, String noExpected, String noMatch)
     {
         String expectedString = getter.apply(expected);
@@ -138,7 +138,7 @@ class DelugeControl {
             return null;
         }
         catch (Throwable throwable) {
-            throw new DelugeException(throwable.getMessage(), throwable.getCause());
+            throw new DelugeException("deluge.comparison.exception", throwable);
         }
     }
 
