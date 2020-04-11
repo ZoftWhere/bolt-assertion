@@ -2,7 +2,6 @@ package app.zoftwhere.bolt;
 
 import java.util.function.Supplier;
 
-@SuppressWarnings({"unused", "UnusedReturnValue", "WeakerAccess"})
 public class BoltSingleReturn<T> {
 
     private final BoltPlaceHolder<T> boltPlaceHolder = new BoltPlaceHolder<>(null);
@@ -15,6 +14,7 @@ public class BoltSingleReturn<T> {
         return this;
     }
 
+    @SuppressWarnings("unused")
     public T orDefault(T defaultValue) {
         return boltPlaceHolder.get() != null ? boltPlaceHolder.get() : defaultValue;
     }

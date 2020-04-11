@@ -2,7 +2,6 @@ package app.zoftwhere.bolt.deluge;
 
 import static app.zoftwhere.bolt.BoltTestHelper.objectInArray;
 
-@SuppressWarnings("unused")
 public enum DelugeProgramType {
     INPUT_STANDARD,
     INPUT_STANDARD_ARGUED,
@@ -27,6 +26,7 @@ public enum DelugeProgramType {
         return objectInArray(this, array);
     }
 
+    @SuppressWarnings("unused")
     public boolean isInputFirst() {
         DelugeProgramType[] array = {
             INPUT_STANDARD, INPUT_STANDARD_ARGUED, INPUT_CONSOLE, INPUT_CONSOLE_ARGUED
