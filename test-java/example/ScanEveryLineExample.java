@@ -6,8 +6,7 @@ import java.util.Scanner;
 import app.zoftwhere.bolt.Runner;
 import org.junit.jupiter.api.Test;
 
-@SuppressWarnings({"WeakerAccess"})
-public class ScanEveryLineExample {
+class ScanEveryLineExample {
 
     private final Runner runner = new Runner();
 
