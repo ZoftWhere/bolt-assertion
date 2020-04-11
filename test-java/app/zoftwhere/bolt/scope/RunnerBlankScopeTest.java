@@ -4,7 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Comparator;
 
+import app.zoftwhere.bolt.BoltTestHelper;
 import app.zoftwhere.bolt.Runner;
+import app.zoftwhere.bolt.RunnerException;
 import app.zoftwhere.bolt.api.RunnerAsserter;
 import app.zoftwhere.bolt.api.RunnerInterface;
 import app.zoftwhere.bolt.api.RunnerLoader;
@@ -19,8 +21,10 @@ import app.zoftwhere.bolt.api.RunnerProvideProgram;
 import org.junit.jupiter.api.Test;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -102,6 +106,13 @@ class RunnerBlankScopeTest {
     }
 
     private void testRunnerOutput(RunnerPreTest preTest) {
+        Exception exception = preTest.exception().orElse(null);
+        String[] output = preTest.output();
+        assertNull(exception);
+        assertNotNull(output);
+        assertEquals(1, output.length);
+        assertEquals("", output[0]);
+
         testAsserter(preTest.expected());
         testAsserter(preTest.expected(""));
         testAsserter(preTest.expected(emptyArray));
@@ -118,13 +129,15 @@ class RunnerBlankScopeTest {
             asserter.assertFailure();
             fail("exception.expected");
         }
-        catch (Exception ignore) {
+        catch (Exception e) {
+            BoltTestHelper.assertClass(RunnerException.class, e);
         }
         try {
             asserter.assertException();
             fail("exception.expected");
         }
-        catch (Exception ignore) {
+        catch (Exception e) {
+            BoltTestHelper.assertClass(RunnerException.class, e);
         }
 
         asserter.assertCheck(this::testResult);
