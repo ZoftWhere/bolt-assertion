@@ -65,7 +65,10 @@ class RunnerBlankScopeTest {
     }
 
     private void testProgramInput(RunnerProgram program) {
+        testOptionalComparator(program.input());
         testOptionalComparator(program.input(""));
+        testOptionalComparator(program.input(emptyArray));
+        testOptionalComparator(program.input(blankArray));
         testOptionalComparator(program.input(() -> new ByteArrayInputStream(new byte[0])));
         testOptionalComparator(program.input(() -> new ByteArrayInputStream(new byte[0]), UTF_8));
         testOptionalComparator(program.loadInput("RunnerBlankScopeTest.txt", Runner.class));
@@ -73,7 +76,10 @@ class RunnerBlankScopeTest {
     }
 
     private void testInputFirst(RunnerProvideInput runner) {
+        testOptionalArgument(runner.input());
         testOptionalArgument(runner.input(""));
+        testOptionalArgument(runner.input(emptyArray));
+        testOptionalArgument(runner.input(blankArray));
         testOptionalArgument(runner.input(() -> new ByteArrayInputStream(new byte[0])));
         testOptionalArgument(runner.input(() -> new ByteArrayInputStream(new byte[0]), UTF_8));
         testOptionalArgument(runner.loadInput("RunnerBlankScopeTest.txt", Runner.class));
