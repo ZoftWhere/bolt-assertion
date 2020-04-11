@@ -155,8 +155,7 @@ class BoltReaderTest {
         try {
             BoltReader.readArray(() -> new BoltReader(stream, UTF_8) {
                 @Override
-                @SuppressWarnings("RedundantThrows")
-                public void close() throws IOException {
+                public void close() {
                     throw new UncheckedIOException(new IOException("Fake IO Exception."));
                 }
             });
@@ -172,8 +171,7 @@ class BoltReaderTest {
         try {
             BoltReader.readList(() -> new BoltReader(stream, UTF_8) {
                 @Override
-                @SuppressWarnings("RedundantThrows")
-                public void close() throws IOException {
+                public void close() {
                     throw new UncheckedIOException(new IOException("Fake IO Exception."));
                 }
             });

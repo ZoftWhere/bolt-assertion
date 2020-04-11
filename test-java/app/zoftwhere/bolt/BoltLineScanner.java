@@ -53,8 +53,7 @@ public class BoltLineScanner implements AutoCloseable {
     }
 
     @Override
-    @SuppressWarnings("RedundantThrows")
-    public void close() throws Exception {
+    public void close() {
         this.scanner.close();
     }
 
