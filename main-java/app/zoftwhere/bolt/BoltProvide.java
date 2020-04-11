@@ -19,9 +19,10 @@ import static app.zoftwhere.bolt.BoltReader.readArray;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
- * <p>Bolt default functional interface for Bolt Provide Input and Bolt Provide Program classes.
+ * <p>Bolt Provide interface for Bolt Provide Input and Bolt Provide Program classes.
  * </p>
- * <p>This is a package-private interface for providing default functionality.</p>
+ * <p>This is a package-private interface for providing default functionality.
+ * </p>
  *
  * @since 6.0.0
  */
