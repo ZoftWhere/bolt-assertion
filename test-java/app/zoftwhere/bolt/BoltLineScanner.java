@@ -4,6 +4,14 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Scanner;
 
+/**
+ * <p>Bolt line scanner class.
+ * </p>
+ * <p>This is a test-only class for being able to read and escape data in an editor-like fashion.
+ * </p>
+ *
+ * @since 6.0.0
+ */
 public class BoltLineScanner implements AutoCloseable {
 
     private final Scanner scanner;
