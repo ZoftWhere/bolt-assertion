@@ -30,8 +30,7 @@ class BoltProgramOutput implements RunnerProgramOutput {
     private final Comparator<String> comparator;
 
     BoltProgramOutput(String[] output, Throwable throwable) {
-        requireNonNull(output);
-        this.output = output;
+        this.output = requireNonNull(output);
         this.exception = fromThrowable(throwable);
         this.comparator = null;
     }
