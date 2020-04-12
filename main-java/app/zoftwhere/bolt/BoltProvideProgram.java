@@ -27,18 +27,38 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
 
     private final Charset outputCharset;
 
+    /**
+     * Constructor for {@link Runner} program first interface implementation.
+     *
+     * @since 6.0.0
+     */
     BoltProvideProgram() {
         argumentArray = null;
         executor = (arguments, inputCharset, streamSupplier, outputCharset, outputStream) -> null;
         outputCharset = UTF_8;
     }
 
+    /**
+     * Private constructor for the multi-interfaced class.
+     *
+     * @param executor      program executor interface
+     * @param outputCharset character encoding for program output
+     * @since 6.0.0
+     */
     private BoltProvideProgram(BoltProgramExecutor executor, Charset outputCharset) {
         this.argumentArray = null;
         this.executor = executor;
         this.outputCharset = outputCharset;
     }
 
+    /**
+     * Private constructor for the multi-interfaced class.
+     *
+     * @param argumentArray program argument
+     * @param executor      program executor interface
+     * @param outputCharset character encoding for program output
+     * @since 6.0.0
+     */
     private BoltProvideProgram(String[] argumentArray, BoltProgramExecutor executor, Charset outputCharset) {
         this.outputCharset = outputCharset;
         this.executor = executor;
