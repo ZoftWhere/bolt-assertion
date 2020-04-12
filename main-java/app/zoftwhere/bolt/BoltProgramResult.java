@@ -24,6 +24,13 @@ class BoltProgramResult implements RunnerProgramResult {
 
     private final Exception exception;
 
+    /**
+     * Create a program result for a success state.
+     *
+     * @param output   program output lines
+     * @param expected expected program output lines
+     * @since 6.0.0
+     */
     BoltProgramResult(String[] output, String[] expected) {
         this.output = requireNonNull(output);
         this.expected = requireNonNull(expected);
@@ -32,6 +39,15 @@ class BoltProgramResult implements RunnerProgramResult {
         this.exception = null;
     }
 
+    /**
+     * Create a program result for a failure state.
+     *
+     * @param output         program output lines
+     * @param expected       program expected output lines
+     * @param offendingIndex zero-based index of erroneous line, if any, -1 otherwise.
+     * @param message        program failure state message
+     * @since 6.0.0
+     */
     BoltProgramResult(String[] output, String[] expected, int offendingIndex, String message) {
         this.output = requireNonNull(output);
         this.expected = requireNonNull(expected);
@@ -41,16 +57,20 @@ class BoltProgramResult implements RunnerProgramResult {
         this.exception = null;
     }
 
+    /**
+     * Create a program result for an error state.
+     *
+     * @param output    program output lines
+     * @param expected  program expected output lines
+     * @param exception program error
+     * @since 6.0.0
+     */
     BoltProgramResult(String[] output, String[] expected, Exception exception) {
         this.output = requireNonNull(output);
         this.expected = requireNonNull(expected);
         this.offendingIndex = -1;
         this.message = null;
-        this.exception = exception;
-
-        if (exception != null && expected.length != 0) {
-            throw new RunnerException("bolt.runner.expected.expectation.length.zero");
-        }
+        this.exception = requireNonNull(exception);
     }
 
     @Override
