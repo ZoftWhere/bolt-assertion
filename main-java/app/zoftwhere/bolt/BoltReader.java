@@ -33,6 +33,9 @@ class BoltReader extends Reader implements Iterator<String> {
 
     private final InputStreamReader reader;
 
+    /** First line read. */
+    private boolean firstLine = true;
+
     /** Last line empty. */
     private boolean lastLineEmpty = true;
 
@@ -113,6 +116,7 @@ class BoltReader extends Reader implements Iterator<String> {
      *
      * @return Returns true if there is another line, false otherwise.
      */
+    @Override
     public boolean hasNext() {
         try {
             synchronized (lock) {
@@ -171,21 +175,24 @@ class BoltReader extends Reader implements Iterator<String> {
 
                 if (c == '\n') {
                     lastLineEmpty = true;
-                    return builder.toString();
+                    break;
                 }
 
                 if (c == '\r') {
                     skipLF = true;
                     lastLineEmpty = true;
-                    return builder.toString();
-                }
-
-                // Skip UTF-16 BOMs
-                if (c == '\ufeff') {
-                    continue;
+                    break;
                 }
 
                 builder.append(c);
+            }
+        }
+
+        // Remove UTF-16 Byte Order Mark from start of first line.
+        if (firstLine) {
+            firstLine = false;
+            if (builder.length() > 0 && builder.substring(0, 1).equals("\ufeff")) {
+                return builder.substring(1);
             }
         }
 

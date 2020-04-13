@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import static app.zoftwhere.bolt.BoltTestHelper.assertClass;
 import static java.nio.charset.StandardCharsets.UTF_16;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -29,10 +30,18 @@ class BoltReaderTest {
 
     @Test
     void testByteOrderMark() throws IOException {
-        final var string = "\ufeffUTF-16";
+        final var string = "\ufeffUTF-16\ufeff";
         try (var reader = forString(string, UTF_16)) {
-            assertEquals("UTF-16", reader.readLine());
+            assertEquals("UTF-16\ufeff", reader.readLine());
         }
+    }
+
+    @Test
+    void testByteOrderMarkArray() {
+        final var string = "\ufeffUTF-16";
+        final var array = BoltReader.readArray(() -> forString(string, UTF_16));
+        final var expected = new String[] {"UTF-16"};
+        assertArrayEquals(expected, array);
     }
 
     @Test
