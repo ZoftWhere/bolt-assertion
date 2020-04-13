@@ -2,7 +2,6 @@ package app.zoftwhere.bolt.deluge;
 
 import static app.zoftwhere.bolt.BoltTestHelper.objectInArray;
 
-@SuppressWarnings("unused")
 public enum DelugeProgramType {
     INPUT_STANDARD,
     INPUT_STANDARD_ARGUED,

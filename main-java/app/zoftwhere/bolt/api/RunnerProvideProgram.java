@@ -1,7 +1,7 @@
 package app.zoftwhere.bolt.api;
 
-import java.io.BufferedWriter;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.nio.charset.Charset;
 
 import app.zoftwhere.bolt.api.RunnerInterface.RunConsole;
@@ -22,22 +22,22 @@ public interface RunnerProvideProgram
 {
 
     /**
-     * Specify the scanner-writer program without arguments.
+     * Specify the scanner-printer program without arguments.
      *
-     * @param program scanner-writer program without arguments
+     * @param program scanner-printer program without arguments
      * @return {@link RunnerProgram}
-     * @since 6.0.0
+     * @since 7.0.0
      */
     @Override
     RunnerProgram run(RunStandard program);
 
     /**
-     * Specify the scanner-writer program without arguments.
+     * Specify the scanner-printer program without arguments.
      *
-     * @param program scanner-writer program without arguments
-     * @param charset program {@link BufferedWriter} {@link Charset}
+     * @param program scanner-printer program without arguments
+     * @param charset program {@link PrintStream} {@link Charset}
      * @return {@link RunnerProgram}
-     * @since 6.0.0
+     * @since 7.0.0
      */
     @Override
     RunnerProgram run(Charset charset, RunStandard program);
@@ -64,22 +64,22 @@ public interface RunnerProvideProgram
     RunnerProgram runConsole(Charset charset, RunConsole program);
 
     /**
-     * Specify the scanner-writer program with arguments.
+     * Specify the scanner-printer program with arguments.
      *
-     * @param program scanner-writer program with arguments
+     * @param program scanner-printer program with arguments
      * @return {@link RunnerProgram}
-     * @since 6.0.0
+     * @since 7.0.0
      */
     @Override
     RunnerPreProgram run(RunStandardArgued program);
 
     /**
-     * Specify the scanner-writer program with arguments.
+     * Specify the scanner-printer program with arguments.
      *
-     * @param program scanner-writer program with arguments
-     * @param charset program {@link BufferedWriter} {@link Charset}
+     * @param program scanner-printer program with arguments
+     * @param charset program {@link PrintStream} {@link Charset}
      * @return {@link RunnerProgram}
-     * @since 6.0.0
+     * @since 7.0.0
      */
     @Override
     RunnerPreProgram run(Charset charset, RunStandardArgued program);

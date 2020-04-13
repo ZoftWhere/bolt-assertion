@@ -16,13 +16,13 @@ import static app.zoftwhere.bolt.Runner.newRunner;
 public class TriggerOnOffenceExample {
 
     public static void main(String[] args) {
-        run(System.out);
+        run(System.err);
     }
 
     @Test
     void testCase() {
         newRunner()
-            .run((scanner, printStream) -> run(printStream))
+            .run((scanner, out) -> run(out))
             .input()
             .expected(
                 "Program output does not meet expectation.",
@@ -34,12 +34,11 @@ public class TriggerOnOffenceExample {
             .assertSuccess();
     }
 
-    private static void run(PrintStream out) {
+    private static void run(PrintStream err) {
         newRunner()
-            .run((scanner, printStream) -> {
-                printStream.print("test:");
-                printStream.println();
-                printStream.print("Hello world!");
+            .run((scanner, out) -> {
+                out.println("test:");
+                out.print("Hello world!");
             })
             .input()
             .expected("test:", "Hello World!")
@@ -51,18 +50,18 @@ public class TriggerOnOffenceExample {
 
                 // If offending index is -1, then it must be the output lengths.
                 if (testResult.offendingIndex() == -1) {
-                    out.println("Program output does not meet expectation.");
-                    out.println(String.format("Program outputted %d lines.", testResult.output().length));
-                    out.println(String.format("Expected outputted is %d lines.", testResult.expected().length));
+                    err.println("Program output does not meet expectation.");
+                    err.printf("Program outputted %d lines.%n", testResult.output().length);
+                    err.printf("Expected outputted is %d lines.%n", testResult.expected().length);
                     return;
                 }
 
                 // Otherwise it must be a comparison flag.
                 int index = testResult.offendingIndex();
-                out.println("Program output does not meet expectation.");
-                out.println(String.format("Output line number: %d", index + 1));
-                out.println(String.format("Program output: %s", testResult.output()[index]));
-                out.println(String.format("Expected output: %s", testResult.expected()[index]));
+                err.println("Program output does not meet expectation.");
+                err.printf("Output line number: %d%n", index + 1);
+                err.printf("Program output: %s%n", testResult.output()[index]);
+                err.printf("Expected output: %s%n", testResult.expected()[index]);
             });
     }
 

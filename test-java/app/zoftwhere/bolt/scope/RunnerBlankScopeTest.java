@@ -4,7 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Comparator;
 
+import app.zoftwhere.bolt.BoltTestHelper;
 import app.zoftwhere.bolt.Runner;
+import app.zoftwhere.bolt.RunnerException;
 import app.zoftwhere.bolt.api.RunnerAsserter;
 import app.zoftwhere.bolt.api.RunnerInterface;
 import app.zoftwhere.bolt.api.RunnerLoader;
@@ -19,12 +21,18 @@ import app.zoftwhere.bolt.api.RunnerProvideProgram;
 import org.junit.jupiter.api.Test;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class RunnerBlankScopeTest {
+
+    private final String[] emptyArray = new String[] { };
+
+    private final String[] blankArray = new String[] {""};
 
     @Test
     void testRunner() {
@@ -41,15 +49,15 @@ class RunnerBlankScopeTest {
     }
 
     private void testProgramFirst(RunnerProvideProgram runner) {
-        testProgramInput(runner.run((scanner, bufferedWriter) -> {}));
-        testProgramInput(runner.run(UTF_8, ((scanner, bufferedWriter) -> {})));
+        testProgramInput(runner.run((scanner, out) -> {}));
+        testProgramInput(runner.run(UTF_8, ((scanner, out) -> {})));
         testProgramInput(runner.runConsole(((inputStream, outputStream) -> {})));
         testProgramInput(runner.runConsole(UTF_8, ((inputStream, outputStream) -> {})));
 
-        testProgramArgument(runner.run((strings, scanner, writer) -> {}));
-        testProgramArgument(runner.run(UTF_8, (strings, scanner, writer) -> {}));
-        testProgramArgument(runner.runConsole((strings, inputStream, outputStream) -> {}));
-        testProgramArgument(runner.runConsole(UTF_8, (strings, inputStream, outputStream) -> {}));
+        testProgramArgument(runner.run((arguments, scanner, out) -> {}));
+        testProgramArgument(runner.run(UTF_8, (arguments, scanner, out) -> {}));
+        testProgramArgument(runner.runConsole((arguments, inputStream, outputStream) -> {}));
+        testProgramArgument(runner.runConsole(UTF_8, (arguments, inputStream, outputStream) -> {}));
     }
 
     private void testProgramArgument(RunnerPreProgram preProgram) {
@@ -57,7 +65,10 @@ class RunnerBlankScopeTest {
     }
 
     private void testProgramInput(RunnerProgram program) {
+        testOptionalComparator(program.input());
         testOptionalComparator(program.input(""));
+        testOptionalComparator(program.input(emptyArray));
+        testOptionalComparator(program.input(blankArray));
         testOptionalComparator(program.input(() -> new ByteArrayInputStream(new byte[0])));
         testOptionalComparator(program.input(() -> new ByteArrayInputStream(new byte[0]), UTF_8));
         testOptionalComparator(program.loadInput("RunnerBlankScopeTest.txt", Runner.class));
@@ -65,40 +76,56 @@ class RunnerBlankScopeTest {
     }
 
     private void testInputFirst(RunnerProvideInput runner) {
+        testOptionalArgument(runner.input());
         testOptionalArgument(runner.input(""));
+        testOptionalArgument(runner.input(emptyArray));
+        testOptionalArgument(runner.input(blankArray));
         testOptionalArgument(runner.input(() -> new ByteArrayInputStream(new byte[0])));
         testOptionalArgument(runner.input(() -> new ByteArrayInputStream(new byte[0]), UTF_8));
         testOptionalArgument(runner.loadInput("RunnerBlankScopeTest.txt", Runner.class));
         testOptionalArgument(runner.loadInput("RunnerBlankScopeTest.txt", Runner.class, UTF_8));
     }
 
-    private void testOptionalArgument(RunnerProgramInput next) {
-        testProgramThree(next.argument(""));
+    private void testOptionalArgument(RunnerProgramInput programInput) {
+        testProgramThree(programInput.argument());
+        testProgramThree(programInput.argument(""));
+        testProgramThree(programInput.argument(emptyArray));
+        testProgramThree(programInput.argument(blankArray));
 
-        testProgramTwo(next.run((scanner, bufferedWriter) -> {}));
-        testProgramTwo(next.run(UTF_8, (scanner, bufferedWriter) -> {}));
-        testProgramTwo(next.runConsole((inputStream, outputStream) -> {}));
-        testProgramTwo(next.runConsole(UTF_8, (inputStream, outputStream) -> {}));
+        testProgramTwo(programInput.run((scanner, out) -> {}));
+        testProgramTwo(programInput.run(UTF_8, (scanner, out) -> {}));
+        testProgramTwo(programInput.runConsole((inputStream, outputStream) -> {}));
+        testProgramTwo(programInput.runConsole(UTF_8, (inputStream, outputStream) -> {}));
     }
 
-    private void testProgramTwo(RunnerProgramOutput output) {
-        testOptionalComparator(output);
+    private void testProgramTwo(RunnerProgramOutput programOutput) {
+        testOptionalComparator(programOutput);
     }
 
     private void testProgramThree(RunnerLoader loader) {
-        testOptionalComparator(loader.run((strings, scanner, bufferedWriter) -> {}));
-        testOptionalComparator(loader.run(UTF_8, (strings, scanner, bufferedWriter) -> {}));
-        testOptionalComparator(loader.runConsole((strings, inputStream, outputStream) -> {}));
-        testOptionalComparator(loader.runConsole(UTF_8, (strings, inputStream, outputStream) -> {}));
+        testOptionalComparator(loader.run((arguments, scanner, out) -> {}));
+        testOptionalComparator(loader.run(UTF_8, (arguments, scanner, out) -> {}));
+        testOptionalComparator(loader.runConsole((arguments, inputStream, outputStream) -> {}));
+        testOptionalComparator(loader.runConsole(UTF_8, (arguments, inputStream, outputStream) -> {}));
     }
 
-    private void testOptionalComparator(RunnerProgramOutput output) {
-        testRunnerOutput(output);
-        testRunnerOutput(output.comparator(Comparator.nullsFirst(Comparator.naturalOrder())));
+    private void testOptionalComparator(RunnerProgramOutput programOutput) {
+        testRunnerOutput(programOutput);
+        testRunnerOutput(programOutput.comparator(Comparator.nullsFirst(Comparator.naturalOrder())));
     }
 
     private void testRunnerOutput(RunnerPreTest preTest) {
+        Exception exception = preTest.exception().orElse(null);
+        String[] output = preTest.output();
+        assertNull(exception);
+        assertNotNull(output);
+        assertEquals(1, output.length);
+        assertEquals("", output[0]);
+
+        testAsserter(preTest.expected());
         testAsserter(preTest.expected(""));
+        testAsserter(preTest.expected(emptyArray));
+        testAsserter(preTest.expected(blankArray));
         testAsserter(preTest.expected(this::blankStream));
         testAsserter(preTest.expected(this::blankStream, UTF_8));
         testAsserter(preTest.loadExpectation("RunnerBlankScopeTest.txt", Runner.class));
@@ -111,27 +138,29 @@ class RunnerBlankScopeTest {
             asserter.assertFailure();
             fail("exception.expected");
         }
-        catch (Exception ignore) {
+        catch (Exception e) {
+            BoltTestHelper.assertClass(RunnerException.class, e);
         }
         try {
             asserter.assertException();
             fail("exception.expected");
         }
-        catch (Exception ignore) {
+        catch (Exception e) {
+            BoltTestHelper.assertClass(RunnerException.class, e);
         }
 
         asserter.assertCheck(this::testResult);
     }
 
-    private void testResult(RunnerProgramResult testResult) {
-        assertTrue(testResult.isSuccess());
-        assertFalse(testResult.isFailure());
-        assertFalse(testResult.message().isPresent());
-        assertFalse(testResult.isException());
-        assertFalse(testResult.exception().isPresent());
+    private void testResult(RunnerProgramResult programResult) {
+        assertTrue(programResult.isSuccess());
+        assertFalse(programResult.isFailure());
+        assertFalse(programResult.message().isPresent());
+        assertFalse(programResult.isException());
+        assertFalse(programResult.exception().isPresent());
 
-        assertNotNull(testResult.expected());
-        assertNotNull(testResult.output());
+        assertNotNull(programResult.expected());
+        assertNotNull(programResult.output());
     }
 
     private InputStream blankStream() {

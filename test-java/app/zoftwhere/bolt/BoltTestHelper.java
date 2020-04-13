@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import org.opentest4j.AssertionFailedError;
 
-@SuppressWarnings("WeakerAccess")
 public class BoltTestHelper {
 
     public static String[] array(String... array) {

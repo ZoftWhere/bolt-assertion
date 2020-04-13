@@ -6,7 +6,10 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
 /**
- * A Bolt {@link InputStream} for cross encoding use.
+ * <p>A Bolt {@link InputStream} for cross encoding use.
+ * </p>
+ * <p>This is a package-private class for providing this functionality.
+ * </p>
  *
  * @since 4.0.0
  */
@@ -22,6 +25,14 @@ class BoltInputStream extends InputStream {
 
     private int size = 0;
 
+    /**
+     * Constructor for creating an {@link InputStream} from {@link InputStream} transcoder.
+     *
+     * @param inputStream {@link InputStream} to transcode
+     * @param source      character encoding for the source {@link InputStream}
+     * @param destination character encoding for the {@link BoltInputStream}
+     * @since 4.0.0
+     */
     BoltInputStream(InputStream inputStream, Charset source, Charset destination) {
         this.destination = destination;
         this.reader = new InputStreamReader(inputStream, source);

@@ -90,12 +90,12 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     interface RunStandard extends AbstractUnit.CallerNoArguments<Scanner, PrintStream> {
 
         /**
-         * @param scanner     scanner
-         * @param printStream print stream
+         * @param scanner scanner
+         * @param out     print stream
          * @throws Throwable program {@link Throwable} on error
          */
         @Override
-        void call(Scanner scanner, PrintStream printStream) throws Throwable;
+        void call(Scanner scanner, PrintStream out) throws Throwable;
     }
 
     /**
@@ -107,13 +107,13 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     interface RunStandardArgued extends AbstractUnit.CallerWithArguments<Scanner, PrintStream> {
 
         /**
-         * @param arguments   program argument array
-         * @param scanner     scanner
-         * @param printStream print stream
+         * @param arguments program argument array
+         * @param scanner   scanner
+         * @param out       print stream
          * @throws Throwable program {@link Throwable} on error
          */
         @Override
-        void call(String[] arguments, Scanner scanner, PrintStream printStream) throws Throwable;
+        void call(String[] arguments, Scanner scanner, PrintStream out) throws Throwable;
     }
 
 }

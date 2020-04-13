@@ -18,6 +18,14 @@ import app.zoftwhere.bolt.api.RunnerInterface.RunStandardArgued;
 import static app.zoftwhere.bolt.BoltReader.readArray;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * <p>Bolt Provide interface for Bolt Provide Input and Bolt Provide Program classes.
+ * </p>
+ * <p>This is a package-private interface for providing default functionality.
+ * </p>
+ *
+ * @since 6.0.0
+ */
 interface BoltProvide {
 
     default String[] emptyOnNull(String[] value) {
@@ -40,7 +48,7 @@ interface BoltProvide {
                 try (OutputStreamWriter writer = new OutputStreamWriter(output, UTF_8)) {
                     writer.append(input[0]);
                     for (int i = 1, s = input.length; i < s; i++) {
-                        writer.append(System.lineSeparator());
+                        writer.append("\r\n");
                         writer.append(input[i]);
                     }
                     writer.flush();
@@ -89,8 +97,8 @@ interface BoltProvide {
                 return new RunnerException("bolt.runner.load.input.input.stream.null");
             }
             try (Scanner scanner = newScanner(inputStream, inputCharset)) {
-                try (PrintStream printStream = newPrintStream(outputStream, outputCharset)) {
-                    program.call(arguments, scanner, printStream);
+                try (PrintStream out = newPrintStream(outputStream, outputCharset)) {
+                    program.call(arguments, scanner, out);
                 }
             }
         }

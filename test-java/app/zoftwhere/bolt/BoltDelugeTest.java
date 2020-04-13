@@ -44,8 +44,8 @@ class BoltDelugeTest {
 
         list.addAll(listForData(builder, null));
         list.addAll(listForData(builder, array()));
-        list.addAll(listForData(builder, array("Test")));
-        list.addAll(listForData(builder, array("Hello World!\n\r\n", "Unicode(\ud801\udc10)", "")));
+        list.addAll(listForData(builder, array("ListForDataTest")));
+        list.addAll(listForData(builder, array("Hello World!\r", "\nUnicode(\ud801\udc10)", "")));
 
         list.addAll(listForData(builder, array("<", null)));
         list.addAll(listForData(builder, array(null, ">")));

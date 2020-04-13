@@ -6,8 +6,8 @@ import java.util.Scanner;
 import app.zoftwhere.bolt.Runner;
 import org.junit.jupiter.api.Test;
 
-@SuppressWarnings({"CodeBlock2Expr", "WeakerAccess"})
-public class HelloWorldExample {
+@SuppressWarnings("CodeBlock2Expr")
+class HelloWorldExample {
 
     // An immutable runner that can be reused.
     private final Runner runner = new Runner();
@@ -17,8 +17,8 @@ public class HelloWorldExample {
 
         // Hello World lambda.
         runner.run(
-            (Scanner scanner, PrintStream printStream) -> {
-                printStream.print("Hello World!");
+            (Scanner scanner, PrintStream out) -> {
+                out.print("Hello World!");
             })
             .input()
             .expected("Hello World!")

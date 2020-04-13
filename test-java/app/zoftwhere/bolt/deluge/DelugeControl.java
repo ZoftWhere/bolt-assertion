@@ -6,10 +6,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-import app.zoftwhere.bolt.BoltLineScanner;
 import app.zoftwhere.bolt.BoltSingleReturn;
 
-import static app.zoftwhere.bolt.BoltLineScanner.escapeString;
 import static app.zoftwhere.bolt.BoltTestHelper.array;
 import static app.zoftwhere.bolt.BoltTestHelper.isOrHasNull;
 import static app.zoftwhere.bolt.deluge.DelugeData.DataType.ARRAY;
@@ -17,6 +15,7 @@ import static app.zoftwhere.bolt.deluge.DelugeData.DataType.RESOURCE;
 import static app.zoftwhere.bolt.deluge.DelugeData.DataType.RESOURCE_ENCODED;
 import static app.zoftwhere.bolt.deluge.DelugeData.DataType.STREAM;
 import static app.zoftwhere.bolt.deluge.DelugeData.DataType.STREAM_ENCODED;
+import static app.zoftwhere.bolt.deluge.DelugeLineScanner.escapeString;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 class DelugeControl {
@@ -73,22 +72,22 @@ class DelugeControl {
     private String runComparison(DelugeResult expected, DelugeResult actual) {
         BoltSingleReturn<String> switcher = new BoltSingleReturn<>();
 
-        switcher.block(() -> compareException(expected, actual, DelugeResult::exceptionClass,
+        switcher.block(() -> compareResult(expected, actual, DelugeResult::exceptionClass,
             "deluge.program.exception.expected",
             "deluge.program.exception.found",
             "deluge.program.exception.mismatch"));
 
-        switcher.block(() -> compareException(expected, actual, DelugeResult::exceptionMessage,
+        switcher.block(() -> compareResult(expected, actual, DelugeResult::exceptionMessage,
             "deluge.program.exception.message.expected",
             "deluge.program.exception.message.found",
             "deluge.program.exception.message.mismatch"));
 
-        switcher.block(() -> compareException(expected, actual, DelugeResult::causeClass,
+        switcher.block(() -> compareResult(expected, actual, DelugeResult::causeClass,
             "deluge.program.exception.cause.expected",
             "deluge.program.exception.cause.found",
             "deluge.program.exception.cause.mismatch"));
 
-        switcher.block(() -> compareException(expected, actual, DelugeResult::causeMessage,
+        switcher.block(() -> compareResult(expected, actual, DelugeResult::causeMessage,
             "deluge.program.exception.cause.message.expected",
             "deluge.program.exception.cause.message.found",
             "deluge.program.exception.cause.message.mismatch"));
@@ -117,7 +116,7 @@ class DelugeControl {
         return switcher.end();
     }
 
-    private String compareException(DelugeResult expected, DelugeResult actual, Function<DelugeResult, String> getter,
+    private String compareResult(DelugeResult expected, DelugeResult actual, Function<DelugeResult, String> getter,
         String noActual, String noExpected, String noMatch)
     {
         String expectedString = getter.apply(expected);
@@ -138,7 +137,7 @@ class DelugeControl {
             return null;
         }
         catch (Throwable throwable) {
-            throw new DelugeException(throwable.getMessage(), throwable.getCause());
+            throw new DelugeException("deluge.comparison.exception", throwable);
         }
     }
 
@@ -259,7 +258,7 @@ class DelugeControl {
         }
         else {
             try (InputStream inputStream = DelugeData.newInputStreamSupplier(data.array()).get()) {
-                try (BoltLineScanner scanner = new BoltLineScanner(inputStream, UTF_8)) {
+                try (DelugeLineScanner scanner = new DelugeLineScanner(inputStream, UTF_8)) {
                     String item = scanner.firstLine();
                     list.add(String.format("Line: \"%s\"", escapeString(item)));
                     while (scanner.hasNextLine()) {

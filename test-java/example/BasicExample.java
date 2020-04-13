@@ -27,7 +27,7 @@ class BasicExample {
             .assertSuccess();
 
         // Run a simple lambda.
-        runner.run((scanner, printStream) -> printStream.print("Hello World!"))
+        runner.run((scanner, out) -> out.print("Hello World!"))
             .input()
             .expected("Hello World!")
             .assertSuccess();
@@ -48,23 +48,23 @@ class BasicExample {
 
         // Run with a difference method.
         runner.input()
-            .run((scanner, printStream) -> {
+            .run((scanner, out) -> {
                 String result = runProcess();
-                printStream.print(result);
+                out.print(result);
             })
             .expected("Success!")
             .assertSuccess();
     }
 
-    private static void basic(Scanner scanner, PrintStream printStream) {
-        printStream.print("Hello World?");
+    private static void basic(Scanner scanner, PrintStream out) {
+        out.print("Hello World?");
     }
 
-    private static void main(String[] argumentArray, Scanner scanner, PrintStream printStream) {
-        printStream.print("Program arguments:");
+    private static void main(String[] argumentArray, Scanner scanner, PrintStream out) {
+        out.print("Program arguments:");
         for (String line : argumentArray) {
-            printStream.println();
-            printStream.print(line);
+            out.println();
+            out.print(line);
         }
     }
 

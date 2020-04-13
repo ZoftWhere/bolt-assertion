@@ -13,6 +13,12 @@ class BoltAsserter implements RunnerAsserter {
 
     private final BoltProgramResult result;
 
+    /**
+     * Create an asserter for a program result.
+     *
+     * @param result program result
+     * @since 6.0.0
+     */
     BoltAsserter(BoltProgramResult result) {
         if (result == null) {
             throw new RunnerException("bolt.runner.asserter.result.null");

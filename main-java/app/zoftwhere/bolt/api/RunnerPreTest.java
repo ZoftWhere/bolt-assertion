@@ -34,10 +34,10 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
     /**
      * <p>Specify the expected program output.
      * </p>
-     * <p>The expectation will only be loaded if the program output does not contain an exception.
+     * <p>The expectation will only be loaded if the expectation is not null, and has one or more items.
      * </p>
-     * <p>If the expectation is loaded, and the array contains a null, the program result will be loaded with a
-     * corresponding exception.
+     * <p>If the expectation is loaded, the program does not have an exception, and the array contains a null, the
+     * program result will be loaded with a corresponding exception.
      * </p>
      *
      * @param expected variable argument for expected program line output

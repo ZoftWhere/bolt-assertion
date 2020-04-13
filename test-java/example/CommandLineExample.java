@@ -8,16 +8,16 @@ public class CommandLineExample {
 
     public static void main(String[] args) throws Exception {
         try (Scanner scanner = new Scanner(System.in)) {
-            try (PrintStream printStream = new PrintStream(System.getenv("OUTPUT_PATH"))) {
-                main(args, scanner, printStream);
+            try (PrintStream out = new PrintStream(System.getenv("OUTPUT_PATH"))) {
+                main(args, scanner, out);
             }
         }
     }
 
     // Make a proxy method to decrease boilerplate, and simplify.
-    static void main(String[] arguments, Scanner scanner, PrintStream printStream) {
+    static void main(String[] arguments, Scanner scanner, PrintStream out) {
         String name = scanner.nextLine();
-        printStream.println(String.format("Hello %s!", name));
+        out.printf("Hello %s!%n", name);
     }
 
 }

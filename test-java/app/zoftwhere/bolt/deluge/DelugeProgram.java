@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 
-import app.zoftwhere.bolt.BoltLineScanner;
 import app.zoftwhere.bolt.api.RunnerInterface.RunConsole;
 import app.zoftwhere.bolt.api.RunnerInterface.RunConsoleArgued;
 import app.zoftwhere.bolt.api.RunnerInterface.RunStandard;
@@ -59,17 +58,20 @@ class DelugeProgram {
     }
 
     DelugeResult buildProgramResult() {
-        if (type.isProgramFirst()) {
+        if (type.isProgramFirst() && !type.isInputFirst()) {
             return testProgramFirst(newRunner());
         }
-        else {
+        else if (type.isInputFirst() && !type.isProgramFirst()) {
             return testInputFirst(newRunner());
+        }
+        else {
+            throw new DelugeException("deluge.program.program.type.exclusion");
         }
     }
 
     private DelugeResult testProgramFirst(RunnerProvideProgram runner) {
         if (PROGRAM_STANDARD == type) {
-            RunStandard program = (scanner, printStream) -> process(null, scanner, printStream);
+            RunStandard program = (scanner, out) -> process(null, scanner, out);
 
             if (settings.hasCharSet()) {
                 return testProgramInput(runner.run(settings.charset(), program));
@@ -170,7 +172,7 @@ class DelugeProgram {
 
     private DelugeResult testProgramNoArguments(RunnerProgramInput runner) {
         if (INPUT_STANDARD == type) {
-            RunStandard program = (scanner, printStream) -> process(null, scanner, printStream);
+            RunStandard program = (scanner, out) -> process(null, scanner, out);
 
             if (settings.hasCharSet()) {
                 return outputToResult(runner.run(settings.charset(), program));
@@ -233,9 +235,9 @@ class DelugeProgram {
         }
 
         //noinspection CaughtExceptionImmediatelyRethrown
-        try (BoltLineScanner scanner = new BoltLineScanner(inputStream, settings.charset())) {
-            try (PrintStream printStream = new PrintStream(outputStream, false, settings.charset())) {
-                process(arguments, scanner, printStream);
+        try (DelugeLineScanner scanner = new DelugeLineScanner(inputStream, settings.charset())) {
+            try (PrintStream out = new PrintStream(outputStream, false, settings.charset())) {
+                process(arguments, scanner, out);
             }
         }
         catch (Throwable throwable) {
@@ -243,50 +245,46 @@ class DelugeProgram {
         }
     }
 
-    private void process(String[] arguments, Scanner scanner, PrintStream printStream) throws Throwable {
-        process(arguments, new BoltLineScanner(scanner), printStream);
+    private void process(String[] arguments, Scanner scanner, PrintStream out) throws Throwable {
+        process(arguments, new DelugeLineScanner(scanner), out);
     }
 
-    private void process(String[] arguments, BoltLineScanner scanner, PrintStream printStream) throws Throwable {
+    private void process(String[] arguments, DelugeLineScanner scanner, PrintStream out) throws Throwable {
         if (settings.hasThrowable()) {
             throw settings.throwable();
         }
 
         if (arguments == null) {
-            printStream.print("Argument: <null>");
+            out.print("Argument: <null>");
         }
         else if (arguments.length == 0) {
-            printStream.print("Argument: <none>");
+            out.print("Argument: <none>");
         }
         else {
-            if (arguments[0] == null) {
-                printStream.print("Argument: <null>");
-            }
-            else {
-                printStream.print(String.format("Argument: \"%s\"", BoltLineScanner.escapeString(arguments[0])));
-            }
+            out.printf("Argument: %s", escapeString(arguments[0]));
 
             for (int i = 1, s = arguments.length; i < s; i++) {
-                printStream.println();
-
-                if (arguments[i] == null) {
-                    printStream.print("Argument: <null>");
-                }
-                else {
-                    printStream.print(String.format("Argument: \"%s\"", BoltLineScanner.escapeString(arguments[i])));
-                }
+                out.println();
+                out.printf("Argument: %s", escapeString(arguments[i]));
             }
         }
 
         String line = scanner.firstLine();
-        printStream.println();
-        printStream.print(String.format("Line: \"%s\"", BoltLineScanner.escapeString(line)));
+        out.println();
+        out.printf("Line: %s", escapeString(line));
 
         while (scanner.hasNextLine()) {
             line = scanner.nextLine();
-            printStream.println();
-            printStream.print(String.format("Line: \"%s\"", BoltLineScanner.escapeString(line)));
+            out.println();
+            out.printf("Line: %s", escapeString(line));
         }
+    }
+
+    private String escapeString(String value) {
+        if (value == null) {
+            return "<null>";
+        }
+        return '"' + DelugeLineScanner.escapeString(value) + '"';
     }
 
 }

@@ -6,8 +6,12 @@ import java.util.Scanner;
 import app.zoftwhere.bolt.Runner;
 import org.junit.jupiter.api.Test;
 
-@SuppressWarnings({"WeakerAccess"})
-public class ScanEveryLineExample {
+/**
+ * Scan Every Line example.
+ *
+ * @since 7.1.0
+ */
+class ScanEveryLineExample {
 
     private final Runner runner = new Runner();
 
@@ -38,6 +42,24 @@ public class ScanEveryLineExample {
             .assertSuccess();
     }
 
+    @Test
+    void testSeparator() {
+        runner //
+            .run(ScanEveryLineExample::getEveryLine)
+            .input("system\r" + "\r\n" + "\n" + "and\u2028" + "unicode\u2029" + "agnostic\u0085" + "")
+            .expected("[system]", "[]", "[]", "[and]", "[unicode]", "[agnostic]", "[]")
+            .assertSuccess();
+    }
+
+    @Test
+    void testByteOrderMark() {
+        runner //
+            .run(ScanEveryLineExample::getEveryLine)
+            .input("\ufeff", "Exclude leading Byte Order Mark.", "")
+            .expected("[]", "[Exclude leading Byte Order Mark.]", "[]")
+            .assertSuccess();
+    }
+
     /**
      * Example for running a program with scanner against fixed/file/resource input.
      *
@@ -56,15 +78,16 @@ public class ScanEveryLineExample {
     }
 
     private static String firstLine(Scanner scanner) {
-        // Check for empty first line.
+        // Check Byte-Order-Mark and for empty first line.
         scanner.useDelimiter("");
-        if (scanner.hasNext("\n")) {
-            scanner.useDelimiter("\r?\n");
+        scanner.skip("\ufeff?");
+        if (scanner.hasNext("\\R")) {
+            scanner.useDelimiter("\\R");
             return "";
         }
 
         // Check for empty input.
-        scanner.useDelimiter("\r?\n");
+        scanner.useDelimiter("\\R");
         if (!scanner.hasNext()) {
             return "";
         }

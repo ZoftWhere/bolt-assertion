@@ -29,13 +29,27 @@ class BoltProgramOutput implements RunnerProgramOutput {
 
     private final Comparator<String> comparator;
 
+    /**
+     * Create an program output instance based on the program output and program exception.
+     *
+     * @param output    program output lines
+     * @param throwable program error, if any, null otherwise
+     * @since 6.0.0
+     */
     BoltProgramOutput(String[] output, Throwable throwable) {
-        requireNonNull(output);
-        this.output = output;
+        this.output = requireNonNull(output);
         this.exception = fromThrowable(throwable);
         this.comparator = null;
     }
 
+    /**
+     * Private constructor for program output.
+     *
+     * @param output     program output lines
+     * @param exception  program error, if any, null otherwise
+     * @param comparator program output comparator, if any, null otherwise
+     * @since 6.0.0
+     */
     private BoltProgramOutput(String[] output, Exception exception, Comparator<String> comparator) {
         this.output = requireNonNull(output);
         this.exception = exception;
@@ -68,22 +82,20 @@ class BoltProgramOutput implements RunnerProgramOutput {
 
     @Override
     public RunnerAsserter expected(String... expected) {
+        String[] expectation = expected == null || expected.length == 0 ? new String[] {""} : expected;
+
         if (exception != null) {
-            return new BoltAsserter(new BoltProgramResult(output, new String[0], exception));
+            return new BoltAsserter(new BoltProgramResult(output, expectation, exception));
         }
 
-        if (expected == null || expected.length == 0) {
-            return new BoltAsserter(buildTestResult(new String[] {""}, output, null, comparator));
-        }
-
-        for (String item : expected) {
+        for (String item : expectation) {
             if (item == null) {
                 RunnerException exception = new RunnerException("bolt.runner.variable.array.expected.has.null");
-                return new BoltAsserter(new BoltProgramResult(output, new String[0], exception));
+                return new BoltAsserter(new BoltProgramResult(output, expectation, exception));
             }
         }
 
-        return new BoltAsserter(buildTestResult(expected, output, null, comparator));
+        return new BoltAsserter(buildTestResult(output, expectation, comparator));
     }
 
     @Override
@@ -143,11 +155,13 @@ class BoltProgramOutput implements RunnerProgramOutput {
     private RunnerAsserter create(Charset charset, InputStreamSupplier supplier) {
         if (charset == null) {
             RunnerException exception = new RunnerException("bolt.runner.load.expectation.charset.null");
-            return new BoltAsserter(buildTestResult(new String[0], output, exception, comparator));
+            BoltProgramResult result = new BoltProgramResult(output, new String[0], exception);
+            return new BoltAsserter(result);
         }
         if (supplier == null) {
             RunnerException exception = new RunnerException("bolt.runner.load.expectation.supplier.null");
-            return new BoltAsserter(buildTestResult(new String[0], output, exception, comparator));
+            BoltProgramResult result = new BoltProgramResult(output, new String[0], exception);
+            return new BoltAsserter(result);
         }
 
         try (InputStream inputStream = supplier.get()) {
@@ -155,38 +169,30 @@ class BoltProgramOutput implements RunnerProgramOutput {
                 throw new RunnerException("bolt.runner.load.expectation.stream.null");
             }
             final String[] expected = readArray(() -> new BoltReader(inputStream, charset));
-            return new BoltAsserter(buildTestResult(expected, output, null, comparator));
+            return new BoltAsserter(buildTestResult(output, expected, comparator));
         }
         catch (Throwable e) {
             Exception exception = fromThrowable(e);
-            return new BoltAsserter(buildTestResult(new String[0], output, exception, comparator));
+            BoltProgramResult result = new BoltProgramResult(output, new String[0], exception);
+            return new BoltAsserter(result);
         }
     }
 
     /**
      * Helper method to build a test result instance.
      *
-     * @param expected   the expected program output
      * @param output     the actual program output
-     * @param exception  {@code Nullable} exception
+     * @param expected   the expected program output
      * @param comparator {@code Nullable} comparator
      * @return {@link BoltProgramResult}
      */
-    private BoltProgramResult buildTestResult( //
-        String[] expected, //
-        String[] output, //
-        Exception exception, //
-        Comparator<String> comparator) //
-    {
-        if (exception != null) {
-            return new BoltProgramResult(output, expected, exception);
-        }
-
+    private BoltProgramResult buildTestResult(String[] output, String[] expected, Comparator<String> comparator) {
         if (expected.length != output.length) {
             int none = -1;
             String message = "bolt.runner.asserter.output.length.mismatch";
             return new BoltProgramResult(output, expected, none, message);
         }
+
         final int size = output.length;
         if (comparator == null) {
             for (int index = 0; index < size; index++) {

@@ -14,6 +14,11 @@ import app.zoftwhere.bolt.api.RunnerProvideInput;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * Bolt Provide Input class.
+ *
+ * @since 6.0.0
+ */
 class BoltProvideInput implements RunnerProvideInput, RunnerProgramInput, RunnerLoader, BoltProvide {
 
     private final Charset inputCharset;
@@ -22,18 +27,38 @@ class BoltProvideInput implements RunnerProvideInput, RunnerProgramInput, Runner
 
     private final String[] arguments;
 
+    /**
+     * Create instance of this multi-interfaced class for handling of runners that accept input first.
+     *
+     * @since 6.0.0
+     */
     BoltProvideInput() {
         inputCharset = UTF_8;
         supplier = () -> null;
         arguments = null;
     }
 
+    /**
+     * Private constructor for the multi-interfaced class.
+     *
+     * @param inputCharset character encoding of the {@link java.io.InputStream}
+     * @param supplier     {@link java.io.InputStream} supplier
+     * @since 6.0.0
+     */
     private BoltProvideInput(Charset inputCharset, InputStreamSupplier supplier) {
         this.inputCharset = inputCharset;
         this.supplier = supplier;
         this.arguments = null;
     }
 
+    /**
+     * Private constructor for the multi-interfaced class.
+     *
+     * @param inputCharset character encoding of the {@link java.io.InputStream}
+     * @param supplier     {@link java.io.InputStream} supplier
+     * @param arguments    program arguments
+     * @since 6.0.0
+     */
     private BoltProvideInput(Charset inputCharset, InputStreamSupplier supplier, String[] arguments) {
         this.inputCharset = inputCharset;
         this.supplier = supplier;
@@ -88,14 +113,14 @@ class BoltProvideInput implements RunnerProvideInput, RunnerProgramInput, Runner
 
     @Override
     public RunnerProgramOutput run(RunStandard program) {
-        return buildStandardOutput(UTF_8, ((arguments, scanner, writer) -> //
-            program.call(scanner, writer)));
+        return buildStandardOutput(UTF_8, ((arguments, scanner, out) -> //
+            program.call(scanner, out)));
     }
 
     @Override
     public RunnerProgramOutput run(Charset charset, RunStandard program) {
-        return buildStandardOutput(charset, ((arguments, scanner, writer) -> //
-            program.call(scanner, writer)));
+        return buildStandardOutput(charset, ((arguments, scanner, out) -> //
+            program.call(scanner, out)));
     }
 
     @Override

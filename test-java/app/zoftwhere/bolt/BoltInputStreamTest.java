@@ -34,8 +34,8 @@ class BoltInputStreamTest {
     }
 
     @Test
-    @SuppressWarnings("UnnecessaryLocalVariable")
     void testCrossCodec() throws IOException {
+        @SuppressWarnings("UnnecessaryLocalVariable")
         var charset = US_ASCII; // Use ASCII for base.
         var decode = UTF_16LE; // Use UTF-16LE for input stream.
         var string = "ASCII(Hello World)";
@@ -46,8 +46,8 @@ class BoltInputStreamTest {
     }
 
     @Test
-    @SuppressWarnings("UnnecessaryLocalVariable")
     void testUnicode() throws IOException {
+        @SuppressWarnings("UnnecessaryLocalVariable")
         var charset = UTF_16LE; // Use ASCII for base.
         var decode = UTF_8; // Use UTF-16LE for input stream.
         var string = "Unicode(\ud801\udc10)";

@@ -1,6 +1,5 @@
 package app.zoftwhere.bolt.deluge;
 
-@SuppressWarnings("unused")
 class DelugeResult {
 
     private final String[] output;
@@ -63,6 +62,7 @@ class DelugeResult {
         return exceptionMessage;
     }
 
+    @SuppressWarnings("unused")
     Throwable cause() {
         return cause;
     }
@@ -72,7 +72,7 @@ class DelugeResult {
     }
 
     String causeMessage() {
-        return this.causeClass;
+        return this.causeMessage;
     }
 
     private String getClass(Throwable throwable) {

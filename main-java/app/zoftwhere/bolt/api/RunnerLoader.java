@@ -1,7 +1,7 @@
 package app.zoftwhere.bolt.api;
 
-import java.io.BufferedWriter;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.nio.charset.Charset;
 
 import app.zoftwhere.bolt.api.RunnerInterface.RunConsoleArgued;
@@ -15,9 +15,9 @@ import app.zoftwhere.bolt.api.RunnerInterface.RunStandardArgued;
 public interface RunnerLoader extends AbstractUnit.RunWithArguments<RunnerProgramOutput> {
 
     /**
-     * Specify the scanner-writer program with arguments.
+     * Specify the scanner-printer program with arguments.
      *
-     * @param program scanner-writer program with arguments
+     * @param program scanner-printer program with arguments
      * @return {@link RunnerProgramOutput}
      * @since 7.0.0
      */
@@ -25,10 +25,10 @@ public interface RunnerLoader extends AbstractUnit.RunWithArguments<RunnerProgra
     RunnerProgramOutput run(RunStandardArgued program);
 
     /**
-     * Specify the scanner-writer program with arguments.
+     * Specify the scanner-printer program with arguments.
      *
-     * @param program scanner-writer program with arguments
-     * @param charset program {@link BufferedWriter} {@link Charset}
+     * @param program scanner-printer program with arguments
+     * @param charset program {@link PrintStream} {@link Charset}
      * @return {@link RunnerProgramOutput}
      * @since 7.0.0
      */

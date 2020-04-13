@@ -38,7 +38,7 @@ public class Runner extends AbstractRunner {
     /**
      * {@inheritDoc}
      *
-     * @since 6.0.0
+     * @since 7.0.0
      */
     @Override
     public RunnerProgram run(RunStandard program) {
@@ -48,7 +48,7 @@ public class Runner extends AbstractRunner {
     /**
      * {@inheritDoc}
      *
-     * @since 6.0.0
+     * @since 7.0.0
      */
     @Override
     public RunnerProgram run(Charset charset, RunStandard program) {
@@ -78,7 +78,7 @@ public class Runner extends AbstractRunner {
     /**
      * {@inheritDoc}
      *
-     * @since 6.0.0
+     * @since 7.0.0
      */
     @Override
     public RunnerPreProgram run(RunStandardArgued program) {
@@ -88,7 +88,7 @@ public class Runner extends AbstractRunner {
     /**
      * {@inheritDoc}
      *
-     * @since 6.0.0
+     * @since 7.0.0
      */
     @Override
     public RunnerPreProgram run(Charset charset, RunStandardArgued program) {

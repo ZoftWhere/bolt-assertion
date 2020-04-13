@@ -17,7 +17,10 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * Runner Reader for parsing input in an editor-like fashion.
+ * <p>Bolt Reader for parsing input in an editor-like fashion.
+ * </p>
+ * <p>This is a package-private class for providing this functionality.
+ * </p>
  *
  * @since 4.0.0
  */
@@ -30,12 +33,22 @@ class BoltReader extends Reader implements Iterator<String> {
 
     private final InputStreamReader reader;
 
+    /** First line read. */
+    private boolean firstLine = true;
+
     /** Last line empty. */
     private boolean lastLineEmpty = true;
 
     /** If the next character is a line feed (\n), skip it. */
     private boolean skipLF = false;
 
+    /**
+     * Static helper method for retrieving text lines as a {@link List} of type {@link String}.
+     *
+     * @param supplier {@link BoltReader} supplier
+     * @return text lines as a {@link List} of type {@link String}
+     * @since 4.0.0
+     */
     static List<String> readList(Supplier<BoltReader> supplier) {
         try (BoltReader reader = supplier.get()) {
             return reader.list();
@@ -45,6 +58,13 @@ class BoltReader extends Reader implements Iterator<String> {
         }
     }
 
+    /**
+     * Static helper method for retrieving text lines as an array of type {@link String}.
+     *
+     * @param supplier {@link BoltReader} supplier
+     * @return text lines as an array of type {@link String}
+     * @since 4.0.0
+     */
     static String[] readArray(Supplier<BoltReader> supplier) {
         try (BoltReader reader = supplier.get()) {
             return reader.array();
@@ -54,6 +74,13 @@ class BoltReader extends Reader implements Iterator<String> {
         }
     }
 
+    /**
+     * Constructor for byte array data.
+     *
+     * @param data    byte array for text
+     * @param charset character encoding of byte array
+     * @since 4.0.0
+     */
     BoltReader(byte[] data, Charset charset) {
         if (data == null) {
             throw new RunnerException("bolt.runner.reader.data.null");
@@ -65,6 +92,13 @@ class BoltReader extends Reader implements Iterator<String> {
         this.lock = super.lock;
     }
 
+    /**
+     * Constructor for input stream.
+     *
+     * @param inputStream input stream for text
+     * @param charset     character encoding of {@link InputStream}
+     * @since 4.0.0
+     */
     BoltReader(InputStream inputStream, Charset charset) {
         if (inputStream == null) {
             throw new RunnerException("bolt.runner.reader.input.stream.null");
@@ -82,6 +116,7 @@ class BoltReader extends Reader implements Iterator<String> {
      *
      * @return Returns true if there is another line, false otherwise.
      */
+    @Override
     public boolean hasNext() {
         try {
             synchronized (lock) {
@@ -140,21 +175,24 @@ class BoltReader extends Reader implements Iterator<String> {
 
                 if (c == '\n') {
                     lastLineEmpty = true;
-                    return builder.toString();
+                    break;
                 }
 
                 if (c == '\r') {
                     skipLF = true;
                     lastLineEmpty = true;
-                    return builder.toString();
-                }
-
-                // Skip UTF-16 BOMs
-                if (c == '\ufeff') {
-                    continue;
+                    break;
                 }
 
                 builder.append(c);
+            }
+        }
+
+        // Remove UTF-16 Byte Order Mark from start of first line.
+        if (firstLine) {
+            firstLine = false;
+            if (builder.length() > 0 && builder.substring(0, 1).equals("\ufeff")) {
+                return builder.substring(1);
             }
         }
 

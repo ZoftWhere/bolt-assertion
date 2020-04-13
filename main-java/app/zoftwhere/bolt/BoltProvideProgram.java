@@ -14,6 +14,11 @@ import app.zoftwhere.bolt.api.RunnerProvideProgram;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * Bolt Provide Program class.
+ *
+ * @since 6.0.0
+ */
 class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, RunnerProgram, BoltProvide {
 
     private final String[] argumentArray;
@@ -22,19 +27,39 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
 
     private final Charset outputCharset;
 
+    /**
+     * Constructor for {@link Runner} program first interface implementation.
+     *
+     * @since 6.0.0
+     */
     BoltProvideProgram() {
         argumentArray = null;
         executor = (arguments, inputCharset, streamSupplier, outputCharset, outputStream) -> null;
         outputCharset = UTF_8;
     }
 
-    private BoltProvideProgram(BoltProgramExecutor executor, Charset outputCharset) {
-        this.argumentArray = null;
-        this.executor = executor;
+    /**
+     * Private constructor for the multi-interfaced class.
+     *
+     * @param outputCharset character encoding for program output
+     * @param executor      program executor interface
+     * @since 6.0.0
+     */
+    private BoltProvideProgram(Charset outputCharset, BoltProgramExecutor executor) {
         this.outputCharset = outputCharset;
+        this.executor = executor;
+        this.argumentArray = null;
     }
 
-    private BoltProvideProgram(String[] argumentArray, BoltProgramExecutor executor, Charset outputCharset) {
+    /**
+     * Private constructor for the multi-interfaced class.
+     *
+     * @param outputCharset character encoding for program output
+     * @param executor      program executor interface
+     * @param argumentArray program argument
+     * @since 6.0.0
+     */
+    private BoltProvideProgram(Charset outputCharset, BoltProgramExecutor executor, String[] argumentArray) {
         this.outputCharset = outputCharset;
         this.executor = executor;
         this.argumentArray = argumentArray;
@@ -42,14 +67,14 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
 
     @Override
     public RunnerProgram run(RunStandard program) {
-        return buildStandard(UTF_8, (arguments, scanner, bufferedWriter) -> //
-            program.call(scanner, bufferedWriter));
+        return buildStandard(UTF_8, (arguments, scanner, out) -> //
+            program.call(scanner, out));
     }
 
     @Override
     public RunnerProgram run(Charset charset, RunStandard program) {
-        return buildStandard(charset, (arguments, scanner, bufferedWriter) -> //
-            program.call(scanner, bufferedWriter));
+        return buildStandard(charset, (arguments, scanner, out) -> //
+            program.call(scanner, out));
     }
 
     @Override
@@ -86,7 +111,7 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
 
     @Override
     public RunnerProgram argument(String... arguments) {
-        return new BoltProvideProgram(emptyOnNull(arguments), executor, outputCharset);
+        return new BoltProvideProgram(outputCharset, executor, emptyOnNull(arguments));
     }
 
     @Override
@@ -134,14 +159,14 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
         BoltProgramExecutor executor = (arguments, inputCharset, supplier, outputCharset, outputStream) -> //
             executeStandardArgued(arguments, inputCharset, supplier, outputCharset, outputStream, program);
 
-        return new BoltProvideProgram(executor, charset);
+        return new BoltProvideProgram(charset, executor);
     }
 
     private BoltProvideProgram buildConsole(Charset charset, RunConsoleArgued program) {
         BoltProgramExecutor executor = (arguments, inputCharset, supplier, outputCharset, outputStream) -> //
             executeConsoleArgued(arguments, inputCharset, supplier, outputCharset, outputStream, program);
 
-        return new BoltProvideProgram(executor, charset);
+        return new BoltProvideProgram(charset, executor);
     }
 
     private BoltProgramOutput executeProgram(Charset inputCharset, InputStreamSupplier streamSupplier) {

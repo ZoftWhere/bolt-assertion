@@ -18,12 +18,16 @@ class DelugeSettings {
 
     private final Charset charset;
 
-    static DelugeSettings from(String[] argumentArray) {
-        return new DelugeSettings(true, argumentArray, false, null, false, UTF_8);
-    }
-
     static DelugeSettings from(Throwable throwable) {
         return new DelugeSettings(false, null, true, throwable, false, UTF_8);
+    }
+
+    static DelugeSettings from(Throwable throwable, Charset charset) {
+        return new DelugeSettings(false, null, true, throwable, true, charset);
+    }
+
+    static DelugeSettings from(String[] argumentArray) {
+        return new DelugeSettings(true, argumentArray, false, null, false, UTF_8);
     }
 
     static DelugeSettings from(String[] argumentArray, Throwable throwable) {
@@ -32,10 +36,6 @@ class DelugeSettings {
 
     static DelugeSettings from(String[] argumentArray, Charset charset) {
         return new DelugeSettings(true, argumentArray, false, null, true, charset);
-    }
-
-    static DelugeSettings from(Throwable throwable, Charset charset) {
-        return new DelugeSettings(false, null, true, throwable, true, charset);
     }
 
     static DelugeSettings from(String[] argumentArray, Throwable throwable, Charset charset) {
