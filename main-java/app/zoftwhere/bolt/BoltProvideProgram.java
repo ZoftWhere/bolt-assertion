@@ -41,25 +41,25 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
     /**
      * Private constructor for the multi-interfaced class.
      *
-     * @param executor      program executor interface
      * @param outputCharset character encoding for program output
+     * @param executor      program executor interface
      * @since 6.0.0
      */
-    private BoltProvideProgram(BoltProgramExecutor executor, Charset outputCharset) {
-        this.argumentArray = null;
-        this.executor = executor;
+    private BoltProvideProgram(Charset outputCharset, BoltProgramExecutor executor) {
         this.outputCharset = outputCharset;
+        this.executor = executor;
+        this.argumentArray = null;
     }
 
     /**
      * Private constructor for the multi-interfaced class.
      *
-     * @param argumentArray program argument
-     * @param executor      program executor interface
      * @param outputCharset character encoding for program output
+     * @param executor      program executor interface
+     * @param argumentArray program argument
      * @since 6.0.0
      */
-    private BoltProvideProgram(String[] argumentArray, BoltProgramExecutor executor, Charset outputCharset) {
+    private BoltProvideProgram(Charset outputCharset, BoltProgramExecutor executor, String[] argumentArray) {
         this.outputCharset = outputCharset;
         this.executor = executor;
         this.argumentArray = argumentArray;
@@ -111,7 +111,7 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
 
     @Override
     public RunnerProgram argument(String... arguments) {
-        return new BoltProvideProgram(emptyOnNull(arguments), executor, outputCharset);
+        return new BoltProvideProgram(outputCharset, executor, emptyOnNull(arguments));
     }
 
     @Override
@@ -159,14 +159,14 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
         BoltProgramExecutor executor = (arguments, inputCharset, supplier, outputCharset, outputStream) -> //
             executeStandardArgued(arguments, inputCharset, supplier, outputCharset, outputStream, program);
 
-        return new BoltProvideProgram(executor, charset);
+        return new BoltProvideProgram(charset, executor);
     }
 
     private BoltProvideProgram buildConsole(Charset charset, RunConsoleArgued program) {
         BoltProgramExecutor executor = (arguments, inputCharset, supplier, outputCharset, outputStream) -> //
             executeConsoleArgued(arguments, inputCharset, supplier, outputCharset, outputStream, program);
 
-        return new BoltProvideProgram(executor, charset);
+        return new BoltProvideProgram(charset, executor);
     }
 
     private BoltProgramOutput executeProgram(Charset inputCharset, InputStreamSupplier streamSupplier) {
