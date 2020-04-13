@@ -58,11 +58,14 @@ class DelugeProgram {
     }
 
     DelugeResult buildProgramResult() {
-        if (type.isProgramFirst()) {
+        if (type.isProgramFirst() && !type.isInputFirst()) {
             return testProgramFirst(newRunner());
         }
-        else {
+        else if (type.isInputFirst() && !type.isProgramFirst()) {
             return testInputFirst(newRunner());
+        }
+        else {
+            throw new DelugeException("deluge.program.program.type.exclusion");
         }
     }
 
