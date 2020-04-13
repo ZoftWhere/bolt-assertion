@@ -51,6 +51,15 @@ class ScanEveryLineExample {
             .assertSuccess();
     }
 
+    @Test
+    void testByteOrderMark() {
+        runner //
+            .run(ScanEveryLineExample::getEveryLine)
+            .input("\ufeff", "Exclude leading Byte Order Mark.", "")
+            .expected("[]", "[Exclude leading Byte Order Mark.]", "[]")
+            .assertSuccess();
+    }
+
     /**
      * Example for running a program with scanner against fixed/file/resource input.
      *
@@ -69,8 +78,9 @@ class ScanEveryLineExample {
     }
 
     private static String firstLine(Scanner scanner) {
-        // Check for empty first line.
+        // Check Byte-Order-Mark and for empty first line.
         scanner.useDelimiter("");
+        scanner.skip("\ufeff?");
         if (scanner.hasNext("\\R")) {
             scanner.useDelimiter("\\R");
             return "";
