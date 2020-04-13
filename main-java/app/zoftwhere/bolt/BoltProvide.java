@@ -48,7 +48,7 @@ interface BoltProvide {
                 try (OutputStreamWriter writer = new OutputStreamWriter(output, UTF_8)) {
                     writer.append(input[0]);
                     for (int i = 1, s = input.length; i < s; i++) {
-                        writer.append(System.lineSeparator());
+                        writer.append("\r\n");
                         writer.append(input[i]);
                     }
                     writer.flush();

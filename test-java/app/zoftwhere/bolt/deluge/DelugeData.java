@@ -135,7 +135,7 @@ class DelugeData {
                         try (OutputStreamWriter writer = new OutputStreamWriter(output, charset)) {
                             writer.append(input[0]);
                             for (int i = 1, s = input.length; i < s; i++) {
-                                writer.append(System.lineSeparator());
+                                writer.append("\r\n");
                                 writer.append(input[i]);
                             }
                             writer.flush();

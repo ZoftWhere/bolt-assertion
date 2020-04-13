@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 
-import app.zoftwhere.bolt.BoltLineScanner;
 import app.zoftwhere.bolt.api.RunnerInterface.RunConsole;
 import app.zoftwhere.bolt.api.RunnerInterface.RunConsoleArgued;
 import app.zoftwhere.bolt.api.RunnerInterface.RunStandard;
@@ -233,7 +232,7 @@ class DelugeProgram {
         }
 
         //noinspection CaughtExceptionImmediatelyRethrown
-        try (BoltLineScanner scanner = new BoltLineScanner(inputStream, settings.charset())) {
+        try (DelugeLineScanner scanner = new DelugeLineScanner(inputStream, settings.charset())) {
             try (PrintStream out = new PrintStream(outputStream, false, settings.charset())) {
                 process(arguments, scanner, out);
             }
@@ -244,10 +243,10 @@ class DelugeProgram {
     }
 
     private void process(String[] arguments, Scanner scanner, PrintStream out) throws Throwable {
-        process(arguments, new BoltLineScanner(scanner), out);
+        process(arguments, new DelugeLineScanner(scanner), out);
     }
 
-    private void process(String[] arguments, BoltLineScanner scanner, PrintStream out) throws Throwable {
+    private void process(String[] arguments, DelugeLineScanner scanner, PrintStream out) throws Throwable {
         if (settings.hasThrowable()) {
             throw settings.throwable();
         }
@@ -282,7 +281,7 @@ class DelugeProgram {
         if (value == null) {
             return "<null>";
         }
-        return '"' + BoltLineScanner.escapeString(value) + '"';
+        return '"' + DelugeLineScanner.escapeString(value) + '"';
     }
 
 }

@@ -6,6 +6,11 @@ import java.util.Scanner;
 import app.zoftwhere.bolt.Runner;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Scan Every Line example.
+ *
+ * @since 7.1.0
+ */
 class ScanEveryLineExample {
 
     private final Runner runner = new Runner();
@@ -37,6 +42,15 @@ class ScanEveryLineExample {
             .assertSuccess();
     }
 
+    @Test
+    void testSeparator() {
+        runner //
+            .run(ScanEveryLineExample::getEveryLine)
+            .input("system\r" + "\r\n" + "\n" + "and\u2028" + "unicode\u2029" + "agnostic\u0085" + "")
+            .expected("[system]", "[]", "[]", "[and]", "[unicode]", "[agnostic]", "[]")
+            .assertSuccess();
+    }
+
     /**
      * Example for running a program with scanner against fixed/file/resource input.
      *
@@ -57,13 +71,13 @@ class ScanEveryLineExample {
     private static String firstLine(Scanner scanner) {
         // Check for empty first line.
         scanner.useDelimiter("");
-        if (scanner.hasNext("\n")) {
-            scanner.useDelimiter("\r?\n");
+        if (scanner.hasNext("\\R")) {
+            scanner.useDelimiter("\\R");
             return "";
         }
 
         // Check for empty input.
-        scanner.useDelimiter("\r?\n");
+        scanner.useDelimiter("\\R");
         if (!scanner.hasNext()) {
             return "";
         }

@@ -6,10 +6,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-import app.zoftwhere.bolt.BoltLineScanner;
 import app.zoftwhere.bolt.BoltSingleReturn;
 
-import static app.zoftwhere.bolt.BoltLineScanner.escapeString;
 import static app.zoftwhere.bolt.BoltTestHelper.array;
 import static app.zoftwhere.bolt.BoltTestHelper.isOrHasNull;
 import static app.zoftwhere.bolt.deluge.DelugeData.DataType.ARRAY;
@@ -17,6 +15,7 @@ import static app.zoftwhere.bolt.deluge.DelugeData.DataType.RESOURCE;
 import static app.zoftwhere.bolt.deluge.DelugeData.DataType.RESOURCE_ENCODED;
 import static app.zoftwhere.bolt.deluge.DelugeData.DataType.STREAM;
 import static app.zoftwhere.bolt.deluge.DelugeData.DataType.STREAM_ENCODED;
+import static app.zoftwhere.bolt.deluge.DelugeLineScanner.escapeString;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 class DelugeControl {
@@ -259,7 +258,7 @@ class DelugeControl {
         }
         else {
             try (InputStream inputStream = DelugeData.newInputStreamSupplier(data.array()).get()) {
-                try (BoltLineScanner scanner = new BoltLineScanner(inputStream, UTF_8)) {
+                try (DelugeLineScanner scanner = new DelugeLineScanner(inputStream, UTF_8)) {
                     String item = scanner.firstLine();
                     list.add(String.format("Line: \"%s\"", escapeString(item)));
                     while (scanner.hasNextLine()) {
