@@ -16,7 +16,7 @@ import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 @FunctionalInterface
 interface BoltProgramExecutor {
 
-    Throwable execute(String[] arguments,
+    Exception execute(String[] arguments,
         Charset inputCharset,
         InputStreamSupplier inputStreamSupplier,
         Charset outputCharset,

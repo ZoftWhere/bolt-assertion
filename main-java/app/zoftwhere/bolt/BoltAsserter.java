@@ -2,24 +2,24 @@ package app.zoftwhere.bolt;
 
 import app.zoftwhere.bolt.api.RunnerAsserter;
 import app.zoftwhere.bolt.api.RunnerInterface.RunnerResultConsumer;
-import app.zoftwhere.bolt.api.RunnerProgramResult;
+import app.zoftwhere.bolt.api.RunnerResult;
 
 /**
- * Bolt program result asserter.
+ * Bolt Asserter.
  *
  * @since 6.0.0
  */
 class BoltAsserter implements RunnerAsserter {
 
-    private final BoltProgramResult result;
+    private final BoltResult result;
 
     /**
-     * Create an asserter for a program result.
+     * Create an asserter for an execution result.
      *
-     * @param result program result
+     * @param result execution result
      * @since 6.0.0
      */
-    BoltAsserter(BoltProgramResult result) {
+    BoltAsserter(BoltResult result) {
         if (result == null) {
             throw new RunnerException("bolt.runner.asserter.result.null");
         }
@@ -33,7 +33,7 @@ class BoltAsserter implements RunnerAsserter {
             throw new RunnerException(result.message().orElse(""));
         }
 
-        if (result.isException()) {
+        if (result.isError()) {
             throw new RunnerException("bolt.runner.asserter.error.found");
         }
     }
@@ -44,13 +44,13 @@ class BoltAsserter implements RunnerAsserter {
             throw new RunnerException("bolt.runner.asserter.success.found");
         }
 
-        if (result.isException()) {
+        if (result.isError()) {
             throw new RunnerException("bolt.runner.asserter.error.found");
         }
     }
 
     @Override
-    public void assertException() {
+    public void assertError() {
         if (result.isSuccess()) {
             throw new RunnerException("bolt.runner.asserter.success.found");
         }
@@ -65,25 +65,27 @@ class BoltAsserter implements RunnerAsserter {
         try {
             consumer.accept(result);
         }
-        catch (Throwable throwable) {
-            throw new RunnerException("bolt.runner.assert.check", throwable);
+        catch (Exception e) {
+            throw new RunnerException("bolt.runner.assert.check", e);
         }
     }
 
     @Override
     public void onOffence(RunnerResultConsumer consumer) {
-        if (!result.isSuccess()) {
-            try {
-                consumer.accept(result);
-            }
-            catch (Throwable throwable) {
-                throw new RunnerException("bolt.runner.on.offence", throwable);
-            }
+        if (result.isSuccess()) {
+            return;
+        }
+
+        try {
+            consumer.accept(result);
+        }
+        catch (Exception e) {
+            throw new RunnerException("bolt.runner.on.offence", e);
         }
     }
 
     @Override
-    public RunnerProgramResult result() {
+    public RunnerResult result() {
         return result;
     }
 

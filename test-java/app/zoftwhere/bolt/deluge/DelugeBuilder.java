@@ -51,13 +51,13 @@ public class DelugeBuilder {
         return new DelugeBuilder(this.programType, this.data, settings);
     }
 
-    public DelugeBuilder withSettings(Throwable throwable) {
-        DelugeSettings settings = DelugeSettings.from(throwable);
+    public DelugeBuilder withSettings(Exception error) {
+        DelugeSettings settings = DelugeSettings.from(error);
         return new DelugeBuilder(this.programType, this.data, settings);
     }
 
-    public DelugeBuilder withSettings(String[] argumentArray, Throwable throwable) {
-        DelugeSettings settings = DelugeSettings.from(argumentArray, throwable);
+    public DelugeBuilder withSettings(String[] argumentArray, Exception error) {
+        DelugeSettings settings = DelugeSettings.from(argumentArray, error);
         return new DelugeBuilder(this.programType, this.data, settings);
     }
 
@@ -66,13 +66,13 @@ public class DelugeBuilder {
         return new DelugeBuilder(this.programType, this.data, settings);
     }
 
-    public DelugeBuilder withSettings(Throwable throwable, Charset charset) {
-        DelugeSettings settings = DelugeSettings.from(throwable, charset);
+    public DelugeBuilder withSettings(Exception error, Charset charset) {
+        DelugeSettings settings = DelugeSettings.from(error, charset);
         return new DelugeBuilder(this.programType, this.data, settings);
     }
 
-    public DelugeBuilder withSettings(String[] argumentArray, Throwable throwable, Charset charset) {
-        DelugeSettings settings = DelugeSettings.from(argumentArray, throwable, charset);
+    public DelugeBuilder withSettings(String[] argumentArray, Exception error, Charset charset) {
+        DelugeSettings settings = DelugeSettings.from(argumentArray, error, charset);
         return new DelugeBuilder(this.programType, this.data, settings);
     }
 

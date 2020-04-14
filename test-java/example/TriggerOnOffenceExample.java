@@ -42,26 +42,26 @@ public class TriggerOnOffenceExample {
             })
             .input()
             .expected("test:", "Hello World!")
-            .onOffence(testResult -> {
+            .onOffence(result -> {
                 // Check if error (throwable/exception was thrown)
-                if (testResult.exception().isPresent()) {
-                    throw testResult.exception().get();
+                if (result.error().isPresent()) {
+                    throw result.error().get();
                 }
 
                 // If offending index is -1, then it must be the output lengths.
-                if (testResult.offendingIndex() == -1) {
+                if (result.offendingIndex() == -1) {
                     err.println("Program output does not meet expectation.");
-                    err.printf("Program outputted %d lines.%n", testResult.output().length);
-                    err.printf("Expected outputted is %d lines.%n", testResult.expected().length);
+                    err.printf("Program outputted %d lines.%n", result.output().length);
+                    err.printf("Expected outputted is %d lines.%n", result.expected().length);
                     return;
                 }
 
                 // Otherwise it must be a comparison flag.
-                int index = testResult.offendingIndex();
+                int index = result.offendingIndex();
                 err.println("Program output does not meet expectation.");
                 err.printf("Output line number: %d%n", index + 1);
-                err.printf("Program output: %s%n", testResult.output()[index]);
-                err.printf("Expected output: %s%n", testResult.expected()[index]);
+                err.printf("Program output: %s%n", result.output()[index]);
+                err.printf("Expected output: %s%n", result.expected()[index]);
             });
     }
 

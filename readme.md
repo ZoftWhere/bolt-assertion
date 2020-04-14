@@ -149,7 +149,7 @@ class ConsoleOutputExampleTest {
 
     private interface ThrowingConsumer<T> {
 
-        void accept(T value) throws Throwable;
+        void accept(T value) throws Exception;
     }
 
 }

@@ -15,9 +15,9 @@ import app.zoftwhere.bolt.api.RunnerPreTest;
 import app.zoftwhere.bolt.api.RunnerProgram;
 import app.zoftwhere.bolt.api.RunnerProgramInput;
 import app.zoftwhere.bolt.api.RunnerProgramOutput;
-import app.zoftwhere.bolt.api.RunnerProgramResult;
 import app.zoftwhere.bolt.api.RunnerProvideInput;
 import app.zoftwhere.bolt.api.RunnerProvideProgram;
+import app.zoftwhere.bolt.api.RunnerResult;
 import org.junit.jupiter.api.Test;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -115,9 +115,9 @@ class RunnerBlankScopeTest {
     }
 
     private void testRunnerOutput(RunnerPreTest preTest) {
-        Exception exception = preTest.exception().orElse(null);
+        Exception error = preTest.error().orElse(null);
         String[] output = preTest.output();
-        assertNull(exception);
+        assertNull(error);
         assertNotNull(output);
         assertEquals(1, output.length);
         assertEquals("", output[0]);
@@ -142,7 +142,7 @@ class RunnerBlankScopeTest {
             BoltTestHelper.assertClass(RunnerException.class, e);
         }
         try {
-            asserter.assertException();
+            asserter.assertError();
             fail("exception.expected");
         }
         catch (Exception e) {
@@ -152,15 +152,15 @@ class RunnerBlankScopeTest {
         asserter.assertCheck(this::testResult);
     }
 
-    private void testResult(RunnerProgramResult programResult) {
-        assertTrue(programResult.isSuccess());
-        assertFalse(programResult.isFailure());
-        assertFalse(programResult.message().isPresent());
-        assertFalse(programResult.isException());
-        assertFalse(programResult.exception().isPresent());
+    private void testResult(RunnerResult result) {
+        assertTrue(result.isSuccess());
+        assertFalse(result.isFailure());
+        assertFalse(result.message().isPresent());
+        assertFalse(result.isError());
+        assertFalse(result.error().isPresent());
 
-        assertNotNull(programResult.expected());
-        assertNotNull(programResult.output());
+        assertNotNull(result.expected());
+        assertNotNull(result.output());
     }
 
     private InputStream blankStream() {

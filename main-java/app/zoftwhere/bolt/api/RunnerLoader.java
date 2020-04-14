@@ -28,7 +28,7 @@ public interface RunnerLoader extends AbstractUnit.RunWithArguments<RunnerProgra
      * Specify the scanner-printer program with arguments.
      *
      * @param program scanner-printer program with arguments
-     * @param charset program {@link PrintStream} {@link Charset}
+     * @param charset character encoding of program {@link PrintStream}
      * @return {@link RunnerProgramOutput}
      * @since 7.0.0
      */
@@ -49,7 +49,7 @@ public interface RunnerLoader extends AbstractUnit.RunWithArguments<RunnerProgra
      * Specify the input-output-stream program with arguments.
      *
      * @param program input-output-stream program with arguments
-     * @param charset program {@link OutputStream} {@link Charset}
+     * @param charset character encoding of program {@link OutputStream}
      * @return {@link RunnerProgramOutput}
      * @since 6.0.0
      */

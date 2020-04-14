@@ -24,8 +24,8 @@ class DelugeDataTest {
             assertTrue(data.isOpened());
             assertFalse(data.isClosed());
         }
-        catch (Throwable e) {
-            fail(e);
+        catch (Exception error) {
+            fail(error);
         }
         assertTrue(data.isOpened());
         assertTrue(data.isClosed());

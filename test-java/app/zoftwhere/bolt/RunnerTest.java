@@ -47,25 +47,23 @@ class RunnerTest {
     }
 
     @Test
-    void testStandardThrowableCause() {
-        final var s = "Ensure Throwable to Exception";
-        final var e = runner //
-            .run((scanner, out) -> {
-                throw new Throwable(s, new RuntimeException("ignore"));
-            })
-            .input("")
-            .expected("")
-            .result()
-            .exception()
-            .orElse(null);
+    void testDeprecatedThrowable() {
+        boolean caught = false;
+        try {
+            runner.input()
+                .run((scanner, out) -> {
+                    throw new Error("bolt.runner.throwable.deprecated");
+                })
+                .expected()
+                .assertError();
+            caught = true;
+        }
+        catch (Throwable ignore) {
+        }
 
-        assertNotNull(e);
-        assertClass(RunnerException.class, e);
-        assertEquals("bolt.runner.throwable.as.cause", e.getMessage());
-
-        assertNotNull(e.getCause());
-        assertClass(Throwable.class, e.getCause());
-        assertEquals(s, e.getCause().getMessage());
+        if (caught) {
+            fail("bolt.runner.test.error.throwable.deprecated");
+        }
     }
 
     @Test
@@ -78,7 +76,7 @@ class RunnerTest {
             .input("")
             .expected("")
             .result()
-            .exception()
+            .error()
             .orElse(null);
 
         assertNotNull(e);
@@ -99,11 +97,11 @@ class RunnerTest {
                 .assertSuccess();
             fail("bolt.runner.test.error.exception.expected");
         }
-        catch (Throwable throwable) {
-            assertClass(RunnerException.class, throwable);
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
             // Lengths to not match. Expected 1, found 2.
-            assertNotNull(throwable.getMessage());
-            assertNull(throwable.getCause());
+            assertNotNull(e.getMessage());
+            assertNull(e.getCause());
         }
 
         // BoltAssertionException when checking success against failure (with comparator).
@@ -116,11 +114,11 @@ class RunnerTest {
                 .assertSuccess();
             fail("bolt.runner.test.error.exception.expected");
         }
-        catch (Throwable throwable) {
-            assertClass(RunnerException.class, throwable);
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
             // Line 1: Expected "z". Found "a"
-            assertNotNull(throwable.getMessage());
-            assertNull(throwable.getCause());
+            assertNotNull(e.getMessage());
+            assertNull(e.getCause());
         }
 
         // BoltAssertionException when checking success against exception.
@@ -133,10 +131,10 @@ class RunnerTest {
                 .assertSuccess();
             fail("bolt.runner.test.error.exception.expected");
         }
-        catch (Throwable throwable) {
-            assertClass(RunnerException.class, throwable);
-            assertEquals("bolt.runner.asserter.error.found", throwable.getMessage());
-            assertNull(throwable.getCause());
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertEquals("bolt.runner.asserter.error.found", e.getMessage());
+            assertNull(e.getCause());
         }
     }
 
@@ -158,7 +156,7 @@ class RunnerTest {
         try {
             runner //
                 .runConsole((inputStream, outputStream) -> {
-                    throw new Throwable("");
+                    throw new Exception("");
                 })
                 .input()
                 .comparator(null)
@@ -190,13 +188,13 @@ class RunnerTest {
             runner.runConsole(RunnerTest::echoConsole)
                 .input("")
                 .expected("")
-                .assertException();
+                .assertError();
             fail("bolt.runner.test.error.exception.expected");
         }
-        catch (Throwable throwable) {
-            assertClass(RunnerException.class, throwable);
-            assertEquals("bolt.runner.asserter.success.found", throwable.getMessage());
-            assertNull(throwable.getCause());
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertEquals("bolt.runner.asserter.success.found", e.getMessage());
+            assertNull(e.getCause());
         }
 
         // BoltAssertionException when checking exception against failure.
@@ -204,13 +202,13 @@ class RunnerTest {
             runner.runConsole(RunnerTest::echoConsole)
                 .input("", "a")
                 .expected("")
-                .assertException();
+                .assertError();
             fail("bolt.runner.test.error.exception.expected");
         }
-        catch (Throwable throwable) {
-            assertClass(RunnerException.class, throwable);
-            assertEquals("bolt.runner.asserter.output.length.mismatch", throwable.getMessage());
-            assertNull(throwable.getCause());
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertEquals("bolt.runner.asserter.output.length.mismatch", e.getMessage());
+            assertNull(e.getCause());
         }
     }
 
@@ -228,17 +226,17 @@ class RunnerTest {
                 });
             fail("bolt.runner.test.error.exception.expected");
         }
-        catch (Throwable throwable) {
-            assertClass(RunnerException.class, throwable);
-            assertEquals("bolt.runner.assert.check", throwable.getMessage());
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertEquals("bolt.runner.assert.check", e.getMessage());
 
-            assertNotNull(throwable.getCause());
-            assertClass(RuntimeException.class, throwable.getCause());
-            assertEquals("rethrow", throwable.getCause().getMessage());
+            assertNotNull(e.getCause());
+            assertClass(RuntimeException.class, e.getCause());
+            assertEquals("rethrow", e.getCause().getMessage());
 
-            assertNotNull(throwable.getCause().getCause());
-            assertClass(Exception.class, throwable.getCause().getCause());
-            assertEquals("cause", throwable.getCause().getCause().getMessage());
+            assertNotNull(e.getCause().getCause());
+            assertClass(Exception.class, e.getCause().getCause());
+            assertEquals("cause", e.getCause().getCause().getMessage());
         }
     }
 
@@ -261,7 +259,7 @@ class RunnerTest {
         }
 
         try {
-            asserter.assertException();
+            asserter.assertError();
             fail("bolt.runner.test.exception.expected");
         }
         catch (Exception e) {
@@ -269,11 +267,11 @@ class RunnerTest {
             assertEquals("bolt.runner.asserter.success.found", e.getMessage());
         }
 
-        asserter.onOffence(testResult -> fail("bolt.runner.test.success.not.offence"));
+        asserter.onOffence(result -> fail("bolt.runner.test.success.not.offence"));
 
         var result = asserter.result();
         assertNull(result.message().orElse(null));
-        assertNull(result.exception().orElse(null));
+        assertNull(result.error().orElse(null));
     }
 
     @Test
@@ -303,7 +301,7 @@ class RunnerTest {
 
         try {
             asserter.onOffence(result -> {
-                throw result.exception().orElse(new NullPointerException(""));
+                throw result.error().orElse(new NullPointerException(""));
             });
             fail("bolt.runner.test.exception.expected");
         }
@@ -315,10 +313,10 @@ class RunnerTest {
             assertEquals("thrown", e.getCause().getMessage());
         }
 
-        asserter.assertException();
+        asserter.assertError();
 
         var result = asserter.result();
-        var exception = result.exception().orElse(null);
+        var exception = result.error().orElse(null);
         assertEquals(-1, result.offendingIndex());
         assertNotNull(exception);
         assertClass(Exception.class, exception);

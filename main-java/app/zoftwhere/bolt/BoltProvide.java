@@ -78,7 +78,7 @@ interface BoltProvide {
         return new PrintStream(outputStream, false, charset.name());
     }
 
-    default Throwable executeStandardArgued(String[] arguments,
+    default Exception executeStandardArgued(String[] arguments,
         Charset inputCharset,
         InputStreamSupplier streamSupplier,
         Charset outputCharset,
@@ -102,14 +102,14 @@ interface BoltProvide {
                 }
             }
         }
-        catch (Throwable throwable) {
-            return throwable;
+        catch (Exception e) {
+            return e;
         }
 
         return null;
     }
 
-    default Throwable executeConsoleArgued(String[] arguments,
+    default Exception executeConsoleArgued(String[] arguments,
         Charset inputCharset,
         InputStreamSupplier streamSupplier,
         Charset outputCharset,
@@ -131,8 +131,8 @@ interface BoltProvide {
                 program.call(arguments, inputStream, outputStream);
             }
         }
-        catch (Throwable throwable) {
-            return throwable;
+        catch (Exception e) {
+            return e;
         }
 
         return null;
@@ -145,15 +145,15 @@ interface BoltProvide {
         BoltProgramExecutor executor)
     {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        Throwable throwable = executor.execute(arguments, inputCharset, streamSupplier, outputCharset, outputStream);
+        Exception error = executor.execute(arguments, inputCharset, streamSupplier, outputCharset, outputStream);
 
         if (inputCharset == null || outputCharset == null) {
-            return new BoltProgramOutput(new String[] {""}, throwable);
+            return new BoltProgramOutput(new String[] {""}, error);
         }
 
         final byte[] data = outputStream.toByteArray();
         final String[] output = readArray(() -> new BoltReader(data, outputCharset));
-        return new BoltProgramOutput(output, throwable);
+        return new BoltProgramOutput(output, error);
     }
 
 }

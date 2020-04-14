@@ -41,8 +41,8 @@ class BoltProvideInput implements RunnerProvideInput, RunnerProgramInput, Runner
     /**
      * Private constructor for the multi-interfaced class.
      *
-     * @param inputCharset character encoding of the {@link java.io.InputStream}
-     * @param supplier     {@link java.io.InputStream} supplier
+     * @param inputCharset character encoding of {@link java.io.InputStream}
+     * @param supplier     {@link java.io.InputStream} supplier for program input
      * @since 6.0.0
      */
     private BoltProvideInput(Charset inputCharset, InputStreamSupplier supplier) {
@@ -54,8 +54,8 @@ class BoltProvideInput implements RunnerProvideInput, RunnerProgramInput, Runner
     /**
      * Private constructor for the multi-interfaced class.
      *
-     * @param inputCharset character encoding of the {@link java.io.InputStream}
-     * @param supplier     {@link java.io.InputStream} supplier
+     * @param inputCharset character encoding of {@link java.io.InputStream}
+     * @param supplier     {@link java.io.InputStream} supplier for program input
      * @param arguments    program arguments
      * @since 6.0.0
      */

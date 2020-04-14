@@ -4,16 +4,16 @@ import app.zoftwhere.bolt.RunnerException;
 import app.zoftwhere.bolt.api.RunnerInterface.RunnerResultConsumer;
 
 /**
- * Runner program result asserter interface.
+ * Runner asserter interface.
  *
  * @since 6.0.0
  */
-public interface RunnerAsserter extends AbstractUnit.Assertions<RunnerProgramResult> {
+public interface RunnerAsserter extends AbstractUnit.Assertions<RunnerResult> {
 
     /**
-     * <p>Asserts that the program run with expected output.
+     * <p>Asserts that execution result is for a success state.
      * </p>
-     * <p>Throws {@link RunnerException} for failure or error.
+     * <p>Throws {@link RunnerException} for failure state or error state.
      * </p>
      *
      * @since 1.0.0
@@ -22,9 +22,9 @@ public interface RunnerAsserter extends AbstractUnit.Assertions<RunnerProgramRes
     void assertSuccess();
 
     /**
-     * <p>Asserts that the program run unsuccessfully.
+     * <p>Asserts that execution result is for a failure state.
      * </p>
-     * <p>Throws {@link RunnerException} for success or error.
+     * <p>Throws {@link RunnerException} for success state or error state.
      * </p>
      *
      * @since 4.0.0
@@ -33,50 +33,50 @@ public interface RunnerAsserter extends AbstractUnit.Assertions<RunnerProgramRes
     void assertFailure();
 
     /**
-     * <p>Asserts that the program terminated with an error.
+     * <p>Asserts that execution result is for an error state.
      * </p>
-     * <p>Throws {@link RunnerException} for success or failure.
+     * <p>Throws {@link RunnerException} for success state or failure state.
      * </p>
      *
-     * @since 1.0.0
+     * @since 8.0.0
      */
     @Override
-    void assertException();
+    void assertError();
 
     /**
-     * <p>Asserts program behaviour with custom consumer.
+     * <p>Asserts execution behaviour with custom consumer.
      * </p>
-     * <p>The consumer should throw a throwable for undesired behaviour.
+     * <p>The consumer should throw an exception for undesired behaviour.
      * </p>
      *
      * @param consumer custom consumer
-     * @throws RunnerException around {@link Throwable} thrown by consumer.
+     * @throws RunnerException around {@link Exception} thrown by consumer.
      * @since 6.0.0
      */
     @Override
     void assertCheck(RunnerResultConsumer consumer);
 
     /**
-     * <p>Asserts program behaviour with offence triggered consumer.
+     * <p>Asserts execution behaviour with offence triggered consumer.
      * </p>
-     * <p>The consumer should throw a throwable for undesired behaviour.
+     * <p>The consumer should throw an exception for undesired behaviour.
      * </p>
      *
      * @param consumer custom consumer
-     * @throws RunnerException around {@link Throwable} thrown by consumer.
+     * @throws RunnerException around {@link Exception} thrown by consumer.
      * @since 6.0.0
      */
     @Override
     void onOffence(RunnerResultConsumer consumer);
 
     /**
-     * <p>Retrieve the program test result.
+     * <p>Retrieve the execution result.
      * </p>
      *
-     * @return the program test result
-     * @since 6.0.0
+     * @return execution result
+     * @since 8.0.0
      */
     @Override
-    RunnerProgramResult result();
+    RunnerResult result();
 
 }

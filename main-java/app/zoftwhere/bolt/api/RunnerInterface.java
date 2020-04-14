@@ -13,7 +13,7 @@ import java.util.Scanner;
 public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInput {
 
     /**
-     * {@link InputStreamSupplier} provides a function interface for creating an {@link InputStream} supplier.
+     * {@link InputStreamSupplier} provides a functional interface for creating an {@link InputStream} supplier.
      *
      * @since 6.0.0
      */
@@ -22,14 +22,14 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
 
         /**
          * @return {@link InputStream}
-         * @throws Throwable throwable from creating an {@link InputStream}
+         * @throws Exception for {@link InputStream} error
          */
         @Override
-        InputStream get() throws Throwable;
+        InputStream get() throws Exception;
     }
 
     /**
-     * {@link RunConsole} provides a functional interfaces for creating program calls.
+     * {@link RunConsole} provides a functional interface for creating program calls.
      *
      * @since 6.0.0
      */
@@ -37,16 +37,16 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     interface RunConsole extends AbstractUnit.CallerNoArguments<InputStream, OutputStream> {
 
         /**
-         * @param inputStream  program input
+         * @param inputStream  program {@link InputStream}
          * @param outputStream program {@link OutputStream}
-         * @throws Throwable program {@link Throwable} on error
+         * @throws Exception program error
          */
         @Override
-        void call(InputStream inputStream, OutputStream outputStream) throws Throwable;
+        void call(InputStream inputStream, OutputStream outputStream) throws Exception;
     }
 
     /**
-     * {@link RunConsoleArgued} provides a functional interfaces for creating program calls.
+     * {@link RunConsoleArgued} provides a functional interface for creating program calls.
      *
      * @since 6.0.0
      */
@@ -55,34 +55,34 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
 
         /**
          * @param arguments    program argument array
-         * @param inputStream  program input
+         * @param inputStream  program {@link InputStream}
          * @param outputStream program {@link OutputStream}
-         * @throws Throwable program {@link Throwable} on error
+         * @throws Exception program error
          */
         @Override
-        void call(String[] arguments, InputStream inputStream, OutputStream outputStream) throws Throwable;
+        void call(String[] arguments, InputStream inputStream, OutputStream outputStream) throws Exception;
     }
 
     /**
-     * {@link RunnerResultConsumer} provides a functional interface for creating program test result asserters.
+     * {@link RunnerResultConsumer} provides a functional interface for creating execution result asserters.
      *
      * @since 6.0.0
      */
     @FunctionalInterface
-    interface RunnerResultConsumer extends AbstractUnit.ThrowingConsumer<RunnerProgramResult> {
+    interface RunnerResultConsumer extends AbstractUnit.ThrowingConsumer<RunnerResult> {
 
         /**
-         * A program test result consumer for asserting a test result.
+         * A runner result consumer for asserting a execution result.
          *
-         * @param result program test result
-         * @throws Throwable consumer throwable on test failure and/or error
+         * @param result execution result
+         * @throws Exception for failure state or error state (consumer driven)
          */
         @Override
-        void accept(RunnerProgramResult result) throws Throwable;
+        void accept(RunnerResult result) throws Exception;
     }
 
     /**
-     * {@link RunStandard} provides a functional interfaces for creating program calls.
+     * {@link RunStandard} provides a functional interface for creating program calls.
      *
      * @since 7.0.0
      */
@@ -90,16 +90,16 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     interface RunStandard extends AbstractUnit.CallerNoArguments<Scanner, PrintStream> {
 
         /**
-         * @param scanner scanner
-         * @param out     print stream
-         * @throws Throwable program {@link Throwable} on error
+         * @param scanner program {@link Scanner}
+         * @param out     program {@link PrintStream}
+         * @throws Exception on program error
          */
         @Override
-        void call(Scanner scanner, PrintStream out) throws Throwable;
+        void call(Scanner scanner, PrintStream out) throws Exception;
     }
 
     /**
-     * {@link RunStandardArgued} provides a functional interfaces for creating program calls.
+     * {@link RunStandardArgued} provides a functional interface for creating program calls.
      *
      * @since 7.0.0
      */
@@ -108,12 +108,12 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
 
         /**
          * @param arguments program argument array
-         * @param scanner   scanner
-         * @param out       print stream
-         * @throws Throwable program {@link Throwable} on error
+         * @param scanner   program {@link Scanner}
+         * @param out       program {@link PrintStream}
+         * @throws Exception on program error
          */
         @Override
-        void call(String[] arguments, Scanner scanner, PrintStream out) throws Throwable;
+        void call(String[] arguments, Scanner scanner, PrintStream out) throws Exception;
     }
 
 }

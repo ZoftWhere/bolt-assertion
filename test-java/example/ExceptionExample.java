@@ -15,23 +15,23 @@ class ExceptionExample {
         runner.runConsole((inputStream, outputStream) -> programWithError())
             .input()
             .expected()
-            .assertException();
+            .assertError();
 
         // Run with a custom assertion check.
         runner.runConsole((inputStream, outputStream) -> programWithError())
             .input()
             .expected()
-            .assertCheck((testResult) -> {
-                if (testResult.isSuccess()) {
-                    throw new Throwable("The program should have thrown an exception!");
+            .assertCheck((result) -> {
+                if (result.isSuccess()) {
+                    throw new Exception("The program should have thrown an exception!");
                 }
                 //noinspection SimplifyOptionalCallChains
-                if (!testResult.exception().isPresent()) {
+                if (!result.error().isPresent()) {
                     throw new NullPointerException("Handle null pointers.");
                 }
-                if (!(testResult.exception().get() instanceof IllegalStateException)) {
+                if (!(result.error().get() instanceof IllegalStateException)) {
                     String format = "Error: Expected IllegalStateException (found: %s)";
-                    String message = String.format(format, testResult.exception().getClass());
+                    String message = String.format(format, result.error().getClass());
                     throw new IllegalStateException(message);
                 }
             });
