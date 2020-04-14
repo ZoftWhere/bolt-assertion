@@ -39,7 +39,7 @@ public interface RunnerProgramInput
     /**
      * Specify the scanner-printer program without arguments.
      *
-     * @param charset program {@link PrintStream} {@link Charset}
+     * @param charset character encoding of program {@link PrintStream}
      * @param program scanner-printer program without arguments
      * @return {@link RunnerProgramOutput}
      * @since 7.0.0
@@ -60,7 +60,7 @@ public interface RunnerProgramInput
     /**
      * Specify the input-output-stream program without arguments.
      *
-     * @param charset program {@link OutputStream} {@link Charset}
+     * @param charset character encoding of program {@link OutputStream}
      * @param program input-output-stream program without arguments
      * @return {@link RunnerProgramOutput}
      * @since 6.0.0

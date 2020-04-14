@@ -1,6 +1,5 @@
 package app.zoftwhere.bolt.api;
 
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Optional;
 
@@ -56,7 +55,7 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
      * corresponding exception.
      * </p>
      *
-     * @param supplier {@link InputStream} supplier for program input
+     * @param supplier {@link java.io.InputStream} supplier for expected program output
      * @return {@link RunnerAsserter}
      * @since 6.0.0
      */
@@ -72,8 +71,8 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
      * corresponding exception.
      * </p>
      *
-     * @param supplier {@link InputStream} supplier for expected program output
-     * @param charset  character encoding of {@link InputStream}
+     * @param supplier {@link java.io.InputStream} supplier for expected program output
+     * @param charset  character encoding of supplied {@link java.io.InputStream}
      * @return {@link RunnerAsserter}
      * @since 6.0.0
      */
@@ -90,7 +89,7 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
      * </p>
      *
      * @param resourceName resource name for loading expected program output
-     * @param withClass    {@link Class} with which its {@link ClassLoader} will load the expected program output
+     * @param withClass    {@link Class} with which to retrieve the expected program output
      * @return {@link RunnerAsserter}
      * @since 1.0.0
      */

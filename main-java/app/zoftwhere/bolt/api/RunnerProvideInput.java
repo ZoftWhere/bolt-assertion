@@ -27,7 +27,7 @@ public interface RunnerProvideInput extends AbstractUnit.Input<RunnerProgramInpu
     /**
      * Specify the input.
      *
-     * @param supplier {@code InputStream} function for input
+     * @param supplier {@link java.io.InputStream} supplier for program input
      * @return {@link RunnerProgramOutput}
      * @since 6.0.0
      */
@@ -37,8 +37,8 @@ public interface RunnerProvideInput extends AbstractUnit.Input<RunnerProgramInpu
     /**
      * Specify the input.
      *
-     * @param supplier {@code InputStream} function for input
-     * @param charset  the {@code InputStream} character set encoding
+     * @param supplier {@link java.io.InputStream} supplier for program input
+     * @param charset  character encoding of {@link java.io.InputStream}
      * @return {@link RunnerProgramOutput}
      * @since 6.0.0
      */
@@ -48,8 +48,8 @@ public interface RunnerProvideInput extends AbstractUnit.Input<RunnerProgramInpu
     /**
      * Specify the input.
      *
-     * @param resourceName resource name for loading input
-     * @param withClass    resource class for retrieving resource as {@code InputStream}
+     * @param resourceName resource name for loading program input
+     * @param withClass    {@link Class} with which to retrieve the program input
      * @return {@link RunnerProgramOutput}
      * @since 1.0.0
      */
@@ -59,9 +59,9 @@ public interface RunnerProvideInput extends AbstractUnit.Input<RunnerProgramInpu
     /**
      * Specify the input.
      *
-     * @param resourceName resource name for loading input
-     * @param withClass    resource class for retrieving resource as {@code InputStream}
-     * @param charset      resource character set encoding
+     * @param resourceName resource name for loading program input
+     * @param withClass    {@link Class} with which to retrieve the program input
+     * @param charset      character encoding of resource
      * @return {@link RunnerProgramOutput}
      * @since 1.0.0
      */

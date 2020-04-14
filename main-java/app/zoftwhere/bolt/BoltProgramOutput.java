@@ -148,8 +148,8 @@ class BoltProgramOutput implements RunnerProgramOutput {
     /**
      * Helper method to create a {@link RunnerAsserter} for the expected result {@link InputStream}.
      *
-     * @param charset  the charset of the {@code InputStream}
-     * @param supplier function to return the {@code InputStream} for the expected result
+     * @param charset  character encoding of {@link InputStream}
+     * @param supplier {@link InputStream} supplier for the expected program result
      * @return a {@link RunnerAsserter} instance
      */
     private RunnerAsserter create(Charset charset, InputStreamSupplier supplier) {

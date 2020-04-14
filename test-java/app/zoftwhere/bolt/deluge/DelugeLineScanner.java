@@ -64,7 +64,7 @@ class DelugeLineScanner implements AutoCloseable {
      * </p>
      *
      * @param inputStream input {@link InputStream}
-     * @param charset     character encoding of the {@link InputStream}
+     * @param charset     character encoding of supplied {@link InputStream}
      */
     DelugeLineScanner(InputStream inputStream, Charset charset) {
         this.scanner = new Scanner(inputStream, charset.name());

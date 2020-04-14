@@ -29,8 +29,8 @@ class BoltInputStream extends InputStream {
      * Constructor for creating an {@link InputStream} from {@link InputStream} transcoder.
      *
      * @param inputStream {@link InputStream} to transcode
-     * @param source      character encoding for the source {@link InputStream}
-     * @param destination character encoding for the {@link BoltInputStream}
+     * @param source      character encoding of source {@link InputStream}
+     * @param destination character encoding of target {@link BoltInputStream}
      * @since 4.0.0
      */
     BoltInputStream(InputStream inputStream, Charset source, Charset destination) {

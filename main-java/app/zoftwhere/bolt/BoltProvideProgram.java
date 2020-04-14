@@ -41,7 +41,7 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
     /**
      * Private constructor for the multi-interfaced class.
      *
-     * @param outputCharset character encoding for program output
+     * @param outputCharset character encoding of program output
      * @param executor      program executor interface
      * @since 6.0.0
      */
@@ -54,7 +54,7 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
     /**
      * Private constructor for the multi-interfaced class.
      *
-     * @param outputCharset character encoding for program output
+     * @param outputCharset character encoding of program output
      * @param executor      program executor interface
      * @param argumentArray program argument
      * @since 6.0.0
