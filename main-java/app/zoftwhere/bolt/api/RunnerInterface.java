@@ -29,7 +29,7 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     }
 
     /**
-     * {@link RunConsole} provides a functional interfaces for creating program calls.
+     * {@link RunConsole} provides a functional interface for creating program calls.
      *
      * @since 6.0.0
      */
@@ -46,7 +46,7 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     }
 
     /**
-     * {@link RunConsoleArgued} provides a functional interfaces for creating program calls.
+     * {@link RunConsoleArgued} provides a functional interface for creating program calls.
      *
      * @since 6.0.0
      */
@@ -82,7 +82,7 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     }
 
     /**
-     * {@link RunStandard} provides a functional interfaces for creating program calls.
+     * {@link RunStandard} provides a functional interface for creating program calls.
      *
      * @since 7.0.0
      */
@@ -99,7 +99,7 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     }
 
     /**
-     * {@link RunStandardArgued} provides a functional interfaces for creating program calls.
+     * {@link RunStandardArgued} provides a functional interface for creating program calls.
      *
      * @since 7.0.0
      */
