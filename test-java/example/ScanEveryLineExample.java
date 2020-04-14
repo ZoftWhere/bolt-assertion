@@ -18,7 +18,7 @@ class ScanEveryLineExample {
     @Test
     void testBlank() {
         runner //
-            .run(ScanEveryLineExample::getEveryLine)
+            .run(ScanEveryLineExample::program)
             .input(" ")
             .expected("[ ]")
             .assertSuccess();
@@ -27,7 +27,7 @@ class ScanEveryLineExample {
     @Test
     void testEmpty() {
         runner //
-            .run(ScanEveryLineExample::getEveryLine)
+            .run(ScanEveryLineExample::program)
             .input("")
             .expected("[]")
             .assertSuccess();
@@ -36,7 +36,7 @@ class ScanEveryLineExample {
     @Test
     void testCase() {
         runner //
-            .run(ScanEveryLineExample::getEveryLine)
+            .run(ScanEveryLineExample::program)
             .input("", "Get them all.", "")
             .expected("[]", "[Get them all.]", "[]")
             .assertSuccess();
@@ -45,7 +45,7 @@ class ScanEveryLineExample {
     @Test
     void testSeparator() {
         runner //
-            .run(ScanEveryLineExample::getEveryLine)
+            .run(ScanEveryLineExample::program)
             .input("system\r" + "\r\n" + "\n" + "and\u2028" + "unicode\u2029" + "agnostic\u0085" + "")
             .expected("[system]", "[]", "[]", "[and]", "[unicode]", "[agnostic]", "[]")
             .assertSuccess();
@@ -54,7 +54,7 @@ class ScanEveryLineExample {
     @Test
     void testByteOrderMark() {
         runner //
-            .run(ScanEveryLineExample::getEveryLine)
+            .run(ScanEveryLineExample::program)
             .input("\ufeff", "Exclude leading Byte Order Mark.", "")
             .expected("[]", "[Exclude leading Byte Order Mark.]", "[]")
             .assertSuccess();
@@ -63,17 +63,17 @@ class ScanEveryLineExample {
     /**
      * Example for running a program with scanner against fixed/file/resource input.
      *
-     * @param scanner     scanner
-     * @param printStream print stream
+     * @param scanner program {@link Scanner}
+     * @param out     program {@link PrintStream}
      */
-    private static void getEveryLine(Scanner scanner, PrintStream printStream) {
+    private static void program(Scanner scanner, PrintStream out) {
         String line = firstLine(scanner);
-        printStream.print("[" + line + "]");
+        out.print("[" + line + "]");
 
         while (hasNextLine(scanner)) {
             line = nextLine(scanner);
-            printStream.println();
-            printStream.print("[" + line + "]");
+            out.println();
+            out.print("[" + line + "]");
         }
     }
 
