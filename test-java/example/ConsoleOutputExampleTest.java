@@ -46,7 +46,7 @@ class ConsoleOutputExampleTest {
 
     private interface ThrowingConsumer<T> {
 
-        void accept(T value) throws RuntimeException;
+        void accept(T value) throws Exception;
     }
 
 }

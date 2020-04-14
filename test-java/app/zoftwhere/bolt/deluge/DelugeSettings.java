@@ -10,19 +10,19 @@ class DelugeSettings {
 
     private final String[] argumentArray;
 
-    private final boolean hasThrowable;
+    private final boolean hasError;
 
-    private final Throwable throwable;
+    private final Exception error;
 
     private final boolean hasCharSet;
 
     private final Charset charset;
 
-    static DelugeSettings from(Throwable throwable) {
-        return new DelugeSettings(false, null, true, throwable, false, UTF_8);
+    static DelugeSettings from(Exception error) {
+        return new DelugeSettings(false, null, true, error, false, UTF_8);
     }
 
-    static DelugeSettings from(Throwable throwable, Charset charset) {
+    static DelugeSettings from(Exception throwable, Charset charset) {
         return new DelugeSettings(false, null, true, throwable, true, charset);
     }
 
@@ -30,7 +30,7 @@ class DelugeSettings {
         return new DelugeSettings(true, argumentArray, false, null, false, UTF_8);
     }
 
-    static DelugeSettings from(String[] argumentArray, Throwable throwable) {
+    static DelugeSettings from(String[] argumentArray, Exception throwable) {
         return new DelugeSettings(true, argumentArray, true, throwable, false, UTF_8);
     }
 
@@ -38,22 +38,22 @@ class DelugeSettings {
         return new DelugeSettings(true, argumentArray, false, null, true, charset);
     }
 
-    static DelugeSettings from(String[] argumentArray, Throwable throwable, Charset charset) {
-        return new DelugeSettings(true, argumentArray, true, throwable, true, charset);
+    static DelugeSettings from(String[] argumentArray, Exception error, Charset charset) {
+        return new DelugeSettings(true, argumentArray, true, error, true, charset);
     }
 
     private DelugeSettings(
         boolean hasArgumentArray,
         String[] argumentArray,
-        boolean hasThrowable,
-        Throwable throwable,
+        boolean hasError,
+        Exception error,
         boolean hasCharSet,
         Charset charset)
     {
         this.hasArgumentArray = hasArgumentArray;
         this.argumentArray = argumentArray;
-        this.hasThrowable = hasThrowable;
-        this.throwable = throwable;
+        this.hasError = hasError;
+        this.error = error;
         this.hasCharSet = hasCharSet;
         this.charset = charset;
 
@@ -65,7 +65,7 @@ class DelugeSettings {
             throw new IllegalArgumentException("deluge.program.settings.charset.utf-8.expected");
         }
 
-        if (hasThrowable && throwable == null) {
+        if (hasError && error == null) {
             throw new IllegalArgumentException("deluge.program.non-null.throwable.expected");
         }
     }
@@ -78,12 +78,12 @@ class DelugeSettings {
         return argumentArray;
     }
 
-    boolean hasThrowable() {
-        return hasThrowable;
+    boolean hasError() {
+        return hasError;
     }
 
-    Throwable throwable() {
-        return throwable;
+    Exception error() {
+        return error;
     }
 
     boolean hasCharSet() {

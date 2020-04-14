@@ -90,20 +90,20 @@ class BoltDelugeTest {
     private List<DelugeBuilder> expansiveSettings() {
         List<DelugeBuilder> list = new ArrayList<>();
         Charset[] encodingArray = {null, UTF_8, UTF_16LE, UTF_16BE};
-        Throwable[] throwableArray = {
+        Exception[] exceptionArray = {
             new Exception("deluge.exception.test"),
             new Exception("deluge.exception.test", null),
             new Exception("deluge.exception.test", new Exception((String) null)),
             new Exception("deluge.exception.test", new Exception("deluge.exception.cause.exception")),
-            new Throwable("deluge.throwable.with.null.cause", null),
+            new RuntimeException("deluge.runtime.exception.with.null.cause", null),
         };
-        list.addAll(listForArgument(encodingArray, throwableArray, (String[]) null));
-        list.addAll(listForArgument(encodingArray, throwableArray, "arg1", "arg2"));
-        list.addAll(listForArgument(encodingArray, throwableArray, null, "arg2", ""));
+        list.addAll(listForArgument(encodingArray, exceptionArray, (String[]) null));
+        list.addAll(listForArgument(encodingArray, exceptionArray, "arg1", "arg2"));
+        list.addAll(listForArgument(encodingArray, exceptionArray, null, "arg2", ""));
         return list;
     }
 
-    private List<DelugeBuilder> listForArgument(Charset[] charsets, Throwable[] throwables, String... arguments) {
+    private List<DelugeBuilder> listForArgument(Charset[] charsets, Exception[] errors, String... arguments) {
         List<DelugeBuilder> list = new ArrayList<>();
         DelugeBuilder builder = new DelugeBuilder();
 
@@ -116,23 +116,23 @@ class BoltDelugeTest {
         }
 
         // Add with no charset, throwing.
-        for (Throwable throwable : throwables) {
-            if (throwable != null) {
-                list.add(builder.withSettings(throwable));
+        for (Exception error : errors) {
+            if (error != null) {
+                list.add(builder.withSettings(error));
             }
         }
 
         // Add with no charset, argument, and throwing.
-        for (Throwable throwable : throwables) {
-            list.add(builder.withSettings(arguments, throwable));
+        for (Exception error : errors) {
+            list.add(builder.withSettings(arguments, error));
         }
 
         // Add with charset, throwing.
         for (Charset charset : charsets) {
             if (charset != null) {
-                for (Throwable throwable : throwables) {
-                    list.add(builder.withSettings(throwable, charset));
-                    list.add(builder.withSettings(arguments, throwable, charset));
+                for (Exception error : errors) {
+                    list.add(builder.withSettings(error, charset));
+                    list.add(builder.withSettings(arguments, error, charset));
                 }
             }
         }

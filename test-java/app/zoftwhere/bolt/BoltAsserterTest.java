@@ -27,19 +27,19 @@ class BoltAsserterTest {
     }
 
     @Test
-    void testResultSuccess() {
+    void testSuccessState() {
         final var blank = new String[] {""};
-        final var result = new BoltProgramResult(blank, blank);
+        final var result = new BoltResult(blank, blank);
         final var asserter = new BoltAsserter(result);
 
         asserter.assertSuccess();
 
         assertTrue(result.isSuccess());
         assertFalse(result.isFailure());
-        assertFalse(result.isException());
+        assertFalse(result.isError());
 
         assertNull(result.message().orElse(null));
-        assertNull(result.exception().orElse(null));
+        assertNull(result.error().orElse(null));
 
         try {
             asserter.assertFailure();
@@ -52,7 +52,7 @@ class BoltAsserterTest {
         }
 
         try {
-            asserter.assertException();
+            asserter.assertError();
             fail("bolt.runner.asserter.success.found.expected");
         }
         catch (Exception e) {
@@ -63,20 +63,20 @@ class BoltAsserterTest {
     }
 
     @Test
-    void testResultFailure() {
+    void testFailureState() {
         final var blank = new String[] {""};
         final var customMessage = "bolt.asserter.custom.message";
-        final var result = new BoltProgramResult(blank, blank, -1, customMessage);
+        final var result = new BoltResult(blank, blank, -1, customMessage);
         final var asserter = new BoltAsserter(result);
 
         asserter.assertFailure();
 
         assertFalse(result.isSuccess());
         assertTrue(result.isFailure());
-        assertFalse(result.isException());
+        assertFalse(result.isError());
 
         assertNotNull(result.message().orElse(null));
-        assertNull(result.exception().orElse(null));
+        assertNull(result.error().orElse(null));
 
         try {
             asserter.assertSuccess();
@@ -89,7 +89,7 @@ class BoltAsserterTest {
         }
 
         try {
-            asserter.assertException();
+            asserter.assertError();
             fail("bolt.runner.asserter.success.found.expected");
         }
         catch (Exception e) {
@@ -100,26 +100,26 @@ class BoltAsserterTest {
     }
 
     @Test
-    void testResultException() {
+    void testErrorState() {
         final var blank = new String[] {""};
         final var empty = new String[0];
         final var errorMessage = "Throwable?";
         final var exception = new Exception(errorMessage, null);
-        final var result = new BoltProgramResult(blank, empty, exception);
+        final var result = new BoltResult(blank, empty, exception);
         final var asserter = new BoltAsserter(result);
 
-        asserter.assertException();
+        asserter.assertError();
 
         assertFalse(result.isSuccess());
         assertFalse(result.isFailure());
-        assertTrue(result.isException());
+        assertTrue(result.isError());
 
         assertNull(result.message().orElse(null));
 
-        Exception foundException = result.exception().orElse(null);
-        assertNotNull(foundException);
-        assertClass(exception.getClass(), foundException);
-        assertEquals("Throwable?", foundException.getMessage());
+        Exception error = result.error().orElse(null);
+        assertNotNull(error);
+        assertClass(exception.getClass(), error);
+        assertEquals("Throwable?", error.getMessage());
 
         try {
             asserter.assertSuccess();
@@ -161,7 +161,7 @@ class BoltAsserterTest {
         asserter.assertFailure();
 
         try {
-            asserter.assertException();
+            asserter.assertError();
             fail("bolt.runner.test.exception.expected");
         }
         catch (Exception e) {
@@ -185,7 +185,7 @@ class BoltAsserterTest {
 
         var result = asserter.result();
         assertEquals(-1, result.offendingIndex());
-        assertNull(result.exception().orElse(null));
+        assertNull(result.error().orElse(null));
         assertEquals("bolt.runner.asserter.output.length.mismatch", result.message().orElse(null));
     }
 
@@ -208,7 +208,7 @@ class BoltAsserterTest {
         asserter.assertFailure();
 
         try {
-            asserter.assertException();
+            asserter.assertError();
             fail("bolt.runner.test.exception.expected");
         }
         catch (Exception e) {
@@ -232,7 +232,7 @@ class BoltAsserterTest {
 
         var result = asserter.result();
         assertEquals(0, result.offendingIndex());
-        assertNull(result.exception().orElse(null));
+        assertNull(result.error().orElse(null));
         assertEquals("bolt.runner.asserter.output.data.mismatch", result.message().orElse(null));
     }
 
@@ -242,10 +242,10 @@ class BoltAsserterTest {
         final var two = new String[] {"two"};
         final var offendingIndex = 0;
         final var message = "mismatch";
-        final var result = new BoltProgramResult(one, two, offendingIndex, message);
+        final var result = new BoltResult(one, two, offendingIndex, message);
         final var asserter = new BoltAsserter(result);
 
-        asserter.onOffence(testResult -> {});
+        asserter.onOffence(runnerResult -> {});
     }
 
 }

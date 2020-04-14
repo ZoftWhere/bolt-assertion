@@ -65,7 +65,7 @@ class DelugeControl {
 
         String message = switcher.end();
         if (message != null) {
-            throw new DelugeException(message, actual.exception());
+            throw new DelugeException(message, actual.error());
         }
     }
 
@@ -136,8 +136,8 @@ class DelugeControl {
 
             return null;
         }
-        catch (Throwable throwable) {
-            throw new DelugeException("deluge.comparison.exception", throwable);
+        catch (Exception e) {
+            throw new DelugeException("deluge.comparison.exception", e);
         }
     }
 
@@ -195,15 +195,8 @@ class DelugeControl {
             }
         }
 
-        if (settings.hasThrowable()) {
-            if (settings.throwable() instanceof Exception) {
-                return new DelugeResult(array(""), (Exception) settings.throwable());
-            }
-
-            String exceptionClass = "app.zoftwhere.bolt.RunnerException";
-            String exceptionMessage = "bolt.runner.throwable.as.cause";
-            Throwable cause = settings.throwable();
-            return new DelugeResult(array(""), exceptionClass, exceptionMessage, cause);
+        if (settings.hasError()) {
+            return new DelugeResult(array(""), settings.error());
         }
 
         List<String> output = new ArrayList<>();
@@ -216,7 +209,7 @@ class DelugeControl {
 
     private List<String> forArgument() {
         List<String> list = new ArrayList<>();
-        if (settings.hasThrowable()) {
+        if (settings.hasError()) {
             return list;
         }
 
@@ -245,7 +238,7 @@ class DelugeControl {
 
     private List<String> forInput() {
         List<String> list = new ArrayList<>();
-        if (settings.hasThrowable()) {
+        if (settings.hasError()) {
             return list;
         }
         else if (data.array() == null || isOrHasNull(data.array())) {
@@ -267,9 +260,9 @@ class DelugeControl {
                     }
                 }
             }
-            catch (Throwable throwable) {
-                throwable.printStackTrace();
-                throw new RuntimeException(throwable);
+            catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
             }
             return list;
         }

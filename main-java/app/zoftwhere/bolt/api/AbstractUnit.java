@@ -72,7 +72,7 @@ abstract class AbstractUnit {
 
         String[] output();
 
-        Optional<Exception> exception();
+        Optional<Exception> error();
     }
 
     @SuppressWarnings("unused")
@@ -90,13 +90,13 @@ abstract class AbstractUnit {
     }
 
     @SuppressWarnings("unused")
-    interface Assertions<T extends TestResult> {
+    interface Assertions<T extends Result> {
 
         void assertSuccess();
 
         void assertFailure();
 
-        void assertException();
+        void assertError();
 
         void assertCheck(RunnerResultConsumer consumer);
 
@@ -106,13 +106,13 @@ abstract class AbstractUnit {
     }
 
     @SuppressWarnings("unused")
-    interface TestResult {
+    interface Result {
 
         boolean isSuccess();
 
         boolean isFailure();
 
-        boolean isException();
+        boolean isError();
 
         String[] output();
 
@@ -122,35 +122,35 @@ abstract class AbstractUnit {
 
         Optional<String> message();
 
-        Optional<Exception> exception();
+        Optional<Exception> error();
     }
 
     @FunctionalInterface
     @SuppressWarnings({"EmptyMethod", "unused"})
     interface CallerNoArguments<T1, T2> {
 
-        void call(T1 t1, T2 t2) throws Throwable;
+        void call(T1 t1, T2 t2) throws Exception;
     }
 
     @FunctionalInterface
     @SuppressWarnings({"EmptyMethod", "unused"})
     interface CallerWithArguments<T1, T2> {
 
-        void call(String[] arguments, T1 t1, T2 t2) throws Throwable;
+        void call(String[] arguments, T1 t1, T2 t2) throws Exception;
     }
 
     @FunctionalInterface
     @SuppressWarnings({"EmptyMethod", "unused"})
     interface ThrowingSupplier<T> {
 
-        T get() throws Throwable;
+        T get() throws Exception;
     }
 
     @FunctionalInterface
     @SuppressWarnings({"EmptyMethod", "unused"})
     interface ThrowingConsumer<T> {
 
-        void accept(T input) throws Throwable;
+        void accept(T input) throws Exception;
     }
 
 }

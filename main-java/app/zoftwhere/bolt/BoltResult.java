@@ -3,16 +3,16 @@ package app.zoftwhere.bolt;
 import java.util.Arrays;
 import java.util.Optional;
 
-import app.zoftwhere.bolt.api.RunnerProgramResult;
+import app.zoftwhere.bolt.api.RunnerResult;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * Bolt program result class.
+ * Bolt execution result class.
  *
  * @since 6.0.0
  */
-class BoltProgramResult implements RunnerProgramResult {
+class BoltResult implements RunnerResult {
 
     private final String[] output;
 
@@ -22,25 +22,25 @@ class BoltProgramResult implements RunnerProgramResult {
 
     private final String message;
 
-    private final Exception exception;
+    private final Exception error;
 
     /**
-     * Create a program result for a success state.
+     * Create a execution result for a success state.
      *
      * @param output   program output lines
      * @param expected expected program output lines
      * @since 6.0.0
      */
-    BoltProgramResult(String[] output, String[] expected) {
+    BoltResult(String[] output, String[] expected) {
         this.output = requireNonNull(output);
         this.expected = requireNonNull(expected);
         this.offendingIndex = -1;
         this.message = null;
-        this.exception = null;
+        this.error = null;
     }
 
     /**
-     * Create a program result for a failure state.
+     * Create a execution result for a failure state.
      *
      * @param output         program output lines
      * @param expected       program expected output lines
@@ -48,44 +48,44 @@ class BoltProgramResult implements RunnerProgramResult {
      * @param message        program failure state message
      * @since 6.0.0
      */
-    BoltProgramResult(String[] output, String[] expected, int offendingIndex, String message) {
+    BoltResult(String[] output, String[] expected, int offendingIndex, String message) {
         this.output = requireNonNull(output);
         this.expected = requireNonNull(expected);
         //noinspection ManualMinMaxCalculation
         this.offendingIndex = offendingIndex >= -1 ? offendingIndex : -1;
         this.message = requireNonNull(message);
-        this.exception = null;
+        this.error = null;
     }
 
     /**
-     * Create a program result for an error state.
+     * Create a execution result for an error state.
      *
-     * @param output    program output lines
-     * @param expected  program expected output lines
-     * @param exception program error
+     * @param output   program output lines
+     * @param expected program expected output lines
+     * @param error    execution error
      * @since 6.0.0
      */
-    BoltProgramResult(String[] output, String[] expected, Exception exception) {
+    BoltResult(String[] output, String[] expected, Exception error) {
         this.output = requireNonNull(output);
         this.expected = requireNonNull(expected);
         this.offendingIndex = -1;
         this.message = null;
-        this.exception = requireNonNull(exception);
+        this.error = requireNonNull(error);
     }
 
     @Override
     public boolean isSuccess() {
-        return message == null && exception == null;
+        return message == null && error == null;
     }
 
     @Override
     public boolean isFailure() {
-        return message != null && exception == null;
+        return message != null && error == null;
     }
 
     @Override
-    public boolean isException() {
-        return exception != null;
+    public boolean isError() {
+        return error != null;
     }
 
     @Override
@@ -109,8 +109,8 @@ class BoltProgramResult implements RunnerProgramResult {
     }
 
     @Override
-    public Optional<Exception> exception() {
-        return Optional.ofNullable(exception);
+    public Optional<Exception> error() {
+        return Optional.ofNullable(error);
     }
 
 }

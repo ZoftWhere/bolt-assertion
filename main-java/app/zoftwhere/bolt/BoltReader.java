@@ -53,7 +53,7 @@ class BoltReader extends Reader implements Iterator<String> {
         try (BoltReader reader = supplier.get()) {
             return reader.list();
         }
-        catch (Throwable e) {
+        catch (Exception e) {
             throw new RunnerException("bolt.runner.reader.read.list", e);
         }
     }
@@ -69,7 +69,7 @@ class BoltReader extends Reader implements Iterator<String> {
         try (BoltReader reader = supplier.get()) {
             return reader.array();
         }
-        catch (Throwable e) {
+        catch (Exception e) {
             throw new RunnerException("bolt.runner.reader.read.array", e);
         }
     }

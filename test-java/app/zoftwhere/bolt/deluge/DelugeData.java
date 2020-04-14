@@ -127,7 +127,7 @@ class DelugeData {
 
         return new InputStreamSupplier() {
             @Override
-            public InputStream get() throws Throwable {
+            public InputStream get() throws Exception {
                 openFlag.set(true);
 
                 try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {

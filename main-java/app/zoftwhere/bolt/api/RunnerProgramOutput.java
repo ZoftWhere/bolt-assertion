@@ -20,7 +20,7 @@ public interface RunnerProgramOutput
      * </p>
      * <p>The comparator will only be loaded if the program output does not contain an exception.
      * </p>
-     * <p>The program result will contain an exception if the loaded comparator is null.
+     * <p>The execution result will contain an exception if the loaded comparator is null.
      * </p>
      *
      * @param comparator {@link String} {@link Comparator} for program line output
@@ -34,7 +34,7 @@ public interface RunnerProgramOutput
     String[] output();
 
     @Override
-    Optional<Exception> exception();
+    Optional<Exception> error();
 
     @Override
     RunnerAsserter expected(String... expected);

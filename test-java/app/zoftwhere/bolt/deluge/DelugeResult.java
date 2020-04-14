@@ -4,7 +4,7 @@ class DelugeResult {
 
     private final String[] output;
 
-    private final Exception exception;
+    private final Exception error;
 
     private final String exceptionClass;
 
@@ -18,7 +18,7 @@ class DelugeResult {
 
     DelugeResult(String[] output) {
         this.output = output;
-        this.exception = null;
+        this.error = null;
         this.exceptionClass = null;
         this.exceptionMessage = null;
         this.cause = null;
@@ -26,19 +26,19 @@ class DelugeResult {
         this.causeMessage = null;
     }
 
-    DelugeResult(String[] output, Exception e) {
+    DelugeResult(String[] output, Exception error) {
         this.output = output;
-        this.exception = e;
-        this.exceptionClass = getClass(e);
-        this.exceptionMessage = getMessage(e);
-        this.cause = e != null ? e.getCause() : null;
+        this.error = error;
+        this.exceptionClass = getClass(error);
+        this.exceptionMessage = getMessage(error);
+        this.cause = error != null ? error.getCause() : null;
         this.causeClass = getClass(cause);
         this.causeMessage = getMessage(cause);
     }
 
     DelugeResult(String[] output, String exceptionClass, String exceptionMessage, Throwable cause) {
         this.output = output;
-        this.exception = new Exception(exceptionMessage, cause);
+        this.error = new Exception(exceptionMessage, cause);
         this.exceptionClass = exceptionClass;
         this.exceptionMessage = exceptionMessage;
         this.cause = cause;
@@ -50,8 +50,8 @@ class DelugeResult {
         return output;
     }
 
-    Exception exception() {
-        return exception;
+    Exception error() {
+        return error;
     }
 
     String exceptionClass() {

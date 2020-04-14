@@ -223,35 +223,31 @@ class DelugeProgram {
     }
 
     private DelugeResult outputToResult(RunnerProgramOutput preTest) {
-        if (preTest.exception().isPresent()) {
-            return new DelugeResult(preTest.output(), preTest.exception().get());
+        if (preTest.error().isPresent()) {
+            return new DelugeResult(preTest.output(), preTest.error().get());
         }
         return new DelugeResult(preTest.output());
     }
 
-    private void process(String[] arguments, InputStream inputStream, OutputStream outputStream) throws Throwable {
-        if (settings.hasThrowable()) {
-            throw settings.throwable();
+    private void process(String[] arguments, InputStream inputStream, OutputStream outputStream) throws Exception {
+        if (settings.hasError()) {
+            throw settings.error();
         }
 
-        //noinspection CaughtExceptionImmediatelyRethrown
         try (DelugeLineScanner scanner = new DelugeLineScanner(inputStream, settings.charset())) {
             try (PrintStream out = new PrintStream(outputStream, false, settings.charset())) {
                 process(arguments, scanner, out);
             }
         }
-        catch (Throwable throwable) {
-            throw throwable;
-        }
     }
 
-    private void process(String[] arguments, Scanner scanner, PrintStream out) throws Throwable {
+    private void process(String[] arguments, Scanner scanner, PrintStream out) throws Exception {
         process(arguments, new DelugeLineScanner(scanner), out);
     }
 
-    private void process(String[] arguments, DelugeLineScanner scanner, PrintStream out) throws Throwable {
-        if (settings.hasThrowable()) {
-            throw settings.throwable();
+    private void process(String[] arguments, DelugeLineScanner scanner, PrintStream out) throws Exception {
+        if (settings.hasError()) {
+            throw settings.error();
         }
 
         if (arguments == null) {

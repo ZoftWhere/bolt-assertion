@@ -23,13 +23,13 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
     String[] output();
 
     /**
-     * Retrieve the program error.
+     * Retrieve the execution error.
      *
-     * @return {@link Optional} of the program error (empty on success or failure)
+     * @return {@link Optional} of the execution error (empty on success or failure)
      * @since 6.0.0
      */
     @Override
-    Optional<Exception> exception();
+    Optional<Exception> error();
 
     /**
      * <p>Specify the expected program output.
@@ -37,7 +37,7 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
      * <p>The expectation will only be loaded if the expectation is not null, and has one or more items.
      * </p>
      * <p>If the expectation is loaded, the program does not have an exception, and the array contains a null, the
-     * program result will be loaded with a corresponding exception.
+     * execution result will be loaded with a corresponding exception.
      * </p>
      *
      * @param expected variable argument for expected program line output
@@ -52,7 +52,7 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
      * </p>
      * <p>The expectation will only be loaded if the program output does not contain an exception.
      * </p>
-     * <p>If the expectation is loading, and an exception occurs, the program result will be loaded with a
+     * <p>If the expectation is loading, and an exception occurs, the execution result will be loaded with a
      * corresponding exception.
      * </p>
      *
@@ -68,12 +68,12 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
      * </p>
      * <p>The expectation will only be loaded if the program output does not contain an exception.
      * </p>
-     * <p>If the expectation is loading, and an exception occurs, the program result will be loaded with a
+     * <p>If the expectation is loading, and an exception occurs, the execution result will be loaded with a
      * corresponding exception.
      * </p>
      *
      * @param supplier {@link InputStream} supplier for expected program output
-     * @param charset  {@link Charset} for {@link InputStream}
+     * @param charset  character encoding of {@link InputStream}
      * @return {@link RunnerAsserter}
      * @since 6.0.0
      */
@@ -85,11 +85,11 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
      * </p>
      * <p>The expectation will only be loaded if the program output does not contain an exception.
      * </p>
-     * <p>If the expectation is loading, and an exception occurs, the program result will be loaded with a
+     * <p>If the expectation is loading, and an exception occurs, the execution result will be loaded with a
      * corresponding exception.
      * </p>
      *
-     * @param resourceName resource name of resource to be loaded as expected program output
+     * @param resourceName resource name for loading expected program output
      * @param withClass    {@link Class} with which its {@link ClassLoader} will load the expected program output
      * @return {@link RunnerAsserter}
      * @since 1.0.0
@@ -102,13 +102,13 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
      * </p>
      * <p>The expectation will only be loaded if the program output does not contain an exception.
      * </p>
-     * <p>If the expectation is loading, and an exception occurs, the program result will be loaded with a
+     * <p>If the expectation is loading, and an exception occurs, the execution result will be loaded with a
      * corresponding exception.
      * </p>
      *
-     * @param resourceName resource name of resource to be loaded as expected program output
-     * @param withClass    {@link Class} with which its {@link ClassLoader} will load the expected program output
-     * @param charset      {@link Charset} of the resource
+     * @param resourceName resource name for loading expected program output
+     * @param withClass    {@link Class} with which to retrieve the expected program output
+     * @param charset      character encoding of resource
      * @return {@link RunnerAsserter}
      * @since 1.0.0
      */

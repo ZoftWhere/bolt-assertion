@@ -22,21 +22,21 @@ class BoltProgramResultTest {
         for (String[] outputStringArray : inputArray) {
             for (String[] expectedStringArray : inputArray) {
                 try {
-                    var programResult = new BoltProgramResult(outputStringArray, expectedStringArray);
+                    var result = new BoltResult(outputStringArray, expectedStringArray);
 
                     if (outputStringArray == null || expectedStringArray == null) {
                         fail("null.pointer.exception.expected");
                     }
 
-                    assertTrue(programResult.isSuccess());
-                    assertFalse(programResult.isFailure());
-                    assertFalse(programResult.isException());
+                    assertTrue(result.isSuccess());
+                    assertFalse(result.isFailure());
+                    assertFalse(result.isError());
 
-                    String[] output = programResult.output();
-                    String[] expected = programResult.expected();
-                    int offendingIndex = programResult.offendingIndex();
-                    String message = programResult.message().orElse(null);
-                    Exception exception = programResult.exception().orElse(null);
+                    String[] output = result.output();
+                    String[] expected = result.expected();
+                    int offendingIndex = result.offendingIndex();
+                    String message = result.message().orElse(null);
+                    Exception error = result.error().orElse(null);
 
                     assertEquals(outputStringArray.length, output.length);
                     assertEquals(expectedStringArray.length, expected.length);
@@ -44,7 +44,7 @@ class BoltProgramResultTest {
                     assertArrayEquals(expectedStringArray, expected);
                     assertEquals(-1, offendingIndex);
                     assertNull(message);
-                    assertNull(exception);
+                    assertNull(error);
                 }
                 catch (Exception e) {
                     assertClass(NullPointerException.class, e);
@@ -65,21 +65,21 @@ class BoltProgramResultTest {
                 for (int pIndex : indexArray) {
                     for (String pMessage : messageArray) {
                         try {
-                            var programResult = new BoltProgramResult(pOutput, pExpected, pIndex, pMessage);
+                            var result = new BoltResult(pOutput, pExpected, pIndex, pMessage);
 
                             if (pOutput == null || pExpected == null || pMessage == null) {
                                 fail("null.pointer.exception.expected");
                             }
 
-                            assertFalse(programResult.isSuccess());
-                            assertTrue(programResult.isFailure());
-                            assertFalse(programResult.isException());
+                            assertFalse(result.isSuccess());
+                            assertTrue(result.isFailure());
+                            assertFalse(result.isError());
 
-                            String[] output = programResult.output();
-                            String[] expected = programResult.expected();
-                            int offendingIndex = programResult.offendingIndex();
-                            String message = programResult.message().orElse(null);
-                            Exception exception = programResult.exception().orElse(null);
+                            String[] output = result.output();
+                            String[] expected = result.expected();
+                            int offendingIndex = result.offendingIndex();
+                            String message = result.message().orElse(null);
+                            Exception error = result.error().orElse(null);
 
                             assertEquals(pOutput.length, output.length);
                             assertEquals(pExpected.length, expected.length);
@@ -87,7 +87,7 @@ class BoltProgramResultTest {
                             assertArrayEquals(pExpected, expected);
                             assertEquals(Math.max(pIndex, -1), offendingIndex);
                             assertEquals(pMessage, message);
-                            assertNull(exception);
+                            assertNull(error);
                         }
                         catch (Exception e) {
                             assertClass(NullPointerException.class, e);
@@ -107,20 +107,20 @@ class BoltProgramResultTest {
             for (String[] pExpected : inputArray) {
                 for (Exception pException : exceptionArray) {
                     try {
-                        var programResult = new BoltProgramResult(pOutput, pExpected, pException);
+                        var result = new BoltResult(pOutput, pExpected, pException);
                         if (pOutput == null || pExpected == null || pException == null) {
                             fail("null.pointer.exception.expected");
                         }
 
-                        assertFalse(programResult.isSuccess());
-                        assertFalse(programResult.isFailure());
-                        assertTrue(programResult.isException());
+                        assertFalse(result.isSuccess());
+                        assertFalse(result.isFailure());
+                        assertTrue(result.isError());
 
-                        String[] output = programResult.output();
-                        String[] expected = programResult.expected();
-                        String message = programResult.message().orElse(null);
-                        int offendingIndex = programResult.offendingIndex();
-                        Exception exception = programResult.exception().orElse(null);
+                        String[] output = result.output();
+                        String[] expected = result.expected();
+                        String message = result.message().orElse(null);
+                        int offendingIndex = result.offendingIndex();
+                        Exception error = result.error().orElse(null);
 
                         assertEquals(pOutput.length, output.length);
                         assertEquals(pExpected.length, expected.length);
@@ -128,7 +128,7 @@ class BoltProgramResultTest {
                         assertArrayEquals(pExpected, expected);
                         assertEquals(-1, offendingIndex);
                         assertNull(message);
-                        assertClass(pException.getClass(), exception);
+                        assertClass(pException.getClass(), error);
                     }
                     catch (Exception e) {
                         assertClass(NullPointerException.class, e);
