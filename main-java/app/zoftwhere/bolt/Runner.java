@@ -25,7 +25,7 @@ public class Runner extends AbstractRunner {
     }
 
     /**
-     * <p>Constructor for a reusable, immutable instance of the runner (more than one test can be run with it).
+     * <p>Constructor for a reusable, immutable, instance (more than one test can be run with it).
      * </p>
      * <p>The Runner static method {@link #newRunner()} may also be used.
      * </p>
