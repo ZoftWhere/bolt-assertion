@@ -37,7 +37,7 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     interface RunConsole extends AbstractUnit.CallerNoArguments<InputStream, OutputStream> {
 
         /**
-         * @param inputStream  program input
+         * @param inputStream  program {@link InputStream}
          * @param outputStream program {@link OutputStream}
          * @throws Exception program error
          */
@@ -55,7 +55,7 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
 
         /**
          * @param arguments    program argument array
-         * @param inputStream  program input
+         * @param inputStream  program {@link InputStream}
          * @param outputStream program {@link OutputStream}
          * @throws Exception program error
          */
@@ -90,8 +90,8 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     interface RunStandard extends AbstractUnit.CallerNoArguments<Scanner, PrintStream> {
 
         /**
-         * @param scanner scanner
-         * @param out     print stream
+         * @param scanner program {@link Scanner}
+         * @param out     program {@link PrintStream}
          * @throws Exception on program error
          */
         @Override
@@ -108,8 +108,8 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
 
         /**
          * @param arguments program argument array
-         * @param scanner   scanner
-         * @param out       print stream
+         * @param scanner   program {@link Scanner}
+         * @param out       program {@link PrintStream}
          * @throws Exception on program error
          */
         @Override
