@@ -43,8 +43,8 @@ class DelugeControl {
             data.resetFlags();
         }
 
-        DelugeResult actual = program.buildProgramResult();
-        DelugeResult expected = buildExpectation();
+        DelugeResult actual = program.buildActualResult();
+        DelugeResult expected = buildExpectedResult();
 
         BoltSingleReturn<String> switcher = new BoltSingleReturn<>();
 
@@ -141,7 +141,7 @@ class DelugeControl {
         }
     }
 
-    private DelugeResult buildExpectation() {
+    private DelugeResult buildExpectedResult() {
 
         if (STREAM_ENCODED == data.type() || RESOURCE_ENCODED == data.type()) {
             if (data.charset() == null) {

@@ -57,7 +57,7 @@ class DelugeProgram {
         }
     }
 
-    DelugeResult buildProgramResult() {
+    DelugeResult buildActualResult() {
         if (type.isProgramFirst() && !type.isInputFirst()) {
             return testProgramFirst(newRunner());
         }
