@@ -55,8 +55,8 @@ class ScanEveryLineExample {
     void testByteOrderMark() {
         runner //
             .run(ScanEveryLineExample::program)
-            .input("\ufeff", "Exclude leading Byte Order Mark.", "")
-            .expected("[]", "[Exclude leading Byte Order Mark.]", "[]")
+            .input("\ufeffBOM", "Exclude leading Byte Order Mark.", "Zero-Width-Space{\ufeff}")
+            .expected("[BOM]", "[Exclude leading Byte Order Mark.]", "[Zero-Width-Space{\ufeff}]")
             .assertSuccess();
     }
 
