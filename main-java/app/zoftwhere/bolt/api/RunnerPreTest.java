@@ -25,7 +25,7 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
      * Retrieve the execution error.
      *
      * @return {@link Optional} of the execution error (empty on success or failure)
-     * @since 6.0.0
+     * @since 8.0.0
      */
     @Override
     Optional<Exception> error();

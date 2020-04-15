@@ -7,7 +7,7 @@ import java.util.Optional;
  *
  * @since 8.0.0
  */
-public interface RunnerResult extends AbstractUnit.Result {
+public interface RunnerResult extends RunnerProgramResult {
 
     /**
      * <p>Check if success state.
