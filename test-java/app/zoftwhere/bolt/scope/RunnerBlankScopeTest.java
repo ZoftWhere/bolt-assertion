@@ -15,6 +15,7 @@ import app.zoftwhere.bolt.api.RunnerPreTest;
 import app.zoftwhere.bolt.api.RunnerProgram;
 import app.zoftwhere.bolt.api.RunnerProgramInput;
 import app.zoftwhere.bolt.api.RunnerProgramOutput;
+import app.zoftwhere.bolt.api.RunnerProgramResult;
 import app.zoftwhere.bolt.api.RunnerProvideInput;
 import app.zoftwhere.bolt.api.RunnerProvideProgram;
 import app.zoftwhere.bolt.api.RunnerResult;
@@ -112,6 +113,9 @@ class RunnerBlankScopeTest {
     private void testOptionalComparator(RunnerProgramOutput programOutput) {
         testRunnerOutput(programOutput);
         testRunnerOutput(programOutput.comparator(Comparator.nullsFirst(Comparator.naturalOrder())));
+
+        testRunnerOutputMigration(programOutput);
+        testRunnerOutputMigration(programOutput.comparator(Comparator.nullsFirst(Comparator.naturalOrder())));
     }
 
     private void testRunnerOutput(RunnerPreTest preTest) {
@@ -130,6 +134,59 @@ class RunnerBlankScopeTest {
         testAsserter(preTest.expected(this::blankStream, UTF_8));
         testAsserter(preTest.loadExpectation("RunnerBlankScopeTest.txt", Runner.class));
         testAsserter(preTest.loadExpectation("RunnerBlankScopeTest.txt", Runner.class, UTF_8));
+    }
+
+    private void testRunnerOutputMigration(RunnerPreTest preTest) {
+        //noinspection deprecation
+        Exception exception = preTest.exception().orElse(null);
+        String[] output = preTest.output();
+        assertNull(exception);
+        assertNotNull(output);
+        assertEquals(1, output.length);
+        assertEquals("", output[0]);
+
+        testAsserterMigration(preTest.expected());
+        testAsserterMigration(preTest.expected(""));
+        testAsserterMigration(preTest.expected(emptyArray));
+        testAsserterMigration(preTest.expected(blankArray));
+        testAsserterMigration(preTest.expected(this::blankStream));
+        testAsserterMigration(preTest.expected(this::blankStream, UTF_8));
+        testAsserterMigration(preTest.loadExpectation("RunnerBlankScopeTest.txt", Runner.class));
+        testAsserterMigration(preTest.loadExpectation("RunnerBlankScopeTest.txt", Runner.class, UTF_8));
+    }
+
+    private void testAsserterMigration(RunnerAsserter asserter) {
+        asserter.assertSuccess();
+        try {
+            asserter.assertFailure();
+            fail("exception.expected");
+        }
+        catch (Exception e) {
+            BoltTestHelper.assertClass(RunnerException.class, e);
+        }
+        try {
+            //noinspection deprecation
+            asserter.assertException();
+            fail("exception.expected");
+        }
+        catch (Exception e) {
+            BoltTestHelper.assertClass(RunnerException.class, e);
+        }
+
+        asserter.assertCheck(this::testResultMigration);
+    }
+
+    private void testResultMigration(@SuppressWarnings("deprecation") RunnerProgramResult result) {
+        assertTrue(result.isSuccess());
+        assertFalse(result.isFailure());
+        assertFalse(result.message().isPresent());
+        //noinspection deprecation
+        assertFalse(result.isException());
+        //noinspection deprecation
+        assertFalse(result.exception().isPresent());
+
+        assertNotNull(result.expected());
+        assertNotNull(result.output());
     }
 
     private void testAsserter(RunnerAsserter asserter) {
