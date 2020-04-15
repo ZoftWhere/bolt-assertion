@@ -1,5 +1,7 @@
 package app.zoftwhere.bolt;
 
+import java.time.Duration;
+
 import org.junit.jupiter.api.Test;
 
 import static app.zoftwhere.bolt.BoltTestHelper.array;
@@ -12,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class BoltAsserterTest {
+
+    private final Duration instant = Duration.ZERO;
 
     @Test
     void testConstructorNullResult() {
@@ -29,7 +33,7 @@ class BoltAsserterTest {
     @Test
     void testSuccessState() {
         final var blank = new String[] {""};
-        final var result = new BoltResult(blank, blank);
+        final var result = new BoltResult(blank, blank, instant);
         final var asserter = new BoltAsserter(result);
 
         asserter.assertSuccess();
@@ -66,7 +70,7 @@ class BoltAsserterTest {
     void testFailureState() {
         final var blank = new String[] {""};
         final var customMessage = "bolt.asserter.custom.message";
-        final var result = new BoltResult(blank, blank, -1, customMessage);
+        final var result = new BoltResult(blank, blank, instant, -1, customMessage);
         final var asserter = new BoltAsserter(result);
 
         asserter.assertFailure();
@@ -105,10 +109,11 @@ class BoltAsserterTest {
         final var empty = new String[0];
         final var errorMessage = "Throwable?";
         final var exception = new Exception(errorMessage, null);
-        final var result = new BoltResult(blank, empty, exception);
+        final var result = new BoltResult(blank, empty, instant, exception);
         final var asserter = new BoltAsserter(result);
 
         asserter.assertError();
+        asserter.assertException();
 
         assertFalse(result.isSuccess());
         assertFalse(result.isFailure());
@@ -146,7 +151,7 @@ class BoltAsserterTest {
     void testRunTestFailureExpectedLength() {
         var outputLines = array("");
         var expectedLines = array("", "");
-        final var programOutput = new BoltProgramOutput(outputLines, null);
+        final var programOutput = new BoltProgramOutput(outputLines, instant, null);
         final var asserter = programOutput.expected(expectedLines);
 
         try {
@@ -193,7 +198,7 @@ class BoltAsserterTest {
     void testRunTestFailureComparisonFailure() {
         var outputLines = array("");
         var expectedLines = array("mismatch");
-        final var programOutput = new BoltProgramOutput(outputLines, null);
+        final var programOutput = new BoltProgramOutput(outputLines, instant, null);
         final var asserter = programOutput.expected(expectedLines);
 
         try {
@@ -242,7 +247,7 @@ class BoltAsserterTest {
         final var two = new String[] {"two"};
         final var offendingIndex = 0;
         final var message = "mismatch";
-        final var result = new BoltResult(one, two, offendingIndex, message);
+        final var result = new BoltResult(one, two, instant, offendingIndex, message);
         final var asserter = new BoltAsserter(result);
 
         asserter.onOffence(runnerResult -> {});

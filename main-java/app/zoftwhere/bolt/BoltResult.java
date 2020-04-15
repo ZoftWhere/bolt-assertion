@@ -1,5 +1,6 @@
 package app.zoftwhere.bolt;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -24,16 +25,20 @@ class BoltResult implements RunnerResult {
 
     private final Exception error;
 
+    private final Duration executionDuration;
+
     /**
      * Create a execution result for a success state.
      *
-     * @param output   program output lines
-     * @param expected expected program output lines
-     * @since 6.0.0
+     * @param output            program output lines
+     * @param expected          expected program output lines
+     * @param executionDuration {@link Duration} of execution
+     * @since 9.0.0
      */
-    BoltResult(String[] output, String[] expected) {
+    BoltResult(String[] output, String[] expected, Duration executionDuration) {
         this.output = requireNonNull(output);
         this.expected = requireNonNull(expected);
+        this.executionDuration = requireNonNull(executionDuration);
         this.offendingIndex = -1;
         this.message = null;
         this.error = null;
@@ -46,11 +51,12 @@ class BoltResult implements RunnerResult {
      * @param expected       program expected output lines
      * @param offendingIndex zero-based index of erroneous line, if any, -1 otherwise.
      * @param message        program failure state message
-     * @since 6.0.0
+     * @since 9.0.0
      */
-    BoltResult(String[] output, String[] expected, int offendingIndex, String message) {
+    BoltResult(String[] output, String[] expected, Duration executionDuration, int offendingIndex, String message) {
         this.output = requireNonNull(output);
         this.expected = requireNonNull(expected);
+        this.executionDuration = requireNonNull(executionDuration);
         //noinspection ManualMinMaxCalculation
         this.offendingIndex = offendingIndex >= -1 ? offendingIndex : -1;
         this.message = requireNonNull(message);
@@ -63,11 +69,12 @@ class BoltResult implements RunnerResult {
      * @param output   program output lines
      * @param expected program expected output lines
      * @param error    execution error
-     * @since 6.0.0
+     * @since 9.0.0
      */
-    BoltResult(String[] output, String[] expected, Exception error) {
+    BoltResult(String[] output, String[] expected, Duration executionDuration, Exception error) {
         this.output = requireNonNull(output);
         this.expected = requireNonNull(expected);
+        this.executionDuration = requireNonNull(executionDuration);
         this.offendingIndex = -1;
         this.message = null;
         this.error = requireNonNull(error);
@@ -111,6 +118,11 @@ class BoltResult implements RunnerResult {
     @Override
     public Optional<Exception> error() {
         return Optional.ofNullable(error);
+    }
+
+    @Override
+    public Duration executionDuration() {
+        return executionDuration;
     }
 
 }

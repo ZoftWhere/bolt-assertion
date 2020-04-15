@@ -2,6 +2,7 @@ package app.zoftwhere.bolt;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
@@ -27,18 +28,22 @@ class BoltProgramOutput implements RunnerProgramOutput {
 
     private final Exception error;
 
+    private final Duration duration;
+
     private final Comparator<String> comparator;
 
     /**
      * Create an program output instance based on the program output and program exception.
      *
-     * @param output program output lines
-     * @param error  execution error, if any, null otherwise
-     * @since 6.0.0
+     * @param output   program output lines
+     * @param duration duration of program execution
+     * @param error    execution error, if any, null otherwise
+     * @since 9.0.0
      */
-    BoltProgramOutput(String[] output, Exception error) {
+    BoltProgramOutput(String[] output, Duration duration, Exception error) {
         this.output = requireNonNull(output);
         this.error = error;
+        this.duration = duration;
         this.comparator = null;
     }
 
@@ -46,19 +51,25 @@ class BoltProgramOutput implements RunnerProgramOutput {
      * Private constructor for program output.
      *
      * @param output     program output lines
-     * @param error      execution error, if any, null otherwise
+     * @param duration   duration of program execution
      * @param comparator program output comparator, if any, null otherwise
-     * @since 6.0.0
+     * @since 9.0.0
      */
-    private BoltProgramOutput(String[] output, Exception error, Comparator<String> comparator) {
+    private BoltProgramOutput(String[] output, Duration duration, Comparator<String> comparator) {
         this.output = requireNonNull(output);
-        this.error = error;
+        this.duration = duration;
+        this.error = null;
         this.comparator = comparator;
     }
 
     @Override
     public String[] output() {
         return Arrays.copyOf(output, output.length);
+    }
+
+    @Override
+    public Duration executionDuration() {
+        return duration;
     }
 
     @Override
@@ -74,10 +85,10 @@ class BoltProgramOutput implements RunnerProgramOutput {
 
         if (comparator == null) {
             RunnerException exception = new RunnerException("bolt.runner.expectation.comparator.null");
-            return new BoltProgramOutput(output, exception, null);
+            return new BoltProgramOutput(output, Duration.ZERO, exception);
         }
 
-        return new BoltProgramOutput(output, null, comparator);
+        return new BoltProgramOutput(output, duration, comparator);
     }
 
     @Override
@@ -85,13 +96,13 @@ class BoltProgramOutput implements RunnerProgramOutput {
         String[] expectation = expected == null || expected.length == 0 ? new String[] {""} : expected;
 
         if (error != null) {
-            return new BoltAsserter(new BoltResult(output, expectation, error));
+            return new BoltAsserter(new BoltResult(output, expectation, duration, error));
         }
 
         for (String item : expectation) {
             if (item == null) {
                 RunnerException exception = new RunnerException("bolt.runner.variable.array.expected.has.null");
-                return new BoltAsserter(new BoltResult(output, expectation, exception));
+                return new BoltAsserter(new BoltResult(output, expectation, duration, exception));
             }
         }
 
@@ -106,7 +117,7 @@ class BoltProgramOutput implements RunnerProgramOutput {
     @Override
     public RunnerAsserter expected(InputStreamSupplier supplier, Charset charset) {
         if (error != null) {
-            return new BoltAsserter(new BoltResult(output, new String[0], error));
+            return new BoltAsserter(new BoltResult(output, new String[0], duration, error));
         }
 
         return create(charset, supplier);
@@ -115,7 +126,7 @@ class BoltProgramOutput implements RunnerProgramOutput {
     @Override
     public RunnerAsserter loadExpectation(String resourceName, Class<?> withClass) {
         if (error != null) {
-            return new BoltAsserter(new BoltResult(output, new String[0], error));
+            return new BoltAsserter(new BoltResult(output, new String[0], duration, error));
         }
 
         return loadExpectation(resourceName, withClass, UTF_8);
@@ -124,7 +135,7 @@ class BoltProgramOutput implements RunnerProgramOutput {
     @Override
     public RunnerAsserter loadExpectation(String resourceName, Class<?> withClass, Charset charset) {
         if (error != null) {
-            return new BoltAsserter(new BoltResult(output, new String[0], error));
+            return new BoltAsserter(new BoltResult(output, new String[0], duration, error));
         }
         if (resourceName == null) {
             return create(charset, () -> {
@@ -155,12 +166,12 @@ class BoltProgramOutput implements RunnerProgramOutput {
     private RunnerAsserter create(Charset charset, InputStreamSupplier supplier) {
         if (charset == null) {
             RunnerException exception = new RunnerException("bolt.runner.load.expectation.charset.null");
-            BoltResult result = new BoltResult(output, new String[0], exception);
+            BoltResult result = new BoltResult(output, new String[0], duration, exception);
             return new BoltAsserter(result);
         }
         if (supplier == null) {
             RunnerException exception = new RunnerException("bolt.runner.load.expectation.supplier.null");
-            BoltResult result = new BoltResult(output, new String[0], exception);
+            BoltResult result = new BoltResult(output, new String[0], duration, exception);
             return new BoltAsserter(result);
         }
 
@@ -172,7 +183,7 @@ class BoltProgramOutput implements RunnerProgramOutput {
             return new BoltAsserter(buildTestResult(output, expected, comparator));
         }
         catch (Exception e) {
-            BoltResult result = new BoltResult(output, new String[0], e);
+            BoltResult result = new BoltResult(output, new String[0], duration, e);
             return new BoltAsserter(result);
         }
     }
@@ -189,7 +200,7 @@ class BoltProgramOutput implements RunnerProgramOutput {
         if (expected.length != output.length) {
             int none = -1;
             String message = "bolt.runner.asserter.output.length.mismatch";
-            return new BoltResult(output, expected, none, message);
+            return new BoltResult(output, expected, duration, none, message);
         }
 
         final int size = output.length;
@@ -197,7 +208,7 @@ class BoltProgramOutput implements RunnerProgramOutput {
             for (int index = 0; index < size; index++) {
                 if (!Objects.equals(expected[index], output[index])) {
                     String message = "bolt.runner.asserter.output.data.mismatch";
-                    return new BoltResult(output, expected, index, message);
+                    return new BoltResult(output, expected, duration, index, message);
                 }
             }
         }
@@ -205,12 +216,12 @@ class BoltProgramOutput implements RunnerProgramOutput {
             for (int index = 0; index < size; index++) {
                 if (comparator.compare(expected[index], output[index]) != 0) {
                     String message = "bolt.runner.asserter.output.data.mismatch";
-                    return new BoltResult(output, expected, index, message);
+                    return new BoltResult(output, expected, duration, index, message);
                 }
             }
         }
 
-        return new BoltResult(output, expected);
+        return new BoltResult(output, expected, duration);
     }
 
 }

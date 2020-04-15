@@ -1,6 +1,7 @@
 package app.zoftwhere.bolt.api;
 
 import java.nio.charset.Charset;
+import java.time.Duration;
 import java.util.Comparator;
 import java.util.Optional;
 
@@ -35,6 +36,9 @@ public interface RunnerProgramOutput
 
     @Override
     Optional<Exception> error();
+
+    @Override
+    Duration executionDuration();
 
     @Override
     RunnerAsserter expected(String... expected);

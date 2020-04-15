@@ -1,6 +1,7 @@
 package app.zoftwhere.bolt.api;
 
 import java.nio.charset.Charset;
+import java.time.Duration;
 import java.util.Optional;
 
 import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
@@ -29,6 +30,15 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
      */
     @Override
     Optional<Exception> error();
+
+    /**
+     * Retrieve the execution duration.
+     *
+     * @return {@link Duration} duration from execution call till program completion or execution error.
+     * @since 9.0.0
+     */
+    @Override
+    Duration executionDuration();
 
     /**
      * <p>Specify the expected program output.

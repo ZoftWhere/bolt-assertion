@@ -1,5 +1,7 @@
 package app.zoftwhere.bolt;
 
+import java.time.Duration;
+
 import org.junit.jupiter.api.Test;
 
 import static app.zoftwhere.bolt.BoltTestHelper.assertClass;
@@ -15,14 +17,15 @@ class BoltProgramResultTest {
     private final String[] emptyArray = new String[] { };
     private final String[] blankArray = new String[] {""};
     private final String[] nullArray = new String[] {null};
+    private final Duration instant = Duration.ZERO;
 
     @Test
     void testForSuccessState() {
-        String[][] inputArray = new String[][] {null, nullArray, emptyArray, blankArray};
+        var inputArray = new String[][] {null, nullArray, emptyArray, blankArray};
         for (String[] outputStringArray : inputArray) {
             for (String[] expectedStringArray : inputArray) {
                 try {
-                    var result = new BoltResult(outputStringArray, expectedStringArray);
+                    var result = new BoltResult(outputStringArray, expectedStringArray, instant);
 
                     if (outputStringArray == null || expectedStringArray == null) {
                         fail("null.pointer.exception.expected");
@@ -42,6 +45,7 @@ class BoltProgramResultTest {
                     assertEquals(expectedStringArray.length, expected.length);
                     assertArrayEquals(outputStringArray, output);
                     assertArrayEquals(expectedStringArray, expected);
+                    assertEquals(instant, result.executionDuration());
                     assertEquals(-1, offendingIndex);
                     assertNull(message);
                     assertNull(error);
@@ -56,16 +60,16 @@ class BoltProgramResultTest {
 
     @Test
     void testForFailureState() {
-        String[][] inputArray = new String[][] {null, nullArray, emptyArray, blankArray};
-        String[] messageArray = new String[] {null, "", "message"};
-        int[] indexArray = new int[] {-3, -2, -1, 0, 1, 2};
+        var inputArray = new String[][] {null, nullArray, emptyArray, blankArray};
+        var messageArray = new String[] {null, "", "message"};
+        var indexArray = new int[] {-3, -2, -1, 0, 1, 2};
 
         for (String[] pOutput : inputArray) {
             for (String[] pExpected : inputArray) {
                 for (int pIndex : indexArray) {
                     for (String pMessage : messageArray) {
                         try {
-                            var result = new BoltResult(pOutput, pExpected, pIndex, pMessage);
+                            var result = new BoltResult(pOutput, pExpected, instant, pIndex, pMessage);
 
                             if (pOutput == null || pExpected == null || pMessage == null) {
                                 fail("null.pointer.exception.expected");
@@ -85,6 +89,7 @@ class BoltProgramResultTest {
                             assertEquals(pExpected.length, expected.length);
                             assertArrayEquals(pOutput, output);
                             assertArrayEquals(pExpected, expected);
+                            assertEquals(instant, result.executionDuration());
                             assertEquals(Math.max(pIndex, -1), offendingIndex);
                             assertEquals(pMessage, message);
                             assertNull(error);
@@ -101,13 +106,13 @@ class BoltProgramResultTest {
 
     @Test
     void testForErrorState() {
-        String[][] inputArray = new String[][] {null, nullArray, emptyArray, blankArray};
-        Exception[] exceptionArray = new Exception[] {null, new Exception("")};
+        var inputArray = new String[][] {null, nullArray, emptyArray, blankArray};
+        var exceptionArray = new Exception[] {null, new Exception("")};
         for (String[] pOutput : inputArray) {
             for (String[] pExpected : inputArray) {
                 for (Exception pException : exceptionArray) {
                     try {
-                        var result = new BoltResult(pOutput, pExpected, pException);
+                        var result = new BoltResult(pOutput, pExpected, instant, pException);
                         if (pOutput == null || pExpected == null || pException == null) {
                             fail("null.pointer.exception.expected");
                         }
@@ -126,6 +131,7 @@ class BoltProgramResultTest {
                         assertEquals(pExpected.length, expected.length);
                         assertArrayEquals(pOutput, output);
                         assertArrayEquals(pExpected, expected);
+                        assertEquals(instant, result.executionDuration());
                         assertEquals(-1, offendingIndex);
                         assertNull(message);
                         assertClass(pException.getClass(), error);

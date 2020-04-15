@@ -33,6 +33,8 @@ class DelugeData {
 
     private final Charset charset;
 
+    private final Exception exception;
+
     private final BoltPlaceHolder<Boolean> openFlag = new BoltPlaceHolder<>(false);
 
     private final BoltPlaceHolder<Boolean> closedFlag = new BoltPlaceHolder<>(false);
@@ -47,6 +49,14 @@ class DelugeData {
 
     static DelugeData forInputStream(String[] data, Charset charset) {
         return new DelugeData(STREAM_ENCODED, data, null, null, true, charset);
+    }
+
+    static DelugeData forInputStream(Exception exception) {
+        return new DelugeData(exception, false, UTF_8);
+    }
+
+    static DelugeData forInputStream(Exception exception, Charset charset) {
+        return new DelugeData(exception, true, charset);
     }
 
     static DelugeData forResource(String resource, Class<?> withClass, String[] data) {
@@ -75,6 +85,24 @@ class DelugeData {
         this.resource = resource;
         this.withClass = withClass;
         this.charset = charset;
+        this.exception = null;
+
+        if (!hasCharset && charset != UTF_8) {
+            throw new IllegalArgumentException("deluge.data.charset.utf-8.expected");
+        }
+    }
+
+    private DelugeData(Exception exception, boolean hasCharset, Charset charset)
+    {
+        this.type = hasCharset ? STREAM_ENCODED : STREAM;
+        this.array = null;
+        this.supplier = () -> {
+            throw exception;
+        };
+        this.resource = null;
+        this.withClass = null;
+        this.charset = charset;
+        this.exception = exception;
 
         if (!hasCharset && charset != UTF_8) {
             throw new IllegalArgumentException("deluge.data.charset.utf-8.expected");
@@ -105,6 +133,10 @@ class DelugeData {
         return charset;
     }
 
+    Exception exception() {
+        return exception;
+    }
+
     void resetFlags() {
         openFlag.set(false);
         closedFlag.set(false);
@@ -122,6 +154,10 @@ class DelugeData {
         BoltPlaceHolder<Boolean> closedFlag)
     {
         if (input == null) {
+            return null;
+        }
+
+        if (isOrHasNull(input)) {
             return () -> null;
         }
 
@@ -131,7 +167,7 @@ class DelugeData {
                 openFlag.set(true);
 
                 try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-                    if (input.length > 0 && !isOrHasNull(input)) {
+                    if (input.length > 0) {
                         try (OutputStreamWriter writer = new OutputStreamWriter(output, charset)) {
                             writer.append(input[0]);
                             for (int i = 1, s = input.length; i < s; i++) {

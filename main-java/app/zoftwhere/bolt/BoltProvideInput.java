@@ -21,11 +21,13 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  */
 class BoltProvideInput implements RunnerProvideInput, RunnerProgramInput, RunnerLoader, BoltProvide {
 
-    private final Charset inputCharset;
+    private final String[] arguments;
+
+    private final Charset charset;
 
     private final InputStreamSupplier supplier;
 
-    private final String[] arguments;
+    private final RunnerException error;
 
     /**
      * Create instance of this multi-interfaced class for handling of runners that accept input first.
@@ -33,51 +35,49 @@ class BoltProvideInput implements RunnerProvideInput, RunnerProgramInput, Runner
      * @since 6.0.0
      */
     BoltProvideInput() {
-        inputCharset = UTF_8;
+        charset = UTF_8;
         supplier = () -> null;
         arguments = null;
+        error = null;
     }
 
     /**
      * Private constructor for the multi-interfaced class.
      *
-     * @param inputCharset character encoding of {@link java.io.InputStream}
-     * @param supplier     {@link java.io.InputStream} supplier for program input
-     * @since 6.0.0
+     * @param arguments program arguments
+     * @param charset   character encoding of {@link java.io.InputStream}
+     * @param supplier  {@link java.io.InputStream} supplier for program input
+     * @param error     execution error
+     * @since 9.0.0
      */
-    private BoltProvideInput(Charset inputCharset, InputStreamSupplier supplier) {
-        this.inputCharset = inputCharset;
-        this.supplier = supplier;
-        this.arguments = null;
-    }
-
-    /**
-     * Private constructor for the multi-interfaced class.
-     *
-     * @param inputCharset character encoding of {@link java.io.InputStream}
-     * @param supplier     {@link java.io.InputStream} supplier for program input
-     * @param arguments    program arguments
-     * @since 6.0.0
-     */
-    private BoltProvideInput(Charset inputCharset, InputStreamSupplier supplier, String[] arguments) {
-        this.inputCharset = inputCharset;
-        this.supplier = supplier;
+    private BoltProvideInput(String[] arguments, Charset charset, InputStreamSupplier supplier, RunnerException error) {
         this.arguments = arguments;
+        this.charset = charset;
+        this.supplier = supplier;
+        this.error = error;
     }
 
     @Override
     public RunnerProgramInput input(String... input) {
-        return this.input(newInputStreamSupplier(input), UTF_8);
+        for (String item : emptyOnNull(input)) {
+            if (item == null) {
+                RunnerException error = new RunnerException("bolt.runner.variable.array.input.has.null");
+                return new BoltProvideInput(arguments, charset, supplier, error);
+            }
+        }
+
+        InputStreamSupplier supplier = newInputStreamSupplier(input);
+        return new BoltProvideInput(arguments, UTF_8, supplier, error);
     }
 
     @Override
     public RunnerProgramInput input(InputStreamSupplier supplier) {
-        return new BoltProvideInput(UTF_8, supplier);
+        return new BoltProvideInput(arguments, charset, supplier, null);
     }
 
     @Override
     public RunnerProgramInput input(InputStreamSupplier supplier, Charset charset) {
-        return new BoltProvideInput(charset, supplier);
+        return new BoltProvideInput(arguments, charset, supplier, null);
     }
 
     @Override
@@ -88,27 +88,25 @@ class BoltProvideInput implements RunnerProvideInput, RunnerProgramInput, Runner
     @Override
     public RunnerProgramInput loadInput(String resourceName, Class<?> withClass, Charset charset) {
         if (resourceName == null) {
-            return new BoltProvideInput(charset, () -> {
-                throw new RunnerException("bolt.runner.load.input.resource.name.null");
-            });
+            RunnerException error = new RunnerException("bolt.runner.load.input.resource.name.null");
+            return new BoltProvideInput(arguments, charset, this.supplier, error);
         }
         if (withClass == null) {
-            return new BoltProvideInput(charset, () -> {
-                throw new RunnerException("bolt.runner.load.input.resource.class.null");
-            });
+            RunnerException error = new RunnerException("bolt.runner.load.input.resource.class.null");
+            return new BoltProvideInput(arguments, charset, this.supplier, error);
         }
         if (withClass.getResource(resourceName) == null) {
-            return new BoltProvideInput(charset, () -> {
-                throw new RunnerException("bolt.runner.load.input.resource.not.found");
-            });
+            RunnerException error = new RunnerException("bolt.runner.load.input.resource.not.found");
+            return new BoltProvideInput(arguments, charset, this.supplier, error);
         }
 
-        return new BoltProvideInput(charset, () -> withClass.getResourceAsStream(resourceName));
+        InputStreamSupplier supplier = () -> withClass.getResourceAsStream(resourceName);
+        return new BoltProvideInput(arguments, charset, supplier, error);
     }
 
     @Override
     public RunnerLoader argument(String... arguments) {
-        return new BoltProvideInput(inputCharset, supplier, emptyOnNull(arguments));
+        return new BoltProvideInput(emptyOnNull(arguments), charset, supplier, error);
     }
 
     @Override
@@ -156,17 +154,17 @@ class BoltProvideInput implements RunnerProvideInput, RunnerProgramInput, Runner
     }
 
     private BoltProgramOutput buildStandardOutput(Charset charset, RunStandardArgued program) {
-        BoltProgramExecutor executor = (arguments, inputCharset, supplier, outputCharset, outputStream) -> //
-            executeStandardArgued(arguments, inputCharset, supplier, outputCharset, outputStream, program);
+        BoltExecutor call = (arguments, inCharset, inputStream, outCharset, outputStream) ->
+            callStandardArgued(arguments, inCharset, inputStream, outCharset, outputStream, program);
 
-        return buildProgramOutput(arguments, inputCharset, supplier, charset, executor);
+        return buildProgramOutput(arguments, this.charset, supplier, charset, call, error);
     }
 
     private BoltProgramOutput buildConsoleOutput(Charset charset, RunConsoleArgued program) {
-        BoltProgramExecutor executor = (arguments, inputCharset, supplier, outputCharset, outputStream) -> //
-            executeConsoleArgued(arguments, inputCharset, supplier, outputCharset, outputStream, program);
+        BoltExecutor call = (arguments, inCharset, inputStream, outCharset, outputStream) ->
+            callConsoleArgued(arguments, inCharset, inputStream, outCharset, outputStream, program);
 
-        return buildProgramOutput(arguments, inputCharset, supplier, charset, executor);
+        return buildProgramOutput(arguments, this.charset, supplier, charset, call, error);
     }
 
 }

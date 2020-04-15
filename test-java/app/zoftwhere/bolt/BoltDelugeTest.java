@@ -40,15 +40,20 @@ class BoltDelugeTest {
     }
 
     private List<DelugeBuilder> expansiveData(DelugeBuilder builder) {
+        final var arraySingleNull = new String[] {null};
         List<DelugeBuilder> list = new ArrayList<>();
 
         list.addAll(listForData(builder, null));
+        list.addAll(listForData(builder, arraySingleNull));
         list.addAll(listForData(builder, array()));
         list.addAll(listForData(builder, array("ListForDataTest")));
         list.addAll(listForData(builder, array("Hello World!\r", "\nUnicode(\ud801\udc10)", "")));
 
         list.addAll(listForData(builder, array("<", null)));
         list.addAll(listForData(builder, array(null, ">")));
+
+        list.add(builder.forInputStream(new NullPointerException("InputStreamExceptionTest")));
+        list.add(builder.forInputStream(new NullPointerException("InputStreamExceptionTest"), UTF_8));
 
         list.add(builder.forResource("<null>", Runner.class, array()));
         list.add(builder.forResource("<null>", null, array()));

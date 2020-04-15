@@ -1,24 +1,23 @@
 package app.zoftwhere.bolt;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
-import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
-
 /**
- * <p>Bolt Program Executor functional interface.
+ * <p>Bolt Executor functional interface.
  * </p>
  * <p>This is a package-private interface for creating internal implementations with lambdas.
  * </p>
  *
- * @since 6.0.0
+ * @since 9.0.0
  */
 @FunctionalInterface
-interface BoltProgramExecutor {
+interface BoltExecutor {
 
     Exception execute(String[] arguments,
         Charset inputCharset,
-        InputStreamSupplier inputStreamSupplier,
+        InputStream inputStream,
         Charset outputCharset,
         OutputStream outputStream);
 
