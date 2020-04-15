@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.time.Duration;
 import java.util.function.Consumer;
 
 import app.zoftwhere.bolt.api.RunnerAsserter;
@@ -26,9 +27,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BoltProgramOutputTest {
 
+    private final Duration instant = Duration.ZERO;
+
     @Test
     void testLoadComparator() {
-        var output = new BoltProgramOutput(new String[] {""}, null);
+        var output = new BoltProgramOutput(new String[] {""}, instant, null);
         var test = output.comparator(null);
         assertClass(BoltProgramOutput.class, test);
         var exception = test.error().orElse(null);
@@ -42,7 +45,7 @@ class BoltProgramOutputTest {
     @Test
     void testLoadComparatorSkip() {
         var exception = new NullPointerException("comparator.load.skip");
-        var output = new BoltProgramOutput(new String[] {""}, exception).comparator(null);
+        var output = new BoltProgramOutput(new String[] {""}, instant, exception).comparator(null);
 
         Consumer<RunnerProgramOutput> check = programOutput -> {
             Exception error = programOutput.error().orElse(null);
@@ -71,7 +74,7 @@ class BoltProgramOutputTest {
             assertEquals("", output[0]);
         };
 
-        var programOutput = new BoltProgramOutput(new String[] {""}, null);
+        var programOutput = new BoltProgramOutput(new String[] {""}, instant, null);
         var emptyArray = new String[] { };
         var blankArray = new String[] {""};
 
@@ -84,7 +87,7 @@ class BoltProgramOutputTest {
 
     @Test
     void testLoad() {
-        var output = new BoltProgramOutput(new String[] {""}, null);
+        var output = new BoltProgramOutput(new String[] {""}, instant, null);
         var errorClass = new BoltPlaceHolder<Class<?>>(RunnerException.class);
         var errorMessage = new BoltPlaceHolder<String>(null);
         var expectationLength = new BoltPlaceHolder<Integer>(null);
@@ -140,8 +143,8 @@ class BoltProgramOutputTest {
     @Test
     void testLoadSkip() {
         var errorMessage = "expectation.load.skip";
-        var throwable = new NullPointerException(errorMessage);
-        var output = new BoltProgramOutput(new String[] {""}, throwable).comparator(null);
+        var exception = new NullPointerException(errorMessage);
+        var output = new BoltProgramOutput(new String[] {""}, instant, exception).comparator(null);
         var expectationLength = new BoltPlaceHolder<Integer>(null);
 
         Consumer<RunnerAsserter> check = asserter -> {
@@ -154,7 +157,7 @@ class BoltProgramOutputTest {
                 assertEquals(length.intValue(), expected.length);
                 Exception error = result.error().orElse(null);
                 assertNotNull(error);
-                assertClass(throwable.getClass(), error);
+                assertClass(exception.getClass(), error);
                 assertEquals(errorMessage, error.getMessage());
                 assertNull(error.getCause());
                 expectationLength.set(null);
@@ -185,7 +188,7 @@ class BoltProgramOutputTest {
 
     @Test
     void testLoadResource() {
-        var output = new BoltProgramOutput(new String[] {""}, null);
+        var output = new BoltProgramOutput(new String[] {""}, instant, null);
         var names = new String[] {null, "notFound", "RunnerTest.txt"};
         var withClasses = new Class<?>[] {null, Runner.class, RunnerProgramOutput.class};
         var charsets = new Charset[] {null, UTF_8, US_ASCII};
@@ -251,7 +254,7 @@ class BoltProgramOutputTest {
     void testLoadResourceSkip() {
         var output = new String[] {"testLoadResourceSkip", ""};
         var exception = new NullPointerException("resource.load.skip");
-        var programOutput = new BoltProgramOutput(output, exception);
+        var programOutput = new BoltProgramOutput(output, instant, exception);
         var names = new String[] {null, "notFound", "RunnerTest.txt"};
         var withClasses = new Class<?>[] {null, Runner.class, RunnerProgramOutput.class};
         var charsets = new Charset[] {null, UTF_8, US_ASCII};
@@ -291,7 +294,7 @@ class BoltProgramOutputTest {
     @Test
     void testLoadInputStream() {
         final var output = new String[] {"program", "output", ""};
-        final var programOutput = new BoltProgramOutput(output, null);
+        final var programOutput = new BoltProgramOutput(output, instant, null);
         final var encodingArray = new Charset[] {null, UTF_8, US_ASCII, UTF_16BE, UTF_16LE};
         final var expectation = new String[] {"expectation", "test"};
         Consumer<RunnerResult> check = (RunnerResult result) -> {

@@ -1,6 +1,7 @@
 package app.zoftwhere.bolt.api;
 
 import java.nio.charset.Charset;
+import java.time.Duration;
 import java.util.Comparator;
 import java.util.Optional;
 
@@ -71,6 +72,8 @@ abstract class AbstractUnit {
     interface Output {
 
         String[] output();
+
+        Duration executionDuration();
 
         Optional<Exception> error();
 
@@ -145,6 +148,8 @@ abstract class AbstractUnit {
         String[] output();
 
         String[] expected();
+
+        Duration executionDuration();
 
         int offendingIndex();
 

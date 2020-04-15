@@ -1,5 +1,6 @@
 package app.zoftwhere.bolt.api;
 
+import java.time.Duration;
 import java.util.Optional;
 
 /**
@@ -65,6 +66,15 @@ public interface RunnerResult extends RunnerProgramResult {
      */
     @Override
     String[] expected();
+
+    /**
+     * Retrieve the execution duration.
+     *
+     * @return {@link Duration} duration from execution call till program completion or execution error.
+     * @since 9.0.0
+     */
+    @Override
+    Duration executionDuration();
 
     /**
      * Retrieve the offending index for output comparison.

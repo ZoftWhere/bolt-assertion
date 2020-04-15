@@ -8,6 +8,9 @@ import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -138,6 +141,16 @@ interface BoltProvide {
         return null;
     }
 
+    /**
+     * Returns the program output.
+     *
+     * @param arguments      program argument array
+     * @param inputCharset   character encoding for program input {@link InputStream}
+     * @param streamSupplier {@link InputStream} supplier for program input
+     * @param outputCharset  character encoding for program output
+     * @param executor       program executor
+     * @return {@link BoltProgramOutput}
+     */
     default BoltProgramOutput buildProgramOutput(String[] arguments,
         Charset inputCharset,
         InputStreamSupplier streamSupplier,
@@ -145,15 +158,22 @@ interface BoltProvide {
         BoltProgramExecutor executor)
     {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        // Call the executor.
+        Instant from = Instant.now();
         Exception error = executor.execute(arguments, inputCharset, streamSupplier, outputCharset, outputStream);
+        Instant to = Instant.now();
+
+        // Execution duration calculation is correct if duration is less than 292 years.
+        Duration time = Duration.ofNanos(from.until(to, ChronoUnit.NANOS));
 
         if (inputCharset == null || outputCharset == null) {
-            return new BoltProgramOutput(new String[] {""}, error);
+            return new BoltProgramOutput(new String[] {""}, time, error);
         }
 
         final byte[] data = outputStream.toByteArray();
         final String[] output = readArray(() -> new BoltReader(data, outputCharset));
-        return new BoltProgramOutput(output, error);
+        return new BoltProgramOutput(output, time, error);
     }
 
 }

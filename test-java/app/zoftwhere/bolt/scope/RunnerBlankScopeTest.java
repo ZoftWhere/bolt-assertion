@@ -2,6 +2,7 @@ package app.zoftwhere.bolt.scope;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.time.Duration;
 import java.util.Comparator;
 
 import app.zoftwhere.bolt.BoltTestHelper;
@@ -111,6 +112,7 @@ class RunnerBlankScopeTest {
     }
 
     private void testOptionalComparator(RunnerProgramOutput programOutput) {
+        programOutput.executionDuration();
         testRunnerOutput(programOutput);
         testRunnerOutput(programOutput.comparator(Comparator.nullsFirst(Comparator.naturalOrder())));
 
@@ -119,10 +121,12 @@ class RunnerBlankScopeTest {
     }
 
     private void testRunnerOutput(RunnerPreTest preTest) {
-        Exception error = preTest.error().orElse(null);
         String[] output = preTest.output();
-        assertNull(error);
+        Duration duration = preTest.executionDuration();
+        Exception error = preTest.error().orElse(null);
         assertNotNull(output);
+        assertNotNull(duration);
+        assertNull(error);
         assertEquals(1, output.length);
         assertEquals("", output[0]);
 
@@ -137,13 +141,8 @@ class RunnerBlankScopeTest {
     }
 
     private void testRunnerOutputMigration(RunnerPreTest preTest) {
-        //noinspection deprecation
-        Exception exception = preTest.exception().orElse(null);
-        String[] output = preTest.output();
-        assertNull(exception);
-        assertNotNull(output);
-        assertEquals(1, output.length);
-        assertEquals("", output[0]);
+        Exception error = preTest.exception().orElse(null);
+        assertNull(error);
 
         testAsserterMigration(preTest.expected());
         testAsserterMigration(preTest.expected(""));
@@ -216,8 +215,9 @@ class RunnerBlankScopeTest {
         assertFalse(result.isError());
         assertFalse(result.error().isPresent());
 
-        assertNotNull(result.expected());
         assertNotNull(result.output());
+        assertNotNull(result.expected());
+        assertNotNull(result.executionDuration());
     }
 
     private InputStream blankStream() {
