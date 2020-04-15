@@ -186,9 +186,20 @@ class DelugeControl {
             }
         }
 
-        if (STREAM == data.type() || STREAM_ENCODED == data.type() || RESOURCE == data.type() ||
-            RESOURCE_ENCODED == data.type()) {
+        if (STREAM == data.type() || STREAM_ENCODED == data.type()) {
+            if (data.exception() != null) {
+                String exceptionClass = data.exception().getClass().getName();
+                String exceptionMessage = data.exception().getMessage();
+                return new DelugeResult(array(""), exceptionClass, exceptionMessage, null);
+            }
+
             if (data.array() == null) {
+                String exceptionClass = "app.zoftwhere.bolt.RunnerException";
+                String exceptionMessage = "bolt.runner.input.stream.supplier.null";
+                return new DelugeResult(array(""), exceptionClass, exceptionMessage, null);
+            }
+
+            if (isOrHasNull(data.array())) {
                 String exceptionClass = "app.zoftwhere.bolt.RunnerException";
                 String exceptionMessage = "bolt.runner.load.input.input.stream.null";
                 return new DelugeResult(array(""), exceptionClass, exceptionMessage, null);

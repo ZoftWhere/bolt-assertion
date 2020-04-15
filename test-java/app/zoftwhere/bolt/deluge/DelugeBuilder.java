@@ -38,6 +38,14 @@ public class DelugeBuilder {
         return new DelugeBuilder(programType, DelugeData.forInputStream(input, charset), settings);
     }
 
+    public DelugeBuilder forInputStream(Exception e) {
+        return new DelugeBuilder(programType, DelugeData.forInputStream(e), settings);
+    }
+
+    public DelugeBuilder forInputStream(Exception e, Charset charset) {
+        return new DelugeBuilder(programType, DelugeData.forInputStream(e, charset), settings);
+    }
+
     public DelugeBuilder forResource(String name, Class<?> withClass, String[] input) {
         return new DelugeBuilder(programType, DelugeData.forResource(name, withClass, input), settings);
     }

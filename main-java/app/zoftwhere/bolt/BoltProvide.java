@@ -139,6 +139,10 @@ interface BoltProvide {
             RunnerException error = new RunnerException("bolt.runner.output.charset.null");
             return new BoltProgramOutput(blank, Duration.ZERO, error);
         }
+        if (streamSupplier == null) {
+            RunnerException error = new RunnerException("bolt.runner.input.stream.supplier.null");
+            return new BoltProgramOutput(blank, Duration.ZERO, error);
+        }
         if (loadError != null) {
             return new BoltProgramOutput(blank, Duration.ZERO, loadError);
         }
