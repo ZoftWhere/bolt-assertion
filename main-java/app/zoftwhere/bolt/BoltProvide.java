@@ -36,17 +36,11 @@ interface BoltProvide {
     }
 
     default InputStreamSupplier newInputStreamSupplier(String... input) {
+        if (input == null || input.length <= 0) {
+            return () -> new ByteArrayInputStream(new byte[0]);
+        }
+
         return () -> {
-            if (input == null || input.length <= 0) {
-                return new ByteArrayInputStream(new byte[0]);
-            }
-
-            for (String item : input) {
-                if (item == null) {
-                    throw new RunnerException("bolt.runner.variable.array.input.has.null");
-                }
-            }
-
             try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
                 try (OutputStreamWriter writer = new OutputStreamWriter(output, UTF_8)) {
                     writer.append(input[0]);
@@ -81,63 +75,41 @@ interface BoltProvide {
         return new PrintStream(outputStream, false, charset.name());
     }
 
-    default Exception executeStandardArgued(String[] arguments,
-        Charset inputCharset,
-        InputStreamSupplier streamSupplier,
-        Charset outputCharset,
+    default Exception callStandardArgued(
+        String[] arguments,
+        Charset inCharset,
+        InputStream inputStream,
+        Charset outCharset,
         OutputStream outputStream,
-        RunStandardArgued program)
+        RunStandardArgued program
+    )
     {
-        if (inputCharset == null) {
-            return new RunnerException("bolt.runner.input.charset.null");
-        }
-        if (outputCharset == null) {
-            return new RunnerException("bolt.runner.output.charset.null");
-        }
-
-        try (InputStream inputStream = streamSupplier.get()) {
-            if (inputStream == null) {
-                return new RunnerException("bolt.runner.load.input.input.stream.null");
-            }
-            try (Scanner scanner = newScanner(inputStream, inputCharset)) {
-                try (PrintStream out = newPrintStream(outputStream, outputCharset)) {
-                    program.call(arguments, scanner, out);
-                }
+        try (Scanner scanner = newScanner(inputStream, inCharset)) {
+            try (PrintStream out = newPrintStream(outputStream, outCharset)) {
+                program.call(arguments, scanner, out);
             }
         }
         catch (Exception e) {
             return e;
         }
-
         return null;
     }
 
-    default Exception executeConsoleArgued(String[] arguments,
-        Charset inputCharset,
-        InputStreamSupplier streamSupplier,
-        Charset outputCharset,
+    default Exception callConsoleArgued(
+        String[] arguments,
+        Charset inCharset,
+        InputStream inputStream,
+        Charset outCharset,
         OutputStream outputStream,
-        RunConsoleArgued program)
+        RunConsoleArgued program
+    )
     {
-        if (inputCharset == null) {
-            return new RunnerException("bolt.runner.input.charset.null");
-        }
-        if (outputCharset == null) {
-            return new RunnerException("bolt.runner.output.charset.null");
-        }
-
-        try (InputStream baseInputStream = streamSupplier.get()) {
-            if (baseInputStream == null) {
-                return new RunnerException("bolt.runner.load.input.input.stream.null");
-            }
-            try (InputStream inputStream = newInputStream(baseInputStream, inputCharset, outputCharset)) {
-                program.call(arguments, inputStream, outputStream);
-            }
+        try (InputStream stream = newInputStream(inputStream, inCharset, outCharset)) {
+            program.call(arguments, stream, outputStream);
         }
         catch (Exception e) {
             return e;
         }
-
         return null;
     }
 
@@ -155,25 +127,45 @@ interface BoltProvide {
         Charset inputCharset,
         InputStreamSupplier streamSupplier,
         Charset outputCharset,
-        BoltProgramExecutor executor)
+        BoltExecutor executor,
+        Exception loadError)
     {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-        // Call the executor.
-        Instant from = Instant.now();
-        Exception error = executor.execute(arguments, inputCharset, streamSupplier, outputCharset, outputStream);
-        Instant to = Instant.now();
-
-        // Execution duration calculation is correct if duration is less than 292 years.
-        Duration time = Duration.ofNanos(from.until(to, ChronoUnit.NANOS));
-
-        if (inputCharset == null || outputCharset == null) {
-            return new BoltProgramOutput(new String[] {""}, time, error);
+        final var blank = new String[] {""};
+        if (inputCharset == null) {
+            RunnerException error = new RunnerException("bolt.runner.input.charset.null");
+            return new BoltProgramOutput(blank, Duration.ZERO, error);
+        }
+        if (outputCharset == null) {
+            RunnerException error = new RunnerException("bolt.runner.output.charset.null");
+            return new BoltProgramOutput(blank, Duration.ZERO, error);
+        }
+        if (loadError != null) {
+            return new BoltProgramOutput(blank, Duration.ZERO, loadError);
         }
 
-        final byte[] data = outputStream.toByteArray();
-        final String[] output = readArray(() -> new BoltReader(data, outputCharset));
-        return new BoltProgramOutput(output, time, error);
+        try (InputStream inputStream = streamSupplier.get()) {
+            if (inputStream == null) {
+                RunnerException error = new RunnerException("bolt.runner.load.input.input.stream.null");
+                return new BoltProgramOutput(blank, Duration.ZERO, error);
+            }
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            // Call the executor.
+            Instant from = Instant.now();
+            Exception error = executor.execute(arguments, inputCharset, inputStream, outputCharset, outputStream);
+            Instant to = Instant.now();
+
+            // Execution duration calculation is correct if duration is less than 292 years.
+            Duration time = Duration.ofNanos(from.until(to, ChronoUnit.NANOS));
+
+            final byte[] data = outputStream.toByteArray();
+            final String[] output = readArray(() -> new BoltReader(data, outputCharset));
+            return new BoltProgramOutput(output, time, error);
+        }
+        catch (Exception e) {
+            return new BoltProgramOutput(blank, Duration.ZERO, e);
+        }
     }
 
 }

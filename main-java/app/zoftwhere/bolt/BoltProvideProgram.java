@@ -23,9 +23,11 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
 
     private final String[] argumentArray;
 
-    private final BoltProgramExecutor executor;
-
     private final Charset outputCharset;
+
+    private final BoltExecutor executor;
+
+    private final RunnerException error;
 
     /**
      * Constructor for {@link Runner} program first interface implementation.
@@ -34,35 +36,25 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
      */
     BoltProvideProgram() {
         argumentArray = null;
-        executor = (arguments, inputCharset, streamSupplier, outputCharset, outputStream) -> null;
+        executor = (arguments, inputCharset, inputStream, outputCharset, outputStream) -> null;
         outputCharset = UTF_8;
+        error = null;
     }
 
     /**
      * Private constructor for the multi-interfaced class.
      *
-     * @param outputCharset character encoding of program output
-     * @param executor      program executor interface
-     * @since 6.0.0
+     * @param arguments program argument array
+     * @param charset   character encoding of program output
+     * @param executor  program executor interface
+     * @param error     execution error
+     * @since 9.0.0
      */
-    private BoltProvideProgram(Charset outputCharset, BoltProgramExecutor executor) {
-        this.outputCharset = outputCharset;
+    private BoltProvideProgram(String[] arguments, Charset charset, BoltExecutor executor, RunnerException error) {
+        this.argumentArray = arguments;
+        this.outputCharset = charset;
         this.executor = executor;
-        this.argumentArray = null;
-    }
-
-    /**
-     * Private constructor for the multi-interfaced class.
-     *
-     * @param outputCharset character encoding of program output
-     * @param executor      program executor interface
-     * @param argumentArray program argument
-     * @since 6.0.0
-     */
-    private BoltProvideProgram(Charset outputCharset, BoltProgramExecutor executor, String[] argumentArray) {
-        this.outputCharset = outputCharset;
-        this.executor = executor;
-        this.argumentArray = argumentArray;
+        this.error = error;
     }
 
     @Override
@@ -111,22 +103,30 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
 
     @Override
     public RunnerProgram argument(String... arguments) {
-        return new BoltProvideProgram(outputCharset, executor, emptyOnNull(arguments));
+        return new BoltProvideProgram(emptyOnNull(arguments), outputCharset, executor, error);
     }
 
     @Override
     public RunnerProgramOutput input(String... input) {
-        return executeProgram(UTF_8, newInputStreamSupplier(input));
+        for (String item : emptyOnNull(input)) {
+            if (item == null) {
+                RunnerException error = new RunnerException("bolt.runner.variable.array.input.has.null");
+                return buildProgramOutput(argumentArray, UTF_8, () -> null, outputCharset, executor, error);
+            }
+        }
+
+        InputStreamSupplier supplier = newInputStreamSupplier(input);
+        return buildProgramOutput(argumentArray, UTF_8, supplier, outputCharset, executor, error);
     }
 
     @Override
     public RunnerProgramOutput input(InputStreamSupplier supplier) {
-        return executeProgram(UTF_8, supplier);
+        return buildProgramOutput(argumentArray, UTF_8, supplier, outputCharset, executor, error);
     }
 
     @Override
     public RunnerProgramOutput input(InputStreamSupplier supplier, Charset charset) {
-        return executeProgram(charset, supplier);
+        return buildProgramOutput(argumentArray, charset, supplier, outputCharset, executor, error);
     }
 
     @Override
@@ -137,40 +137,34 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
     @Override
     public RunnerProgramOutput loadInput(String resourceName, Class<?> withClass, Charset charset) {
         if (resourceName == null) {
-            return executeProgram(charset, () -> {
-                throw new RunnerException("bolt.runner.load.input.resource.name.null");
-            });
+            RunnerException error = new RunnerException("bolt.runner.load.input.resource.name.null");
+            return buildProgramOutput(argumentArray, charset, () -> null, outputCharset, executor, error);
         }
         if (withClass == null) {
-            return executeProgram(charset, () -> {
-                throw new RunnerException("bolt.runner.load.input.resource.class.null");
-            });
+            RunnerException error = new RunnerException("bolt.runner.load.input.resource.class.null");
+            return buildProgramOutput(argumentArray, charset, () -> null, outputCharset, executor, error);
         }
         if (withClass.getResource(resourceName) == null) {
-            return executeProgram(charset, () -> {
-                throw new RunnerException("bolt.runner.load.input.resource.not.found");
-            });
+            RunnerException error = new RunnerException("bolt.runner.load.input.resource.not.found");
+            return buildProgramOutput(argumentArray, charset, () -> null, outputCharset, executor, error);
         }
 
-        return executeProgram(charset, () -> withClass.getResourceAsStream(resourceName));
+        InputStreamSupplier supplier = () -> withClass.getResourceAsStream(resourceName);
+        return buildProgramOutput(argumentArray, charset, supplier, outputCharset, executor, error);
     }
 
     private BoltProvideProgram buildStandard(Charset charset, RunStandardArgued program) {
-        BoltProgramExecutor executor = (arguments, inputCharset, supplier, outputCharset, outputStream) -> //
-            executeStandardArgued(arguments, inputCharset, supplier, outputCharset, outputStream, program);
+        BoltExecutor executor = (arguments, inputCharset, inputStream, outputCharset, outputStream) -> //
+            callStandardArgued(arguments, inputCharset, inputStream, outputCharset, outputStream, program);
 
-        return new BoltProvideProgram(charset, executor);
+        return new BoltProvideProgram(argumentArray, charset, executor, error);
     }
 
     private BoltProvideProgram buildConsole(Charset charset, RunConsoleArgued program) {
-        BoltProgramExecutor executor = (arguments, inputCharset, supplier, outputCharset, outputStream) -> //
-            executeConsoleArgued(arguments, inputCharset, supplier, outputCharset, outputStream, program);
+        BoltExecutor executor = (arguments, inputCharset, inputStream, outputCharset, outputStream) -> //
+            callConsoleArgued(arguments, inputCharset, inputStream, outputCharset, outputStream, program);
 
-        return new BoltProvideProgram(charset, executor);
-    }
-
-    private BoltProgramOutput executeProgram(Charset inputCharset, InputStreamSupplier streamSupplier) {
-        return buildProgramOutput(argumentArray, inputCharset, streamSupplier, outputCharset, executor);
+        return new BoltProvideProgram(argumentArray, charset, executor, error);
     }
 
 }
