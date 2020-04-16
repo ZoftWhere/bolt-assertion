@@ -170,7 +170,12 @@ class BoltReaderTest {
             });
             fail();
         }
-        catch (Exception ignore) { }
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertEquals("bolt.runner.reader.read.array", e.getMessage());
+            assertClass(UncheckedIOException.class, e.getCause());
+            assertEquals("java.io.IOException: Fake IO Exception.", e.getCause().getMessage());
+        }
     }
 
     @Test
@@ -186,7 +191,12 @@ class BoltReaderTest {
             });
             fail();
         }
-        catch (Exception ignore) { }
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertEquals("bolt.runner.reader.read.list", e.getMessage());
+            assertClass(UncheckedIOException.class, e.getCause());
+            assertEquals("java.io.IOException: Fake IO Exception.", e.getCause().getMessage());
+        }
     }
 
     @Test

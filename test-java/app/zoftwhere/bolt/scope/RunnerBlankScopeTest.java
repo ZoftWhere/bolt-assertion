@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.time.Duration;
 import java.util.Comparator;
 
-import app.zoftwhere.bolt.BoltTestHelper;
 import app.zoftwhere.bolt.Runner;
 import app.zoftwhere.bolt.RunnerException;
 import app.zoftwhere.bolt.api.RunnerAsserter;
@@ -21,6 +20,7 @@ import app.zoftwhere.bolt.api.RunnerProvideProgram;
 import app.zoftwhere.bolt.api.RunnerResult;
 import org.junit.jupiter.api.Test;
 
+import static app.zoftwhere.bolt.BoltTestHelper.assertClass;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -51,9 +51,9 @@ class RunnerBlankScopeTest {
 
     private void testProgramFirst(RunnerProvideProgram runner) {
         testProgramInput(runner.run((scanner, out) -> {}));
-        testProgramInput(runner.run(UTF_8, ((scanner, out) -> {})));
-        testProgramInput(runner.runConsole(((inputStream, outputStream) -> {})));
-        testProgramInput(runner.runConsole(UTF_8, ((inputStream, outputStream) -> {})));
+        testProgramInput(runner.run(UTF_8, (scanner, out) -> {}));
+        testProgramInput(runner.runConsole((inputStream, outputStream) -> {}));
+        testProgramInput(runner.runConsole(UTF_8, (inputStream, outputStream) -> {}));
 
         testProgramArgument(runner.run((arguments, scanner, out) -> {}));
         testProgramArgument(runner.run(UTF_8, (arguments, scanner, out) -> {}));
@@ -143,14 +143,14 @@ class RunnerBlankScopeTest {
             fail("exception.expected");
         }
         catch (Exception e) {
-            BoltTestHelper.assertClass(RunnerException.class, e);
+            assertClass(RunnerException.class, e);
         }
         try {
             asserter.assertError();
             fail("exception.expected");
         }
         catch (Exception e) {
-            BoltTestHelper.assertClass(RunnerException.class, e);
+            assertClass(RunnerException.class, e);
         }
 
         asserter.assertCheck(this::testResult);

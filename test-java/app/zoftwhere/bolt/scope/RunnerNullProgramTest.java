@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 class RunnerNullProgramTest {
 
-    private static Runner runner = newRunner();
+    private final Runner runner = newRunner();
 
     private final String[] emptyArray = new String[] { };
 

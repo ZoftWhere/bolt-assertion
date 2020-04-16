@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.time.Duration;
+import java.util.Comparator;
 import java.util.function.Consumer;
 
 import app.zoftwhere.bolt.api.RunnerAsserter;
@@ -30,7 +31,7 @@ class BoltProgramOutputTest {
     private final Duration instant = Duration.ZERO;
 
     @Test
-    void testLoadComparator() {
+    void testLoadNullComparator() {
         var output = new BoltProgramOutput(new String[] {""}, instant, null);
         var test = output.comparator(null);
         assertClass(BoltProgramOutput.class, test);
@@ -40,6 +41,45 @@ class BoltProgramOutputTest {
         var errorReason = "bolt.runner.expectation.comparator.null";
         assertEquals(errorReason, exception.getMessage());
         assertNull(exception.getCause());
+    }
+
+    @Test
+    void testComparatorMatch() {
+        var output = new String[] {"one", "two"};
+        var result = new BoltProgramOutput(output, instant, null)
+            .comparator(Comparator.nullsFirst(Comparator.naturalOrder()))
+            .expected(output)
+            .result();
+        var message = result.message().orElse(null);
+        var exception = result.error().orElse(null);
+        assertNull(message);
+        assertNull(exception);
+    }
+
+    @Test
+    void testComparatorLengthMismatch() {
+        var output = new String[] {"one", "two"};
+        var result = new BoltProgramOutput(output, instant, null)
+            .comparator(Comparator.nullsFirst(Comparator.naturalOrder()))
+            .expected("")
+            .result();
+        var message = result.message().orElse(null);
+        var exception = result.error().orElse(null);
+        assertEquals("bolt.runner.asserter.output.length.mismatch", message);
+        assertNull(exception);
+    }
+
+    @Test
+    void testComparatorDataMismatch() {
+        var output = new String[] {"one", "two"};
+        var result = new BoltProgramOutput(output, instant, null)
+            .comparator(Comparator.nullsFirst(Comparator.naturalOrder()))
+            .expected("", "")
+            .result();
+        var message = result.message().orElse(null);
+        var exception = result.error().orElse(null);
+        assertEquals("bolt.runner.asserter.output.data.mismatch", message);
+        assertNull(exception);
     }
 
     @Test
