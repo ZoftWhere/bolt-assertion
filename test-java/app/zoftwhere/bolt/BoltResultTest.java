@@ -145,4 +145,100 @@ class BoltResultTest {
         }
     }
 
+    @Test
+    void testSuccessOutputArrayCopy() {
+        // The constructor caller takes responsibility for input arrays.
+        final var output = new String[] {"index0", "index1", "index2"};
+        final var expected = new String[] {""};
+        final var result = new BoltResult(output, expected, Duration.ZERO);
+        output[0] = "changed0";
+        final var copy1 = result.output();
+        copy1[1] = "changed1";
+        output[2] = "changed2";
+        final var copy2 = result.output();
+        assertArrayEquals(output, new String[] {"changed0", "index1", "changed2"});
+        assertArrayEquals(copy1, new String[] {"changed0", "changed1", "index2"});
+        assertArrayEquals(copy2, new String[] {"changed0", "index1", "changed2"});
+    }
+
+    @Test
+    void testFailureOutputArrayCopy() {
+        // The constructor caller takes responsibility for input arrays.
+        final var output = new String[] {"index0", "index1", "index2"};
+        final var expected = new String[] {""};
+        final var result = new BoltResult(output, expected, Duration.ZERO, -1, "");
+        output[0] = "changed0";
+        final var copy1 = result.output();
+        copy1[1] = "changed1";
+        output[2] = "changed2";
+        final var copy2 = result.output();
+        assertArrayEquals(output, new String[] {"changed0", "index1", "changed2"});
+        assertArrayEquals(copy1, new String[] {"changed0", "changed1", "index2"});
+        assertArrayEquals(copy2, new String[] {"changed0", "index1", "changed2"});
+    }
+
+    @Test
+    void testErrorOutputArrayCopy() {
+        // The constructor caller takes responsibility for input arrays.
+        final var output = new String[] {"index0", "index1", "index2"};
+        final var expected = new String[] {""};
+        final var result = new BoltResult(output, expected, Duration.ZERO, new Exception());
+        output[0] = "changed0";
+        final var copy1 = result.output();
+        copy1[1] = "changed1";
+        output[2] = "changed2";
+        final var copy2 = result.output();
+        assertArrayEquals(output, new String[] {"changed0", "index1", "changed2"});
+        assertArrayEquals(copy1, new String[] {"changed0", "changed1", "index2"});
+        assertArrayEquals(copy2, new String[] {"changed0", "index1", "changed2"});
+    }
+
+    @Test
+    void testSuccessExpectedArrayCopy() {
+        // The constructor caller takes responsibility for input arrays.
+        final var output = new String[] {""};
+        final var expected = new String[] {"index0", "index1", "index2"};
+        final var result = new BoltResult(output, expected, Duration.ZERO);
+        expected[0] = "changed0";
+        final var copy1 = result.expected();
+        copy1[1] = "changed1";
+        expected[2] = "changed2";
+        final var copy2 = result.expected();
+        assertArrayEquals(expected, new String[] {"changed0", "index1", "changed2"});
+        assertArrayEquals(copy1, new String[] {"changed0", "changed1", "index2"});
+        assertArrayEquals(copy2, new String[] {"changed0", "index1", "changed2"});
+    }
+
+    @Test
+    void testFailureExpectedArrayCopy() {
+        // The constructor caller takes responsibility for input arrays.
+        final var output = new String[] {""};
+        final var expected = new String[] {"index0", "index1", "index2"};
+        final var result = new BoltResult(output, expected, Duration.ZERO, -1, "");
+        expected[0] = "changed0";
+        final var copy1 = result.expected();
+        copy1[1] = "changed1";
+        expected[2] = "changed2";
+        final var copy2 = result.expected();
+        assertArrayEquals(expected, new String[] {"changed0", "index1", "changed2"});
+        assertArrayEquals(copy1, new String[] {"changed0", "changed1", "index2"});
+        assertArrayEquals(copy2, new String[] {"changed0", "index1", "changed2"});
+    }
+
+    @Test
+    void testErrorExpectedArrayCopy() {
+        // The constructor caller takes responsibility for input arrays.
+        final var output = new String[] {""};
+        final var expected = new String[] {"index0", "index1", "index2"};
+        final var result = new BoltResult(output, expected, Duration.ZERO, new Exception());
+        expected[0] = "changed0";
+        final var copy1 = result.expected();
+        copy1[1] = "changed1";
+        expected[2] = "changed2";
+        final var copy2 = result.expected();
+        assertArrayEquals(expected, new String[] {"changed0", "index1", "changed2"});
+        assertArrayEquals(copy1, new String[] {"changed0", "changed1", "index2"});
+        assertArrayEquals(copy2, new String[] {"changed0", "index1", "changed2"});
+    }
+
 }
