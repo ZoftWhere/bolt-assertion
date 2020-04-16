@@ -77,44 +77,6 @@ interface BoltProvide {
         return new PrintStream(outputStream, false, charset.name());
     }
 
-    default Exception callStandardArgued(
-        String[] arguments,
-        Charset inCharset,
-        InputStream inputStream,
-        Charset outCharset,
-        OutputStream outputStream,
-        RunStandardArgued program
-    )
-    {
-        try (Scanner scanner = newScanner(inputStream, inCharset)) {
-            try (PrintStream out = newPrintStream(outputStream, outCharset)) {
-                program.call(arguments, scanner, out);
-            }
-        }
-        catch (Exception e) {
-            return e;
-        }
-        return null;
-    }
-
-    default Exception callConsoleArgued(
-        String[] arguments,
-        Charset inCharset,
-        InputStream inputStream,
-        Charset outCharset,
-        OutputStream outputStream,
-        RunConsoleArgued program
-    )
-    {
-        try (InputStream stream = newInputStream(inputStream, inCharset, outCharset)) {
-            program.call(arguments, stream, outputStream);
-        }
-        catch (Exception e) {
-            return e;
-        }
-        return null;
-    }
-
     /**
      * Create a scanner-printer program proxy.
      *
