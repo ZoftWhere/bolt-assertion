@@ -59,46 +59,50 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
 
     @Override
     public RunnerProgram run(RunStandard program) {
-        return buildStandard(UTF_8, (arguments, scanner, out) -> //
-            program.call(scanner, out));
+        BoltExecutor executor = buildStandardExecutor(proxyRunStandard(program));
+        return new BoltProvideProgram(argumentArray, UTF_8, executor, error);
     }
 
     @Override
     public RunnerProgram run(Charset charset, RunStandard program) {
-        return buildStandard(charset, (arguments, scanner, out) -> //
-            program.call(scanner, out));
+        BoltExecutor executor = buildStandardExecutor(proxyRunStandard(program));
+        return new BoltProvideProgram(argumentArray, charset, executor, error);
     }
 
     @Override
     public RunnerProgram runConsole(RunConsole program) {
-        return buildConsole(UTF_8, (arguments, inputStream, outputStream) -> //
-            program.call(inputStream, outputStream));
+        BoltExecutor executor = buildConsoleExecutor(proxyRunConsole(program));
+        return new BoltProvideProgram(argumentArray, UTF_8, executor, error);
     }
 
     @Override
     public RunnerProgram runConsole(Charset charset, RunConsole program) {
-        return buildConsole(charset, (arguments, inputStream, outputStream) -> //
-            program.call(inputStream, outputStream));
+        BoltExecutor executor = buildConsoleExecutor(proxyRunConsole(program));
+        return new BoltProvideProgram(argumentArray, charset, executor, error);
     }
 
     @Override
     public RunnerPreProgram run(RunStandardArgued program) {
-        return buildStandard(UTF_8, program);
+        BoltExecutor executor = buildStandardExecutor(program);
+        return new BoltProvideProgram(argumentArray, UTF_8, executor, error);
     }
 
     @Override
     public RunnerPreProgram run(Charset charset, RunStandardArgued program) {
-        return buildStandard(charset, program);
+        BoltExecutor executor = buildStandardExecutor(program);
+        return new BoltProvideProgram(argumentArray, charset, executor, error);
     }
 
     @Override
     public RunnerPreProgram runConsole(RunConsoleArgued program) {
-        return buildConsole(UTF_8, program);
+        BoltExecutor executor = buildConsoleExecutor(program);
+        return new BoltProvideProgram(argumentArray, UTF_8, executor, error);
     }
 
     @Override
     public RunnerPreProgram runConsole(Charset charset, RunConsoleArgued program) {
-        return buildConsole(charset, program);
+        BoltExecutor executor = buildConsoleExecutor(program);
+        return new BoltProvideProgram(argumentArray, charset, executor, error);
     }
 
     @Override
@@ -151,20 +155,6 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
 
         InputStreamSupplier supplier = () -> withClass.getResourceAsStream(resourceName);
         return buildProgramOutput(argumentArray, charset, supplier, outputCharset, executor, error);
-    }
-
-    private BoltProvideProgram buildStandard(Charset charset, RunStandardArgued program) {
-        BoltExecutor executor = (arguments, inputCharset, inputStream, outputCharset, outputStream) -> //
-            callStandardArgued(arguments, inputCharset, inputStream, outputCharset, outputStream, program);
-
-        return new BoltProvideProgram(argumentArray, charset, executor, error);
-    }
-
-    private BoltProvideProgram buildConsole(Charset charset, RunConsoleArgued program) {
-        BoltExecutor executor = (arguments, inputCharset, inputStream, outputCharset, outputStream) -> //
-            callConsoleArgued(arguments, inputCharset, inputStream, outputCharset, outputStream, program);
-
-        return new BoltProvideProgram(argumentArray, charset, executor, error);
     }
 
 }
