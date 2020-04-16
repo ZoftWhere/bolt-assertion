@@ -5,7 +5,7 @@
 
     <groupId>app.zoftwhere.bolt</groupId>
     <artifactId>bolt-assertion</artifactId>
-    <version>9.0.1</version>
+    <version>10.0.0-SNAPSHOT</version>
     <organization>
         <name>ZoftWhere</name>
         <url>https://www.zoftwhere.app</url>
