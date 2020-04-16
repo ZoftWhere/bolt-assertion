@@ -6,6 +6,7 @@ import app.zoftwhere.bolt.Runner;
 import app.zoftwhere.bolt.api.RunnerInterface.RunConsoleArgued;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings({"RedundantThrows", "RedundantSuppression"})
 class ConsoleOutputExampleTest {
 
     private final Runner runner = new Runner();
