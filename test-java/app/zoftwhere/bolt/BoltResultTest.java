@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-class BoltProgramResultTest {
+class BoltResultTest {
 
     private final String[] emptyArray = new String[] { };
     private final String[] blankArray = new String[] {""};

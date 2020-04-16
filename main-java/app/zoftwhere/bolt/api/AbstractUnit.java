@@ -76,16 +76,6 @@ abstract class AbstractUnit {
         Duration executionDuration();
 
         Optional<Exception> error();
-
-        /**
-         * <p>use {@link #error()} instead</p>
-         *
-         * @return {@link Optional}{@link Exception} of execution error
-         */
-        @Deprecated
-        default Optional<Exception> exception() {
-            return error();
-        }
     }
 
     @SuppressWarnings("unused")
@@ -109,14 +99,6 @@ abstract class AbstractUnit {
 
         void assertFailure();
 
-        /**
-         * <p>use {@link #assertError()} instead</p>
-         */
-        @Deprecated
-        default void assertException() {
-            assertError();
-        }
-
         void assertError();
 
         void assertCheck(RunnerResultConsumer consumer);
@@ -135,16 +117,6 @@ abstract class AbstractUnit {
 
         boolean isError();
 
-        /**
-         * <p>use {@link #isError()} instead</p>
-         *
-         * @return {@code true} for error state, {@code false} otherwise
-         */
-        @Deprecated
-        default boolean isException() {
-            return isError();
-        }
-
         String[] output();
 
         String[] expected();
@@ -154,16 +126,6 @@ abstract class AbstractUnit {
         int offendingIndex();
 
         Optional<String> message();
-
-        /**
-         * <p>use {@link #error()} instead</p>
-         *
-         * @return {@link Optional}{@link Exception} of execution error
-         */
-        @Deprecated
-        default Optional<Exception> exception() {
-            return error();
-        }
 
         Optional<Exception> error();
     }

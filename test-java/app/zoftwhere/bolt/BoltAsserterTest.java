@@ -113,7 +113,6 @@ class BoltAsserterTest {
         final var asserter = new BoltAsserter(result);
 
         asserter.assertError();
-        asserter.assertException();
 
         assertFalse(result.isSuccess());
         assertFalse(result.isFailure());
