@@ -316,6 +316,21 @@ class BoltProgramOutputTest {
         }
     }
 
+    @Test
+    void testOutputArrayCopy() {
+        // The constructor caller takes responsibility for input arrays.
+        final var output = new String[] {"index0", "index1", "index2"};
+        final var programOutput = new BoltProgramOutput(output, instant, null);
+        output[0] = "changed0";
+        final var copy1 = programOutput.output();
+        copy1[1] = "changed1";
+        output[2] = "changed2";
+        final var copy2 = programOutput.output();
+        assertArrayEquals(output, new String[] {"changed0", "index1", "changed2"});
+        assertArrayEquals(copy1, new String[] {"changed0", "changed1", "index2"});
+        assertArrayEquals(copy2, new String[] {"changed0", "index1", "changed2"});
+    }
+
     private InputStreamSupplier forStringArray(String[] input, Charset charset) {
         return () -> {
             try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
