@@ -8,7 +8,10 @@ import java.util.Comparator;
 import app.zoftwhere.bolt.Runner;
 import app.zoftwhere.bolt.RunnerException;
 import app.zoftwhere.bolt.api.RunnerAsserter;
-import app.zoftwhere.bolt.api.RunnerInterface;
+import app.zoftwhere.bolt.api.RunnerInterface.RunConsole;
+import app.zoftwhere.bolt.api.RunnerInterface.RunConsoleArgued;
+import app.zoftwhere.bolt.api.RunnerInterface.RunStandard;
+import app.zoftwhere.bolt.api.RunnerInterface.RunStandardArgued;
 import app.zoftwhere.bolt.api.RunnerLoader;
 import app.zoftwhere.bolt.api.RunnerPreProgram;
 import app.zoftwhere.bolt.api.RunnerPreTest;
@@ -21,6 +24,7 @@ import app.zoftwhere.bolt.api.RunnerResult;
 import org.junit.jupiter.api.Test;
 
 import static app.zoftwhere.bolt.BoltTestHelper.assertClass;
+import static app.zoftwhere.bolt.Runner.newRunner;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -29,36 +33,34 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-class RunnerBlankScopeTest {
+class RunnerNullProgramTest {
+
+    private final Runner runner = newRunner();
 
     private final String[] emptyArray = new String[] { };
 
     private final String[] blankArray = new String[] {""};
 
     @Test
-    void testRunner() {
-        final RunnerInterface runner = new Runner();
+    void testProvideProgram() {
         testProgramFirst(runner);
-        testInputFirst(runner);
     }
 
     @Test
-    void testProxy() {
-        final RunnerInterface proxy = new RunnerProxy();
-        testProgramFirst(proxy);
-        testInputFirst(proxy);
+    void testProvideInput() {
+        testInputFirst(runner);
     }
 
     private void testProgramFirst(RunnerProvideProgram runner) {
-        testProgramInput(runner.run((scanner, out) -> {}));
-        testProgramInput(runner.run(UTF_8, (scanner, out) -> {}));
-        testProgramInput(runner.runConsole((inputStream, outputStream) -> {}));
-        testProgramInput(runner.runConsole(UTF_8, (inputStream, outputStream) -> {}));
+        testProgramInput(runner.run((RunStandard) null));
+        testProgramInput(runner.run(UTF_8, (RunStandard) null));
+        testProgramInput(runner.runConsole((RunConsole) null));
+        testProgramInput(runner.runConsole(UTF_8, (RunConsole) null));
 
-        testProgramArgument(runner.run((arguments, scanner, out) -> {}));
-        testProgramArgument(runner.run(UTF_8, (arguments, scanner, out) -> {}));
-        testProgramArgument(runner.runConsole((arguments, inputStream, outputStream) -> {}));
-        testProgramArgument(runner.runConsole(UTF_8, (arguments, inputStream, outputStream) -> {}));
+        testProgramArgument(runner.run((RunStandardArgued) null));
+        testProgramArgument(runner.run(UTF_8, (RunStandardArgued) null));
+        testProgramArgument(runner.runConsole((RunConsoleArgued) null));
+        testProgramArgument(runner.runConsole(UTF_8, (RunConsoleArgued) null));
     }
 
     private void testProgramArgument(RunnerPreProgram preProgram) {
@@ -93,10 +95,10 @@ class RunnerBlankScopeTest {
         testProgramThree(programInput.argument(emptyArray));
         testProgramThree(programInput.argument(blankArray));
 
-        testProgramTwo(programInput.run((scanner, out) -> {}));
-        testProgramTwo(programInput.run(UTF_8, (scanner, out) -> {}));
-        testProgramTwo(programInput.runConsole((inputStream, outputStream) -> {}));
-        testProgramTwo(programInput.runConsole(UTF_8, (inputStream, outputStream) -> {}));
+        testProgramTwo(programInput.run(null));
+        testProgramTwo(programInput.run(UTF_8, null));
+        testProgramTwo(programInput.runConsole(null));
+        testProgramTwo(programInput.runConsole(UTF_8, null));
     }
 
     private void testProgramTwo(RunnerProgramOutput programOutput) {
@@ -104,10 +106,10 @@ class RunnerBlankScopeTest {
     }
 
     private void testProgramThree(RunnerLoader loader) {
-        testOptionalComparator(loader.run((arguments, scanner, out) -> {}));
-        testOptionalComparator(loader.run(UTF_8, (arguments, scanner, out) -> {}));
-        testOptionalComparator(loader.runConsole((arguments, inputStream, outputStream) -> {}));
-        testOptionalComparator(loader.runConsole(UTF_8, (arguments, inputStream, outputStream) -> {}));
+        testOptionalComparator(loader.run(null));
+        testOptionalComparator(loader.run(UTF_8, null));
+        testOptionalComparator(loader.runConsole(null));
+        testOptionalComparator(loader.runConsole(UTF_8, null));
     }
 
     private void testOptionalComparator(RunnerProgramOutput programOutput) {
@@ -122,7 +124,7 @@ class RunnerBlankScopeTest {
         Exception error = preTest.error().orElse(null);
         assertNotNull(output);
         assertNotNull(duration);
-        assertNull(error);
+        assertNotNull(error);
         assertEquals(1, output.length);
         assertEquals("", output[0]);
 
@@ -137,31 +139,39 @@ class RunnerBlankScopeTest {
     }
 
     private void testAsserter(RunnerAsserter asserter) {
-        asserter.assertSuccess();
+        asserter.assertError();
+        try {
+            asserter.assertSuccess();
+            fail("exception.expected");
+        }
+        catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertEquals("bolt.runner.asserter.error.found", e.getMessage());
+        }
         try {
             asserter.assertFailure();
             fail("exception.expected");
         }
         catch (Exception e) {
             assertClass(RunnerException.class, e);
-        }
-        try {
-            asserter.assertError();
-            fail("exception.expected");
-        }
-        catch (Exception e) {
-            assertClass(RunnerException.class, e);
+            assertEquals("bolt.runner.asserter.error.found", e.getMessage());
         }
 
         asserter.assertCheck(this::testResult);
+        asserter.onOffence(result -> {
+            Exception exception = result.error().orElse(null);
+            assertNotNull(exception);
+            assertNull(exception.getCause());
+            assertClass(RunnerException.class, exception);
+        });
     }
 
     private void testResult(RunnerResult result) {
-        assertTrue(result.isSuccess());
+        assertFalse(result.isSuccess());
         assertFalse(result.isFailure());
         assertFalse(result.message().isPresent());
-        assertFalse(result.isError());
-        assertFalse(result.error().isPresent());
+        assertTrue(result.isError());
+        assertTrue(result.error().isPresent());
 
         assertNotNull(result.output());
         assertNotNull(result.expected());

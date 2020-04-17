@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.time.Duration;
+import java.util.Comparator;
 import java.util.function.Consumer;
 
 import app.zoftwhere.bolt.api.RunnerAsserter;
@@ -30,7 +31,7 @@ class BoltProgramOutputTest {
     private final Duration instant = Duration.ZERO;
 
     @Test
-    void testLoadComparator() {
+    void testLoadNullComparator() {
         var output = new BoltProgramOutput(new String[] {""}, instant, null);
         var test = output.comparator(null);
         assertClass(BoltProgramOutput.class, test);
@@ -40,6 +41,45 @@ class BoltProgramOutputTest {
         var errorReason = "bolt.runner.expectation.comparator.null";
         assertEquals(errorReason, exception.getMessage());
         assertNull(exception.getCause());
+    }
+
+    @Test
+    void testComparatorMatch() {
+        var output = new String[] {"one", "two"};
+        var result = new BoltProgramOutput(output, instant, null)
+            .comparator(Comparator.nullsFirst(Comparator.naturalOrder()))
+            .expected(output)
+            .result();
+        var message = result.message().orElse(null);
+        var exception = result.error().orElse(null);
+        assertNull(message);
+        assertNull(exception);
+    }
+
+    @Test
+    void testComparatorLengthMismatch() {
+        var output = new String[] {"one", "two"};
+        var result = new BoltProgramOutput(output, instant, null)
+            .comparator(Comparator.nullsFirst(Comparator.naturalOrder()))
+            .expected("")
+            .result();
+        var message = result.message().orElse(null);
+        var exception = result.error().orElse(null);
+        assertEquals("bolt.runner.asserter.output.length.mismatch", message);
+        assertNull(exception);
+    }
+
+    @Test
+    void testComparatorDataMismatch() {
+        var output = new String[] {"one", "two"};
+        var result = new BoltProgramOutput(output, instant, null)
+            .comparator(Comparator.nullsFirst(Comparator.naturalOrder()))
+            .expected("", "")
+            .result();
+        var message = result.message().orElse(null);
+        var exception = result.error().orElse(null);
+        assertEquals("bolt.runner.asserter.output.data.mismatch", message);
+        assertNull(exception);
     }
 
     @Test
@@ -314,6 +354,21 @@ class BoltProgramOutputTest {
             }
             check.accept(result);
         }
+    }
+
+    @Test
+    void testOutputArrayCopy() {
+        // The constructor caller takes responsibility for input arrays.
+        final var output = new String[] {"index0", "index1", "index2"};
+        final var programOutput = new BoltProgramOutput(output, instant, null);
+        output[0] = "changed0";
+        final var copy1 = programOutput.output();
+        copy1[1] = "changed1";
+        output[2] = "changed2";
+        final var copy2 = programOutput.output();
+        assertArrayEquals(output, new String[] {"changed0", "index1", "changed2"});
+        assertArrayEquals(copy1, new String[] {"changed0", "changed1", "index2"});
+        assertArrayEquals(copy2, new String[] {"changed0", "index1", "changed2"});
     }
 
     private InputStreamSupplier forStringArray(String[] input, Charset charset) {

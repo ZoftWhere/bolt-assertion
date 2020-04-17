@@ -64,6 +64,26 @@ class BoltAsserterTest {
             assertEquals("bolt.runner.asserter.success.found", e.getMessage());
             assertNull(e.getCause());
         }
+
+        try {
+            asserter.assertCheck(runnerResult -> {
+                assertTrue(runnerResult.isSuccess());
+                assertFalse(runnerResult.isFailure());
+                assertFalse(runnerResult.isError());
+                assertNull(runnerResult.message().orElse(null));
+                assertNull(runnerResult.error().orElse(null));
+                throw new Exception("bolt.asserter.assert.check.test");
+            });
+        } catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertEquals("bolt.runner.assert.check", e.getMessage());
+            assertClass(Exception.class, e.getCause());
+            assertEquals("bolt.asserter.assert.check.test", e.getCause().getMessage());
+        }
+
+        asserter.onOffence(runnerResult -> {
+            throw new RunnerException("bolt.runner.asserter.fall.through.expected");
+        });
     }
 
     @Test
@@ -101,6 +121,33 @@ class BoltAsserterTest {
             assertEquals(customMessage, e.getMessage());
             assertNull(e.getCause());
         }
+
+        try {
+            asserter.assertCheck(runnerResult -> {
+                assertFalse(runnerResult.isSuccess());
+                assertTrue(runnerResult.isFailure());
+                assertFalse(runnerResult.isError());
+                assertNotNull(runnerResult.message().orElse(null));
+                assertNull(runnerResult.error().orElse(null));
+                throw new Exception("bolt.asserter.assert.check.test");
+            });
+        } catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertEquals("bolt.runner.assert.check", e.getMessage());
+            assertClass(Exception.class, e.getCause());
+            assertEquals("bolt.asserter.assert.check.test", e.getCause().getMessage());
+        }
+
+        try {
+            asserter.onOffence(runnerResult -> {
+                throw new Exception("bolt.asserter.on.offence.test");
+            });
+        } catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertEquals("bolt.runner.on.offence", e.getMessage());
+            assertClass(Exception.class, e.getCause());
+            assertEquals("bolt.asserter.on.offence.test", e.getCause().getMessage());
+        }
     }
 
     @Test
@@ -113,7 +160,6 @@ class BoltAsserterTest {
         final var asserter = new BoltAsserter(result);
 
         asserter.assertError();
-        asserter.assertException();
 
         assertFalse(result.isSuccess());
         assertFalse(result.isFailure());
@@ -144,6 +190,33 @@ class BoltAsserterTest {
             assertClass(RunnerException.class, e);
             assertEquals("bolt.runner.asserter.error.found", e.getMessage());
             assertNull(e.getCause());
+        }
+
+        try {
+            asserter.assertCheck(runnerResult -> {
+                assertFalse(runnerResult.isSuccess());
+                assertFalse(runnerResult.isFailure());
+                assertTrue(runnerResult.isError());
+                assertNull(runnerResult.message().orElse(null));
+                assertNotNull(runnerResult.error().orElse(null));
+                throw new Exception("bolt.asserter.assert.check.test");
+            });
+        } catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertEquals("bolt.runner.assert.check", e.getMessage());
+            assertClass(Exception.class, e.getCause());
+            assertEquals("bolt.asserter.assert.check.test", e.getCause().getMessage());
+        }
+
+        try {
+            asserter.onOffence(runnerResult -> {
+                throw new Exception("bolt.asserter.on.offence.test");
+            });
+        } catch (Exception e) {
+            assertClass(RunnerException.class, e);
+            assertEquals("bolt.runner.on.offence", e.getMessage());
+            assertClass(Exception.class, e.getCause());
+            assertEquals("bolt.asserter.on.offence.test", e.getCause().getMessage());
         }
     }
 
