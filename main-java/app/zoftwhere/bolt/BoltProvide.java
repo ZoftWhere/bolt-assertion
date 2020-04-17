@@ -130,7 +130,7 @@ interface BoltProvide {
         BoltExecutor executor,
         Exception loadError)
     {
-        final var blank = new String[] {""};
+        final String[] blank = new String[] {""};
         if (inputCharset == null) {
             RunnerException error = new RunnerException("bolt.runner.input.charset.null");
             return new BoltProgramOutput(blank, Duration.ZERO, error);
