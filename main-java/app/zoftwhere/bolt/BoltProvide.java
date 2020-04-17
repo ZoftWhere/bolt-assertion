@@ -33,6 +33,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  */
 interface BoltProvide {
 
+    /** New line definition for parsing that allows execution to be system agnostic. */
+    String NEW_LINE = "\r\n";
+
     default String[] emptyOnNull(String[] value) {
         return value != null ? value : new String[0];
     }
@@ -47,7 +50,7 @@ interface BoltProvide {
                 try (OutputStreamWriter writer = new OutputStreamWriter(output, UTF_8)) {
                     writer.append(input[0]);
                     for (int i = 1, s = input.length; i < s; i++) {
-                        writer.append("\r\n");
+                        writer.append(NEW_LINE);
                         writer.append(input[i]);
                     }
                     writer.flush();

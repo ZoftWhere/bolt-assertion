@@ -21,6 +21,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 class DelugeData {
 
+    /** New line definition for parsing that allows testing to be system agnostic. */
+    private static final String NEW_LINE = "\r\n";
+
     private final DataType type;
 
     private final String[] array;
@@ -171,7 +174,7 @@ class DelugeData {
                         try (OutputStreamWriter writer = new OutputStreamWriter(output, charset)) {
                             writer.append(input[0]);
                             for (int i = 1, s = input.length; i < s; i++) {
-                                writer.append("\r\n");
+                                writer.append(NEW_LINE);
                                 writer.append(input[i]);
                             }
                             writer.flush();
