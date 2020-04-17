@@ -574,6 +574,17 @@
             <rule>
               <match>
                 <AND>
+                  <METHOD>true</METHOD>
+                  <PRIVATE>false</PRIVATE>
+                  <STATIC>true</STATIC>
+                </AND>
+              </match>
+            </rule>
+          </section>
+          <section>
+            <rule>
+              <match>
+                <AND>
                   <FIELD>true</FIELD>
                   <FINAL>true</FINAL>
                 </AND>
@@ -584,17 +595,6 @@
             <rule>
               <match>
                 <FIELD>true</FIELD>
-              </match>
-            </rule>
-          </section>
-          <section>
-            <rule>
-              <match>
-                <AND>
-                  <METHOD>true</METHOD>
-                  <PRIVATE>false</PRIVATE>
-                  <STATIC>true</STATIC>
-                </AND>
               </match>
             </rule>
           </section>
