@@ -2,6 +2,7 @@ package app.zoftwhere.bolt.deluge;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.Objects;
 import java.util.Scanner;
 
 /**
@@ -10,39 +11,13 @@ import java.util.Scanner;
  *
  * @since 7.1.0
  */
-class DelugeLineScanner implements AutoCloseable {
+public class DelugeLineScanner implements AutoCloseable {
 
     /** Underlying scanner instance. */
     private final Scanner scanner;
 
     /** Flag to signal if, when closing, the internal scanner instance should be auto-closed. */
     private final boolean autoClose;
-
-    /**
-     * Helper method for returning human-readable characters for select characters.
-     *
-     * @param input text to escape
-     * @return text with select characters replaced with human-readable versions.
-     * @since 7.1.0
-     */
-    static String escapeString(String input) {
-        StringBuilder builder = new StringBuilder();
-        input.codePoints().forEach(i -> {
-            if (i == '\ufeff') {
-                //noinspection SpellCheckingInspection
-                builder.append("\\ufeff");
-            }
-            else if (i == '\\') { builder.append("\\\\"); }
-            else if (i == '\r') { builder.append("\\r"); }
-            else if (i == '\n') { builder.append("\\n"); }
-            else if (i == '\t') { builder.append("\\t"); }
-            else if (i == '\u2028') { builder.append("\\u2028"); }
-            else if (i == '\u2029') { builder.append("\\u2029"); }
-            else if (i == '\u0085') { builder.append("\\u0085"); }
-            else { builder.appendCodePoint(i); }
-        });
-        return builder.toString();
-    }
 
     /**
      * <p>Constructor for use with a scanner instance.
@@ -67,6 +42,8 @@ class DelugeLineScanner implements AutoCloseable {
      * @param charset     character encoding of supplied {@link InputStream}
      */
     DelugeLineScanner(InputStream inputStream, Charset charset) {
+        Objects.requireNonNull(inputStream, "inputStream");
+        Objects.requireNonNull(charset, "charset");
         this.scanner = new Scanner(inputStream, charset.name());
         this.autoClose = true;
     }
@@ -79,7 +56,7 @@ class DelugeLineScanner implements AutoCloseable {
      * @return first line of the input
      * @since 7.1.0
      */
-    String firstLine() {
+    public String firstLine() {
         // Check Byte-Order-Mark and for empty first line.
         scanner.useDelimiter("");
         scanner.skip("\ufeff?");
@@ -97,11 +74,11 @@ class DelugeLineScanner implements AutoCloseable {
         return scanner.next();
     }
 
-    boolean hasNextLine() {
+    public boolean hasMore() {
         return scanner.hasNext() || scanner.hasNextLine();
     }
 
-    String nextLine() {
+    public String readLine() {
         if (scanner.hasNext()) {
             return scanner.next();
         }

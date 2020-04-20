@@ -1,49 +1,23 @@
 package app.zoftwhere.bolt.deluge;
 
-class DelugeResult {
+import java.time.Duration;
+
+public class DelugeResult {
+
+    public static DelugeResult from(String[] output, Duration duration, Exception error) {
+        return new DelugeResult(output, duration, error);
+    }
 
     private final String[] output;
 
     private final Exception error;
 
-    private final String exceptionClass;
+    private final Duration duration;
 
-    private final String exceptionMessage;
-
-    private final Throwable cause;
-
-    private final String causeClass;
-
-    private final String causeMessage;
-
-    DelugeResult(String[] output) {
+    DelugeResult(String[] output, Duration duration, Exception error) {
         this.output = output;
-        this.error = null;
-        this.exceptionClass = null;
-        this.exceptionMessage = null;
-        this.cause = null;
-        this.causeClass = null;
-        this.causeMessage = null;
-    }
-
-    DelugeResult(String[] output, Exception error) {
-        this.output = output;
+        this.duration = duration;
         this.error = error;
-        this.exceptionClass = getClass(error);
-        this.exceptionMessage = getMessage(error);
-        this.cause = error != null ? error.getCause() : null;
-        this.causeClass = getClass(cause);
-        this.causeMessage = getMessage(cause);
-    }
-
-    DelugeResult(String[] output, String exceptionClass, String exceptionMessage, Throwable cause) {
-        this.output = output;
-        this.error = new Exception(exceptionMessage, cause);
-        this.exceptionClass = exceptionClass;
-        this.exceptionMessage = exceptionMessage;
-        this.cause = cause;
-        this.causeClass = getClass(cause);
-        this.causeMessage = getMessage(cause);
     }
 
     String[] output() {
@@ -54,39 +28,8 @@ class DelugeResult {
         return error;
     }
 
-    String exceptionClass() {
-        return exceptionClass;
-    }
-
-    String exceptionMessage() {
-        return exceptionMessage;
-    }
-
-    @SuppressWarnings("unused")
-    Throwable cause() {
-        return cause;
-    }
-
-    String causeClass() {
-        return this.causeClass;
-    }
-
-    String causeMessage() {
-        return this.causeMessage;
-    }
-
-    private String getClass(Throwable throwable) {
-        if (throwable == null) {
-            return null;
-        }
-        return throwable.getClass().getName();
-    }
-
-    private String getMessage(Throwable throwable) {
-        if (throwable == null) {
-            return null;
-        }
-        return throwable.getMessage();
+    Duration executionDuration() {
+        return duration;
     }
 
 }

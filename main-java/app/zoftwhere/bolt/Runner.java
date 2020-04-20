@@ -1,7 +1,9 @@
 package app.zoftwhere.bolt;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
+import app.zoftwhere.bolt.api.RunnerInterface;
 import app.zoftwhere.bolt.api.RunnerPreProgram;
 import app.zoftwhere.bolt.api.RunnerProgram;
 import app.zoftwhere.bolt.api.RunnerProgramInput;
@@ -12,6 +14,8 @@ import app.zoftwhere.bolt.api.RunnerProgramInput;
  * @since 1.0.0
  */
 public class Runner extends AbstractRunner {
+
+    public static final Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
 
     /**
      * <p>This is an immutable runner (so get one, and run all the tests you need).
@@ -24,6 +28,9 @@ public class Runner extends AbstractRunner {
         return new Runner();
     }
 
+    /** Default character encoding to use for input and program when none is specified. */
+    private final Charset encoding;
+
     /**
      * <p>Constructor for a reusable, immutable, instance (more than one test can be run with it).
      * </p>
@@ -33,6 +40,37 @@ public class Runner extends AbstractRunner {
      * @since 2.0.0
      */
     public Runner() {
+        this.encoding = DEFAULT_ENCODING;
+    }
+
+    /**
+     * Private constructor creating an instance with a user-defined default encoding.
+     *
+     * @param encoding default encoding
+     * @since 11.0.0
+     */
+    private Runner(Charset encoding) {
+        this.encoding = encoding != null ? encoding : DEFAULT_ENCODING;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 11.0.0
+     */
+    @Override
+    public RunnerInterface encoding(Charset encoding) {
+        return new Runner(encoding);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 11.0.0
+     */
+    @Override
+    public Charset encoding() {
+        return encoding;
     }
 
     /**
@@ -42,7 +80,7 @@ public class Runner extends AbstractRunner {
      */
     @Override
     public RunnerProgram run(RunStandard program) {
-        return new BoltProvideProgram().run(program);
+        return new BoltProvideProgram(encoding).run(program);
     }
 
     /**
@@ -52,7 +90,7 @@ public class Runner extends AbstractRunner {
      */
     @Override
     public RunnerProgram run(Charset charset, RunStandard program) {
-        return new BoltProvideProgram().run(charset, program);
+        return new BoltProvideProgram(encoding).run(charset, program);
     }
 
     /**
@@ -62,7 +100,7 @@ public class Runner extends AbstractRunner {
      */
     @Override
     public RunnerProgram runConsole(RunConsole program) {
-        return new BoltProvideProgram().runConsole(program);
+        return new BoltProvideProgram(encoding).runConsole(program);
     }
 
     /**
@@ -72,7 +110,7 @@ public class Runner extends AbstractRunner {
      */
     @Override
     public RunnerProgram runConsole(Charset charset, RunConsole program) {
-        return new BoltProvideProgram().runConsole(charset, program);
+        return new BoltProvideProgram(encoding).runConsole(charset, program);
     }
 
     /**
@@ -82,7 +120,7 @@ public class Runner extends AbstractRunner {
      */
     @Override
     public RunnerPreProgram run(RunStandardArgued program) {
-        return new BoltProvideProgram().run(program);
+        return new BoltProvideProgram(encoding).run(program);
     }
 
     /**
@@ -92,7 +130,7 @@ public class Runner extends AbstractRunner {
      */
     @Override
     public RunnerPreProgram run(Charset charset, RunStandardArgued program) {
-        return new BoltProvideProgram().run(charset, program);
+        return new BoltProvideProgram(encoding).run(charset, program);
     }
 
     /**
@@ -102,7 +140,7 @@ public class Runner extends AbstractRunner {
      */
     @Override
     public RunnerPreProgram runConsole(RunConsoleArgued program) {
-        return new BoltProvideProgram().runConsole(program);
+        return new BoltProvideProgram(encoding).runConsole(program);
     }
 
     /**
@@ -112,7 +150,7 @@ public class Runner extends AbstractRunner {
      */
     @Override
     public RunnerPreProgram runConsole(Charset charset, RunConsoleArgued program) {
-        return new BoltProvideProgram().runConsole(charset, program);
+        return new BoltProvideProgram(encoding).runConsole(charset, program);
     }
 
     /**
@@ -122,7 +160,7 @@ public class Runner extends AbstractRunner {
      */
     @Override
     public RunnerProgramInput input(String... input) {
-        return new BoltProvideInput().input(input);
+        return new BoltProvideInput(encoding).input(input);
     }
 
     /**
@@ -132,7 +170,7 @@ public class Runner extends AbstractRunner {
      */
     @Override
     public RunnerProgramInput input(InputStreamSupplier supplier) {
-        return new BoltProvideInput().input(supplier);
+        return new BoltProvideInput(encoding).input(supplier);
     }
 
     /**
@@ -142,7 +180,7 @@ public class Runner extends AbstractRunner {
      */
     @Override
     public RunnerProgramInput input(InputStreamSupplier supplier, Charset charset) {
-        return new BoltProvideInput().input(supplier, charset);
+        return new BoltProvideInput(encoding).input(supplier, charset);
     }
 
     /**
@@ -152,7 +190,7 @@ public class Runner extends AbstractRunner {
      */
     @Override
     public RunnerProgramInput loadInput(String resourceName, Class<?> withClass) {
-        return new BoltProvideInput().loadInput(resourceName, withClass);
+        return new BoltProvideInput(encoding).loadInput(resourceName, withClass);
     }
 
     /**
@@ -162,7 +200,7 @@ public class Runner extends AbstractRunner {
      */
     @Override
     public RunnerProgramInput loadInput(String resourceName, Class<?> withClass, Charset charset) {
-        return new BoltProvideInput().loadInput(resourceName, withClass, charset);
+        return new BoltProvideInput(encoding).loadInput(resourceName, withClass, charset);
     }
 
 }

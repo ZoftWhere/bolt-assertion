@@ -5,141 +5,175 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.zoftwhere.bolt.deluge.DelugeBuilder;
-import app.zoftwhere.bolt.deluge.DelugeException;
+import app.zoftwhere.bolt.deluge.DelugeData;
 import app.zoftwhere.bolt.deluge.DelugeProgramType;
+import app.zoftwhere.bolt.deluge.DelugeSettings;
 import org.junit.jupiter.api.Test;
 
 import static app.zoftwhere.bolt.BoltTestHelper.array;
+import static app.zoftwhere.bolt.deluge.DelugeBuilder.forInputStream;
+import static app.zoftwhere.bolt.deluge.DelugeBuilder.forResource;
+import static app.zoftwhere.bolt.deluge.DelugeBuilder.forSetting;
+import static app.zoftwhere.bolt.deluge.DelugeBuilder.forStringArray;
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
 import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.nio.charset.StandardCharsets.UTF_16;
 import static java.nio.charset.StandardCharsets.UTF_16BE;
 import static java.nio.charset.StandardCharsets.UTF_16LE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 class BoltDelugeTest {
 
+    private final Charset[] encodingArray = {null, US_ASCII, UTF_8, UTF_16};
+
+    private final Charset[] charsetArray = {null, US_ASCII, UTF_8, UTF_16LE, UTF_16BE};
+
+    private final String[][] argumentArray = new String[][] {
+        null,
+        new String[] {null},
+        new String[] {"≤", null},
+        new String[] {null, "≥"},
+    };
+
+    private final Exception[] errorArray = {
+        new Exception("deluge.exception.test"),
+        new Exception("deluge.exception.test", new Exception("deluge.exception.test.cause")),
+        new RuntimeException("deluge.exception.test", null),
+        new RuntimeException("deluge.exception.test", new Exception("deluge.exception.test.cause")),
+    };
+
     @Test
     void barrageTest() {
         DelugeProgramType[] programTypes = DelugeProgramType.values();
 
-        for (DelugeBuilder builder : expansiveSettings()) {
+        List<DelugeSettings> settingsList = expansiveSetting();
+        List<DelugeData> dataList = expansiveData();
+
+        for (DelugeSettings setting : settingsList) {
             for (DelugeProgramType programType : programTypes) {
-                if (programType.isArgued() != builder.hasArgumentArray()) {
+                if (programType.isArgued() != setting.hasArgumentArray()) {
                     continue;
                 }
 
-                for (DelugeBuilder unit : expansiveData(builder.forProgram(programType))) {
-                    if (!unit.hasProgramType() || !unit.hasSettings() || !unit.hasData()) {
-                        throw new DelugeException("deluge.builder.failed");
-                    }
-
-                    unit.runTest();
+                for (DelugeData data : dataList) {
+                    DelugeBuilder.runTest(programType, setting, data);
                 }
             }
         }
     }
 
-    private List<DelugeBuilder> expansiveData(DelugeBuilder builder) {
+    private List<DelugeData> expansiveData() {
         final var arraySingleNull = new String[] {null};
-        List<DelugeBuilder> list = new ArrayList<>();
+        List<DelugeData> list = new ArrayList<>();
 
-        list.addAll(listForData(builder, null));
-        list.addAll(listForData(builder, arraySingleNull));
-        list.addAll(listForData(builder, array()));
-        list.addAll(listForData(builder, array("ListForDataTest")));
-        list.addAll(listForData(builder, array("Hello World!\r", "\nUnicode(\ud801\udc10)", "")));
+        list.addAll(listForData(null));
+        list.addAll(listForData(arraySingleNull));
+        list.addAll(listForData(array()));
+        list.addAll(listForData(array("ListForDataTest")));
+        list.addAll(listForData(array("Hello World!\r", "\nUnicode(\ud801\udc10)", "")));
 
-        list.addAll(listForData(builder, array("<", null)));
-        list.addAll(listForData(builder, array(null, ">")));
+        list.addAll(listForData(array("<", null)));
+        list.addAll(listForData(array(null, ">")));
 
-        list.add(builder.forInputStream(new NullPointerException("InputStreamExceptionTest")));
-        list.add(builder.forInputStream(new NullPointerException("InputStreamExceptionTest"), UTF_8));
+        list.add(forInputStream(new NullPointerException("InputStreamExceptionTest")));
+        list.add(forInputStream(new NullPointerException("InputStreamExceptionTest"), UTF_8));
 
-        list.add(builder.forResource("<null>", Runner.class, array()));
-        list.add(builder.forResource("<null>", null, array()));
-        list.add(builder.forResource(null, Runner.class, array()));
-        list.add(builder.forResource(null, null, array()));
+        list.add(forResource("<null>", Runner.class));
+        list.add(forResource("<null>", null));
+        list.add(forResource(null, Runner.class));
+        list.add(forResource(null, null));
 
-        list.add(builder.forResource("<null>", Runner.class, array(), UTF_8));
-        list.add(builder.forResource("<null>", null, array(), UTF_8));
-        list.add(builder.forResource(null, Runner.class, array(), UTF_8));
-        list.add(builder.forResource(null, null, array(), UTF_8));
-        list.add(builder.forResource("RunnerTest.txt", null, array("")));
-        list.add(builder.forResource("RunnerTest.txt", null, array(""), null));
-        list.add(builder.forResource("RunnerTest.txt", null, array(""), ISO_8859_1));
+        list.add(forResource("<null>", Runner.class, UTF_8));
+        list.add(forResource("<null>", null, UTF_8));
+        list.add(forResource(null, Runner.class, UTF_8));
+        list.add(forResource(null, null, UTF_8));
+        list.add(forResource("RunnerTest.txt", null));
+        list.add(forResource("RunnerTest.txt", null, null));
+        list.add(forResource("RunnerTest.txt", null, ISO_8859_1));
 
-        list.add(builder.forResource("RunnerBlankScopeTest.txt", Runner.class, array()));
-        list.add(builder.forResource("RunnerBlankScopeTest.txt", Runner.class, array(), US_ASCII));
+        list.add(forResource("RunnerBlankScopeTest.txt", Runner.class));
+        list.add(forResource("RunnerBlankScopeTest.txt", Runner.class, US_ASCII));
 
-        String[] helloWorld = array("Hello World!", "1 ≤ A[i] ≤ 1014", "");
-        list.add(builder.forResource("RunnerTest.txt", Runner.class, helloWorld));
-        list.add(builder.forResource("RunnerTest.txt", Runner.class, helloWorld, UTF_8));
+        list.add(forResource("RunnerTest.txt", Runner.class));
+        list.add(forResource("RunnerTest.txt", Runner.class, UTF_8));
 
-        String[] oneToEight = {"1", "2", "3", "4", "5", "6", "7", "8"};
-        list.add(builder.forResource("RunnerTestUTF16.txt", Runner.class, oneToEight, UTF_16BE));
+        list.add(forResource("RunnerTestUTF16.txt", Runner.class, UTF_16BE));
 
         return list;
     }
 
-    private List<DelugeBuilder> listForData(DelugeBuilder builder, String[] data) {
-        List<DelugeBuilder> list = new ArrayList<>();
-        Charset[] encodingArray = {null, UTF_8, UTF_16LE, UTF_16BE};
-        list.add(builder.forStringArray(data));
-        list.add(builder.forInputStream(data));
+    private List<DelugeData> listForData(String[] data) {
+        List<DelugeData> list = new ArrayList<>();
+        list.add(forStringArray(data));
+        for (Charset charset : charsetArray) {
+            list.add(forInputStream(data, charset, true));
+        }
+        return list;
+    }
+
+    private List<DelugeSettings> expansiveSetting() {
+        List<DelugeSettings> list = new ArrayList<>();
+
+        list.add(forSetting());
+
         for (Charset encoding : encodingArray) {
-            list.add(builder.forInputStream(data, encoding));
-        }
-        return list;
-    }
+            list.add(forSetting(encoding, true));
 
-    private List<DelugeBuilder> expansiveSettings() {
-        List<DelugeBuilder> list = new ArrayList<>();
-        Charset[] encodingArray = {null, UTF_8, UTF_16LE, UTF_16BE};
-        Exception[] exceptionArray = {
-            new Exception("deluge.exception.test"),
-            new Exception("deluge.exception.test", null),
-            new Exception("deluge.exception.test", new Exception((String) null)),
-            new Exception("deluge.exception.test", new Exception("deluge.exception.cause.exception")),
-            new RuntimeException("deluge.runtime.exception.with.null.cause", null),
-        };
-        list.addAll(listForArgument(encodingArray, exceptionArray, (String[]) null));
-        list.addAll(listForArgument(encodingArray, exceptionArray, "arg1", "arg2"));
-        list.addAll(listForArgument(encodingArray, exceptionArray, null, "arg2", ""));
-        return list;
-    }
+            for (String[] argument : argumentArray) {
+                list.add(forSetting(encoding, argument));
 
-    private List<DelugeBuilder> listForArgument(Charset[] charsets, Exception[] errors, String... arguments) {
-        List<DelugeBuilder> list = new ArrayList<>();
-        DelugeBuilder builder = new DelugeBuilder();
+                for (Exception error : errorArray) {
+                    list.add(forSetting(encoding, argument, error));
 
-        // Add with no charset, no throwable.
-        list.add(builder.withSettings(arguments));
+                    for (Charset charset : charsetArray) {
+                        list.add(forSetting(encoding, argument, error, charset));
+                    }
+                }
 
-        // Add with charset, no throwable.
-        for (Charset charset : charsets) {
-            list.add(builder.withSettings(arguments, charset));
-        }
-
-        // Add with no charset, throwing.
-        for (Exception error : errors) {
-            if (error != null) {
-                list.add(builder.withSettings(error));
-            }
-        }
-
-        // Add with no charset, argument, and throwing.
-        for (Exception error : errors) {
-            list.add(builder.withSettings(arguments, error));
-        }
-
-        // Add with charset, throwing.
-        for (Charset charset : charsets) {
-            if (charset != null) {
-                for (Exception error : errors) {
-                    list.add(builder.withSettings(error, charset));
-                    list.add(builder.withSettings(arguments, error, charset));
+                for (Charset charset : charsetArray) {
+                    list.add(forSetting(encoding, argument, charset));
                 }
             }
+
+            for (Exception error : errorArray) {
+                list.add(forSetting(encoding, error));
+
+                for (Charset charset : charsetArray) {
+                    list.add(forSetting(encoding, error, charset));
+                }
+            }
+
+            for (Charset charset : charsetArray) {
+                list.add(forSetting(encoding, charset));
+            }
+        }
+
+        for (String[] argument : argumentArray) {
+            list.add(forSetting(argument));
+
+            for (Exception error : errorArray) {
+                list.add(forSetting(argument, error));
+
+                for (Charset charset : charsetArray) {
+                    list.add(forSetting(argument, error, charset));
+                }
+            }
+
+            for (Charset charset : charsetArray) {
+                list.add(forSetting(argument, charset));
+            }
+        }
+
+        for (Exception error : errorArray) {
+            list.add(forSetting(error));
+
+            for (Charset charset : charsetArray) {
+                list.add(forSetting(error, charset));
+            }
+        }
+
+        for (Charset charset : charsetArray) {
+            list.add(forSetting(charset, false));
         }
 
         return list;

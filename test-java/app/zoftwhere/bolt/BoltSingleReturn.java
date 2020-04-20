@@ -15,6 +15,7 @@ public class BoltSingleReturn<T> {
 
     private final BoltPlaceHolder<T> boltPlaceHolder = new BoltPlaceHolder<>(null);
 
+    @SuppressWarnings("UnusedReturnValue")
     public BoltSingleReturn<T> block(Supplier<T> code) {
         if (boltPlaceHolder.get() == null) {
             boltPlaceHolder.set(code.get());

@@ -2,6 +2,7 @@ package app.zoftwhere.bolt.deluge;
 
 import java.io.PrintStream;
 
+import app.zoftwhere.bolt.BoltTestHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,7 @@ class DelugeLineScannerTest {
     @Test
     void testByteOrderMark() {
         String[] input = {"\ufeff", "2\ufeff", ""};
-        String[] expected = {DelugeLineScanner.escapeString("[][2\ufeff][]")};
+        String[] expected = {BoltTestHelper.escapeString("[][2\ufeff][]")};
         testWithRunner(input, expected);
     }
 
@@ -73,7 +74,6 @@ class DelugeLineScannerTest {
     }
 
     @Test
-    @SuppressWarnings("SpellCheckingInspection")
     void testEscapes() {
         String[] source = {
             "\ufeffBOM",
@@ -88,6 +88,7 @@ class DelugeLineScannerTest {
             "",
             "end"
         };
+        @SuppressWarnings("SpellCheckingInspection")
         String[] target = {
             "\\ufeffBOM",
             "\\\\",
@@ -103,7 +104,7 @@ class DelugeLineScannerTest {
         };
         int size = source.length;
         for (int i = 0; i < size; i++) {
-            Assertions.assertEquals(target[i], DelugeLineScanner.escapeString(source[i]));
+            Assertions.assertEquals(target[i], BoltTestHelper.escapeString(source[i]));
         }
     }
 
@@ -121,10 +122,10 @@ class DelugeLineScannerTest {
 
     private static void program(DelugeLineScanner lineScanner, PrintStream out) {
         String line = lineScanner.firstLine();
-        out.printf("[%s]", DelugeLineScanner.escapeString(line));
-        while (lineScanner.hasNextLine()) {
-            line = lineScanner.nextLine();
-            out.printf("[%s]", DelugeLineScanner.escapeString(line));
+        out.printf("[%s]", BoltTestHelper.escapeString(line));
+        while (lineScanner.hasMore()) {
+            line = lineScanner.readLine();
+            out.printf("[%s]", BoltTestHelper.escapeString(line));
         }
     }
 

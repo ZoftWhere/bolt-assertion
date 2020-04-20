@@ -1,50 +1,20 @@
 package app.zoftwhere.bolt.deluge;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
 import app.zoftwhere.bolt.BoltSingleReturn;
 
-import static app.zoftwhere.bolt.BoltTestHelper.array;
-import static app.zoftwhere.bolt.BoltTestHelper.isOrHasNull;
-import static app.zoftwhere.bolt.deluge.DelugeData.DataType.ARRAY;
-import static app.zoftwhere.bolt.deluge.DelugeData.DataType.RESOURCE;
-import static app.zoftwhere.bolt.deluge.DelugeData.DataType.RESOURCE_ENCODED;
-import static app.zoftwhere.bolt.deluge.DelugeData.DataType.STREAM;
-import static app.zoftwhere.bolt.deluge.DelugeData.DataType.STREAM_ENCODED;
-import static app.zoftwhere.bolt.deluge.DelugeLineScanner.escapeString;
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 class DelugeControl {
 
-    private final DelugeData data;
-
-    private final DelugeSettings settings;
-
-    private final DelugeProgramType programType;
-
-    static DelugeControl from(DelugeProgramType programType, DelugeSettings settings, DelugeData data) {
-        return new DelugeControl(programType, settings, data);
-    }
-
-    private DelugeControl(DelugeProgramType programType, DelugeSettings settings, DelugeData data) {
-        this.programType = programType;
-        this.data = data;
-        this.settings = settings;
-    }
-
-    void runTest() {
-        DelugeProgram program = DelugeProgram.from(programType, data, settings);
-
+    static void runTest(DelugeProgramType programType, DelugeSettings setting, DelugeData data) {
         if (data.streamSupplier() != null) {
             data.resetFlags();
         }
 
-        DelugeResult actual = program.buildActualResult();
-        DelugeResult expected = buildExpectedResult();
+        DelugeResult expected = DelugeMock.from(programType, setting, data).buildExpectedOutput();
+
+        DelugeResult actual = DelugeProgram.from(programType, setting, data).buildActualResult();
 
         BoltSingleReturn<String> switcher = new BoltSingleReturn<>();
 
@@ -59,35 +29,36 @@ class DelugeControl {
             else {
                 return !data.isClosed() ? null : "deluge.program.data.input.stream.auto.closing.unopened";
             }
-        }).block(
+        });
+        switcher.block(
             () -> runComparison(expected, actual)
         );
-
         String message = switcher.end();
+
         if (message != null) {
             throw new DelugeException(message, actual.error());
         }
     }
 
-    private String runComparison(DelugeResult expected, DelugeResult actual) {
+    static String runComparison(DelugeResult expected, DelugeResult actual) {
         BoltSingleReturn<String> switcher = new BoltSingleReturn<>();
 
-        switcher.block(() -> compareResult(expected, actual, DelugeResult::exceptionClass,
+        switcher.block(() -> compareResult(expected, actual, DelugeControl::exceptionClass,
             "deluge.program.exception.expected",
             "deluge.program.exception.found",
             "deluge.program.exception.mismatch"));
 
-        switcher.block(() -> compareResult(expected, actual, DelugeResult::exceptionMessage,
+        switcher.block(() -> compareResult(expected, actual, DelugeControl::exceptionMessage,
             "deluge.program.exception.message.expected",
             "deluge.program.exception.message.found",
             "deluge.program.exception.message.mismatch"));
 
-        switcher.block(() -> compareResult(expected, actual, DelugeResult::causeClass,
+        switcher.block(() -> compareResult(expected, actual, DelugeControl::causeClass,
             "deluge.program.exception.cause.expected",
             "deluge.program.exception.cause.found",
             "deluge.program.exception.cause.mismatch"));
 
-        switcher.block(() -> compareResult(expected, actual, DelugeResult::causeMessage,
+        switcher.block(() -> compareResult(expected, actual, DelugeControl::causeMessage,
             "deluge.program.exception.cause.message.expected",
             "deluge.program.exception.cause.message.found",
             "deluge.program.exception.cause.message.mismatch"));
@@ -113,10 +84,28 @@ class DelugeControl {
             return null;
         });
 
+        switcher.block(() -> {
+            if (actual.executionDuration() == null) {
+                return "deluge.program.found.actual.duration.null";
+            }
+
+            if (expected.executionDuration() == null) {
+                return "deluge.program.found.expected.duration.null";
+            }
+
+            if (expected.executionDuration().isZero()) {
+                if (!actual.executionDuration().isZero()) {
+                    return "deluge.program.found.actual.execution.duration.exceeds.expectation";
+                }
+            }
+            return null;
+        });
+
         return switcher.end();
     }
 
-    private String compareResult(DelugeResult expected, DelugeResult actual, Function<DelugeResult, String> getter,
+    private static String compareResult(DelugeResult expected, DelugeResult actual,
+        Function<DelugeResult, String> getter,
         String noActual, String noExpected, String noMatch)
     {
         String expectedString = getter.apply(expected);
@@ -141,142 +130,26 @@ class DelugeControl {
         }
     }
 
-    private DelugeResult buildExpectedResult() {
-
-        if (STREAM_ENCODED == data.type() || RESOURCE_ENCODED == data.type()) {
-            if (data.charset() == null) {
-                String exceptionClass = "app.zoftwhere.bolt.RunnerException";
-                String exceptionMessage = "bolt.runner.input.charset.null";
-                return new DelugeResult(array(""), exceptionClass, exceptionMessage, null);
-            }
-        }
-
-        if (settings.hasCharSet() && settings.charset() == null) {
-            String exceptionClass = "app.zoftwhere.bolt.RunnerException";
-            String exceptionMessage = "bolt.runner.output.charset.null";
-            return new DelugeResult(array(""), exceptionClass, exceptionMessage, null);
-        }
-
-        if (ARRAY == data.type()) {
-            if (data.array() != null && isOrHasNull(data.array())) {
-                String exceptionClass = "app.zoftwhere.bolt.RunnerException";
-                String exceptionMessage = "bolt.runner.variable.array.input.has.null";
-                return new DelugeResult(array(""), exceptionClass, exceptionMessage, null);
-            }
-        }
-
-        if (RESOURCE == data.type() || RESOURCE_ENCODED == data.type()) {
-            if (data.resource() == null) {
-                String exceptionClass = "app.zoftwhere.bolt.RunnerException";
-                String exceptionMessage = "bolt.runner.load.input.resource.name.null";
-                return new DelugeResult(array(""), exceptionClass, exceptionMessage, null);
-            }
-
-            if (data.withClass() == null) {
-                String exceptionClass = "app.zoftwhere.bolt.RunnerException";
-                String exceptionMessage = "bolt.runner.load.input.resource.class.null";
-                return new DelugeResult(array(""), exceptionClass, exceptionMessage, null);
-            }
-
-            final var url = data.withClass().getResource(data.resource());
-            if (url == null) {
-                String exceptionClass = "app.zoftwhere.bolt.RunnerException";
-                String exceptionMessage = "bolt.runner.load.input.resource.not.found";
-                return new DelugeResult(array(""), exceptionClass, exceptionMessage, null);
-            }
-        }
-
-        if (STREAM == data.type() || STREAM_ENCODED == data.type()) {
-            if (data.exception() != null) {
-                String exceptionClass = data.exception().getClass().getName();
-                String exceptionMessage = data.exception().getMessage();
-                return new DelugeResult(array(""), exceptionClass, exceptionMessage, null);
-            }
-
-            if (data.array() == null) {
-                String exceptionClass = "app.zoftwhere.bolt.RunnerException";
-                String exceptionMessage = "bolt.runner.input.stream.supplier.null";
-                return new DelugeResult(array(""), exceptionClass, exceptionMessage, null);
-            }
-
-            if (isOrHasNull(data.array())) {
-                String exceptionClass = "app.zoftwhere.bolt.RunnerException";
-                String exceptionMessage = "bolt.runner.load.input.input.stream.null";
-                return new DelugeResult(array(""), exceptionClass, exceptionMessage, null);
-            }
-        }
-
-        if (settings.hasError()) {
-            return new DelugeResult(array(""), settings.error());
-        }
-
-        List<String> output = new ArrayList<>();
-        output.addAll(forArgument());
-        output.addAll(forInput());
-        String[] array = output.toArray(new String[0]);
-
-        return new DelugeResult(array);
+    private static String exceptionClass(DelugeResult delugeResult) {
+        if (delugeResult.error() == null) { return null; }
+        return delugeResult.error().getClass().getName();
     }
 
-    private List<String> forArgument() {
-        List<String> list = new ArrayList<>();
-        if (settings.hasError()) {
-            return list;
-        }
-
-        if (!programType.isArgued()) {
-            list.add("Argument: <null>");
-        }
-        else if (settings.argumentArray() == null) {
-            // Runner should pass an empty array.
-            list.add("Argument: <none>");
-        }
-        else if (settings.argumentArray().length == 0) {
-            list.add("Argument: <none>");
-        }
-        else {
-            for (String argument : settings.argumentArray()) {
-                if (argument == null) {
-                    list.add("Argument: <null>");
-                }
-                else {
-                    list.add(String.format("Argument: \"%s\"", escapeString(argument)));
-                }
-            }
-        }
-        return list;
+    private static String exceptionMessage(DelugeResult delugeResult) {
+        if (delugeResult.error() == null) { return null; }
+        return delugeResult.error().getMessage();
     }
 
-    private List<String> forInput() {
-        List<String> list = new ArrayList<>();
-        if (settings.hasError()) {
-            return list;
-        }
-        else if (data.array() == null || isOrHasNull(data.array())) {
-            list.add("Line: \"\"");
-            return list;
-        }
-        else if (data.array().length == 0) {
-            list.add("Line: \"\"");
-            return list;
-        }
-        else {
-            try (InputStream inputStream = DelugeData.newInputStreamSupplier(data.array()).get()) {
-                try (DelugeLineScanner scanner = new DelugeLineScanner(inputStream, UTF_8)) {
-                    String item = scanner.firstLine();
-                    list.add(String.format("Line: \"%s\"", escapeString(item)));
-                    while (scanner.hasNextLine()) {
-                        item = scanner.nextLine();
-                        list.add(String.format("Line: \"%s\"", escapeString(item)));
-                    }
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-            return list;
-        }
+    private static String causeClass(DelugeResult delugeResult) {
+        if (delugeResult.error() == null) { return null; }
+        if (delugeResult.error().getCause() == null) { return null; }
+        return delugeResult.error().getCause().getClass().getName();
+    }
+
+    private static String causeMessage(DelugeResult delugeResult) {
+        if (delugeResult.error() == null) { return null; }
+        if (delugeResult.error().getCause() == null) { return null; }
+        return delugeResult.error().getCause().getMessage();
     }
 
 }

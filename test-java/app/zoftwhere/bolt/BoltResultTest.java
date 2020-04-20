@@ -1,11 +1,13 @@
 package app.zoftwhere.bolt;
 
+import java.nio.charset.Charset;
 import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
 
 import static app.zoftwhere.bolt.BoltTestHelper.array;
 import static app.zoftwhere.bolt.BoltTestHelper.assertClass;
+import static app.zoftwhere.bolt.Runner.DEFAULT_ENCODING;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -16,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 class BoltResultTest {
 
+    private final Charset encoding = DEFAULT_ENCODING;
     private final String[] emptyArray = new String[] { };
     private final String[] blankArray = new String[] {""};
     private final String[] nullArray = new String[] {null};
@@ -64,7 +67,8 @@ class BoltResultTest {
                 assertNull(runnerResult.error().orElse(null));
                 throw new Exception("bolt.asserter.assert.check.test");
             });
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertClass(RunnerException.class, e);
             assertEquals("bolt.runner.assert.check", e.getMessage());
             assertClass(Exception.class, e.getCause());
@@ -120,7 +124,8 @@ class BoltResultTest {
                 assertNull(runnerResult.error().orElse(null));
                 throw new Exception("bolt.asserter.assert.check.test");
             });
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertClass(RunnerException.class, e);
             assertEquals("bolt.runner.assert.check", e.getMessage());
             assertClass(Exception.class, e.getCause());
@@ -131,7 +136,8 @@ class BoltResultTest {
             fire.onOffence(runnerResult -> {
                 throw new Exception("bolt.asserter.on.offence.test");
             });
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertClass(RunnerException.class, e);
             assertEquals("bolt.runner.on.offence", e.getMessage());
             assertClass(Exception.class, e.getCause());
@@ -189,7 +195,8 @@ class BoltResultTest {
                 assertNotNull(runnerResult.error().orElse(null));
                 throw new Exception("bolt.asserter.assert.check.test");
             });
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertClass(RunnerException.class, e);
             assertEquals("bolt.runner.assert.check", e.getMessage());
             assertClass(Exception.class, e.getCause());
@@ -200,7 +207,8 @@ class BoltResultTest {
             fire.onOffence(runnerResult -> {
                 throw new Exception("bolt.asserter.on.offence.test");
             });
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertClass(RunnerException.class, e);
             assertEquals("bolt.runner.on.offence", e.getMessage());
             assertClass(Exception.class, e.getCause());
@@ -212,7 +220,7 @@ class BoltResultTest {
     void testRunTestFailureExpectedLength() {
         var outputLines = array("");
         var expectedLines = array("", "");
-        final var programOutput = new BoltProgramOutput(outputLines, instant, null);
+        final var programOutput = new BoltProgramOutput(encoding, outputLines, instant, null);
         final var fire = programOutput.expected(expectedLines);
 
         try {
@@ -259,7 +267,7 @@ class BoltResultTest {
     void testRunTestFailureComparisonFailure() {
         var outputLines = array("");
         var expectedLines = array("mismatch");
-        final var programOutput = new BoltProgramOutput(outputLines, instant, null);
+        final var programOutput = new BoltProgramOutput(encoding, outputLines, instant, null);
         final var fire = programOutput.expected(expectedLines);
 
         try {

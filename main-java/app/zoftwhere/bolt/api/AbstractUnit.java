@@ -19,6 +19,12 @@ abstract class AbstractUnit {
     }
 
     @SuppressWarnings("unused")
+    interface Encoding<T> {
+
+        T encoding(Charset encoding);
+    }
+
+    @SuppressWarnings("unused")
     interface RunNoArguments<T> {
 
         T run(RunStandard program);

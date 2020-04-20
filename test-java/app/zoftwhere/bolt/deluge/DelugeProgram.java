@@ -3,8 +3,11 @@ package app.zoftwhere.bolt.deluge;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.charset.Charset;
+import java.time.Duration;
 import java.util.Scanner;
 
+import app.zoftwhere.bolt.BoltTestHelper;
 import app.zoftwhere.bolt.api.RunnerInterface.RunConsole;
 import app.zoftwhere.bolt.api.RunnerInterface.RunConsoleArgued;
 import app.zoftwhere.bolt.api.RunnerInterface.RunStandard;
@@ -34,35 +37,48 @@ import static app.zoftwhere.bolt.deluge.DelugeProgramType.PROGRAM_STANDARD_ARGUE
 
 class DelugeProgram {
 
-    private final DelugeProgramType type;
-
-    private final DelugeData data;
-
-    private final DelugeSettings settings;
-
-    static DelugeProgram from(DelugeProgramType type, DelugeData data, DelugeSettings settings) {
-        return new DelugeProgram(type, data, settings);
+    static DelugeProgram from(DelugeProgramType programType, DelugeSettings settings, DelugeData data) {
+        return new DelugeProgram(programType, settings, data);
     }
 
-    private DelugeProgram(DelugeProgramType type, DelugeData data, DelugeSettings settings) {
-        this.type = type;
-        this.data = data;
-        this.settings = settings;
+    private final DelugeBuilder configuration;
 
-        if (type.isArgued() && !settings.hasArgumentArray()) {
+    private final DelugeProgramType type;
+
+    private final DelugeSettings setting;
+
+    private final DelugeData input;
+
+    private DelugeProgram(DelugeProgramType type, DelugeSettings setting, DelugeData input) {
+        this.configuration = DelugeBuilder.from(type, setting, input);
+        this.type = type;
+        this.input = input;
+        this.setting = setting;
+
+        if (type.isArgued() && !setting.hasArgumentArray()) {
             throw new IllegalArgumentException("deluge.no.argument.for.argued.type");
         }
-        if (!type.isArgued() && settings.hasArgumentArray()) {
+        if (!type.isArgued() && setting.hasArgumentArray()) {
             throw new IllegalArgumentException("deluge.program.found.argument.for.argument-free.type");
         }
     }
 
     DelugeResult buildActualResult() {
         if (type.isProgramFirst() && !type.isInputFirst()) {
-            return testProgramFirst(newRunner());
+            if (setting.hasEncoding()) {
+                return testProgramFirst(newRunner().encoding(setting.defaultEncoding()));
+            }
+            else {
+                return testProgramFirst(newRunner());
+            }
         }
         else if (type.isInputFirst() && !type.isProgramFirst()) {
-            return testInputFirst(newRunner());
+            if (setting.hasEncoding()) {
+                return testInputFirst(newRunner().encoding(setting.defaultEncoding()));
+            }
+            else {
+                return testInputFirst(newRunner());
+            }
         }
         else {
             throw new DelugeException("deluge.program.program.type.exclusion");
@@ -71,40 +87,40 @@ class DelugeProgram {
 
     private DelugeResult testProgramFirst(RunnerProvideProgram runner) {
         if (PROGRAM_STANDARD == type) {
-            RunStandard program = (scanner, out) -> process(null, scanner, out);
+            RunStandard program = (scanner, out) -> callStandard(null, scanner, out);
 
-            if (settings.hasCharSet()) {
-                return testProgramInput(runner.run(settings.charset(), program));
+            if (setting.hasCharSet()) {
+                return testProgramInput(runner.run(setting.charset(), program));
             }
             else {
                 return testProgramInput(runner.run(program));
             }
         }
         else if (PROGRAM_CONSOLE == type) {
-            RunConsole program = ((inputStream, outputStream) -> process(null, inputStream, outputStream));
+            RunConsole program = (inputStream, outputStream) -> callConsole(null, inputStream, outputStream);
 
-            if (settings.hasCharSet()) {
-                return testProgramInput(runner.runConsole(settings.charset(), program));
+            if (setting.hasCharSet()) {
+                return testProgramInput(runner.runConsole(setting.charset(), program));
             }
             else {
                 return testProgramInput(runner.runConsole(program));
             }
         }
         else if (PROGRAM_STANDARD_ARGUED == type) {
-            RunStandardArgued program = (this::process);
+            RunStandardArgued program = this::callStandard;
 
-            if (settings.hasCharSet()) {
-                return testProgramArgument(runner.run(settings.charset(), program));
+            if (setting.hasCharSet()) {
+                return testProgramArgument(runner.run(setting.charset(), program));
             }
             else {
                 return testProgramArgument(runner.run(program));
             }
         }
         else if (PROGRAM_CONSOLE_ARGUED == type) {
-            RunConsoleArgued program = (this::process);
+            RunConsoleArgued program = this::callConsole;
 
-            if (settings.hasCharSet()) {
-                return testProgramArgument(runner.runConsole(settings.charset(), program));
+            if (setting.hasCharSet()) {
+                return testProgramArgument(runner.runConsole(setting.charset(), program));
             }
             else {
                 return testProgramArgument(runner.runConsole(program));
@@ -116,24 +132,24 @@ class DelugeProgram {
     }
 
     private DelugeResult testProgramArgument(RunnerPreProgram preProgram) {
-        return testProgramInput(preProgram.argument(settings.argumentArray()));
+        return testProgramInput(preProgram.argument(setting.argumentArray()));
     }
 
     private DelugeResult testProgramInput(RunnerProgram program) {
-        if (ARRAY == data.type()) {
-            return outputToResult(program.input(data.array()));
+        if (ARRAY == input.type()) {
+            return buildOutput(program.input(input.array()));
         }
-        else if (STREAM == data.type()) {
-            return outputToResult(program.input(data.streamSupplier()));
+        else if (STREAM == input.type()) {
+            return buildOutput(program.input(input.streamSupplier()));
         }
-        else if (STREAM_ENCODED == data.type()) {
-            return outputToResult(program.input(data.streamSupplier(), data.charset()));
+        else if (STREAM_ENCODED == input.type()) {
+            return buildOutput(program.input(input.streamSupplier(), input.charset()));
         }
-        else if (RESOURCE == data.type()) {
-            return outputToResult(program.loadInput(data.resource(), data.withClass()));
+        else if (RESOURCE == input.type()) {
+            return buildOutput(program.loadInput(input.resource(), input.withClass()));
         }
-        else if (RESOURCE_ENCODED == data.type()) {
-            return outputToResult(program.loadInput(data.resource(), data.withClass(), data.charset()));
+        else if (RESOURCE_ENCODED == input.type()) {
+            return buildOutput(program.loadInput(input.resource(), input.withClass(), input.charset()));
         }
         else {
             throw new IllegalArgumentException("deluge.data.type.expected");
@@ -141,20 +157,20 @@ class DelugeProgram {
     }
 
     private DelugeResult testInputFirst(RunnerProvideInput runner) {
-        if (ARRAY == data.type()) {
-            return testProgramInput(runner.input(data.array()));
+        if (ARRAY == input.type()) {
+            return testProgramInput(runner.input(input.array()));
         }
-        else if (STREAM == data.type()) {
-            return testProgramInput(runner.input(data.streamSupplier()));
+        else if (STREAM == input.type()) {
+            return testProgramInput(runner.input(input.streamSupplier()));
         }
-        else if (STREAM_ENCODED == data.type()) {
-            return testProgramInput(runner.input(data.streamSupplier(), data.charset()));
+        else if (STREAM_ENCODED == input.type()) {
+            return testProgramInput(runner.input(input.streamSupplier(), input.charset()));
         }
-        else if (RESOURCE == data.type()) {
-            return testProgramInput(runner.loadInput(data.resource(), data.withClass()));
+        else if (RESOURCE == input.type()) {
+            return testProgramInput(runner.loadInput(input.resource(), input.withClass()));
         }
-        else if (RESOURCE_ENCODED == data.type()) {
-            return testProgramInput(runner.loadInput(data.resource(), data.withClass(), data.charset()));
+        else if (RESOURCE_ENCODED == input.type()) {
+            return testProgramInput(runner.loadInput(input.resource(), input.withClass(), input.charset()));
         }
         else {
             throw new IllegalArgumentException("deluge.data.type.expected");
@@ -163,7 +179,7 @@ class DelugeProgram {
 
     private DelugeResult testProgramInput(RunnerProgramInput next) {
         if (type.isArgued()) {
-            return testProgramWithArguments(next.argument(settings.argumentArray()));
+            return testProgramWithArguments(next.argument(setting.argumentArray()));
         }
         else {
             return testProgramNoArguments(next);
@@ -172,23 +188,23 @@ class DelugeProgram {
 
     private DelugeResult testProgramNoArguments(RunnerProgramInput runner) {
         if (INPUT_STANDARD == type) {
-            RunStandard program = (scanner, out) -> process(null, scanner, out);
+            RunStandard program = (scanner, out) -> callStandard(null, scanner, out);
 
-            if (settings.hasCharSet()) {
-                return outputToResult(runner.run(settings.charset(), program));
+            if (setting.hasCharSet()) {
+                return buildOutput(runner.run(setting.charset(), program));
             }
             else {
-                return outputToResult(runner.run(program));
+                return buildOutput(runner.run(program));
             }
         }
         else if (INPUT_CONSOLE == type) {
-            RunConsole program = ((inputStream, outputStream) -> process(null, inputStream, outputStream));
+            RunConsole program = (inputStream, outputStream) -> callConsole(null, inputStream, outputStream);
 
-            if (settings.hasCharSet()) {
-                return outputToResult(runner.runConsole(settings.charset(), program));
+            if (setting.hasCharSet()) {
+                return buildOutput(runner.runConsole(setting.charset(), program));
             }
             else {
-                return outputToResult(runner.runConsole(program));
+                return buildOutput(runner.runConsole(program));
             }
         }
         else {
@@ -198,23 +214,23 @@ class DelugeProgram {
 
     private DelugeResult testProgramWithArguments(RunnerLoader runner) {
         if (INPUT_STANDARD_ARGUED == type) {
-            RunStandardArgued program = (this::process);
+            RunStandardArgued program = this::callStandard;
 
-            if (settings.hasCharSet()) {
-                return outputToResult(runner.run(settings.charset(), program));
+            if (setting.hasCharSet()) {
+                return buildOutput(runner.run(setting.charset(), program));
             }
             else {
-                return outputToResult(runner.run(program));
+                return buildOutput(runner.run(program));
             }
         }
         else if (INPUT_CONSOLE_ARGUED == type) {
-            RunConsoleArgued program = (this::process);
+            RunConsoleArgued program = this::callConsole;
 
-            if (settings.hasCharSet()) {
-                return outputToResult(runner.runConsole(settings.charset(), program));
+            if (setting.hasCharSet()) {
+                return buildOutput(runner.runConsole(setting.charset(), program));
             }
             else {
-                return outputToResult(runner.runConsole(program));
+                return buildOutput(runner.runConsole(program));
             }
         }
         else {
@@ -222,55 +238,61 @@ class DelugeProgram {
         }
     }
 
-    private DelugeResult outputToResult(RunnerProgramOutput preTest) {
-        if (preTest.error().isPresent()) {
-            return new DelugeResult(preTest.output(), preTest.error().get());
-        }
-        return new DelugeResult(preTest.output());
+    private DelugeResult buildOutput(RunnerProgramOutput programOutput) {
+        String[] output = programOutput.output();
+        Duration duration = programOutput.executionDuration();
+        Exception error = programOutput.error().orElse(null);
+        return new DelugeResult(output, duration, error);
     }
 
-    private void process(String[] arguments, InputStream inputStream, OutputStream outputStream) throws Exception {
-        if (settings.hasError()) {
-            throw settings.error();
+    private void callConsole(String[] arguments, InputStream inputStream, OutputStream outputStream) throws Exception {
+        if (setting.hasError()) {
+            throw setting.error();
         }
 
-        try (DelugeLineScanner scanner = new DelugeLineScanner(inputStream, settings.charset())) {
-            try (PrintStream out = new PrintStream(outputStream, false, settings.charset())) {
-                process(arguments, scanner, out);
+        Charset outputCharset = configuration.outputCharset();
+
+        try (DelugeLineScanner scanner = new DelugeLineScanner(inputStream, outputCharset)) {
+            try (PrintStream out = new PrintStream(outputStream, false, outputCharset)) {
+                processCall(arguments, scanner, out);
             }
         }
     }
 
-    private void process(String[] arguments, Scanner scanner, PrintStream out) throws Exception {
-        process(arguments, new DelugeLineScanner(scanner), out);
+    private void callStandard(String[] arguments, Scanner scanner, PrintStream out) throws Exception {
+        if (setting.hasError()) {
+            throw setting.error();
+        }
+
+        processCall(arguments, new DelugeLineScanner(scanner), out);
     }
 
-    private void process(String[] arguments, DelugeLineScanner scanner, PrintStream out) throws Exception {
-        if (settings.hasError()) {
-            throw settings.error();
+    private void processCall(String[] arguments, DelugeLineScanner scanner, PrintStream out) throws Exception {
+        if (setting.hasError()) {
+            throw setting.error();
         }
 
         if (arguments == null) {
-            out.print("Argument: <null>");
+            out.println("Argument: <null>");
         }
         else if (arguments.length == 0) {
-            out.print("Argument: <none>");
+            out.println("Argument: <none>");
         }
         else {
             out.printf("Argument: %s", escapeString(arguments[0]));
+            out.println();
 
             for (int i = 1, s = arguments.length; i < s; i++) {
-                out.println();
                 out.printf("Argument: %s", escapeString(arguments[i]));
+                out.println();
             }
         }
 
         String line = scanner.firstLine();
-        out.println();
         out.printf("Line: %s", escapeString(line));
 
-        while (scanner.hasNextLine()) {
-            line = scanner.nextLine();
+        while (scanner.hasMore()) {
+            line = scanner.readLine();
             out.println();
             out.printf("Line: %s", escapeString(line));
         }
@@ -280,7 +302,7 @@ class DelugeProgram {
         if (value == null) {
             return "<null>";
         }
-        return '"' + DelugeLineScanner.escapeString(value) + '"';
+        return '"' + BoltTestHelper.escapeString(value) + '"';
     }
 
 }

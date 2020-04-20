@@ -12,7 +12,6 @@ import app.zoftwhere.bolt.api.RunnerPreTest;
 import app.zoftwhere.bolt.api.RunnerProgramOutput;
 
 import static app.zoftwhere.bolt.BoltResult.newBoltResult;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -21,6 +20,8 @@ import static java.util.Objects.requireNonNull;
  * @since 6.0.0
  */
 class BoltProgramOutput implements RunnerProgramOutput {
+
+    private final Charset encoding;
 
     private final String[] output;
 
@@ -36,9 +37,10 @@ class BoltProgramOutput implements RunnerProgramOutput {
      * @param output   program output lines
      * @param duration duration of program execution
      * @param error    execution error, if any, null otherwise
-     * @since 9.0.0
+     * @since 11.0.0
      */
-    BoltProgramOutput(String[] output, Duration duration, Exception error) {
+    BoltProgramOutput(Charset encoding, String[] output, Duration duration, Exception error) {
+        this.encoding = encoding;
         this.output = requireNonNull(output);
         this.error = error;
         this.duration = duration;
@@ -51,9 +53,10 @@ class BoltProgramOutput implements RunnerProgramOutput {
      * @param output     program output lines
      * @param duration   duration of program execution
      * @param comparator program output comparator, if any, null otherwise
-     * @since 9.0.0
+     * @since 11.0.0
      */
-    private BoltProgramOutput(String[] output, Duration duration, Comparator<String> comparator) {
+    private BoltProgramOutput(Charset encoding, String[] output, Duration duration, Comparator<String> comparator) {
+        this.encoding = encoding;
         this.output = requireNonNull(output);
         this.duration = duration;
         this.error = null;
@@ -66,13 +69,13 @@ class BoltProgramOutput implements RunnerProgramOutput {
     }
 
     @Override
-    public Duration executionDuration() {
-        return duration;
+    public Optional<Exception> error() {
+        return Optional.ofNullable(error);
     }
 
     @Override
-    public Optional<Exception> error() {
-        return Optional.ofNullable(error);
+    public Duration executionDuration() {
+        return duration;
     }
 
     @Override
@@ -83,10 +86,10 @@ class BoltProgramOutput implements RunnerProgramOutput {
 
         if (comparator == null) {
             RunnerException exception = new RunnerException("bolt.runner.expectation.comparator.null");
-            return new BoltProgramOutput(output, Duration.ZERO, exception);
+            return new BoltProgramOutput(encoding, output, Duration.ZERO, exception);
         }
 
-        return new BoltProgramOutput(output, duration, comparator);
+        return new BoltProgramOutput(encoding, output, duration, comparator);
     }
 
     @Override
@@ -97,7 +100,7 @@ class BoltProgramOutput implements RunnerProgramOutput {
 
     @Override
     public RunnerAsserter expected(InputStreamSupplier supplier) {
-        return BoltResult.newBoltResult(output, supplier, UTF_8, duration, comparator, error);
+        return BoltResult.newBoltResult(output, supplier, encoding, duration, comparator, error);
     }
 
     @Override
@@ -107,7 +110,7 @@ class BoltProgramOutput implements RunnerProgramOutput {
 
     @Override
     public RunnerAsserter loadExpectation(String resourceName, Class<?> withClass) {
-        return newBoltResult(output, resourceName, withClass, UTF_8, duration, comparator, error);
+        return newBoltResult(output, resourceName, withClass, encoding, duration, comparator, error);
     }
 
     @Override
