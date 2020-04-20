@@ -16,8 +16,8 @@ public class BoltTestHelper {
         if (array == null) {
             return true;
         }
-        for (int s = array.length, i = 0; i < s; i++) {
-            if (array[i] == null) {
+        for (T item : array) {
+            if (item == null) {
                 return true;
             }
         }

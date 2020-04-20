@@ -12,6 +12,7 @@ import app.zoftwhere.bolt.api.RunnerProgram;
 import app.zoftwhere.bolt.api.RunnerProgramOutput;
 import app.zoftwhere.bolt.api.RunnerProvideProgram;
 
+import static app.zoftwhere.bolt.BoltUtility.arrayHasNull;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -120,11 +121,9 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
 
     @Override
     public RunnerProgramOutput input(String... input) {
-        for (String item : emptyOnNull(input)) {
-            if (item == null) {
-                RunnerException error = new RunnerException("bolt.runner.variable.array.input.has.null");
-                return buildOutput(encoding, arguments, encoding, () -> null, outputCharset, executor, error);
-            }
+        if (input != null && arrayHasNull(input)) {
+            RunnerException error = new RunnerException("bolt.runner.variable.array.input.has.null");
+            return buildOutput(encoding, arguments, encoding, () -> null, outputCharset, executor, error);
         }
 
         InputStreamSupplier supplier = newInputStreamSupplier(encoding, input);

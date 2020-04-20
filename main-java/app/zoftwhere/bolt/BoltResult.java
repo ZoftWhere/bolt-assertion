@@ -14,6 +14,7 @@ import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 import app.zoftwhere.bolt.api.RunnerResult;
 
 import static app.zoftwhere.bolt.BoltReader.readArray;
+import static app.zoftwhere.bolt.BoltUtility.arrayHasNull;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -45,11 +46,9 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         Comparator<String> comparator
     )
     {
-        for (String item : expected) {
-            if (item == null) {
-                RunnerException exception = new RunnerException("bolt.runner.variable.array.expected.has.null");
-                return new BoltResult(output, expected, duration, exception);
-            }
+        if (arrayHasNull(expected)) {
+            RunnerException exception = new RunnerException("bolt.runner.variable.array.expected.has.null");
+            return new BoltResult(output, expected, duration, exception);
         }
 
         if (expected.length != output.length) {
@@ -81,7 +80,8 @@ class BoltResult implements RunnerResult, RunnerAsserter {
 
     static BoltResult newBoltResult(
         String[] output,
-        InputStreamSupplier supplier, Charset charset,
+        InputStreamSupplier supplier,
+        Charset inputCharset,
         Duration duration,
         Comparator<String> comparator,
         Exception error
@@ -90,7 +90,7 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         if (error != null) {
             return new BoltResult(output, new String[0], duration, error);
         }
-        if (charset == null) {
+        if (inputCharset == null) {
             RunnerException exception = new RunnerException("bolt.runner.load.expectation.charset.null");
             return new BoltResult(output, new String[0], duration, exception);
         }
@@ -105,7 +105,7 @@ class BoltResult implements RunnerResult, RunnerAsserter {
                 RunnerException exception = new RunnerException("bolt.runner.load.expectation.stream.null");
                 return new BoltResult(output, new String[0], duration, exception);
             }
-            final String[] expected = readArray(() -> new BoltReader(inputStream, charset));
+            final String[] expected = readArray(() -> new BoltReader(inputStream, inputCharset));
             return newBoltResult(output, expected, duration, comparator);
         }
         catch (Exception e) {
@@ -115,7 +115,9 @@ class BoltResult implements RunnerResult, RunnerAsserter {
 
     static BoltResult newBoltResult(
         String[] output,
-        String resourceName, Class<?> withClass, Charset charset,
+        String resourceName,
+        Class<?> withClass,
+        Charset charset,
         Duration duration,
         Comparator<String> comparator,
         Exception error
