@@ -7,7 +7,7 @@ import app.zoftwhere.bolt.BoltSingleReturn;
 
 class DelugeControl {
 
-    static void runTest(DelugeProgramType programType, DelugeSettings setting, DelugeData data) {
+    static void runTest(DelugeProgramType programType, DelugeSetting setting, DelugeData data) {
         if (data.streamSupplier() != null) {
             data.resetFlags();
         }

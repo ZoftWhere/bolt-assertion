@@ -7,7 +7,7 @@ import java.util.List;
 import app.zoftwhere.bolt.deluge.DelugeBuilder;
 import app.zoftwhere.bolt.deluge.DelugeData;
 import app.zoftwhere.bolt.deluge.DelugeProgramType;
-import app.zoftwhere.bolt.deluge.DelugeSettings;
+import app.zoftwhere.bolt.deluge.DelugeSetting;
 import org.junit.jupiter.api.Test;
 
 import static app.zoftwhere.bolt.BoltTestHelper.array;
@@ -46,10 +46,10 @@ class BoltDelugeTest {
     void barrageTest() {
         DelugeProgramType[] programTypes = DelugeProgramType.values();
 
-        List<DelugeSettings> settingsList = expansiveSetting();
+        List<DelugeSetting> settingList = expansiveSetting();
         List<DelugeData> dataList = expansiveData();
 
-        for (DelugeSettings setting : settingsList) {
+        for (DelugeSetting setting : settingList) {
             for (DelugeProgramType programType : programTypes) {
                 if (programType.isArgued() != setting.hasArgumentArray()) {
                     continue;
@@ -111,8 +111,8 @@ class BoltDelugeTest {
         return list;
     }
 
-    private List<DelugeSettings> expansiveSetting() {
-        List<DelugeSettings> list = new ArrayList<>();
+    private List<DelugeSetting> expansiveSetting() {
+        List<DelugeSetting> list = new ArrayList<>();
 
         list.add(forSetting());
 

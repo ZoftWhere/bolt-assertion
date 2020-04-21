@@ -13,9 +13,9 @@ class DelugeMockTest {
     @Test
     void testTransCodeResourceUTF8() {
         DelugeProgramType type = DelugeProgramType.INPUT_CONSOLE;
-        DelugeSettings settings = DelugeSettings.from(US_ASCII, true);
+        DelugeSetting setting = DelugeSetting.from(US_ASCII, true);
         DelugeData data = DelugeData.forResource("RunnerTest.txt", Runner.class);
-        DelugeResult delugeResult = DelugeMock.from(type, settings, data).buildExpectedOutput();
+        DelugeResult delugeResult = DelugeMock.from(type, setting, data).buildExpectedOutput();
         String[] actual = delugeResult.output();
         String[] expected = new String[] {
             "Argument: <null>",
@@ -29,9 +29,9 @@ class DelugeMockTest {
     @Test
     void testTransCodeResourceUTF16() {
         DelugeProgramType type = DelugeProgramType.INPUT_CONSOLE;
-        DelugeSettings settings = DelugeSettings.from(US_ASCII, UTF_8);
+        DelugeSetting setting = DelugeSetting.from(US_ASCII, UTF_8);
         DelugeData data = DelugeData.forResource("RunnerTestUTF16.txt", Runner.class, UTF_16);
-        DelugeResult delugeResult = DelugeMock.from(type, settings, data).buildExpectedOutput();
+        DelugeResult delugeResult = DelugeMock.from(type, setting, data).buildExpectedOutput();
         String[] actual = delugeResult.output();
         String[] expected = new String[] {
             "Argument: <null>",

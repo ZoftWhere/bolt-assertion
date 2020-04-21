@@ -37,19 +37,19 @@ import static app.zoftwhere.bolt.deluge.DelugeProgramType.PROGRAM_STANDARD_ARGUE
 
 class DelugeProgram {
 
-    static DelugeProgram from(DelugeProgramType programType, DelugeSettings settings, DelugeData data) {
-        return new DelugeProgram(programType, settings, data);
+    static DelugeProgram from(DelugeProgramType programType, DelugeSetting setting, DelugeData data) {
+        return new DelugeProgram(programType, setting, data);
     }
 
     private final DelugeBuilder configuration;
 
     private final DelugeProgramType type;
 
-    private final DelugeSettings setting;
+    private final DelugeSetting setting;
 
     private final DelugeData input;
 
-    private DelugeProgram(DelugeProgramType type, DelugeSettings setting, DelugeData input) {
+    private DelugeProgram(DelugeProgramType type, DelugeSetting setting, DelugeData input) {
         this.configuration = DelugeBuilder.from(type, setting, input);
         this.type = type;
         this.input = input;

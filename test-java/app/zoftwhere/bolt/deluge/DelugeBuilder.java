@@ -8,11 +8,11 @@ import app.zoftwhere.bolt.Runner;
 @SuppressWarnings("WeakerAccess")
 public class DelugeBuilder {
 
-    public static DelugeBuilder from(DelugeProgramType type, DelugeSettings setting, DelugeData input) {
+    public static DelugeBuilder from(DelugeProgramType type, DelugeSetting setting, DelugeData input) {
         return new DelugeBuilder(type, setting, input);
     }
 
-    public static void runTest(DelugeProgramType type, DelugeSettings setting, DelugeData input) {
+    public static void runTest(DelugeProgramType type, DelugeSetting setting, DelugeData input) {
         DelugeControl.runTest(type, setting, input);
     }
 
@@ -20,64 +20,64 @@ public class DelugeBuilder {
         return DelugeControl.runComparison(expected, actual);
     }
 
-    public static DelugeSettings forSetting() {
-        return DelugeSettings.from();
+    public static DelugeSetting forSetting() {
+        return DelugeSetting.from();
     }
 
-    public static DelugeSettings forSetting(Charset charset, boolean isEncoding) {
-        return DelugeSettings.from(charset, isEncoding);
+    public static DelugeSetting forSetting(Charset charset, boolean isEncoding) {
+        return DelugeSetting.from(charset, isEncoding);
     }
 
-    public static DelugeSettings forSetting(Charset encoding, String[] argument) {
-        return DelugeSettings.from(encoding, argument);
+    public static DelugeSetting forSetting(Charset encoding, String[] argument) {
+        return DelugeSetting.from(encoding, argument);
     }
 
-    public static DelugeSettings forSetting(Charset encoding, String[] argument, Exception error) {
-        return DelugeSettings.from(encoding, argument, error);
+    public static DelugeSetting forSetting(Charset encoding, String[] argument, Exception error) {
+        return DelugeSetting.from(encoding, argument, error);
     }
 
-    public static DelugeSettings forSetting(Charset encoding, String[] argument, Charset charset) {
-        return DelugeSettings.from(encoding, argument, charset);
+    public static DelugeSetting forSetting(Charset encoding, String[] argument, Charset charset) {
+        return DelugeSetting.from(encoding, argument, charset);
     }
 
-    public static DelugeSettings forSetting(Charset encoding, String[] argument, Exception error, Charset charset) {
-        return DelugeSettings.from(encoding, argument, error, charset);
+    public static DelugeSetting forSetting(Charset encoding, String[] argument, Exception error, Charset charset) {
+        return DelugeSetting.from(encoding, argument, error, charset);
     }
 
-    public static DelugeSettings forSetting(Charset encoding, Exception error) {
-        return DelugeSettings.from(encoding, error);
+    public static DelugeSetting forSetting(Charset encoding, Exception error) {
+        return DelugeSetting.from(encoding, error);
     }
 
-    public static DelugeSettings forSetting(Charset encoding, Exception error, Charset charset) {
-        return DelugeSettings.from(encoding, error, charset);
+    public static DelugeSetting forSetting(Charset encoding, Exception error, Charset charset) {
+        return DelugeSetting.from(encoding, error, charset);
     }
 
-    public static DelugeSettings forSetting(Charset encoding, Charset charset) {
-        return DelugeSettings.from(encoding, charset);
+    public static DelugeSetting forSetting(Charset encoding, Charset charset) {
+        return DelugeSetting.from(encoding, charset);
     }
 
-    public static DelugeSettings forSetting(String[] argumentArray) {
-        return DelugeSettings.from(argumentArray);
+    public static DelugeSetting forSetting(String[] argumentArray) {
+        return DelugeSetting.from(argumentArray);
     }
 
-    public static DelugeSettings forSetting(String[] argumentArray, Exception error) {
-        return DelugeSettings.from(argumentArray, error);
+    public static DelugeSetting forSetting(String[] argumentArray, Exception error) {
+        return DelugeSetting.from(argumentArray, error);
     }
 
-    public static DelugeSettings forSetting(String[] argumentArray, Exception error, Charset charset) {
-        return DelugeSettings.from(argumentArray, error, charset);
+    public static DelugeSetting forSetting(String[] argumentArray, Exception error, Charset charset) {
+        return DelugeSetting.from(argumentArray, error, charset);
     }
 
-    public static DelugeSettings forSetting(String[] argumentArray, Charset charset) {
-        return DelugeSettings.from(argumentArray, charset);
+    public static DelugeSetting forSetting(String[] argumentArray, Charset charset) {
+        return DelugeSetting.from(argumentArray, charset);
     }
 
-    public static DelugeSettings forSetting(Exception error) {
-        return DelugeSettings.from(error);
+    public static DelugeSetting forSetting(Exception error) {
+        return DelugeSetting.from(error);
     }
 
-    public static DelugeSettings forSetting(Exception error, Charset charset) {
-        return DelugeSettings.from(error, charset);
+    public static DelugeSetting forSetting(Exception error, Charset charset) {
+        return DelugeSetting.from(error, charset);
     }
 
     public static DelugeData forStringArray(String[] input) {
@@ -110,31 +110,31 @@ public class DelugeBuilder {
 
     private final DelugeProgramType type;
 
-    private final DelugeSettings setting;
+    private final DelugeSetting setting;
 
     private final DelugeData input;
 
     public DelugeBuilder() {
         this.type = null;
-        this.setting = DelugeSettings.from();
+        this.setting = DelugeSetting.from();
         this.input = DelugeData.forStringArray(null);
     }
 
-    private DelugeBuilder(DelugeProgramType type, DelugeSettings setting, DelugeData input) {
+    private DelugeBuilder(DelugeProgramType type, DelugeSetting setting, DelugeData input) {
         this.type = type;
         this.setting = setting;
         this.input = input;
     }
 
     public DelugeBuilder withEncoding(Charset charset) {
-        DelugeSettings setting = DelugeSettings.from(charset, true);
+        DelugeSetting setting = DelugeSetting.from(charset, true);
         return new DelugeBuilder(type, setting, input);
     }
 
     public DelugeBuilder withProgram(DelugeProgramType type, Exception error) {
-        DelugeSettings setting = this.setting != null && this.setting.hasEncoding()
-            ? DelugeSettings.from(this.setting.defaultEncoding(), error)
-            : DelugeSettings.from(error);
+        DelugeSetting setting = this.setting != null && this.setting.hasEncoding()
+            ? DelugeSetting.from(this.setting.defaultEncoding(), error)
+            : DelugeSetting.from(error);
         return new DelugeBuilder(type, setting, input);
     }
 
@@ -143,9 +143,9 @@ public class DelugeBuilder {
             throw new DelugeException("type.argued");
         }
 
-        DelugeSettings setting = this.setting != null && this.setting.hasEncoding()
-            ? DelugeSettings.from(this.setting.defaultEncoding(), error, charset)
-            : DelugeSettings.from(error, charset);
+        DelugeSetting setting = this.setting != null && this.setting.hasEncoding()
+            ? DelugeSetting.from(this.setting.defaultEncoding(), error, charset)
+            : DelugeSetting.from(error, charset);
         return new DelugeBuilder(type, setting, input);
     }
 
@@ -153,9 +153,9 @@ public class DelugeBuilder {
         if (!type.isArgued()) {
             throw new DelugeException("type.not.argued");
         }
-        DelugeSettings setting = this.setting != null && this.setting.hasEncoding()
-            ? DelugeSettings.from(this.setting.defaultEncoding(), arguments, error)
-            : DelugeSettings.from(arguments, error);
+        DelugeSetting setting = this.setting != null && this.setting.hasEncoding()
+            ? DelugeSetting.from(this.setting.defaultEncoding(), arguments, error)
+            : DelugeSetting.from(arguments, error);
         return new DelugeBuilder(type, setting, input);
     }
 
@@ -164,9 +164,9 @@ public class DelugeBuilder {
             throw new DelugeException("type.not.argued");
         }
 
-        DelugeSettings setting = this.setting != null && this.setting.hasEncoding()
-            ? DelugeSettings.from(this.setting.defaultEncoding(), strings, error, charset)
-            : DelugeSettings.from(strings, error, charset);
+        DelugeSetting setting = this.setting != null && this.setting.hasEncoding()
+            ? DelugeSetting.from(this.setting.defaultEncoding(), strings, error, charset)
+            : DelugeSetting.from(strings, error, charset);
         return new DelugeBuilder(type, setting, input);
     }
 
@@ -190,7 +190,7 @@ public class DelugeBuilder {
         return type;
     }
 
-    public DelugeSettings setting() {
+    public DelugeSetting setting() {
         return setting;
     }
 

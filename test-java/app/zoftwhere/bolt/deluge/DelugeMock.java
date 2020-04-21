@@ -24,19 +24,19 @@ import static app.zoftwhere.bolt.deluge.DelugeDataType.STREAM_ENCODED;
 
 class DelugeMock {
 
-    static DelugeMock from(DelugeProgramType type, DelugeSettings settings, DelugeData data) {
-        return new DelugeMock(type, settings, data);
+    static DelugeMock from(DelugeProgramType type, DelugeSetting setting, DelugeData data) {
+        return new DelugeMock(type, setting, data);
     }
 
     private final DelugeBuilder builder;
     private final DelugeProgramType programType;
-    private final DelugeSettings settings;
+    private final DelugeSetting setting;
     private final DelugeData data;
 
-    private DelugeMock(DelugeProgramType programType, DelugeSettings settings, DelugeData data) {
-        this.builder = DelugeBuilder.from(programType, settings, data);
+    private DelugeMock(DelugeProgramType programType, DelugeSetting setting, DelugeData data) {
+        this.builder = DelugeBuilder.from(programType, setting, data);
         this.programType = programType;
-        this.settings = settings;
+        this.setting = setting;
         this.data = data;
     }
 
@@ -50,7 +50,7 @@ class DelugeMock {
             }
         }
 
-        if (settings.hasCharSet() && settings.charset() == null) {
+        if (setting.hasCharSet() && setting.charset() == null) {
             String exceptionMessage = "bolt.runner.output.charset.null";
             Exception error = new RunnerException(exceptionMessage, null);
             return DelugeResult.from(array(""), Duration.ZERO, error);
@@ -103,8 +103,8 @@ class DelugeMock {
             }
         }
 
-        if (settings.hasError()) {
-            return DelugeResult.from(array(""), Duration.ofDays(1), settings.error());
+        if (setting.hasError()) {
+            return DelugeResult.from(array(""), Duration.ofDays(1), setting.error());
         }
         if (data.hasError()) {
             return DelugeResult.from(array(""), Duration.ofDays(1), data.error());
@@ -123,15 +123,15 @@ class DelugeMock {
         if (!programType.isArgued()) {
             out.println("Argument: <null>");
         }
-        else if (settings.argumentArray() == null) {
+        else if (setting.argumentArray() == null) {
             // Runner should pass an empty array.
             out.println("Argument: <none>");
         }
-        else if (settings.argumentArray().length == 0) {
+        else if (setting.argumentArray().length == 0) {
             out.println("Argument: <none>");
         }
         else {
-            for (String argument : settings.argumentArray()) {
+            for (String argument : setting.argumentArray()) {
                 if (argument == null) {
                     out.println("Argument: <null>");
                 }
