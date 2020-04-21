@@ -7,27 +7,27 @@ import app.zoftwhere.bolt.BoltSingleReturn;
 
 class DelugeControl {
 
-    static void runTest(DelugeProgramType programType, DelugeSetting setting, DelugeData data) {
-        if (data.streamSupplier() != null) {
-            data.resetFlags();
+    static void runTest(DelugeProgramType type, DelugeSetting setting, DelugeData input) {
+        if (input.streamSupplier() != null) {
+            input.resetFlags();
         }
 
-        DelugeProgramOutput expected = DelugeMock.from(programType, setting, data).buildExpectedOutput();
+        DelugeProgramOutput expected = DelugeMock.from(type, setting, input).buildExpectedOutput();
 
-        DelugeProgramOutput actual = DelugeProgram.from(programType, setting, data).buildActualResult();
+        DelugeProgramOutput actual = DelugeProgram.from(type, setting, input).buildActualResult();
 
         BoltSingleReturn<String> switcher = new BoltSingleReturn<>();
 
         switcher.block(() -> {
-            if (data.streamSupplier() == null) {
+            if (input.streamSupplier() == null) {
                 return null;
             }
 
-            if (data.isOpened()) {
-                return data.isClosed() ? null : "deluge.program.data.input.stream.auto.closing";
+            if (input.isOpened()) {
+                return input.isClosed() ? null : "deluge.program.data.input.stream.auto.closing";
             }
             else {
-                return !data.isClosed() ? null : "deluge.program.data.input.stream.auto.closing.unopened";
+                return !input.isClosed() ? null : "deluge.program.data.input.stream.auto.closing.unopened";
             }
         });
         switcher.block(
@@ -116,16 +116,10 @@ class DelugeControl {
         String expectedString = getter.apply(expected);
         String actualString = getter.apply(actual);
         try {
-            if (expectedString != null && actualString == null) {
-                return noActual;
-            }
-            if (expectedString == null && actualString != null) {
-                return noExpected;
-            }
-            if (expectedString != null) {
-                if (!Objects.equals(expectedString, actualString)) {
-                    return noMatch;
-                }
+            if (!Objects.equals(expectedString, actualString)) {
+                if (actualString == null) { return noActual; }
+                if (expectedString == null) { return noExpected; }
+                return noMatch;
             }
 
             return null;
