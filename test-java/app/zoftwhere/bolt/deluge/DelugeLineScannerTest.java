@@ -2,8 +2,6 @@ package app.zoftwhere.bolt.deluge;
 
 import java.io.PrintStream;
 
-import app.zoftwhere.bolt.BoltTestHelper;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static app.zoftwhere.bolt.BoltTestHelper.escapeString;
