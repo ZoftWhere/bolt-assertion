@@ -1,12 +1,13 @@
 package app.zoftwhere.bolt.deluge;
 
 import app.zoftwhere.bolt.Runner;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_16;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class DelugeMockTest {
 
@@ -23,7 +24,8 @@ class DelugeMockTest {
             "Line: \"1 ??? A[i] ??? 1014\"",
             "Line: \"\""
         };
-        Assertions.assertArrayEquals(expected, actual);
+        assertNull(programOutput.error());
+        assertArrayEquals(expected, actual);
     }
 
     @Test
@@ -44,7 +46,8 @@ class DelugeMockTest {
             "Line: \"7\"",
             "Line: \"8\""
         };
-        Assertions.assertArrayEquals(expected, actual);
+        assertNull(programOutput.error());
+        assertArrayEquals(expected, actual);
     }
 
 }
