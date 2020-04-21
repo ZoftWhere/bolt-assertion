@@ -14,7 +14,6 @@ import app.zoftwhere.bolt.api.RunnerInterface.RunnerResultConsumer;
 
 abstract class AbstractUnit {
 
-    @SuppressWarnings("unused")
     public AbstractUnit() {
     }
 
