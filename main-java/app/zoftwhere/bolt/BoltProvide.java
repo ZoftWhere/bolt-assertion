@@ -174,18 +174,22 @@ interface BoltProvide {
             RunnerException error = new RunnerException("bolt.runner.program.null");
             return new BoltProgramOutput(encoding, blank, Duration.ZERO, error);
         }
+
         if (inputCharset == null) {
             RunnerException error = new RunnerException("bolt.runner.input.charset.null");
             return new BoltProgramOutput(encoding, blank, Duration.ZERO, error);
         }
+
         if (outputCharset == null) {
             RunnerException error = new RunnerException("bolt.runner.output.charset.null");
             return new BoltProgramOutput(encoding, blank, Duration.ZERO, error);
         }
+
         if (streamSupplier == null) {
             RunnerException error = new RunnerException("bolt.runner.input.stream.supplier.null");
             return new BoltProgramOutput(encoding, blank, Duration.ZERO, error);
         }
+
         if (loadError != null) {
             return new BoltProgramOutput(encoding, blank, Duration.ZERO, loadError);
         }
