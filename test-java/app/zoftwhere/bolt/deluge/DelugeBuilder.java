@@ -202,4 +202,23 @@ public class DelugeBuilder {
         return DelugeMock.from(type, setting, input).buildExpectedOutput();
     }
 
+    public void resetInputFlags() {
+        input.resetFlags();
+    }
+
+    public void checkInputFlags() {
+        if (input == null || input.streamSupplier() != null) {
+            return;
+        }
+
+        if (input.isOpened()) {
+            if (!input.isClosed()) {
+                throw new DelugeException("input supplied stream was not closed.");
+            }
+        }
+        else if (input.isClosed()) {
+            throw new DelugeException("input supplied stream closed, but wasn't opened.");
+        }
+    }
+
 }
