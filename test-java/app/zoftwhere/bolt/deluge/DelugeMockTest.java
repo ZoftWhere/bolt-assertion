@@ -12,6 +12,21 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class DelugeMockTest {
 
     @Test
+    void testTransCodeInputUTF8() {
+        DelugeProgramType type = DelugeProgramType.INPUT_CONSOLE;
+        DelugeSetting setting = DelugeSetting.from(UTF_8, true);
+        DelugeData data = DelugeData.forStringArray(new String[] {"\ufeffTestInputArray"}, UTF_16);
+        DelugeProgramOutput programOutput = DelugeMock.from(type, setting, data).buildExpectedOutput();
+        String[] actual = programOutput.output();
+        String[] expected = new String[] {
+            "Argument: <null>",
+            "Line: \"TestInputArray\""
+        };
+        assertNull(programOutput.error());
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
     void testTransCodeResourceUTF8() {
         DelugeProgramType type = DelugeProgramType.INPUT_CONSOLE;
         DelugeSetting setting = DelugeSetting.from(US_ASCII, true);
