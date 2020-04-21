@@ -16,7 +16,7 @@ public class DelugeBuilder {
         DelugeControl.runTest(type, setting, input);
     }
 
-    public static String runComparison(DelugeResult expected, DelugeResult actual) {
+    public static String runComparison(DelugeProgramOutput expected, DelugeProgramOutput actual) {
         return DelugeControl.runComparison(expected, actual);
     }
 
@@ -198,7 +198,7 @@ public class DelugeBuilder {
         return input;
     }
 
-    public DelugeResult buildExpectedOutput() {
+    public DelugeProgramOutput buildExpectedOutput() {
         return DelugeMock.from(type, setting, input).buildExpectedOutput();
     }
 

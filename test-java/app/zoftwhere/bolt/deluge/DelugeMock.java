@@ -40,27 +40,27 @@ class DelugeMock {
         this.data = data;
     }
 
-    DelugeResult buildExpectedOutput() {
+    DelugeProgramOutput buildExpectedOutput() {
 
         if (STREAM_ENCODED == data.type() || RESOURCE_ENCODED == data.type()) {
             if (data.charset() == null) {
                 String exceptionMessage = "bolt.runner.input.charset.null";
                 Exception error = new RunnerException(exceptionMessage, null);
-                return DelugeResult.from(array(""), Duration.ZERO, error);
+                return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
         }
 
         if (setting.hasCharSet() && setting.charset() == null) {
             String exceptionMessage = "bolt.runner.output.charset.null";
             Exception error = new RunnerException(exceptionMessage, null);
-            return DelugeResult.from(array(""), Duration.ZERO, error);
+            return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
         }
 
         if (ARRAY == data.type()) {
             if (data.array() != null && isOrHasNull(data.array())) {
                 String exceptionMessage = "bolt.runner.variable.array.input.has.null";
                 Exception error = new RunnerException(exceptionMessage, null);
-                return DelugeResult.from(array(""), Duration.ZERO, error);
+                return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
         }
 
@@ -68,52 +68,52 @@ class DelugeMock {
             if (data.resource() == null) {
                 String exceptionMessage = "bolt.runner.load.input.resource.name.null";
                 Exception error = new RunnerException(exceptionMessage, null);
-                return DelugeResult.from(array(""), Duration.ZERO, error);
+                return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
 
             if (data.withClass() == null) {
                 String exceptionMessage = "bolt.runner.load.input.resource.class.null";
                 Exception error = new RunnerException(exceptionMessage, null);
-                return DelugeResult.from(array(""), Duration.ZERO, error);
+                return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
 
             final var url = data.withClass().getResource(data.resource());
             if (url == null) {
                 String exceptionMessage = "bolt.runner.load.input.resource.not.found";
                 Exception error = new RunnerException(exceptionMessage, null);
-                return DelugeResult.from(array(""), Duration.ZERO, error);
+                return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
         }
 
         if (STREAM == data.type() || STREAM_ENCODED == data.type()) {
             if (data.error() != null) {
-                return DelugeResult.from(array(""), Duration.ZERO, data.error());
+                return DelugeProgramOutput.from(array(""), Duration.ZERO, data.error());
             }
 
             if (data.array() == null) {
                 String exceptionMessage = "bolt.runner.input.stream.supplier.null";
                 Exception error = new RunnerException(exceptionMessage, null);
-                return DelugeResult.from(array(""), Duration.ZERO, error);
+                return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
 
             if (isOrHasNull(data.array())) {
                 String exceptionMessage = "bolt.runner.load.input.input.stream.null";
                 Exception error = new RunnerException(exceptionMessage, null);
-                return DelugeResult.from(array(""), Duration.ZERO, error);
+                return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
         }
 
         if (setting.hasError()) {
-            return DelugeResult.from(array(""), Duration.ofDays(1), setting.error());
+            return DelugeProgramOutput.from(array(""), Duration.ofDays(1), setting.error());
         }
         if (data.hasError()) {
-            return DelugeResult.from(array(""), Duration.ofDays(1), data.error());
+            return DelugeProgramOutput.from(array(""), Duration.ofDays(1), data.error());
         }
 
         return buildOutput();
     }
 
-    private DelugeResult buildOutput() {
+    private DelugeProgramOutput buildOutput() {
         Exception error = null;
         Charset inEnc = builder.inputCharset();
         Charset outEnc = builder.outputCharset();
@@ -160,7 +160,7 @@ class DelugeMock {
         final byte[] data = outputStream.toByteArray();
 
         String[] lines = readArray(data, outEnc);
-        return DelugeResult.from(lines, Duration.ofDays(1), error);
+        return DelugeProgramOutput.from(lines, Duration.ofDays(1), error);
     }
 
     private InputStreamSupplier newSupplier() {

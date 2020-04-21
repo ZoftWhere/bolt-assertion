@@ -2,10 +2,10 @@ package app.zoftwhere.bolt.deluge;
 
 import java.time.Duration;
 
-public class DelugeResult {
+public class DelugeProgramOutput {
 
-    public static DelugeResult from(String[] output, Duration duration, Exception error) {
-        return new DelugeResult(output, duration, error);
+    public static DelugeProgramOutput from(String[] output, Duration duration, Exception error) {
+        return new DelugeProgramOutput(output, duration, error);
     }
 
     private final String[] output;
@@ -14,7 +14,7 @@ public class DelugeResult {
 
     private final Duration duration;
 
-    DelugeResult(String[] output, Duration duration, Exception error) {
+    DelugeProgramOutput(String[] output, Duration duration, Exception error) {
         this.output = output;
         this.duration = duration;
         this.error = error;

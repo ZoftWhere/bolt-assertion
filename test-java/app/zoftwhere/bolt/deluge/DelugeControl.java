@@ -12,9 +12,9 @@ class DelugeControl {
             data.resetFlags();
         }
 
-        DelugeResult expected = DelugeMock.from(programType, setting, data).buildExpectedOutput();
+        DelugeProgramOutput expected = DelugeMock.from(programType, setting, data).buildExpectedOutput();
 
-        DelugeResult actual = DelugeProgram.from(programType, setting, data).buildActualResult();
+        DelugeProgramOutput actual = DelugeProgram.from(programType, setting, data).buildActualResult();
 
         BoltSingleReturn<String> switcher = new BoltSingleReturn<>();
 
@@ -40,7 +40,7 @@ class DelugeControl {
         }
     }
 
-    static String runComparison(DelugeResult expected, DelugeResult actual) {
+    static String runComparison(DelugeProgramOutput expected, DelugeProgramOutput actual) {
         BoltSingleReturn<String> switcher = new BoltSingleReturn<>();
 
         switcher.block(() -> compareResult(expected, actual, DelugeControl::exceptionClass,
@@ -104,10 +104,8 @@ class DelugeControl {
         return switcher.end();
     }
 
-    private static String compareResult(DelugeResult expected, DelugeResult actual,
-        Function<DelugeResult, String> getter,
-        String noActual, String noExpected, String noMatch)
-    {
+    private static String compareResult(DelugeProgramOutput expected, DelugeProgramOutput actual,
+        Function<DelugeProgramOutput, String> getter, String noActual, String noExpected, String noMatch) {
         String expectedString = getter.apply(expected);
         String actualString = getter.apply(actual);
         try {
@@ -130,26 +128,26 @@ class DelugeControl {
         }
     }
 
-    private static String exceptionClass(DelugeResult delugeResult) {
-        if (delugeResult.error() == null) { return null; }
-        return delugeResult.error().getClass().getName();
+    private static String exceptionClass(DelugeProgramOutput programOutput) {
+        if (programOutput.error() == null) { return null; }
+        return programOutput.error().getClass().getName();
     }
 
-    private static String exceptionMessage(DelugeResult delugeResult) {
-        if (delugeResult.error() == null) { return null; }
-        return delugeResult.error().getMessage();
+    private static String exceptionMessage(DelugeProgramOutput programOutput) {
+        if (programOutput.error() == null) { return null; }
+        return programOutput.error().getMessage();
     }
 
-    private static String causeClass(DelugeResult delugeResult) {
-        if (delugeResult.error() == null) { return null; }
-        if (delugeResult.error().getCause() == null) { return null; }
-        return delugeResult.error().getCause().getClass().getName();
+    private static String causeClass(DelugeProgramOutput programOutput) {
+        if (programOutput.error() == null) { return null; }
+        if (programOutput.error().getCause() == null) { return null; }
+        return programOutput.error().getCause().getClass().getName();
     }
 
-    private static String causeMessage(DelugeResult delugeResult) {
-        if (delugeResult.error() == null) { return null; }
-        if (delugeResult.error().getCause() == null) { return null; }
-        return delugeResult.error().getCause().getMessage();
+    private static String causeMessage(DelugeProgramOutput programOutput) {
+        if (programOutput.error() == null) { return null; }
+        if (programOutput.error().getCause() == null) { return null; }
+        return programOutput.error().getCause().getMessage();
     }
 
 }

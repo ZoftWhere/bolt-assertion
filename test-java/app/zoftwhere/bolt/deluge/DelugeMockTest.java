@@ -15,8 +15,8 @@ class DelugeMockTest {
         DelugeProgramType type = DelugeProgramType.INPUT_CONSOLE;
         DelugeSetting setting = DelugeSetting.from(US_ASCII, true);
         DelugeData data = DelugeData.forResource("RunnerTest.txt", Runner.class);
-        DelugeResult delugeResult = DelugeMock.from(type, setting, data).buildExpectedOutput();
-        String[] actual = delugeResult.output();
+        DelugeProgramOutput programOutput = DelugeMock.from(type, setting, data).buildExpectedOutput();
+        String[] actual = programOutput.output();
         String[] expected = new String[] {
             "Argument: <null>",
             "Line: \"Hello World!\"",
@@ -31,8 +31,8 @@ class DelugeMockTest {
         DelugeProgramType type = DelugeProgramType.INPUT_CONSOLE;
         DelugeSetting setting = DelugeSetting.from(US_ASCII, UTF_8);
         DelugeData data = DelugeData.forResource("RunnerTestUTF16.txt", Runner.class, UTF_16);
-        DelugeResult delugeResult = DelugeMock.from(type, setting, data).buildExpectedOutput();
-        String[] actual = delugeResult.output();
+        DelugeProgramOutput programOutput = DelugeMock.from(type, setting, data).buildExpectedOutput();
+        String[] actual = programOutput.output();
         String[] expected = new String[] {
             "Argument: <null>",
             "Line: \"1\"",

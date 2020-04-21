@@ -63,7 +63,7 @@ class DelugeProgram {
         }
     }
 
-    DelugeResult buildActualResult() {
+    DelugeProgramOutput buildActualResult() {
         if (type.isProgramFirst() && !type.isInputFirst()) {
             if (setting.hasEncoding()) {
                 return testProgramFirst(newRunner().encoding(setting.defaultEncoding()));
@@ -85,7 +85,7 @@ class DelugeProgram {
         }
     }
 
-    private DelugeResult testProgramFirst(RunnerProvideProgram runner) {
+    private DelugeProgramOutput testProgramFirst(RunnerProvideProgram runner) {
         if (PROGRAM_STANDARD == type) {
             RunStandard program = (scanner, out) -> callStandard(null, scanner, out);
 
@@ -131,11 +131,11 @@ class DelugeProgram {
         }
     }
 
-    private DelugeResult testProgramArgument(RunnerPreProgram preProgram) {
+    private DelugeProgramOutput testProgramArgument(RunnerPreProgram preProgram) {
         return testProgramInput(preProgram.argument(setting.argumentArray()));
     }
 
-    private DelugeResult testProgramInput(RunnerProgram program) {
+    private DelugeProgramOutput testProgramInput(RunnerProgram program) {
         if (ARRAY == input.type()) {
             return buildOutput(program.input(input.array()));
         }
@@ -156,7 +156,7 @@ class DelugeProgram {
         }
     }
 
-    private DelugeResult testInputFirst(RunnerProvideInput runner) {
+    private DelugeProgramOutput testInputFirst(RunnerProvideInput runner) {
         if (ARRAY == input.type()) {
             return testProgramInput(runner.input(input.array()));
         }
@@ -177,7 +177,7 @@ class DelugeProgram {
         }
     }
 
-    private DelugeResult testProgramInput(RunnerProgramInput next) {
+    private DelugeProgramOutput testProgramInput(RunnerProgramInput next) {
         if (type.isArgued()) {
             return testProgramWithArguments(next.argument(setting.argumentArray()));
         }
@@ -186,7 +186,7 @@ class DelugeProgram {
         }
     }
 
-    private DelugeResult testProgramNoArguments(RunnerProgramInput runner) {
+    private DelugeProgramOutput testProgramNoArguments(RunnerProgramInput runner) {
         if (INPUT_STANDARD == type) {
             RunStandard program = (scanner, out) -> callStandard(null, scanner, out);
 
@@ -212,7 +212,7 @@ class DelugeProgram {
         }
     }
 
-    private DelugeResult testProgramWithArguments(RunnerLoader runner) {
+    private DelugeProgramOutput testProgramWithArguments(RunnerLoader runner) {
         if (INPUT_STANDARD_ARGUED == type) {
             RunStandardArgued program = this::callStandard;
 
@@ -238,11 +238,11 @@ class DelugeProgram {
         }
     }
 
-    private DelugeResult buildOutput(RunnerProgramOutput programOutput) {
+    private DelugeProgramOutput buildOutput(RunnerProgramOutput programOutput) {
         String[] output = programOutput.output();
         Duration duration = programOutput.executionDuration();
         Exception error = programOutput.error().orElse(null);
-        return new DelugeResult(output, duration, error);
+        return new DelugeProgramOutput(output, duration, error);
     }
 
     private void callConsole(String[] arguments, InputStream inputStream, OutputStream outputStream) throws Exception {
