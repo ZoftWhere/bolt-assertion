@@ -402,10 +402,7 @@ class RunnerDelugeTest {
     }
 
     private void withRunnerProgramOutput(DelugeBuilder builder, RunnerProgramOutput programOutput) {
-        String[] output = programOutput.output();
-        Duration duration = programOutput.executionDuration();
-        Exception error = programOutput.error().orElse(null);
-        DelugeProgramOutput actual = DelugeProgramOutput.from(output, duration, error);
+        DelugeProgramOutput actual = DelugeProgramOutput.from(programOutput);
         DelugeProgramOutput expected = builder.buildExpectedOutput();
 
         String message = DelugeBuilder.runComparison(expected, actual);
