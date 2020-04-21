@@ -9,8 +9,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import app.zoftwhere.bolt.api.RunnerAsserter;
-import app.zoftwhere.bolt.api.RunnerInterface;
 import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
+import app.zoftwhere.bolt.api.RunnerInterface.RunnerResultConsumer;
 import app.zoftwhere.bolt.api.RunnerResult;
 
 import static app.zoftwhere.bolt.BoltReader.readArray;
@@ -291,7 +291,7 @@ class BoltResult implements RunnerResult, RunnerAsserter {
     }
 
     @Override
-    public void assertCheck(RunnerInterface.RunnerResultConsumer consumer) {
+    public void assertCheck(RunnerResultConsumer consumer) {
         try {
             consumer.accept(result());
         }
@@ -301,7 +301,7 @@ class BoltResult implements RunnerResult, RunnerAsserter {
     }
 
     @Override
-    public void onOffence(RunnerInterface.RunnerResultConsumer consumer) {
+    public void onOffence(RunnerResultConsumer consumer) {
         if (isSuccess()) {
             return;
         }
