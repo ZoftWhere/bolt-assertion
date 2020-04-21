@@ -44,20 +44,6 @@ class RunnerTest {
     }
 
     @Test
-    void testUTF16() {
-        newRunner().encoding(UTF_16)
-            .input(() -> new ByteArrayInputStream("\ufeffloop".getBytes(UTF_16LE)))
-            .run((scanner, out) -> {
-                scanner.useDelimiter("\\R");
-                while (scanner.hasNext()) {
-                    out.printf("[%s]", scanner.next());
-                }
-            })
-            .expected(() -> new ByteArrayInputStream("\ufeff[loop]".getBytes(UTF_16LE)))
-            .onOffence(consumer);
-    }
-
-    @Test
     void testDeprecatedThrowable() {
         boolean caught = false;
         try {
@@ -92,6 +78,20 @@ class RunnerTest {
         Exception error = result.error().orElse(null);
         assertNotNull(error);
         BoltTestHelper.assertClass(NumberFormatException.class, error);
+    }
+
+    @Test
+    void testUTF16() {
+        newRunner().encoding(UTF_16)
+            .input(() -> new ByteArrayInputStream("\ufeffloop".getBytes(UTF_16LE)))
+            .run((scanner, out) -> {
+                scanner.useDelimiter("\\R");
+                while (scanner.hasNext()) {
+                    out.printf("[%s]", scanner.next());
+                }
+            })
+            .expected(() -> new ByteArrayInputStream("\ufeff[loop]".getBytes(UTF_16LE)))
+            .onOffence(consumer);
     }
 
     @Test
