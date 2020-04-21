@@ -37,11 +37,11 @@ import static app.zoftwhere.bolt.deluge.DelugeProgramType.PROGRAM_STANDARD_ARGUE
 
 class DelugeProgram {
 
-    static DelugeProgram from(DelugeProgramType programType, DelugeSetting setting, DelugeData data) {
-        return new DelugeProgram(programType, setting, data);
+    static DelugeProgram from(DelugeProgramType type, DelugeSetting setting, DelugeData input) {
+        return new DelugeProgram(type, setting, input);
     }
 
-    private final DelugeBuilder configuration;
+    private final DelugeBuilder builder;
 
     private final DelugeProgramType type;
 
@@ -50,7 +50,7 @@ class DelugeProgram {
     private final DelugeData input;
 
     private DelugeProgram(DelugeProgramType type, DelugeSetting setting, DelugeData input) {
-        this.configuration = DelugeBuilder.from(type, setting, input);
+        this.builder = DelugeBuilder.from(type, setting, input);
         this.type = type;
         this.input = input;
         this.setting = setting;
@@ -67,7 +67,7 @@ class DelugeProgram {
     }
 
     DelugeProgramOutput buildActualResult() {
-        if (type.isProgramFirst() && !type.isInputFirst()) {
+        if (type.isProgramFirst()) {
             if (setting.hasEncoding()) {
                 return testProgramFirst(newRunner().encoding(setting.defaultEncoding()));
             }
@@ -75,7 +75,7 @@ class DelugeProgram {
                 return testProgramFirst(newRunner());
             }
         }
-        else if (type.isInputFirst() && !type.isProgramFirst()) {
+        else if (type.isInputFirst()) {
             if (setting.hasEncoding()) {
                 return testInputFirst(newRunner().encoding(setting.defaultEncoding()));
             }
@@ -84,7 +84,7 @@ class DelugeProgram {
             }
         }
         else {
-            throw new DelugeException("deluge.program.program.type.exclusion");
+            throw new DelugeException("deluge.program.program.type.switch.default: " + type);
         }
     }
 
@@ -130,7 +130,7 @@ class DelugeProgram {
             }
         }
         else {
-            throw new IllegalArgumentException("deluge.program.first.expected");
+            throw new DelugeException("deluge.program.program.type.switch.default: " + type);
         }
     }
 
@@ -139,44 +139,46 @@ class DelugeProgram {
     }
 
     private DelugeProgramOutput testProgramInput(RunnerProgram program) {
-        if (ARRAY == input.type()) {
+        DelugeDataType dataType = input.type();
+        if (ARRAY == dataType) {
             return buildOutput(program.input(input.array()));
         }
-        else if (STREAM == input.type()) {
+        else if (STREAM == dataType) {
             return buildOutput(program.input(input.streamSupplier()));
         }
-        else if (STREAM_ENCODED == input.type()) {
+        else if (STREAM_ENCODED == dataType) {
             return buildOutput(program.input(input.streamSupplier(), input.charset()));
         }
-        else if (RESOURCE == input.type()) {
+        else if (RESOURCE == dataType) {
             return buildOutput(program.loadInput(input.resource(), input.withClass()));
         }
-        else if (RESOURCE_ENCODED == input.type()) {
+        else if (RESOURCE_ENCODED == dataType) {
             return buildOutput(program.loadInput(input.resource(), input.withClass(), input.charset()));
         }
         else {
-            throw new IllegalArgumentException("deluge.data.type.expected");
+            throw new DelugeException("deluge.program.data.type.switch.default: " + dataType);
         }
     }
 
     private DelugeProgramOutput testInputFirst(RunnerProvideInput runner) {
-        if (ARRAY == input.type()) {
+        DelugeDataType dataType = input.type();
+        if (ARRAY == dataType) {
             return testProgramInput(runner.input(input.array()));
         }
-        else if (STREAM == input.type()) {
+        else if (STREAM == dataType) {
             return testProgramInput(runner.input(input.streamSupplier()));
         }
-        else if (STREAM_ENCODED == input.type()) {
+        else if (STREAM_ENCODED == dataType) {
             return testProgramInput(runner.input(input.streamSupplier(), input.charset()));
         }
-        else if (RESOURCE == input.type()) {
+        else if (RESOURCE == dataType) {
             return testProgramInput(runner.loadInput(input.resource(), input.withClass()));
         }
-        else if (RESOURCE_ENCODED == input.type()) {
+        else if (RESOURCE_ENCODED == dataType) {
             return testProgramInput(runner.loadInput(input.resource(), input.withClass(), input.charset()));
         }
         else {
-            throw new IllegalArgumentException("deluge.data.type.expected");
+            throw new DelugeException("deluge.program.data.type.switch.default: " + dataType);
         }
     }
 
@@ -253,7 +255,7 @@ class DelugeProgram {
             throw setting.error();
         }
 
-        Charset outputCharset = configuration.outputCharset();
+        Charset outputCharset = builder.outputCharset();
 
         try (DelugeLineScanner scanner = new DelugeLineScanner(inputStream, outputCharset)) {
             try (PrintStream out = new PrintStream(outputStream, false, outputCharset)) {
