@@ -28,9 +28,11 @@ public class BoltTestHelper {
         if (expected == null) {
             throw new IllegalArgumentException("bolt.test.helper.is-class.expected.is.null");
         }
+
         if (test == null) {
             throw new IllegalArgumentException("bolt.test.helper.is-class.test.is.null");
         }
+
         String expectedString = expected.getName();
         String actualString = test.getClass().getName();
         if (!Objects.equals(expectedString, actualString)) {
