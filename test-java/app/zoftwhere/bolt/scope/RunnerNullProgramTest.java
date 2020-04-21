@@ -159,10 +159,10 @@ class RunnerNullProgramTest {
 
         asserter.assertCheck(this::testResult);
         asserter.onOffence(result -> {
-            Exception exception = result.error().orElse(null);
-            assertNotNull(exception);
-            assertNull(exception.getCause());
-            assertClass(RunnerException.class, exception);
+            Exception error = result.error().orElse(null);
+            assertNotNull(error);
+            assertNull(error.getCause());
+            assertClass(RunnerException.class, error);
         });
     }
 
