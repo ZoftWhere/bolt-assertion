@@ -26,22 +26,6 @@ import java.util.stream.StreamSupport;
  */
 class BoltReader extends Reader implements Iterator<String> {
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private final int defaultExpectedLineLength = 80;
-
-    private final Object lock;
-
-    private final InputStreamReader reader;
-
-    /** First line read. */
-    private boolean firstLine = true;
-
-    /** Last line empty. */
-    private boolean lastLineEmpty = true;
-
-    /** If the next character is a line feed (\n), skip it. */
-    private boolean skipLF = false;
-
     /**
      * Static helper method for retrieving text lines as a {@link List} of type {@link String}.
      *
@@ -73,6 +57,22 @@ class BoltReader extends Reader implements Iterator<String> {
             throw new RunnerException("bolt.runner.reader.read.array", e);
         }
     }
+
+    @SuppressWarnings("FieldCanBeLocal")
+    private final int defaultExpectedLineLength = 80;
+
+    private final Object lock;
+
+    private final InputStreamReader reader;
+
+    /** First line read. */
+    private boolean firstLine = true;
+
+    /** Last line empty. */
+    private boolean lastLineEmpty = true;
+
+    /** If the next character is a line feed (\n), skip it. */
+    private boolean skipLF = false;
 
     /**
      * Constructor for byte array data.
@@ -223,7 +223,7 @@ class BoltReader extends Reader implements Iterator<String> {
 
     /** {@inheritDoc} */
     @Override
-    @SuppressWarnings("RedundantThrows")
+    @SuppressWarnings({"RedundantThrows", "NullableProblems"})
     public int read(char[] chars, int offset, int length) throws IOException {
         return -1;
     }
