@@ -114,6 +114,11 @@ class BoltProvideInput implements RunnerProvideInput, RunnerProgramInput, Runner
 
     @Override
     public RunnerProgramInput loadInput(String resourceName, Class<?> withClass, Charset charset) {
+        if (charset == null) {
+            //noinspection ConstantConditions
+            return new BoltProvideInput(encoding, arguments, charset, supplier, error);
+        }
+
         if (resourceName == null) {
             RunnerException error = new RunnerException("bolt.runner.load.input.resource.name.null");
             return new BoltProvideInput(encoding, arguments, charset, supplier, error);
