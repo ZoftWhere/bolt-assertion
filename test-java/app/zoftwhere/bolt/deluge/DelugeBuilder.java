@@ -5,9 +5,9 @@ import java.util.Scanner;
 
 import app.zoftwhere.bolt.Runner;
 
-@SuppressWarnings("WeakerAccess")
 public class DelugeBuilder {
 
+    @SuppressWarnings("WeakerAccess")
     public static DelugeBuilder from(DelugeProgramType type, DelugeSetting setting, DelugeData input) {
         return new DelugeBuilder(type, setting, input);
     }
@@ -174,6 +174,7 @@ public class DelugeBuilder {
         return new DelugeBuilder(type, setting, input);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public Charset defaultEncoding() {
         return setting.defaultEncoding() != null ? setting.defaultEncoding() : Runner.DEFAULT_ENCODING;
     }
@@ -186,10 +187,12 @@ public class DelugeBuilder {
         return input.hasCharset() ? input.charset() : defaultEncoding();
     }
 
+    @SuppressWarnings("unused")
     public DelugeProgramType type() {
         return type;
     }
 
+    @SuppressWarnings("unused")
     public DelugeSetting setting() {
         return setting;
     }
