@@ -37,7 +37,7 @@ import static java.nio.charset.StandardCharsets.UTF_16BE;
 import static java.nio.charset.StandardCharsets.UTF_16LE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-class RunnerDelugeTest {
+class BoltDelugeBasicTest {
 
     private final Charset[] encodings = {
         null,
