@@ -48,7 +48,7 @@ class BoltResult implements RunnerResult, RunnerAsserter {
     )
     {
         if (arrayHasNull(expected)) {
-            RunnerException exception = new RunnerException("bolt.runner.variable.array.expected.has.null");
+            RunnerException exception = new RunnerException("bolt.runner.variable.argument.expected.has.null");
             return new BoltResult(output, expected, duration, exception);
         }
 

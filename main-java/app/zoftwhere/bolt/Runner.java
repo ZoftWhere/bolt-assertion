@@ -166,6 +166,16 @@ public class Runner extends AbstractRunner {
     /**
      * {@inheritDoc}
      *
+     * @since 1.0.0
+     */
+    @Override
+    public RunnerProgramInput input(Charset charset, String... input) {
+        return new BoltProvideInput(encoding).input(charset, input);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @since 6.0.0
      */
     @Override

@@ -12,11 +12,13 @@ import app.zoftwhere.bolt.RunnerException;
 import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 
 import static app.zoftwhere.bolt.BoltTestHelper.array;
+import static app.zoftwhere.bolt.BoltTestHelper.arrayHasNull;
 import static app.zoftwhere.bolt.BoltTestHelper.escapeString;
 import static app.zoftwhere.bolt.BoltTestHelper.isOrHasNull;
 import static app.zoftwhere.bolt.BoltTestHelper.readArray;
 import static app.zoftwhere.bolt.BoltTestHelper.transcode;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.ARRAY;
+import static app.zoftwhere.bolt.deluge.DelugeDataType.ARRAY_ENCODED;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.RESOURCE;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.RESOURCE_ENCODED;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.STREAM;
@@ -42,7 +44,7 @@ class DelugeMock {
 
     DelugeProgramOutput buildExpectedOutput() {
 
-        if (STREAM_ENCODED == data.type() || RESOURCE_ENCODED == data.type()) {
+        if (data.hasCharset()) {
             if (data.charset() == null) {
                 String exceptionMessage = "bolt.runner.input.charset.null";
                 Exception error = new RunnerException(exceptionMessage, null);
@@ -56,9 +58,15 @@ class DelugeMock {
             return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
         }
 
-        if (ARRAY == data.type()) {
-            if (data.array() != null && isOrHasNull(data.array())) {
-                String exceptionMessage = "bolt.runner.variable.array.input.has.null";
+        if (ARRAY == data.type() || ARRAY_ENCODED == data.type()) {
+            if (data.array() == null) {
+                String exceptionMessage = "bolt.runner.variable.argument.input.null";
+                Exception error = new RunnerException(exceptionMessage, null);
+                return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
+            }
+
+            if (arrayHasNull(data.array())) {
+                String exceptionMessage = "bolt.runner.variable.argument.input.has.null";
                 Exception error = new RunnerException(exceptionMessage, null);
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
@@ -143,7 +151,7 @@ class DelugeMock {
 
         InputStreamSupplier supplier = newSupplier();
         try (InputStream inputStream = supplier != null ? supplier.get() : null) {
-            try (Scanner scanner = newScanner(inputStream, inEnc, outEnc)) {
+            try (Scanner scanner = inputStream != null ? newScanner(inputStream, inEnc, outEnc) : new Scanner("")) {
                 DelugeLineScanner lineScanner = new DelugeLineScanner(scanner);
 
                 out.printf("Line: \"%s\"", escapeString(lineScanner.firstLine()));

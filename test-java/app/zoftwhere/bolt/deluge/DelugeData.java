@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Assertions;
 
 import static app.zoftwhere.bolt.BoltTestHelper.isOrHasNull;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.ARRAY;
+import static app.zoftwhere.bolt.deluge.DelugeDataType.ARRAY_ENCODED;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.RESOURCE;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.RESOURCE_ENCODED;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.STREAM;
@@ -25,6 +26,10 @@ public class DelugeData {
 
     static DelugeData forStringArray(String[] data) {
         return new DelugeData(data);
+    }
+
+    static DelugeData forStringArray(String[] data, Charset charset) {
+        return new DelugeData(data, charset);
     }
 
     static DelugeData forInputStream(String[] data, Charset charset, boolean withCharset) {
@@ -65,6 +70,16 @@ public class DelugeData {
         this.withClass = null;
         this.resource = null;
         this.charset = null;
+        this.error = null;
+    }
+
+    private DelugeData(String[] array, Charset charset) {
+        this.type = ARRAY_ENCODED;
+        this.array = array;
+        this.supplier = newInputStreamSupplier(charset, array);
+        this.withClass = null;
+        this.resource = null;
+        this.charset = charset;
         this.error = null;
     }
 
@@ -123,7 +138,7 @@ public class DelugeData {
     }
 
     boolean hasCharset() {
-        return type == STREAM_ENCODED || type == RESOURCE_ENCODED;
+        return type == ARRAY_ENCODED || type == STREAM_ENCODED || type == RESOURCE_ENCODED;
     }
 
     Charset charset() {

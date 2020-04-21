@@ -149,12 +149,12 @@ class BoltProgramOutputTest {
             });
         };
 
-        errorMessage.set("bolt.runner.variable.array.expected.has.null");
+        errorMessage.set("bolt.runner.variable.argument.expected.has.null");
         var nullArray = new String[] {null};
         expectationLength.set(1);
         check.accept(output.expected(nullArray));
 
-        errorMessage.set("bolt.runner.variable.array.expected.has.null");
+        errorMessage.set("bolt.runner.variable.argument.expected.has.null");
         expectationLength.set(3);
         check.accept(output.expected("", null, ""));
 

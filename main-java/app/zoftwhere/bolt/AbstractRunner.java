@@ -53,6 +53,9 @@ public abstract class AbstractRunner implements RunnerInterface, RunnerEncoding 
     public abstract RunnerProgramInput input(String... input);
 
     @Override
+    public abstract RunnerProgramInput input(Charset charset, String... input);
+
+    @Override
     public abstract RunnerProgramInput input(InputStreamSupplier supplier);
 
     @Override

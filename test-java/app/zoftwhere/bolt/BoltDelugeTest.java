@@ -106,6 +106,7 @@ class BoltDelugeTest {
         List<DelugeData> list = new ArrayList<>();
         list.add(forStringArray(data));
         for (Charset charset : charsetArray) {
+            list.add(forStringArray(data, charset));
             list.add(forInputStream(data, charset, true));
         }
         return list;

@@ -33,6 +33,11 @@ public class RunnerProxy extends AbstractRunner {
     }
 
     @Override
+    public RunnerProgramInput input(Charset charset, String... input) {
+        return runner.input(charset, input);
+    }
+
+    @Override
     public RunnerProgramInput input(InputStreamSupplier supplier) {
         return runner.input(supplier);
     }

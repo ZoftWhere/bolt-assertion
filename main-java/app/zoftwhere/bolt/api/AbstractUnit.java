@@ -58,6 +58,8 @@ abstract class AbstractUnit {
 
         T input(String... input);
 
+        T input(Charset charset, String... input);
+
         T input(InputStreamSupplier supplier);
 
         T input(InputStreamSupplier supplier, Charset charset);

@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
-import java.time.Duration;
 import java.util.Scanner;
 
 import app.zoftwhere.bolt.api.RunnerInterface;

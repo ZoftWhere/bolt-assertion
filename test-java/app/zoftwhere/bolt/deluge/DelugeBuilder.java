@@ -84,6 +84,10 @@ public class DelugeBuilder {
         return DelugeData.forStringArray(input);
     }
 
+    public static DelugeData forStringArray(String[] input, Charset charset) {
+        return DelugeData.forStringArray(input, charset);
+    }
+
     public static DelugeData forInputStream(String[] input, Charset charset, boolean withCharset) {
         return DelugeData.forInputStream(input, charset, withCharset);
     }

@@ -22,6 +22,7 @@ import app.zoftwhere.bolt.api.RunnerProvideProgram;
 
 import static app.zoftwhere.bolt.Runner.newRunner;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.ARRAY;
+import static app.zoftwhere.bolt.deluge.DelugeDataType.ARRAY_ENCODED;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.RESOURCE;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.RESOURCE_ENCODED;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.STREAM;
@@ -143,6 +144,9 @@ class DelugeProgram {
         if (ARRAY == dataType) {
             return buildOutput(program.input(input.array()));
         }
+        else if (ARRAY_ENCODED == dataType) {
+            return buildOutput(program.input(input.charset(), input.array()));
+        }
         else if (STREAM == dataType) {
             return buildOutput(program.input(input.streamSupplier()));
         }
@@ -164,6 +168,9 @@ class DelugeProgram {
         DelugeDataType dataType = input.type();
         if (ARRAY == dataType) {
             return testProgramInput(runner.input(input.array()));
+        }
+        else if (ARRAY_ENCODED == dataType) {
+            return testProgramInput(runner.input(input.charset(), input.array()));
         }
         else if (STREAM == dataType) {
             return testProgramInput(runner.input(input.streamSupplier()));

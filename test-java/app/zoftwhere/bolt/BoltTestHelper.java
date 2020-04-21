@@ -12,6 +12,10 @@ public class BoltTestHelper {
         return array;
     }
 
+    public static boolean arrayHasNull(String[] array) {
+        return BoltUtility.arrayHasNull(array);
+    }
+
     public static <T> boolean isOrHasNull(T[] array) {
         if (array == null) {
             return true;

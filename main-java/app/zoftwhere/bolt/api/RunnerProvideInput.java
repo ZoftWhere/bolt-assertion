@@ -27,6 +27,16 @@ public interface RunnerProvideInput extends AbstractUnit.Input<RunnerProgramInpu
     /**
      * Specify the input.
      *
+     * @param input program input
+     * @return {@link RunnerProgramOutput}
+     * @since 11.0.0
+     */
+    @Override
+    RunnerProgramInput input(Charset charset, String... input);
+
+    /**
+     * Specify the input.
+     *
      * @param supplier {@link java.io.InputStream} supplier for program input
      * @return {@link RunnerProgramOutput}
      * @since 6.0.0

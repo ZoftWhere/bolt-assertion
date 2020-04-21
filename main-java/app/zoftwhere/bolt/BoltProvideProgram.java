@@ -121,13 +121,28 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
 
     @Override
     public RunnerProgramOutput input(String... input) {
-        if (input != null && arrayHasNull(input)) {
-            RunnerException error = new RunnerException("bolt.runner.variable.array.input.has.null");
-            return buildOutput(encoding, arguments, encoding, () -> null, outputCharset, executor, error);
+        return input(encoding, input);
+    }
+
+    @Override
+    public RunnerProgramOutput input(Charset charset, String... input) {
+        if (charset == null) {
+            //noinspection ConstantConditions
+            return buildOutput(encoding, arguments, charset, () -> null, outputCharset, executor, error);
         }
 
-        InputStreamSupplier supplier = newInputStreamSupplier(encoding, input);
-        return buildOutput(encoding, arguments, encoding, supplier, outputCharset, executor, error);
+        if (input == null) {
+            RunnerException error = new RunnerException("bolt.runner.variable.argument.input.null");
+            return buildOutput(encoding, arguments, charset, () -> null, outputCharset, executor, error);
+        }
+
+        if (arrayHasNull(input)) {
+            RunnerException error = new RunnerException("bolt.runner.variable.argument.input.has.null");
+            return buildOutput(encoding, arguments, charset, () -> null, outputCharset, executor, error);
+        }
+
+        InputStreamSupplier supplier = newInputStreamSupplier(charset, input);
+        return buildOutput(encoding, arguments, charset, supplier, outputCharset, executor, error);
     }
 
     @Override
