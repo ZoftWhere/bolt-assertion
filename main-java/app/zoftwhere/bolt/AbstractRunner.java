@@ -22,6 +22,10 @@ public abstract class AbstractRunner implements RunnerInterface, RunnerEncoding 
     public abstract Charset encoding();
 
     @Override
+    @SuppressWarnings("unused")
+    public abstract RunnerInterface encoding(Charset encoding);
+
+    @Override
     public abstract RunnerProgram run(RunStandard program);
 
     @Override
