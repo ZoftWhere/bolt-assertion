@@ -22,7 +22,7 @@ import static java.nio.charset.StandardCharsets.UTF_16BE;
 import static java.nio.charset.StandardCharsets.UTF_16LE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-class BoltDelugeTest {
+class BoltDelugeBarrageTest {
 
     private final Charset[] encodingArray = {null, US_ASCII, UTF_8, UTF_16};
 
