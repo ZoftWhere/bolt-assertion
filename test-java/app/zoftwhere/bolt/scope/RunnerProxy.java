@@ -17,6 +17,7 @@ public class RunnerProxy extends AbstractRunner {
     }
 
     @Override
+    @SuppressWarnings("unused")
     public RunnerInterface encoding(Charset encoding) {
         return runner.encoding(encoding);
     }
