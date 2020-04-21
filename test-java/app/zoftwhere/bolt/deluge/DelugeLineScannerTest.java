@@ -6,6 +6,7 @@ import app.zoftwhere.bolt.BoltTestHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static app.zoftwhere.bolt.BoltTestHelper.escapeString;
 import static app.zoftwhere.bolt.Runner.newRunner;
 
 class DelugeLineScannerTest {
@@ -27,7 +28,7 @@ class DelugeLineScannerTest {
     @Test
     void testByteOrderMark() {
         String[] input = {"\ufeff", "2\ufeff", ""};
-        String[] expected = {BoltTestHelper.escapeString("[][2\ufeff][]")};
+        String[] expected = {escapeString("[][2\ufeff][]")};
         testWithRunner(input, expected);
     }
 
@@ -73,41 +74,6 @@ class DelugeLineScannerTest {
         testWithRunner(input, expected);
     }
 
-    @Test
-    void testEscapes() {
-        String[] source = {
-            "\ufeffBOM",
-            "\\",
-            "\r",
-            "\n",
-            "\r\n",
-            "\t",
-            "\u2028",
-            "\u2029",
-            "\u0085",
-            "",
-            "end"
-        };
-        @SuppressWarnings("SpellCheckingInspection")
-        String[] target = {
-            "\\ufeffBOM",
-            "\\\\",
-            "\\r",
-            "\\n",
-            "\\r\\n",
-            "\\t",
-            "\\u2028",
-            "\\u2029",
-            "\\u0085",
-            "",
-            "end"
-        };
-        int size = source.length;
-        for (int i = 0; i < size; i++) {
-            Assertions.assertEquals(target[i], BoltTestHelper.escapeString(source[i]));
-        }
-    }
-
     private void testWithRunner(String[] input, String[] expected) {
         newRunner()
             .input(input)
@@ -118,14 +84,23 @@ class DelugeLineScannerTest {
             })
             .expected(expected)
             .assertSuccess();
+        newRunner()
+            .run((scanner, out) -> {
+                try (DelugeLineScanner lineScanner = new DelugeLineScanner(scanner)) {
+                    program(lineScanner, out);
+                }
+            })
+            .input(input)
+            .expected(expected)
+            .assertSuccess();
     }
 
     private static void program(DelugeLineScanner lineScanner, PrintStream out) {
         String line = lineScanner.firstLine();
-        out.printf("[%s]", BoltTestHelper.escapeString(line));
+        out.printf("[%s]", escapeString(line));
         while (lineScanner.hasMore()) {
             line = lineScanner.readLine();
-            out.printf("[%s]", BoltTestHelper.escapeString(line));
+            out.printf("[%s]", escapeString(line));
         }
     }
 
