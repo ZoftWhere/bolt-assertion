@@ -104,8 +104,15 @@ class DelugeControl {
         return switcher.end();
     }
 
-    private static String compareResult(DelugeProgramOutput expected, DelugeProgramOutput actual,
-        Function<DelugeProgramOutput, String> getter, String noActual, String noExpected, String noMatch) {
+    private static String compareResult(
+        DelugeProgramOutput expected,
+        DelugeProgramOutput actual,
+        Function<DelugeProgramOutput, String> getter,
+        String noActual,
+        String noExpected,
+        String noMatch
+    )
+    {
         String expectedString = getter.apply(expected);
         String actualString = getter.apply(actual);
         try {
