@@ -214,13 +214,14 @@ public class DelugeBuilder {
             return;
         }
 
-        if (input.isOpened()) {
-            if (!input.isClosed()) {
+        if (input.isOpened() != input.isClosed()) {
+            if (input.isOpened()) {
                 throw new DelugeException("input supplied stream was not closed.");
             }
-        }
-        else if (input.isClosed()) {
-            throw new DelugeException("input supplied stream closed, but wasn't opened.");
+
+            if (input.isClosed()) {
+                throw new DelugeException("input supplied stream closed, but wasn't opened.");
+            }
         }
     }
 
