@@ -85,6 +85,7 @@ class BoltReader extends Reader implements Iterator<String> {
         if (data == null) {
             throw new RunnerException("bolt.runner.reader.data.null");
         }
+
         if (charset == null) {
             throw new RunnerException("bolt.runner.reader.charset.null");
         }
@@ -103,9 +104,11 @@ class BoltReader extends Reader implements Iterator<String> {
         if (inputStream == null) {
             throw new RunnerException("bolt.runner.reader.input.stream.null");
         }
+
         if (charset == null) {
             throw new RunnerException("bolt.runner.reader.charset.null");
         }
+
         this.reader = new InputStreamReader(inputStream, charset);
         this.lock = super.lock;
     }
