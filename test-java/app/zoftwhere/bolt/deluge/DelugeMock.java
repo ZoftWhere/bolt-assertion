@@ -14,7 +14,6 @@ import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 import static app.zoftwhere.bolt.BoltTestHelper.array;
 import static app.zoftwhere.bolt.BoltTestHelper.arrayHasNull;
 import static app.zoftwhere.bolt.BoltTestHelper.escapeString;
-import static app.zoftwhere.bolt.BoltTestHelper.isOrHasNull;
 import static app.zoftwhere.bolt.BoltTestHelper.readArray;
 import static app.zoftwhere.bolt.BoltTestHelper.transcode;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.ARRAY;
@@ -100,7 +99,7 @@ class DelugeMock {
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
 
-            if (isOrHasNull(input.array())) {
+            if (arrayHasNull(input.array())) {
                 String exceptionMessage = "bolt.runner.load.input.input.stream.null";
                 Exception error = new RunnerException(exceptionMessage, null);
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
