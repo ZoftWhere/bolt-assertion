@@ -44,12 +44,10 @@ class DelugeMock {
 
     DelugeProgramOutput buildExpectedOutput() {
 
-        if (input.hasCharset()) {
-            if (input.charset() == null) {
-                String exceptionMessage = "bolt.runner.input.charset.null";
-                Exception error = new RunnerException(exceptionMessage, null);
-                return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
-            }
+        if (input.hasCharset() && input.charset() == null) {
+            String exceptionMessage = "bolt.runner.input.charset.null";
+            Exception error = new RunnerException(exceptionMessage, null);
+            return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
         }
 
         if (setting.hasCharSet() && setting.charset() == null) {
@@ -71,8 +69,7 @@ class DelugeMock {
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
         }
-
-        if (RESOURCE == input.type() || RESOURCE_ENCODED == input.type()) {
+        else if (RESOURCE == input.type() || RESOURCE_ENCODED == input.type()) {
             if (input.resource() == null) {
                 String exceptionMessage = "bolt.runner.load.input.resource.name.null";
                 Exception error = new RunnerException(exceptionMessage, null);
@@ -92,8 +89,7 @@ class DelugeMock {
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
         }
-
-        if (STREAM == input.type() || STREAM_ENCODED == input.type()) {
+        else if (STREAM == input.type() || STREAM_ENCODED == input.type()) {
             if (input.error() != null) {
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, input.error());
             }
@@ -110,10 +106,14 @@ class DelugeMock {
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
         }
+        else {
+            throw new DelugeException("deluge.mock.type.switch.default: " + input.type());
+        }
 
         if (setting.hasError()) {
             return DelugeProgramOutput.from(array(""), Duration.ofDays(1), setting.error());
         }
+
         if (input.hasError()) {
             return DelugeProgramOutput.from(array(""), Duration.ofDays(1), input.error());
         }
