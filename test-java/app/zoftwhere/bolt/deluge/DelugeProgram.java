@@ -55,11 +55,14 @@ class DelugeProgram {
         this.input = input;
         this.setting = setting;
 
-        if (type.isArgued() && !setting.hasArgumentArray()) {
-            throw new IllegalArgumentException("deluge.no.argument.for.argued.type");
-        }
-        if (!type.isArgued() && setting.hasArgumentArray()) {
-            throw new IllegalArgumentException("deluge.program.found.argument.for.argument-free.type");
+        if (type.isArgued() != setting.hasArgumentArray()) {
+            if (type.isArgued()) {
+                throw new DelugeException("deluge.program.has.program.type.with.argument");
+            }
+
+            if (setting.hasArgumentArray()) {
+                throw new DelugeException("deluge.program.has.setting.with.argument");
+            }
         }
     }
 
