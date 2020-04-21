@@ -151,10 +151,12 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
             RunnerException error = new RunnerException("bolt.runner.load.input.resource.name.null");
             return buildOutput(encoding, arguments, charset, () -> null, outputCharset, executor, error);
         }
+
         if (withClass == null) {
             RunnerException error = new RunnerException("bolt.runner.load.input.resource.class.null");
             return buildOutput(encoding, arguments, charset, () -> null, outputCharset, executor, error);
         }
+
         if (withClass.getResource(resourceName) == null) {
             RunnerException error = new RunnerException("bolt.runner.load.input.resource.not.found");
             return buildOutput(encoding, arguments, charset, () -> null, outputCharset, executor, error);
