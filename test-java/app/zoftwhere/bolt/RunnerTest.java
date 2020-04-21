@@ -5,7 +5,7 @@ import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import app.zoftwhere.bolt.api.RunnerInterface;
+import app.zoftwhere.bolt.api.RunnerInterface.RunnerResultConsumer;
 import app.zoftwhere.bolt.api.RunnerResult;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +22,7 @@ class RunnerTest {
 
     private final Runner runner = newRunner();
 
-    private final RunnerInterface.RunnerResultConsumer consumer =
+    private final RunnerResultConsumer consumer =
         (RunnerResult result) -> {
             if (result.isError()) {
                 throw result.error().orElse(new Exception());
