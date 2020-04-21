@@ -9,6 +9,7 @@ import app.zoftwhere.bolt.api.RunnerInterface.RunnerResultConsumer;
 import app.zoftwhere.bolt.api.RunnerResult;
 import org.junit.jupiter.api.Test;
 
+import static app.zoftwhere.bolt.BoltProvide.NEW_LINE;
 import static app.zoftwhere.bolt.Runner.newRunner;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_16;
@@ -22,18 +23,16 @@ class RunnerTest {
 
     private final Runner runner = newRunner();
 
-    private final RunnerResultConsumer consumer =
-        (RunnerResult result) -> {
-            if (result.isError()) {
-                throw result.error().orElse(new Exception());
-            }
+    private final RunnerResultConsumer consumer = (RunnerResult result) -> {
+        if (result.isError()) {
+            throw result.error().orElse(new Exception());
+        }
 
-            String errorMessage = result.message().orElse("") +
-                "\r\n" + "Expected : " + Arrays.toString(result.expected()) +
-                "\r\n" + "Found    : " + Arrays.toString(result.output());
-            throw new RunnerException(errorMessage);
-        };
-
+        String errorMessage = result.message().orElse("") +
+            NEW_LINE + "Expected : " + Arrays.toString(result.expected()) +
+            NEW_LINE + "Found    : " + Arrays.toString(result.output());
+        throw new RunnerException(errorMessage);
+    };
 
     @Test
     void testEncoding() {
