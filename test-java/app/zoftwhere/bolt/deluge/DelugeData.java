@@ -12,11 +12,11 @@ import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 import org.junit.jupiter.api.Assertions;
 
 import static app.zoftwhere.bolt.BoltTestHelper.isOrHasNull;
-import static app.zoftwhere.bolt.deluge.DelugeData.DataType.ARRAY;
-import static app.zoftwhere.bolt.deluge.DelugeData.DataType.RESOURCE;
-import static app.zoftwhere.bolt.deluge.DelugeData.DataType.RESOURCE_ENCODED;
-import static app.zoftwhere.bolt.deluge.DelugeData.DataType.STREAM;
-import static app.zoftwhere.bolt.deluge.DelugeData.DataType.STREAM_ENCODED;
+import static app.zoftwhere.bolt.deluge.DelugeDataType.ARRAY;
+import static app.zoftwhere.bolt.deluge.DelugeDataType.RESOURCE;
+import static app.zoftwhere.bolt.deluge.DelugeDataType.RESOURCE_ENCODED;
+import static app.zoftwhere.bolt.deluge.DelugeDataType.STREAM;
+import static app.zoftwhere.bolt.deluge.DelugeDataType.STREAM_ENCODED;
 
 public class DelugeData {
 
@@ -28,7 +28,7 @@ public class DelugeData {
     }
 
     static DelugeData forInputStream(String[] data, Charset charset, boolean withCharset) {
-        DataType type = withCharset ? STREAM_ENCODED : STREAM;
+        DelugeDataType type = withCharset ? STREAM_ENCODED : STREAM;
         return new DelugeData(type, data, charset);
     }
 
@@ -48,7 +48,7 @@ public class DelugeData {
         return new DelugeData(RESOURCE_ENCODED, resource, withClass, charset);
     }
 
-    private final DataType type;
+    private final DelugeDataType type;
     private final String[] array;
     private final InputStreamSupplier supplier;
     private final String resource;
@@ -68,7 +68,7 @@ public class DelugeData {
         this.error = null;
     }
 
-    private DelugeData(DataType type, String[] array, Charset charset) {
+    private DelugeData(DelugeDataType type, String[] array, Charset charset) {
         Assertions.assertTrue(type == STREAM || type == STREAM_ENCODED);
         this.type = type;
         this.array = array;
@@ -79,7 +79,7 @@ public class DelugeData {
         this.error = null;
     }
 
-    private DelugeData(DataType type, String resource, Class<?> withClass, Charset charset) {
+    private DelugeData(DelugeDataType type, String resource, Class<?> withClass, Charset charset) {
         Assertions.assertTrue(type == RESOURCE || type == RESOURCE_ENCODED);
         Assertions.assertTrue(type == RESOURCE_ENCODED || charset == null);
         this.type = type;
@@ -91,7 +91,7 @@ public class DelugeData {
         this.error = null;
     }
 
-    private DelugeData(DataType type, Exception error, Charset charset) {
+    private DelugeData(DelugeDataType type, Exception error, Charset charset) {
         Assertions.assertTrue(type == STREAM || type == STREAM_ENCODED);
         this.type = type;
         this.array = null;
@@ -102,7 +102,7 @@ public class DelugeData {
         this.error = error;
     }
 
-    public DataType type() {
+    public DelugeDataType type() {
         return type;
     }
 
@@ -138,16 +138,16 @@ public class DelugeData {
         return error;
     }
 
-    public void resetFlags() {
+    void resetFlags() {
         openFlag.set(false);
         closedFlag.set(false);
     }
 
-    public boolean isOpened() {
+    boolean isOpened() {
         return openFlag.get();
     }
 
-    public boolean isClosed() {
+    boolean isClosed() {
         return closedFlag.get();
     }
 
@@ -195,14 +195,6 @@ public class DelugeData {
                 }
             }
         };
-    }
-
-    public enum DataType {
-        ARRAY,
-        STREAM,
-        STREAM_ENCODED,
-        RESOURCE,
-        RESOURCE_ENCODED
     }
 
 }

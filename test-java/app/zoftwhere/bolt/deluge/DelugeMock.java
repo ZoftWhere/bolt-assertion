@@ -16,11 +16,11 @@ import static app.zoftwhere.bolt.BoltTestHelper.escapeString;
 import static app.zoftwhere.bolt.BoltTestHelper.isOrHasNull;
 import static app.zoftwhere.bolt.BoltTestHelper.readArray;
 import static app.zoftwhere.bolt.BoltTestHelper.transcode;
-import static app.zoftwhere.bolt.deluge.DelugeData.DataType.ARRAY;
-import static app.zoftwhere.bolt.deluge.DelugeData.DataType.RESOURCE;
-import static app.zoftwhere.bolt.deluge.DelugeData.DataType.RESOURCE_ENCODED;
-import static app.zoftwhere.bolt.deluge.DelugeData.DataType.STREAM;
-import static app.zoftwhere.bolt.deluge.DelugeData.DataType.STREAM_ENCODED;
+import static app.zoftwhere.bolt.deluge.DelugeDataType.ARRAY;
+import static app.zoftwhere.bolt.deluge.DelugeDataType.RESOURCE;
+import static app.zoftwhere.bolt.deluge.DelugeDataType.RESOURCE_ENCODED;
+import static app.zoftwhere.bolt.deluge.DelugeDataType.STREAM;
+import static app.zoftwhere.bolt.deluge.DelugeDataType.STREAM_ENCODED;
 
 class DelugeMock {
 

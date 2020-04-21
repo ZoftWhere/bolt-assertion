@@ -21,11 +21,11 @@ import app.zoftwhere.bolt.api.RunnerProvideInput;
 import app.zoftwhere.bolt.api.RunnerProvideProgram;
 
 import static app.zoftwhere.bolt.Runner.newRunner;
-import static app.zoftwhere.bolt.deluge.DelugeData.DataType.ARRAY;
-import static app.zoftwhere.bolt.deluge.DelugeData.DataType.RESOURCE;
-import static app.zoftwhere.bolt.deluge.DelugeData.DataType.RESOURCE_ENCODED;
-import static app.zoftwhere.bolt.deluge.DelugeData.DataType.STREAM;
-import static app.zoftwhere.bolt.deluge.DelugeData.DataType.STREAM_ENCODED;
+import static app.zoftwhere.bolt.deluge.DelugeDataType.ARRAY;
+import static app.zoftwhere.bolt.deluge.DelugeDataType.RESOURCE;
+import static app.zoftwhere.bolt.deluge.DelugeDataType.RESOURCE_ENCODED;
+import static app.zoftwhere.bolt.deluge.DelugeDataType.STREAM;
+import static app.zoftwhere.bolt.deluge.DelugeDataType.STREAM_ENCODED;
 import static app.zoftwhere.bolt.deluge.DelugeProgramType.INPUT_CONSOLE;
 import static app.zoftwhere.bolt.deluge.DelugeProgramType.INPUT_CONSOLE_ARGUED;
 import static app.zoftwhere.bolt.deluge.DelugeProgramType.INPUT_STANDARD;
