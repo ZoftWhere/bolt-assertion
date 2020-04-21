@@ -91,10 +91,12 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         if (error != null) {
             return new BoltResult(output, new String[0], duration, error);
         }
+
         if (inputCharset == null) {
             RunnerException exception = new RunnerException("bolt.runner.load.expectation.charset.null");
             return new BoltResult(output, new String[0], duration, exception);
         }
+
         if (supplier == null) {
             RunnerException exception = new RunnerException("bolt.runner.load.expectation.supplier.null");
             return new BoltResult(output, new String[0], duration, exception);
@@ -130,12 +132,14 @@ class BoltResult implements RunnerResult, RunnerAsserter {
             };
             return newBoltResult(output, supplier, charset, duration, comparator, error);
         }
+
         if (withClass == null) {
             InputStreamSupplier supplier = () -> {
                 throw new RunnerException("bolt.runner.load.expectation.resource.class.null");
             };
             return newBoltResult(output, supplier, charset, duration, comparator, error);
         }
+
         if (withClass.getResource(resourceName) == null) {
             InputStreamSupplier supplier = () -> {
                 throw new RunnerException("bolt.runner.load.expectation.resource.not.found");
