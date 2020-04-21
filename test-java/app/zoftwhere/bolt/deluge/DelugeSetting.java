@@ -120,10 +120,12 @@ public class DelugeSetting {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     public boolean hasEncoding() {
         return hasDefaultEncoding;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public Charset defaultEncoding() {
         return encoding;
     }
@@ -132,10 +134,12 @@ public class DelugeSetting {
         return hasArgumentArray;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public String[] argumentArray() {
         return argumentArray;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public boolean hasError() {
         return hasError;
     }
@@ -144,6 +148,7 @@ public class DelugeSetting {
         return error;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public boolean hasCharSet() {
         return hasCharSet;
     }
