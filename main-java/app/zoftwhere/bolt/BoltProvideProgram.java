@@ -162,6 +162,11 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
 
     @Override
     public RunnerProgramOutput loadInput(String resourceName, Class<?> withClass, Charset charset) {
+        if (charset == null) {
+            //noinspection ConstantConditions
+            return buildOutput(encoding, arguments, charset, () -> null, outputCharset, executor, error);
+        }
+
         if (resourceName == null) {
             RunnerException error = new RunnerException("bolt.runner.load.input.resource.name.null");
             return buildOutput(encoding, arguments, charset, () -> null, outputCharset, executor, error);
