@@ -10,6 +10,7 @@ class DelugeProgramTypeTest {
             if (programType.isProgramFirst() && programType.isInputFirst()) {
                 throw new DelugeException("deluge.program.type.occlusion");
             }
+
             if (!programType.isProgramFirst() && !programType.isInputFirst()) {
                 throw new DelugeException("deluge.program.type.exclusion");
             }
@@ -17,6 +18,7 @@ class DelugeProgramTypeTest {
             if (programType.isStandard() && programType.isConsole()) {
                 throw new DelugeException("deluge.program.type.occlusion");
             }
+
             if (!programType.isStandard() && !programType.isConsole()) {
                 throw new DelugeException("deluge.program.type.exclusion");
             }
