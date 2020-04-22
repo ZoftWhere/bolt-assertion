@@ -190,11 +190,11 @@ class DelugeProgram {
     }
 
     private DelugeProgramOutput testProgramInput(RunnerProgramInput next) {
-        if (type.isArgued()) {
-            return testProgramWithArguments(next.argument(setting.argumentArray()));
+        if (!type.isArgued()) {
+            return testProgramNoArguments(next);
         }
         else {
-            return testProgramNoArguments(next);
+            return testProgramWithArguments(next.argument(setting.argumentArray()));
         }
     }
 
