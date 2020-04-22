@@ -4,6 +4,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Scanner;
 
 import app.zoftwhere.bolt.api.RunnerInterface;
@@ -19,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import static app.zoftwhere.bolt.Runner.newRunner;
 import static app.zoftwhere.bolt.deluge.DelugeBuilder.newLineScanner;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.ARRAY;
+import static app.zoftwhere.bolt.deluge.DelugeDataType.ARRAY_ENCODED;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.RESOURCE;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.RESOURCE_ENCODED;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.STREAM;
@@ -31,6 +35,7 @@ import static app.zoftwhere.bolt.deluge.DelugeProgramType.PROGRAM_CONSOLE;
 import static app.zoftwhere.bolt.deluge.DelugeProgramType.PROGRAM_CONSOLE_ARGUED;
 import static app.zoftwhere.bolt.deluge.DelugeProgramType.PROGRAM_STANDARD;
 import static app.zoftwhere.bolt.deluge.DelugeProgramType.PROGRAM_STANDARD_ARGUED;
+import static java.nio.charset.StandardCharsets.ISO_8859_1;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_16;
 import static java.nio.charset.StandardCharsets.UTF_16BE;
@@ -39,27 +44,39 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 class BoltDelugeBasicTest {
 
+    @SuppressWarnings("WeakerAccess")
+    public static void main(String[] args) {
+        BoltDelugeBasicTest test = new BoltDelugeBasicTest();
+        long rx = 2 + 2 * test.encodings.length;
+        long ax = test.arguments.length;
+        long cx = test.charsets.length;
+        long ex = test.exceptions.length;
+        long dx = test.data.length;
+
+        long expected = rx * 2 * (1 + ax + cx + ax * cx) * ex * dx;
+        System.out.println("Tests expected : " + expected);
+
+        var start = Instant.now();
+        test.runnerTest();
+        var finish = Instant.now();
+        var duration = Duration.ofMillis(start.until(finish, ChronoUnit.MILLIS));
+
+        System.out.println("Tests run      : " + test.count);
+        System.out.println("Duration       : " + duration);
+    }
+
     private final Charset[] encodings = {
-        null,
         US_ASCII,
-        UTF_8,
         UTF_16LE,
-        UTF_16BE
     };
 
     private final Charset[] charsets = {
-        null,
         US_ASCII,
-        UTF_8,
         UTF_16LE,
-        UTF_16BE
     };
 
     private final String[][] arguments = {
-        null,
-        new String[] {null},
-        new String[] {"≤", null},
-        new String[] {null, ">"}
+        new String[] {null, "µ", null},
     };
 
     private final Exception[] exceptions = {
@@ -69,30 +86,42 @@ class BoltDelugeBasicTest {
 
     private final DelugeData[] data = {
         DelugeBuilder.forStringArray(null),
+        DelugeBuilder.forStringArray(null, null),
         DelugeBuilder.forStringArray(new String[] {null}),
         DelugeBuilder.forStringArray(new String[] {"Hello"}),
+        DelugeBuilder.forStringArray(new String[] {"Hello"}, null),
+        DelugeBuilder.forStringArray(new String[] {"Hello"}, ISO_8859_1),
+        DelugeBuilder.forStringArray(new String[] {null}, UTF_8),
+        DelugeBuilder.forStringArray(new String[] {"Hello"}, UTF_8),
+        DelugeBuilder.forStringArray(null, UTF_16),
+        DelugeBuilder.forStringArray(new String[] {null}, UTF_16),
+        DelugeBuilder.forStringArray(new String[] {"Hello"}, UTF_16),
+        //
         DelugeBuilder.forInputStream(null, null, false),
+        DelugeBuilder.forInputStream(null, null, true),
         DelugeBuilder.forInputStream(new String[] {null}, US_ASCII, true),
         DelugeBuilder.forInputStream(new String[] {"1\r", "\n2", "3", "4"}, US_ASCII, false),
         DelugeBuilder.forInputStream(new String[] {"1\r", "\n2", "3", "4"}, US_ASCII, true),
-        DelugeBuilder.forInputStream(new Exception("TestInputError", null)),
-        DelugeBuilder.forInputStream(new Exception("TestInputError", new RuntimeException())),
-        DelugeBuilder.forResource("RunnerTest.txt", Runner.class),
+        //
+        DelugeBuilder.forInputStream(new RuntimeException("TestInputError")),
+        DelugeBuilder.forInputStream(new Exception("TestInputError", new Exception("TestInputCause"))),
+        //
         DelugeBuilder.forResource("RunnerTest.txt", Runner.class, UTF_8),
         DelugeBuilder.forResource("RunnerTestUTF16.txt", Runner.class, UTF_16BE),
-        DelugeBuilder.forResource("null", Runner.class),
+        DelugeBuilder.forResource("<none>", Runner.class),
+        DelugeBuilder.forResource("<null>", null),
         DelugeBuilder.forResource(null, Runner.class),
-        DelugeBuilder.forResource("null", null),
         DelugeBuilder.forResource(null, null),
-        DelugeBuilder.forResource("null", Runner.class, UTF_16),
-        DelugeBuilder.forResource(null, Runner.class, UTF_16),
-        DelugeBuilder.forResource("null", null, UTF_16),
-        DelugeBuilder.forResource(null, null, UTF_16),
-        DelugeBuilder.forResource("null", Runner.class, null),
+        DelugeBuilder.forResource("<null>", Runner.class, null),
+        DelugeBuilder.forResource("<null>", null, US_ASCII),
+        DelugeBuilder.forResource("<null>", null, null),
+        DelugeBuilder.forResource(null, Runner.class, US_ASCII),
         DelugeBuilder.forResource(null, Runner.class, null),
-        DelugeBuilder.forResource("null", null, null),
+        DelugeBuilder.forResource(null, null, US_ASCII),
         DelugeBuilder.forResource(null, null, null),
     };
+
+    private int count;
 
     @Test
     void runnerTest() {
@@ -227,6 +256,10 @@ class BoltDelugeBasicTest {
             RunnerProgramOutput output = program.input(input.array());
             withRunnerProgramOutput(builder, output);
         }
+        else if (ARRAY_ENCODED == input.type()) {
+            RunnerProgramOutput output = program.input(inEnc, input.array());
+            withRunnerProgramOutput(builder, output);
+        }
         else if (STREAM == input.type()) {
             builder.resetInputFlags();
             RunnerProgramOutput output = program.input(input.streamSupplier());
@@ -258,6 +291,10 @@ class BoltDelugeBasicTest {
             Charset inputCharset = updated.inputCharset();
             if (ARRAY == data.type()) {
                 RunnerProgramInput programInput = runner.input(data.array());
+                withRunnerProgramInput(updated, programInput);
+            }
+            else if (ARRAY_ENCODED == data.type()) {
+                RunnerProgramInput programInput = runner.input(inputCharset, data.array());
                 withRunnerProgramInput(updated, programInput);
             }
             else if (STREAM == data.type()) {
@@ -408,6 +445,7 @@ class BoltDelugeBasicTest {
         if (message != null) {
             throw new RunnerException(message, null);
         }
+        count++;
     }
 
     private void process(
