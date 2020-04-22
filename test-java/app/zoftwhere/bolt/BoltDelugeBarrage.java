@@ -24,7 +24,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 class BoltDelugeBarrage {
 
-    @SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
     public static void main(String[] args) {
         BoltDelugeBarrage test = new BoltDelugeBarrage();
         long rx = 2 + 2 * test.encodingArray.length;
