@@ -28,11 +28,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BoltProgramOutputTest {
 
+    private final Charset ENCODING = Runner.DEFAULT_ENCODING;
+
     private final Duration instant = Duration.ZERO;
 
     @Test
     void testLoadNullComparator() {
-        var output = new BoltProgramOutput(new String[] {""}, instant, null);
+        var output = new BoltProgramOutput(ENCODING, new String[] {""}, instant, null);
         var test = output.comparator(null);
         assertClass(BoltProgramOutput.class, test);
         var exception = test.error().orElse(null);
@@ -46,7 +48,7 @@ class BoltProgramOutputTest {
     @Test
     void testComparatorMatch() {
         var output = new String[] {"one", "two"};
-        var result = new BoltProgramOutput(output, instant, null)
+        var result = new BoltProgramOutput(ENCODING, output, instant, null)
             .comparator(Comparator.nullsFirst(Comparator.naturalOrder()))
             .expected(output)
             .result();
@@ -59,7 +61,7 @@ class BoltProgramOutputTest {
     @Test
     void testComparatorLengthMismatch() {
         var output = new String[] {"one", "two"};
-        var result = new BoltProgramOutput(output, instant, null)
+        var result = new BoltProgramOutput(ENCODING, output, instant, null)
             .comparator(Comparator.nullsFirst(Comparator.naturalOrder()))
             .expected("")
             .result();
@@ -72,7 +74,7 @@ class BoltProgramOutputTest {
     @Test
     void testComparatorDataMismatch() {
         var output = new String[] {"one", "two"};
-        var result = new BoltProgramOutput(output, instant, null)
+        var result = new BoltProgramOutput(ENCODING, output, instant, null)
             .comparator(Comparator.nullsFirst(Comparator.naturalOrder()))
             .expected("", "")
             .result();
@@ -85,7 +87,7 @@ class BoltProgramOutputTest {
     @Test
     void testLoadComparatorSkip() {
         var exception = new NullPointerException("comparator.load.skip");
-        var output = new BoltProgramOutput(new String[] {""}, instant, exception).comparator(null);
+        var output = new BoltProgramOutput(ENCODING, new String[] {""}, instant, exception).comparator(null);
 
         Consumer<RunnerProgramOutput> check = programOutput -> {
             Exception error = programOutput.error().orElse(null);
@@ -103,10 +105,11 @@ class BoltProgramOutputTest {
     void testSpaceLoad() {
         Consumer<RunnerAsserter> check = asserter -> {
             RunnerResult result = asserter.result();
-            Exception error = result.error().orElse(null);
             String[] output = result.output();
             String[] expected = result.expected();
+            Exception error = result.error().orElse(null);
 
+            assertNull(error);
             assertEquals(1, expected.length);
             assertEquals("", expected[0]);
             assertNotNull(output);
@@ -114,7 +117,7 @@ class BoltProgramOutputTest {
             assertEquals("", output[0]);
         };
 
-        var programOutput = new BoltProgramOutput(new String[] {""}, instant, null);
+        var programOutput = new BoltProgramOutput(ENCODING, new String[] {""}, instant, null);
         var emptyArray = new String[] { };
         var blankArray = new String[] {""};
 
@@ -127,7 +130,7 @@ class BoltProgramOutputTest {
 
     @Test
     void testLoad() {
-        var output = new BoltProgramOutput(new String[] {""}, instant, null);
+        var output = new BoltProgramOutput(ENCODING, new String[] {""}, instant, null);
         var errorClass = new BoltPlaceHolder<Class<?>>(RunnerException.class);
         var errorMessage = new BoltPlaceHolder<String>(null);
         var expectationLength = new BoltPlaceHolder<Integer>(null);
@@ -146,12 +149,12 @@ class BoltProgramOutputTest {
             });
         };
 
-        errorMessage.set("bolt.runner.variable.array.expected.has.null");
+        errorMessage.set("bolt.runner.variable.argument.expected.has.null");
         var nullArray = new String[] {null};
         expectationLength.set(1);
         check.accept(output.expected(nullArray));
 
-        errorMessage.set("bolt.runner.variable.array.expected.has.null");
+        errorMessage.set("bolt.runner.variable.argument.expected.has.null");
         expectationLength.set(3);
         check.accept(output.expected("", null, ""));
 
@@ -184,7 +187,7 @@ class BoltProgramOutputTest {
     void testLoadSkip() {
         var errorMessage = "expectation.load.skip";
         var exception = new NullPointerException(errorMessage);
-        var output = new BoltProgramOutput(new String[] {""}, instant, exception).comparator(null);
+        var output = new BoltProgramOutput(ENCODING, new String[] {""}, instant, exception).comparator(null);
         var expectationLength = new BoltPlaceHolder<Integer>(null);
 
         Consumer<RunnerAsserter> check = asserter -> {
@@ -228,7 +231,7 @@ class BoltProgramOutputTest {
 
     @Test
     void testLoadResource() {
-        var output = new BoltProgramOutput(new String[] {""}, instant, null);
+        var output = new BoltProgramOutput(UTF_8, new String[] {""}, instant, null);
         var names = new String[] {null, "notFound", "RunnerTest.txt"};
         var withClasses = new Class<?>[] {null, Runner.class, RunnerProgramOutput.class};
         var charsets = new Charset[] {null, UTF_8, US_ASCII};
@@ -294,7 +297,7 @@ class BoltProgramOutputTest {
     void testLoadResourceSkip() {
         var output = new String[] {"testLoadResourceSkip", ""};
         var exception = new NullPointerException("resource.load.skip");
-        var programOutput = new BoltProgramOutput(output, instant, exception);
+        var programOutput = new BoltProgramOutput(ENCODING, output, instant, exception);
         var names = new String[] {null, "notFound", "RunnerTest.txt"};
         var withClasses = new Class<?>[] {null, Runner.class, RunnerProgramOutput.class};
         var charsets = new Charset[] {null, UTF_8, US_ASCII};
@@ -334,7 +337,7 @@ class BoltProgramOutputTest {
     @Test
     void testLoadInputStream() {
         final var output = new String[] {"program", "output", ""};
-        final var programOutput = new BoltProgramOutput(output, instant, null);
+        final var programOutput = new BoltProgramOutput(ENCODING, output, instant, null);
         final var encodingArray = new Charset[] {null, UTF_8, US_ASCII, UTF_16BE, UTF_16LE};
         final var expectation = new String[] {"expectation", "test"};
         Consumer<RunnerResult> check = (RunnerResult result) -> {
@@ -360,7 +363,7 @@ class BoltProgramOutputTest {
     void testOutputArrayCopy() {
         // The constructor caller takes responsibility for input arrays.
         final var output = new String[] {"index0", "index1", "index2"};
-        final var programOutput = new BoltProgramOutput(output, instant, null);
+        final var programOutput = new BoltProgramOutput(ENCODING, output, instant, null);
         output[0] = "changed0";
         final var copy1 = programOutput.output();
         copy1[1] = "changed1";

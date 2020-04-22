@@ -21,7 +21,6 @@ import app.zoftwhere.bolt.api.RunnerInterface.RunStandard;
 import app.zoftwhere.bolt.api.RunnerInterface.RunStandardArgued;
 
 import static app.zoftwhere.bolt.BoltReader.readArray;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * <p>Bolt Provide interface for Bolt Provide Input and Bolt Provide Program classes.
@@ -33,21 +32,24 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  */
 interface BoltProvide {
 
+    /** New line definition for parsing that allows execution to be system agnostic. */
+    String NEW_LINE = "\r\n";
+
     default String[] emptyOnNull(String[] value) {
         return value != null ? value : new String[0];
     }
 
-    default InputStreamSupplier newInputStreamSupplier(String... input) {
+    default InputStreamSupplier newInputStreamSupplier(Charset charset, String... input) {
         if (input == null || input.length <= 0) {
             return () -> new ByteArrayInputStream(new byte[0]);
         }
 
         return () -> {
             try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-                try (OutputStreamWriter writer = new OutputStreamWriter(output, UTF_8)) {
+                try (OutputStreamWriter writer = new OutputStreamWriter(output, charset)) {
                     writer.append(input[0]);
                     for (int i = 1, s = input.length; i < s; i++) {
-                        writer.append("\r\n");
+                        writer.append(NEW_LINE);
                         writer.append(input[i]);
                     }
                     writer.flush();
@@ -129,7 +131,7 @@ interface BoltProvide {
      *
      * @param program input-output-stream program with arguments (or proxy)
      * @return {@link BoltExecutor} if program non-null, null otherwise
-     * @since 10.0.0
+     * @since 11.0.0
      */
     default BoltExecutor buildConsoleExecutor(RunConsoleArgued program) {
         if (program == null) {
@@ -156,8 +158,11 @@ interface BoltProvide {
      * @param outputCharset  character encoding for program output
      * @param executor       program executor
      * @return {@link BoltProgramOutput}
+     * @since 11.0.0
      */
-    default BoltProgramOutput buildProgramOutput(String[] arguments,
+    default BoltProgramOutput buildOutput(
+        Charset encoding,
+        String[] arguments,
         Charset inputCharset,
         InputStreamSupplier streamSupplier,
         Charset outputCharset,
@@ -167,28 +172,32 @@ interface BoltProvide {
         final String[] blank = new String[] {""};
         if (executor == null) {
             RunnerException error = new RunnerException("bolt.runner.program.null");
-            return new BoltProgramOutput(blank, Duration.ZERO, error);
+            return new BoltProgramOutput(encoding, blank, Duration.ZERO, error);
         }
+
         if (inputCharset == null) {
             RunnerException error = new RunnerException("bolt.runner.input.charset.null");
-            return new BoltProgramOutput(blank, Duration.ZERO, error);
+            return new BoltProgramOutput(encoding, blank, Duration.ZERO, error);
         }
+
         if (outputCharset == null) {
             RunnerException error = new RunnerException("bolt.runner.output.charset.null");
-            return new BoltProgramOutput(blank, Duration.ZERO, error);
+            return new BoltProgramOutput(encoding, blank, Duration.ZERO, error);
         }
+
         if (streamSupplier == null) {
             RunnerException error = new RunnerException("bolt.runner.input.stream.supplier.null");
-            return new BoltProgramOutput(blank, Duration.ZERO, error);
+            return new BoltProgramOutput(encoding, blank, Duration.ZERO, error);
         }
+
         if (loadError != null) {
-            return new BoltProgramOutput(blank, Duration.ZERO, loadError);
+            return new BoltProgramOutput(encoding, blank, Duration.ZERO, loadError);
         }
 
         try (InputStream inputStream = streamSupplier.get()) {
             if (inputStream == null) {
                 RunnerException error = new RunnerException("bolt.runner.load.input.input.stream.null");
-                return new BoltProgramOutput(blank, Duration.ZERO, error);
+                return new BoltProgramOutput(encoding, blank, Duration.ZERO, error);
             }
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -203,10 +212,10 @@ interface BoltProvide {
 
             final byte[] data = outputStream.toByteArray();
             final String[] output = readArray(() -> new BoltReader(data, outputCharset));
-            return new BoltProgramOutput(output, time, error);
+            return new BoltProgramOutput(encoding, output, time, error);
         }
         catch (Exception e) {
-            return new BoltProgramOutput(blank, Duration.ZERO, e);
+            return new BoltProgramOutput(encoding, blank, Duration.ZERO, e);
         }
     }
 

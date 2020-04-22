@@ -1,13 +1,12 @@
 package app.zoftwhere.bolt.deluge;
 
-public final class DelugeException extends RuntimeException {
+final class DelugeException extends RuntimeException {
 
-    public DelugeException(String message) {
+    DelugeException(String message) {
         super(message);
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public DelugeException(String message, Throwable cause) {
+    DelugeException(String message, Throwable cause) {
         super(message, cause);
     }
 

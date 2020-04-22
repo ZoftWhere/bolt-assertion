@@ -1,11 +1,9 @@
 package app.zoftwhere.bolt;
 
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Objects;
 import java.util.Optional;
 
 import app.zoftwhere.bolt.api.RunnerAsserter;
@@ -13,8 +11,7 @@ import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 import app.zoftwhere.bolt.api.RunnerPreTest;
 import app.zoftwhere.bolt.api.RunnerProgramOutput;
 
-import static app.zoftwhere.bolt.BoltReader.readArray;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static app.zoftwhere.bolt.BoltResult.newBoltResult;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -23,6 +20,8 @@ import static java.util.Objects.requireNonNull;
  * @since 6.0.0
  */
 class BoltProgramOutput implements RunnerProgramOutput {
+
+    private final Charset encoding;
 
     private final String[] output;
 
@@ -38,9 +37,10 @@ class BoltProgramOutput implements RunnerProgramOutput {
      * @param output   program output lines
      * @param duration duration of program execution
      * @param error    execution error, if any, null otherwise
-     * @since 9.0.0
+     * @since 11.0.0
      */
-    BoltProgramOutput(String[] output, Duration duration, Exception error) {
+    BoltProgramOutput(Charset encoding, String[] output, Duration duration, Exception error) {
+        this.encoding = encoding;
         this.output = requireNonNull(output);
         this.error = error;
         this.duration = duration;
@@ -53,9 +53,10 @@ class BoltProgramOutput implements RunnerProgramOutput {
      * @param output     program output lines
      * @param duration   duration of program execution
      * @param comparator program output comparator, if any, null otherwise
-     * @since 9.0.0
+     * @since 11.0.0
      */
-    private BoltProgramOutput(String[] output, Duration duration, Comparator<String> comparator) {
+    private BoltProgramOutput(Charset encoding, String[] output, Duration duration, Comparator<String> comparator) {
+        this.encoding = encoding;
         this.output = requireNonNull(output);
         this.duration = duration;
         this.error = null;
@@ -68,13 +69,13 @@ class BoltProgramOutput implements RunnerProgramOutput {
     }
 
     @Override
-    public Duration executionDuration() {
-        return duration;
+    public Optional<Exception> error() {
+        return Optional.ofNullable(error);
     }
 
     @Override
-    public Optional<Exception> error() {
-        return Optional.ofNullable(error);
+    public Duration executionDuration() {
+        return duration;
     }
 
     @Override
@@ -85,143 +86,36 @@ class BoltProgramOutput implements RunnerProgramOutput {
 
         if (comparator == null) {
             RunnerException exception = new RunnerException("bolt.runner.expectation.comparator.null");
-            return new BoltProgramOutput(output, Duration.ZERO, exception);
+            return new BoltProgramOutput(encoding, output, Duration.ZERO, exception);
         }
 
-        return new BoltProgramOutput(output, duration, comparator);
+        return new BoltProgramOutput(encoding, output, duration, comparator);
     }
 
     @Override
     public RunnerAsserter expected(String... expected) {
         String[] expectation = expected == null || expected.length == 0 ? new String[] {""} : expected;
-
-        if (error != null) {
-            return new BoltAsserter(new BoltResult(output, expectation, duration, error));
-        }
-
-        for (String item : expectation) {
-            if (item == null) {
-                RunnerException exception = new RunnerException("bolt.runner.variable.array.expected.has.null");
-                return new BoltAsserter(new BoltResult(output, expectation, duration, exception));
-            }
-        }
-
-        return new BoltAsserter(buildTestResult(output, expectation, comparator));
+        return BoltResult.newBoltResult(output, expectation, duration, comparator, error);
     }
 
     @Override
     public RunnerAsserter expected(InputStreamSupplier supplier) {
-        return expected(supplier, UTF_8);
+        return BoltResult.newBoltResult(output, supplier, encoding, duration, comparator, error);
     }
 
     @Override
     public RunnerAsserter expected(InputStreamSupplier supplier, Charset charset) {
-        if (error != null) {
-            return new BoltAsserter(new BoltResult(output, new String[0], duration, error));
-        }
-
-        return create(charset, supplier);
+        return BoltResult.newBoltResult(output, supplier, charset, duration, comparator, error);
     }
 
     @Override
     public RunnerAsserter loadExpectation(String resourceName, Class<?> withClass) {
-        if (error != null) {
-            return new BoltAsserter(new BoltResult(output, new String[0], duration, error));
-        }
-
-        return loadExpectation(resourceName, withClass, UTF_8);
+        return newBoltResult(output, resourceName, withClass, encoding, duration, comparator, error);
     }
 
     @Override
     public RunnerAsserter loadExpectation(String resourceName, Class<?> withClass, Charset charset) {
-        if (error != null) {
-            return new BoltAsserter(new BoltResult(output, new String[0], duration, error));
-        }
-        if (resourceName == null) {
-            return create(charset, () -> {
-                throw new RunnerException("bolt.runner.load.expectation.resource.name.null");
-            });
-        }
-        if (withClass == null) {
-            return create(charset, () -> {
-                throw new RunnerException("bolt.runner.load.expectation.resource.class.null");
-            });
-        }
-        if (withClass.getResource(resourceName) == null) {
-            return create(charset, () -> {
-                throw new RunnerException("bolt.runner.load.expectation.resource.not.found");
-            });
-        }
-
-        return create(charset, () -> withClass.getResourceAsStream(resourceName));
-    }
-
-    /**
-     * Helper method to create a {@link RunnerAsserter} for the expected result {@link InputStream}.
-     *
-     * @param charset  character encoding of {@link InputStream}
-     * @param supplier {@link InputStream} supplier for the expected program result
-     * @return a {@link RunnerAsserter} instance
-     */
-    private RunnerAsserter create(Charset charset, InputStreamSupplier supplier) {
-        if (charset == null) {
-            RunnerException exception = new RunnerException("bolt.runner.load.expectation.charset.null");
-            BoltResult result = new BoltResult(output, new String[0], duration, exception);
-            return new BoltAsserter(result);
-        }
-        if (supplier == null) {
-            RunnerException exception = new RunnerException("bolt.runner.load.expectation.supplier.null");
-            BoltResult result = new BoltResult(output, new String[0], duration, exception);
-            return new BoltAsserter(result);
-        }
-
-        try (InputStream inputStream = supplier.get()) {
-            if (inputStream == null) {
-                throw new RunnerException("bolt.runner.load.expectation.stream.null");
-            }
-            final String[] expected = readArray(() -> new BoltReader(inputStream, charset));
-            return new BoltAsserter(buildTestResult(output, expected, comparator));
-        }
-        catch (Exception e) {
-            BoltResult result = new BoltResult(output, new String[0], duration, e);
-            return new BoltAsserter(result);
-        }
-    }
-
-    /**
-     * Helper method to build a {@link BoltResult} instance.
-     *
-     * @param output     the actual program output
-     * @param expected   the expected program output
-     * @param comparator {@code Nullable} comparator
-     * @return {@link BoltResult}
-     */
-    private BoltResult buildTestResult(String[] output, String[] expected, Comparator<String> comparator) {
-        if (expected.length != output.length) {
-            int none = -1;
-            String message = "bolt.runner.asserter.output.length.mismatch";
-            return new BoltResult(output, expected, duration, none, message);
-        }
-
-        final int size = output.length;
-        if (comparator == null) {
-            for (int index = 0; index < size; index++) {
-                if (!Objects.equals(expected[index], output[index])) {
-                    String message = "bolt.runner.asserter.output.data.mismatch";
-                    return new BoltResult(output, expected, duration, index, message);
-                }
-            }
-        }
-        else {
-            for (int index = 0; index < size; index++) {
-                if (comparator.compare(expected[index], output[index]) != 0) {
-                    String message = "bolt.runner.asserter.output.data.mismatch";
-                    return new BoltResult(output, expected, duration, index, message);
-                }
-            }
-        }
-
-        return new BoltResult(output, expected, duration);
+        return newBoltResult(output, resourceName, withClass, charset, duration, comparator, error);
     }
 
 }

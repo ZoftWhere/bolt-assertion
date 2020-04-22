@@ -2,6 +2,7 @@ package app.zoftwhere.bolt;
 
 import java.nio.charset.Charset;
 
+import app.zoftwhere.bolt.api.RunnerEncoding;
 import app.zoftwhere.bolt.api.RunnerInterface;
 import app.zoftwhere.bolt.api.RunnerPreProgram;
 import app.zoftwhere.bolt.api.RunnerProgram;
@@ -12,10 +13,17 @@ import app.zoftwhere.bolt.api.RunnerProgramInput;
  *
  * @since 6.0.0
  */
-public abstract class AbstractRunner implements RunnerInterface {
+public abstract class AbstractRunner implements RunnerInterface, RunnerEncoding {
 
     public AbstractRunner() {
     }
+
+    @Override
+    public abstract Charset encoding();
+
+    @Override
+    @SuppressWarnings("unused")
+    public abstract RunnerInterface encoding(Charset encoding);
 
     @Override
     public abstract RunnerProgram run(RunStandard program);
@@ -43,6 +51,9 @@ public abstract class AbstractRunner implements RunnerInterface {
 
     @Override
     public abstract RunnerProgramInput input(String... input);
+
+    @Override
+    public abstract RunnerProgramInput input(Charset charset, String... input);
 
     @Override
     public abstract RunnerProgramInput input(InputStreamSupplier supplier);

@@ -3,6 +3,7 @@ package app.zoftwhere.bolt.api;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.charset.Charset;
 import java.util.Scanner;
 
 /**
@@ -11,6 +12,18 @@ import java.util.Scanner;
  * @since 6.0.0
  */
 public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInput {
+
+    /**
+     * <p>Retrieve Runner character encoding.
+     * </p>
+     * <p>If the runner was not specified a character encoding, or loaded with a ${@code null} ${@link Charset}, then
+     * the Runner return the value of {@link app.zoftwhere.bolt.Runner#DEFAULT_ENCODING}.
+     * </p>
+     *
+     * @return character encoding
+     * @since 11.0.0
+     */
+    Charset encoding();
 
     /**
      * {@link InputStreamSupplier} provides a functional interface for creating an {@link InputStream} supplier.

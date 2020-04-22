@@ -33,4 +33,18 @@ public enum DelugeProgramType {
         return objectInArray(this, array);
     }
 
+    public boolean isStandard() {
+        DelugeProgramType[] array = {
+            INPUT_STANDARD, INPUT_STANDARD_ARGUED, PROGRAM_STANDARD, PROGRAM_STANDARD_ARGUED
+        };
+        return objectInArray(this, array);
+    }
+
+    public boolean isConsole() {
+        DelugeProgramType[] array = {
+            INPUT_CONSOLE, INPUT_CONSOLE_ARGUED, PROGRAM_CONSOLE, PROGRAM_CONSOLE_ARGUED
+        };
+        return objectInArray(this, array);
+    }
+
 }

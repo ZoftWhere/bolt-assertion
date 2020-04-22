@@ -14,8 +14,13 @@ import app.zoftwhere.bolt.api.RunnerInterface.RunnerResultConsumer;
 
 abstract class AbstractUnit {
 
-    @SuppressWarnings("unused")
     public AbstractUnit() {
+    }
+
+    @SuppressWarnings("unused")
+    interface Encoding<T> {
+
+        T encoding(Charset encoding);
     }
 
     @SuppressWarnings("unused")
@@ -52,6 +57,8 @@ abstract class AbstractUnit {
     interface Input<T> {
 
         T input(String... input);
+
+        T input(Charset charset, String... input);
 
         T input(InputStreamSupplier supplier);
 
