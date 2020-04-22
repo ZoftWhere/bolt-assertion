@@ -35,7 +35,7 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
     /**
      * Constructor for {@link Runner} program first interface implementation.
      *
-     * @since 6.0.0
+     * @since 11.0.0
      */
     BoltProvideProgram(Charset encoding) {
         this.encoding = requireNonNull(encoding);
