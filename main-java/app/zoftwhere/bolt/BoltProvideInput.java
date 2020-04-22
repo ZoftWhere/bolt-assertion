@@ -36,7 +36,7 @@ class BoltProvideInput implements RunnerProvideInput, RunnerProgramInput, Runner
      * Create instance of this multi-interfaced class for handling of runners that accept input first.
      *
      * @param encoding character encoding to use by default when not specified
-     * @since 6.0.0
+     * @since 11.0.0
      */
     BoltProvideInput(Charset encoding) {
         this.encoding = requireNonNull(encoding);
