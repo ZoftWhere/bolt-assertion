@@ -2,6 +2,7 @@ package app.zoftwhere.bolt.scope;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.Comparator;
 
@@ -31,34 +32,36 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 class RunnerBlankScopeTest {
 
+    private final RunnerInterface runner = new Runner();
+
+    private final Charset encoding = UTF_8;
+
     private final String[] emptyArray = new String[] { };
 
     private final String[] blankArray = new String[] {""};
 
+    private final Comparator<String> comparator = Comparator.nullsFirst(Comparator.naturalOrder());
+
     @Test
-    void testRunner() {
-        final RunnerInterface runner = new Runner();
+    void testProgramFirst() {
         testProgramFirst(runner);
-        testInputFirst(runner);
     }
 
     @Test
-    void testProxy() {
-        final RunnerInterface proxy = new RunnerProxy();
-        testProgramFirst(proxy);
-        testInputFirst(proxy);
+    void testInputFirst() {
+        testInputFirst(runner);
     }
 
     private void testProgramFirst(RunnerProvideProgram runner) {
         testProgramInput(runner.run((scanner, out) -> {}));
-        testProgramInput(runner.run(UTF_8, (scanner, out) -> {}));
+        testProgramInput(runner.run(encoding, (scanner, out) -> {}));
         testProgramInput(runner.runConsole((inputStream, outputStream) -> {}));
-        testProgramInput(runner.runConsole(UTF_8, (inputStream, outputStream) -> {}));
+        testProgramInput(runner.runConsole(encoding, (inputStream, outputStream) -> {}));
 
         testProgramArgument(runner.run((arguments, scanner, out) -> {}));
-        testProgramArgument(runner.run(UTF_8, (arguments, scanner, out) -> {}));
+        testProgramArgument(runner.run(encoding, (arguments, scanner, out) -> {}));
         testProgramArgument(runner.runConsole((arguments, inputStream, outputStream) -> {}));
-        testProgramArgument(runner.runConsole(UTF_8, (arguments, inputStream, outputStream) -> {}));
+        testProgramArgument(runner.runConsole(encoding, (arguments, inputStream, outputStream) -> {}));
     }
 
     private void testProgramArgument(RunnerPreProgram preProgram) {
@@ -70,14 +73,14 @@ class RunnerBlankScopeTest {
         testOptionalComparator(program.input(""));
         testOptionalComparator(program.input(emptyArray));
         testOptionalComparator(program.input(blankArray));
-        testOptionalComparator(program.input(UTF_8));
-        testOptionalComparator(program.input(UTF_8, ""));
-        testOptionalComparator(program.input(UTF_8, emptyArray));
-        testOptionalComparator(program.input(UTF_8, blankArray));
+        testOptionalComparator(program.input(encoding));
+        testOptionalComparator(program.input(encoding, ""));
+        testOptionalComparator(program.input(encoding, emptyArray));
+        testOptionalComparator(program.input(encoding, blankArray));
         testOptionalComparator(program.input(() -> new ByteArrayInputStream(new byte[0])));
-        testOptionalComparator(program.input(() -> new ByteArrayInputStream(new byte[0]), UTF_8));
+        testOptionalComparator(program.input(() -> new ByteArrayInputStream(new byte[0]), encoding));
         testOptionalComparator(program.loadInput("RunnerBlankScopeTest.txt", Runner.class));
-        testOptionalComparator(program.loadInput("RunnerBlankScopeTest.txt", Runner.class, UTF_8));
+        testOptionalComparator(program.loadInput("RunnerBlankScopeTest.txt", Runner.class, encoding));
     }
 
     private void testInputFirst(RunnerProvideInput runner) {
@@ -85,14 +88,14 @@ class RunnerBlankScopeTest {
         testOptionalArgument(runner.input(""));
         testOptionalArgument(runner.input(emptyArray));
         testOptionalArgument(runner.input(blankArray));
-        testOptionalArgument(runner.input(UTF_8));
-        testOptionalArgument(runner.input(UTF_8, ""));
-        testOptionalArgument(runner.input(UTF_8, emptyArray));
-        testOptionalArgument(runner.input(UTF_8, blankArray));
+        testOptionalArgument(runner.input(encoding));
+        testOptionalArgument(runner.input(encoding, ""));
+        testOptionalArgument(runner.input(encoding, emptyArray));
+        testOptionalArgument(runner.input(encoding, blankArray));
         testOptionalArgument(runner.input(() -> new ByteArrayInputStream(new byte[0])));
-        testOptionalArgument(runner.input(() -> new ByteArrayInputStream(new byte[0]), UTF_8));
+        testOptionalArgument(runner.input(() -> new ByteArrayInputStream(new byte[0]), encoding));
         testOptionalArgument(runner.loadInput("RunnerBlankScopeTest.txt", Runner.class));
-        testOptionalArgument(runner.loadInput("RunnerBlankScopeTest.txt", Runner.class, UTF_8));
+        testOptionalArgument(runner.loadInput("RunnerBlankScopeTest.txt", Runner.class, encoding));
     }
 
     private void testOptionalArgument(RunnerProgramInput programInput) {
@@ -102,9 +105,9 @@ class RunnerBlankScopeTest {
         testProgramThree(programInput.argument(blankArray));
 
         testProgramTwo(programInput.run((scanner, out) -> {}));
-        testProgramTwo(programInput.run(UTF_8, (scanner, out) -> {}));
+        testProgramTwo(programInput.run(encoding, (scanner, out) -> {}));
         testProgramTwo(programInput.runConsole((inputStream, outputStream) -> {}));
-        testProgramTwo(programInput.runConsole(UTF_8, (inputStream, outputStream) -> {}));
+        testProgramTwo(programInput.runConsole(encoding, (inputStream, outputStream) -> {}));
     }
 
     private void testProgramTwo(RunnerProgramOutput programOutput) {
@@ -113,15 +116,14 @@ class RunnerBlankScopeTest {
 
     private void testProgramThree(RunnerLoader loader) {
         testOptionalComparator(loader.run((arguments, scanner, out) -> {}));
-        testOptionalComparator(loader.run(UTF_8, (arguments, scanner, out) -> {}));
+        testOptionalComparator(loader.run(encoding, (arguments, scanner, out) -> {}));
         testOptionalComparator(loader.runConsole((arguments, inputStream, outputStream) -> {}));
-        testOptionalComparator(loader.runConsole(UTF_8, (arguments, inputStream, outputStream) -> {}));
+        testOptionalComparator(loader.runConsole(encoding, (arguments, inputStream, outputStream) -> {}));
     }
 
     private void testOptionalComparator(RunnerProgramOutput programOutput) {
-        programOutput.executionDuration();
         testRunnerOutput(programOutput);
-        testRunnerOutput(programOutput.comparator(Comparator.nullsFirst(Comparator.naturalOrder())));
+        testRunnerOutput(programOutput.comparator(comparator));
     }
 
     private void testRunnerOutput(RunnerPreTest preTest) {
