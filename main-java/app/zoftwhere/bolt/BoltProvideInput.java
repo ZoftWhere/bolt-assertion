@@ -93,7 +93,7 @@ class BoltProvideInput implements RunnerProvideInput, RunnerProgramInput, Runner
             return new BoltProvideInput(encoding, arguments, charset, supplier, error);
         }
 
-        InputStreamSupplier supplier = newInputStreamSupplier(charset, input);
+        InputStreamSupplier supplier = () -> new BoltArrayInputStream(input, charset);
         return new BoltProvideInput(encoding, arguments, charset, supplier, error);
     }
 

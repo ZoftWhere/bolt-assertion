@@ -141,7 +141,7 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
             return buildOutput(encoding, arguments, charset, () -> null, outputCharset, executor, error);
         }
 
-        InputStreamSupplier supplier = newInputStreamSupplier(charset, input);
+        InputStreamSupplier supplier = () -> new BoltArrayInputStream(input, charset);
         return buildOutput(encoding, arguments, charset, supplier, outputCharset, executor, error);
     }
 
