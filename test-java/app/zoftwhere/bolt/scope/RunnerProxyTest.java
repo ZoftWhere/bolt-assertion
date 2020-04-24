@@ -3,7 +3,6 @@ package app.zoftwhere.bolt.scope;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.time.Duration;
 import java.util.Comparator;
 
 import app.zoftwhere.bolt.Runner;
