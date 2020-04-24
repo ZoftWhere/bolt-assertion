@@ -2,7 +2,6 @@ package app.zoftwhere.bolt.deluge;
 
 import java.nio.charset.Charset;
 
-import app.zoftwhere.bolt.BoltPlaceHolder;
 import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 import org.junit.jupiter.api.Assertions;
 
@@ -16,9 +15,6 @@ import static app.zoftwhere.bolt.deluge.DelugeDataType.STREAM;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.STREAM_ENCODED;
 
 public class DelugeData {
-
-    /** New line definition for parsing that allows testing to be system agnostic. */
-    private static final String NEW_LINE = "\r\n";
 
     static DelugeData forStringArray(String[] data) {
         return new DelugeData(data);
@@ -56,8 +52,6 @@ public class DelugeData {
     private final Class<?> withClass;
     private final Charset charset;
     private final Exception error;
-    private final BoltPlaceHolder<Boolean> openFlag = new BoltPlaceHolder<>(false);
-    private final BoltPlaceHolder<Boolean> closedFlag = new BoltPlaceHolder<>(false);
 
     private DelugeData(String[] array) {
         this.type = ARRAY;
@@ -147,19 +141,6 @@ public class DelugeData {
 
     Exception error() {
         return error;
-    }
-
-    void resetFlags() {
-        openFlag.set(false);
-        closedFlag.set(false);
-    }
-
-    boolean isOpened() {
-        return openFlag.get();
-    }
-
-    boolean isClosed() {
-        return closedFlag.get();
     }
 
     InputStreamSupplier newInputStreamSupplier(Charset charset) {

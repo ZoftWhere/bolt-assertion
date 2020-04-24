@@ -261,15 +261,11 @@ class BoltDelugeBasicTest {
             withRunnerProgramOutput(builder, output);
         }
         else if (STREAM == input.type()) {
-            builder.resetInputFlags();
             RunnerProgramOutput output = program.input(input.streamSupplier());
-            builder.checkInputFlags();
             withRunnerProgramOutput(builder, output);
         }
         else if (STREAM_ENCODED == input.type()) {
-            builder.resetInputFlags();
             RunnerProgramOutput output = program.input(input.streamSupplier(), inEnc);
-            builder.checkInputFlags();
             withRunnerProgramOutput(builder, output);
         }
         else if (RESOURCE == input.type()) {
@@ -344,10 +340,8 @@ class BoltDelugeBasicTest {
             DelugeBuilder updated = builder
                 .withProgram(INPUT_STANDARD, error)
                 .withInput(data);
-            builder.resetInputFlags();
             RunnerProgramOutput output = runner
                 .run((scanner, out) -> process(null, scanner, out, error));
-            builder.checkInputFlags();
             withRunnerProgramOutput(updated, output);
         }
         for (Exception error : exceptions) {
@@ -355,10 +349,8 @@ class BoltDelugeBasicTest {
                 .withProgram(INPUT_CONSOLE, error)
                 .withInput(data);
             Charset outEnc = updated.outputCharset();
-            builder.resetInputFlags();
             RunnerProgramOutput output = runner
                 .runConsole((in, out) -> process(null, outEnc, in, outEnc, out, error));
-            builder.checkInputFlags();
             withRunnerProgramOutput(updated, output);
         }
     }
@@ -371,11 +363,9 @@ class BoltDelugeBasicTest {
             DelugeBuilder updated = builder
                 .withProgram(INPUT_STANDARD_ARGUED, arguments, error)
                 .withInput(data);
-            builder.resetInputFlags();
             RunnerProgramOutput output = runner
                 .argument(arguments)
                 .run((strings, scanner, out) -> process(strings, scanner, out, error));
-            builder.checkInputFlags();
             withRunnerProgramOutput(updated, output);
         }
         for (Exception error : exceptions) {
@@ -383,11 +373,9 @@ class BoltDelugeBasicTest {
                 .withProgram(INPUT_CONSOLE_ARGUED, arguments, error)
                 .withInput(data);
             Charset outEnc = updated.outputCharset();
-            builder.resetInputFlags();
             RunnerProgramOutput output = runner
                 .argument(arguments)
                 .runConsole((strings, in, out) -> process(strings, outEnc, in, outEnc, out, error));
-            builder.checkInputFlags();
             withRunnerProgramOutput(updated, output);
         }
 

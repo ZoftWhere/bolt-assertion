@@ -3,9 +3,9 @@ package app.zoftwhere.bolt;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 import static app.zoftwhere.bolt.BoltProvide.NEW_LINE;
+import static java.nio.charset.StandardCharsets.UTF_16BE;
 
 /**
  * <p>A Bolt Array {@link InputStream} for {@link String} array use.
@@ -23,13 +23,13 @@ class BoltArrayInputStream extends InputStream {
 
     private final byte[] newLine;
 
+    private final int rowMax;
+
     private int row;
 
-    private int rowMax;
+    private int columnMax;
 
     private int column;
-
-    private int columnMax;
 
     private byte[] buffer;
 
@@ -43,38 +43,40 @@ class BoltArrayInputStream extends InputStream {
         if (array.length <= 1) {
             this.array = array;
             this.charset = charset;
-            this.row = 0;
-            this.rowMax = 0;
-            this.column = 0;
             this.newLine = new byte[0];
-            this.buffer = array.length == 1 ? array[0].getBytes(charset) : null;
-            this.columnMax = buffer != null ? buffer.length - 1 : -1;
-            return;
-        }
-
-        if (charset.name().equals("UTF-16")) {
-            Charset fallback = charset.name().equals("UTF-16") ? StandardCharsets.UTF_16BE : charset;
-            this.charset = fallback;
-            this.array = array;
-            this.newLine = NEW_LINE.getBytes(fallback);
-            this.buffer = array[0].length() == 0 ? (NEW_LINE + array[1]).getBytes(charset) : array[0].getBytes(charset);
-            this.row = array[0].length() == 0 ? 1 : 0;
-            this.column = 0;
-            this.rowMax = array.length - 1;
+            this.buffer = array.length == 1 ? array[0].getBytes(charset) : new byte[0];
+            this.rowMax = 0;
+            this.row = 0;
             this.columnMax = buffer.length - 1;
+            this.column = 0;
             return;
         }
 
-        this.charset = charset;
+        Charset baseCharset = charset.name().equals("UTF-16") ? UTF_16BE : charset;
+
+        this.charset = baseCharset;
         this.array = array;
-        this.newLine = NEW_LINE.getBytes(charset);
-
-        this.buffer = array[0].length() == 0 ? array[1].getBytes(charset) : array[0].getBytes(charset);
-        this.row = array[0].length() == 0 ? 1 : 0;
-        this.column = array[0].length() == 0 ? -newLine.length : 0;
-
+        this.newLine = NEW_LINE.getBytes(baseCharset);
         this.rowMax = array.length - 1;
-        this.columnMax = buffer.length - 1;
+
+        if (array[0].length() != 0) {
+            this.buffer = array[0].getBytes(charset);
+            this.row = 0;
+            this.columnMax = buffer.length - 1;
+            this.column = 0;
+        }
+        else if (charset.name().equals("UTF-16")) {
+            this.buffer = (NEW_LINE + array[1]).getBytes(charset);
+            this.row = 1;
+            this.columnMax = buffer.length - 1;
+            this.column = 0;
+        }
+        else {
+            this.buffer = array[1].getBytes(charset);
+            this.row = 1;
+            this.columnMax = buffer.length - 1;
+            this.column = -newLine.length;
+        }
     }
 
     @Override

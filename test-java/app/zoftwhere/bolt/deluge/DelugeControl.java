@@ -8,32 +8,10 @@ import app.zoftwhere.bolt.BoltSingleReturn;
 class DelugeControl {
 
     static void runTest(DelugeProgramType type, DelugeSetting setting, DelugeData input) {
-        if (input.streamSupplier() != null) {
-            input.resetFlags();
-        }
-
+        DelugeProgramOutput actual = DelugeProgram.from(type, setting, input).buildActualResult();
         DelugeProgramOutput expected = DelugeMock.from(type, setting, input).buildExpectedOutput();
 
-        DelugeProgramOutput actual = DelugeProgram.from(type, setting, input).buildActualResult();
-
-        BoltSingleReturn<String> switcher = new BoltSingleReturn<>();
-
-        switcher.block(() -> {
-            if (input.streamSupplier() == null) {
-                return null;
-            }
-
-            if (input.isOpened()) {
-                return input.isClosed() ? null : "deluge.program.data.input.stream.auto.closing";
-            }
-            else {
-                return !input.isClosed() ? null : "deluge.program.data.input.stream.auto.closing.unopened";
-            }
-        });
-        switcher.block(
-            () -> runComparison(expected, actual)
-        );
-        String message = switcher.end();
+        String message = runComparison(expected, actual);
 
         if (message != null) {
             throw new DelugeException(message, actual.error());
