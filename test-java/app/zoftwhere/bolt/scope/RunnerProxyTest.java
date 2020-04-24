@@ -65,7 +65,11 @@ class RunnerProxyTest {
     }
 
     private void testProgramArgument(RunnerPreProgram preProgram) {
-        testProgramInput(preProgram.argument(""));
+        testProgramInput(preProgram.argument((String) null));
+        testProgramInput(preProgram.argument((String[]) null));
+        testProgramInput(preProgram.argument());
+        testProgramInput(preProgram.argument(emptyArray));
+        testProgramInput(preProgram.argument(blankArray));
     }
 
     private void testProgramInput(RunnerProgram program) {
@@ -99,8 +103,9 @@ class RunnerProxyTest {
     }
 
     private void testOptionalArgument(RunnerProgramInput programInput) {
+        testProgramThree(programInput.argument((String) null));
+        testProgramThree(programInput.argument((String[]) null));
         testProgramThree(programInput.argument());
-        testProgramThree(programInput.argument(""));
         testProgramThree(programInput.argument(emptyArray));
         testProgramThree(programInput.argument(blankArray));
 
@@ -127,9 +132,9 @@ class RunnerProxyTest {
     }
 
     private void testRunnerOutput(RunnerPreTest preTest) {
-        String[] output = preTest.output();
-        Duration duration = preTest.executionDuration();
-        Exception error = preTest.error().orElse(null);
+        var output = preTest.output();
+        var duration = preTest.executionDuration();
+        var error = preTest.error().orElse(null);
         assertNotNull(output);
         assertNotNull(duration);
         assertNull(error);
@@ -148,6 +153,7 @@ class RunnerProxyTest {
 
     private void testAsserter(RunnerAsserter asserter) {
         asserter.assertSuccess();
+
         try {
             asserter.assertFailure();
             fail("exception.expected");
@@ -155,6 +161,7 @@ class RunnerProxyTest {
         catch (Exception e) {
             assertClass(RunnerException.class, e);
         }
+
         try {
             asserter.assertError();
             fail("exception.expected");
@@ -164,6 +171,10 @@ class RunnerProxyTest {
         }
 
         asserter.assertCheck(this::testResult);
+        asserter.onOffence(result -> {
+            // Event should not be triggered for success.
+            throw new Error("Event should not be triggered for success.");
+        });
     }
 
     private void testResult(RunnerResult result) {
