@@ -69,6 +69,10 @@ public class BoltTestHelper {
         return BoltReader.readArray(() -> new BoltReader(data, encoding));
     }
 
+    public static InputStream newStringArrayInputStream(String[] array, Charset charset) {
+        return new BoltArrayInputStream(array, charset);
+    }
+
     /**
      * Helper method for returning human-readable characters for select characters.
      *

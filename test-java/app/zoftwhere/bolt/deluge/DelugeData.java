@@ -1,10 +1,5 @@
 package app.zoftwhere.bolt.deluge;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 
 import app.zoftwhere.bolt.BoltPlaceHolder;
@@ -12,6 +7,7 @@ import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 import org.junit.jupiter.api.Assertions;
 
 import static app.zoftwhere.bolt.BoltTestHelper.isOrHasNull;
+import static app.zoftwhere.bolt.BoltTestHelper.newStringArrayInputStream;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.ARRAY;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.ARRAY_ENCODED;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.RESOURCE;
@@ -183,33 +179,7 @@ public class DelugeData {
             return () -> null;
         }
 
-        return new InputStreamSupplier() {
-            @Override
-            public InputStream get() throws Exception {
-                openFlag.set(true);
-
-                try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-                    if (input.length > 0) {
-                        try (OutputStreamWriter writer = new OutputStreamWriter(output, charset)) {
-                            writer.append(input[0]);
-                            for (int i = 1, s = input.length; i < s; i++) {
-                                writer.append(NEW_LINE);
-                                writer.append(input[i]);
-                            }
-                            writer.flush();
-                        }
-                    }
-
-                    return new ByteArrayInputStream(output.toByteArray()) {
-                        @Override
-                        public void close() throws IOException {
-                            closedFlag.set(true);
-                            super.close();
-                        }
-                    };
-                }
-            }
-        };
+        return () -> newStringArrayInputStream(array, charset);
     }
 
 }
