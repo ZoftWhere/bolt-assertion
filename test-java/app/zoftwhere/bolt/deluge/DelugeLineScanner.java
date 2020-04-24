@@ -51,15 +51,13 @@ public class DelugeLineScanner implements AutoCloseable {
     /**
      * <p>Returns the first line of the input.
      * </p>
-     * <p>This method will remove a leading UTF-16 BOM character if present.</p>
      *
      * @return first line of the input
      * @since 7.1.0
      */
     public String firstLine() {
-        // Check Byte-Order-Mark and for empty first line.
+        // Check for empty first line.
         scanner.useDelimiter("");
-        scanner.skip("\ufeff?");
         if (scanner.hasNext("\\R")) {
             scanner.useDelimiter("\\R");
             return "";
@@ -82,7 +80,13 @@ public class DelugeLineScanner implements AutoCloseable {
         if (scanner.hasNext()) {
             return scanner.next();
         }
-        return scanner.nextLine();
+
+        scanner.skip("\f?");
+        if (scanner.hasNextLine()) {
+            return scanner.nextLine();
+        }
+
+        return "";
     }
 
     @Override

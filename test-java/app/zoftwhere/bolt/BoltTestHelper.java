@@ -8,6 +8,9 @@ import org.opentest4j.AssertionFailedError;
 
 public class BoltTestHelper {
 
+    /** New line definition for parsing that allows testing to be system agnostic. */
+    public static final String NEW_LINE = BoltProvide.NEW_LINE;
+
     public static String[] array(String... array) {
         return array;
     }
@@ -88,12 +91,13 @@ public class BoltTestHelper {
                 builder.append("\\ufeff");
             }
             else if (i == '\\') { builder.append("\\\\"); }
-            else if (i == '\r') { builder.append("\\r"); }
+            else if (i == '\f') { builder.append("\\f"); }
             else if (i == '\n') { builder.append("\\n"); }
+            else if (i == '\r') { builder.append("\\r"); }
             else if (i == '\t') { builder.append("\\t"); }
+            else if (i == '\u0085') { builder.append("\\u0085"); }
             else if (i == '\u2028') { builder.append("\\u2028"); }
             else if (i == '\u2029') { builder.append("\\u2029"); }
-            else if (i == '\u0085') { builder.append("\\u0085"); }
             else { builder.appendCodePoint(i); }
         });
         return builder.toString();

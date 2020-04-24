@@ -1,6 +1,8 @@
 package app.zoftwhere.bolt;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -153,7 +155,7 @@ class RunnerTest {
     }
 
     @Test
-    void testUtf16Directional() {
+    void testUTF16Directional() {
         newRunner()
             .encoding(UTF_16)
             .input(() -> new ByteArrayInputStream(new byte[] {-2, -1, 0, 32, 0, 13, 0, 13, 0, 32}))
@@ -173,6 +175,23 @@ class RunnerTest {
             })
             .expected(" ", "", " ")
             .onOffence(consumer);
+    }
+
+    @Test
+    void testSplittingFormFeed() {
+        newRunner().input("1\f" + "2\r" + "3\r\n" + "4\n" + "5\f" + "")
+            .runConsole(RunnerTest::runEcho)
+            .expected("1", "2", "3", "4", "5", "")
+            .onOffence(consumer);
+    }
+
+    private static void runEcho(InputStream inputStream, OutputStream outputStream) throws Exception {
+        var buffer = new byte[1024];
+        var n = inputStream.read(buffer, 0, 1024);
+        while (n >= 0) {
+            outputStream.write(buffer, 0, n);
+            n = inputStream.read(buffer, 0, 1024);
+        }
     }
 
 }

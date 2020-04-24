@@ -46,8 +46,16 @@ class ScanEveryLineExample {
     void testSeparator() {
         runner //
             .run(ScanEveryLineExample::program)
-            .input("system\r" + "\r\n" + "\n" + "and\u2028" + "unicode\u2029" + "agnostic\u0085" + "")
-            .expected("[system]", "[]", "[]", "[and]", "[unicode]", "[agnostic]", "[]")
+            .input(
+                "system\r" + "\r\n" + "\n" +
+                    "and\u2028" + "unicode\u2029" +
+                    "agnostic\u0085" + "\f"
+            )
+            .expected(
+                "[system]", "[]", "[]",
+                "[and]", "[unicode]",
+                "[agnostic]", "[]", "[]"
+            )
             .assertSuccess();
     }
 
@@ -55,8 +63,16 @@ class ScanEveryLineExample {
     void testByteOrderMark() {
         runner //
             .run(ScanEveryLineExample::program)
-            .input("\ufeffBOM", "Exclude leading Byte Order Mark.", "Zero-Width-Space{\ufeff}")
-            .expected("[BOM]", "[Exclude leading Byte Order Mark.]", "[Zero-Width-Space{\ufeff}]")
+            .input(
+                "\ufeff",
+                "Retain leading Zero-Width-Space.",
+                "Zero-Width-Space{\ufeff}"
+            )
+            .expected(
+                "[\ufeff]",
+                "[Retain leading Zero-Width-Space.]",
+                "[Zero-Width-Space{\ufeff}]"
+            )
             .assertSuccess();
     }
 
@@ -78,9 +94,8 @@ class ScanEveryLineExample {
     }
 
     private static String firstLine(Scanner scanner) {
-        // Check Byte-Order-Mark and for empty first line.
+        // Check for empty first line.
         scanner.useDelimiter("");
-        scanner.skip("\ufeff?");
         if (scanner.hasNext("\\R")) {
             scanner.useDelimiter("\\R");
             return "";
@@ -103,7 +118,13 @@ class ScanEveryLineExample {
         if (scanner.hasNext()) {
             return scanner.next();
         }
-        return scanner.nextLine();
+
+        // Check for trailing form-feed character.
+        scanner.skip("\f?");
+        if (scanner.hasNextLine()) {
+            return scanner.nextLine();
+        }
+        return "";
     }
 
 }

@@ -171,7 +171,7 @@ class BoltReaderTest {
             }
         };
         try {
-            try (BoltReader reader = new BoltReader(inputStream, UTF_8)) {
+            try (var reader = new BoltReader(inputStream, UTF_8)) {
                 reader.readLine();
             }
 
@@ -202,9 +202,9 @@ class BoltReaderTest {
 
     @Test
     void testNextFail() {
-        ByteArrayInputStream stream = new ByteArrayInputStream("".getBytes());
+        var stream = new ByteArrayInputStream("".getBytes());
 
-        BoltReader reader = new BoltReader(stream, UTF_8) {
+        var reader = new BoltReader(stream, UTF_8) {
             @Override
             String readLine() throws IOException {
                 throw new IOException();
@@ -221,7 +221,7 @@ class BoltReaderTest {
     }
 
     @Test
-    void testToArrayFail() {
+    void testReadArrayFail() {
         var stream = new ByteArrayInputStream(new byte[0]);
 
         try {
@@ -265,7 +265,7 @@ class BoltReaderTest {
     @Test
     void testByteArraySplitter() {
         final var string = "\r\n\r\n";
-        final Supplier<BoltReader> supplier = () -> forString(string, UTF_8);
+        final var supplier = (Supplier<BoltReader>) () -> forString(string, UTF_8);
         final var list = BoltReader.readList(supplier);
         final var array = BoltReader.readArray(supplier);
         assertEquals(3, list.size());
@@ -273,9 +273,18 @@ class BoltReaderTest {
     }
 
     @Test
+    void testPartitionSplit() {
+        final var string = "\r" + "\r\n" + "\n" + "\u0085" + "\u2028" + "\u2029" + "\f" + "";
+        final var supplier = (Supplier<BoltReader>) () -> forString(string, UTF_16);
+        final var array = BoltReader.readArray(supplier);
+        final var expected = new String[] {"", "", "", "", "", "", "", ""};
+        assertArrayEquals(expected, array);
+    }
+
+    @Test
     void testStringSplitter5() {
         final var string = "1\n1\n345";
-        final Supplier<BoltReader> supplier = () -> forString(string, UTF_8);
+        final var supplier = (Supplier<BoltReader>) () -> forString(string, UTF_8);
         final var list = BoltReader.readList(supplier);
         final var array = BoltReader.readArray(supplier);
         assertEquals(3, list.size());
@@ -292,21 +301,21 @@ class BoltReaderTest {
     }
 
     private void testThis(String test, String... array) {
-        final int size = array.length;
-        StringBuilder builder = new StringBuilder();
+        final var size = array.length;
+        var builder = new StringBuilder();
         if (size > 0) {
             builder.append(array[0]);
         }
-        for (int i = 1; i < size; i++) {
+        for (var i = 1; i < size; i++) {
             builder.append("\n").append(array[i]);
         }
-        String input = builder.toString();
+        var input = builder.toString();
         final var list = BoltReader.readList(() -> forString(input, UTF_8));
 
         if (array.length != list.size()) {
             assertEquals(array.length, list.size(), test + " [" + Arrays.toString(list.toArray()) + "]");
         }
-        for (int i = 0; i < size; i++) {
+        for (var i = 0; i < size; i++) {
             assertEquals(array[i], list.get(i), test);
         }
     }

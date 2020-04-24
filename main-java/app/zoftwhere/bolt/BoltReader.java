@@ -174,7 +174,7 @@ class BoltReader extends Reader implements Iterator<String> {
                     skipLF = false;
                 }
 
-                if (c == '\n') {
+                if (c == '\n' || c == '\f' || c == '\u0085' || c == '\u2028' || c == '\u2029') {
                     lastLineEmpty = true;
                     break;
                 }
