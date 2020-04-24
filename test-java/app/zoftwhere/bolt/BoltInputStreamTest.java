@@ -14,6 +14,7 @@ import static java.nio.charset.StandardCharsets.UTF_16;
 import static java.nio.charset.StandardCharsets.UTF_16BE;
 import static java.nio.charset.StandardCharsets.UTF_16LE;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -58,9 +59,32 @@ class BoltInputStreamTest {
     }
 
     @Test
+    void testByteOrderMark1() throws IOException {
+        @SuppressWarnings("UnnecessaryLocalVariable")
+        var charset = UTF_8; // Use ASCII for base.
+        var decode = UTF_16; // Use UTF-16 for input stream.
+        var string = "";
+        var array = forString(string, charset, decode).readAllBytes();
+        var expected = string.getBytes(decode);
+
+        assertArrayEquals(expected, array);
+    }
+
+    @Test
+    void testByteOrderMark2() throws IOException {
+        @SuppressWarnings("UnnecessaryLocalVariable")
+        var charset = UTF_8; // Use ASCII for base.
+        var decode = UTF_16; // Use UTF-16 for input stream.
+        var string = "Hello";
+        var array = forString(string, charset, decode).readAllBytes();
+        var expected = string.getBytes(decode);
+
+        assertArrayEquals(expected, array);
+    }
+
+    @Test
     void testRun() {
-        // UTF_16 does not work here; UTF_16BE and UTF_16LE is listed instead.
-        final var codec = List.of(US_ASCII, UTF_8, UTF_16LE, UTF_16BE);
+        final var codec = List.of(US_ASCII, UTF_8, UTF_16LE, UTF_16BE, UTF_16);
         final var string = "Test Run.\n\n\n";
         final var size = (int) string.chars().count();
         final var buffer = new char[size];
@@ -82,9 +106,8 @@ class BoltInputStreamTest {
     }
 
     @Test
-    void testClose() {
-        // UTF_16 does not work here; UTF_16BE and UTF_16LE is listed instead.
-        final var codec = List.of(US_ASCII, UTF_8, UTF_16LE, UTF_16BE);
+    void testClose() throws Exception {
+        final var codec = List.of(US_ASCII, UTF_8, UTF_16LE, UTF_16BE, UTF_16);
         final var string = "Test Close.\n\n\n";
         final var closedFlag = new BoltPlaceHolder<>(Boolean.FALSE);
 
@@ -98,9 +121,6 @@ class BoltInputStreamTest {
                 try (var input = forString(string, from, to, closedFlag)) {
                     var array = input.readAllBytes();
                     assertTrue(array.length > 0);
-                }
-                catch (IOException ignore) {
-                    fail("IOException not expected");
                 }
 
                 assertNotNull(closedFlag);

@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 
 import static app.zoftwhere.bolt.BoltTestHelper.assertClass;
 import static java.nio.charset.StandardCharsets.UTF_16;
+import static java.nio.charset.StandardCharsets.UTF_16BE;
+import static java.nio.charset.StandardCharsets.UTF_16LE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,18 +31,79 @@ class BoltReaderTest {
     }
 
     @Test
-    void testByteOrderMark() throws IOException {
-        final var string = "\ufeffUTF-16\ufeff";
-        try (var reader = forString(string, UTF_16)) {
+    void testByteOrderMark1() throws IOException {
+        final var string = "UTF-16\ufeff";
+        final var data = string.getBytes(UTF_16);
+        final var stream = new ByteArrayInputStream(data);
+        try (var reader = new BoltReader(stream, UTF_16)) {
             assertEquals("UTF-16\ufeff", reader.readLine());
         }
     }
 
     @Test
-    void testByteOrderMarkArray() {
-        final var string = "\ufeffUTF-16";
+    void testByteOrderMark2() throws IOException {
+        final var string = "\ufeffUTF-16\ufeff";
+        try (var reader = forString(string, UTF_16BE)) {
+            assertEquals("\ufeffUTF-16\ufeff", reader.readLine());
+        }
+    }
+
+    @Test
+    void testByteOrderMark3() throws IOException {
+        final var string = "\ufeffUTF-16\ufeff";
+        try (var reader = forString(string, UTF_16LE)) {
+            assertEquals("\ufeffUTF-16\ufeff", reader.readLine());
+        }
+    }
+
+    @Test
+    void testByteOrderMark4() throws IOException {
+        final var string = "\ufeffUTF-16\ufeff";
+        final var data = string.getBytes(UTF_16);
+        try (var reader = new BoltReader(data, UTF_16)) {
+            assertEquals("\ufeffUTF-16\ufeff", reader.readLine());
+        }
+    }
+
+    @Test
+    void testByteOrderMarkArray1() {
+        final var string = "\ufeffUTF-16\ufeff";
         final var array = BoltReader.readArray(() -> forString(string, UTF_16));
-        final var expected = new String[] {"UTF-16"};
+        final var expected = new String[] {"\ufeffUTF-16\ufeff"};
+        assertArrayEquals(expected, array);
+    }
+
+    @Test
+    void testByteOrderMarkArray2() {
+        final var string = "\ufeffUTF-16\ufeff";
+        final var array = BoltReader.readArray(() -> forString(string, UTF_16BE));
+        final var expected = new String[] {"\ufeffUTF-16\ufeff"};
+        assertArrayEquals(expected, array);
+    }
+
+    @Test
+    void testByteOrderMarkArray3() {
+        final var string = "\ufeffUTF-16\ufeff";
+        final var array = BoltReader.readArray(() -> forString(string, UTF_16LE));
+        final var expected = new String[] {"\ufeffUTF-16\ufeff"};
+        assertArrayEquals(expected, array);
+    }
+
+    @Test
+    void testByteOrderMarkArray4() {
+        final var string = "\ufeff\ufeffUTF-16\ufeff";
+        final var byteArray = string.getBytes(UTF_16BE);
+        final var array = BoltReader.readArray(() -> new BoltReader(byteArray, UTF_16));
+        final var expected = new String[] {"\ufeffUTF-16\ufeff"};
+        assertArrayEquals(expected, array);
+    }
+
+    @Test
+    void testByteOrderMarkArray5() {
+        final var string = "\ufeff\ufeffUTF-16\ufeff";
+        final var byteArray = string.getBytes(UTF_16LE);
+        final var array = BoltReader.readArray(() -> new BoltReader(byteArray, UTF_16));
+        final var expected = new String[] {"\ufeffUTF-16\ufeff"};
         assertArrayEquals(expected, array);
     }
 

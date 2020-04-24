@@ -3,6 +3,9 @@ package app.zoftwhere.bolt;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
+import static app.zoftwhere.bolt.BoltProvide.NEW_LINE;
 
 /**
  * <p>A Bolt Array {@link InputStream} for {@link String} array use.
@@ -18,6 +21,8 @@ class BoltArrayInputStream extends InputStream {
 
     private final Charset charset;
 
+    private final byte[] newLine;
+
     private int row;
 
     private int rowMax;
@@ -25,8 +30,6 @@ class BoltArrayInputStream extends InputStream {
     private int column;
 
     private int columnMax;
-
-    private byte[] newLine;
 
     private byte[] buffer;
 
@@ -37,26 +40,41 @@ class BoltArrayInputStream extends InputStream {
      * @param charset character encoding for {@code InputStream}
      */
     BoltArrayInputStream(String[] array, Charset charset) {
-        this.array = array;
-        this.charset = charset;
-        this.row = 0;
-        this.rowMax = array.length - 1;
-        this.column = 0;
-        this.newLine = "\r\n".getBytes(charset);
-        this.buffer = array.length > 0 ? array[0].getBytes(charset) : new byte[0];
-        this.columnMax = buffer.length - 1;
-        if (columnMax == -1) {
-            if (row < rowMax) {
-                row++;
-                buffer = array[row].getBytes(charset);
-                column = -2;
-                columnMax = buffer.length - 1;
-            }
-            else {
-                column = 0;
-                columnMax = -1;
-            }
+        if (array.length <= 1) {
+            this.array = array;
+            this.charset = charset;
+            this.row = 0;
+            this.rowMax = 0;
+            this.column = 0;
+            this.newLine = new byte[0];
+            this.buffer = array.length == 1 ? array[0].getBytes(charset) : null;
+            this.columnMax = buffer != null ? buffer.length - 1 : -1;
+            return;
         }
+
+        if (charset.name().equals("UTF-16")) {
+            Charset fallback = charset.name().equals("UTF-16") ? StandardCharsets.UTF_16BE : charset;
+            this.charset = fallback;
+            this.array = array;
+            this.newLine = NEW_LINE.getBytes(fallback);
+            this.buffer = array[0].length() == 0 ? (NEW_LINE + array[1]).getBytes(charset) : array[0].getBytes(charset);
+            this.row = array[0].length() == 0 ? 1 : 0;
+            this.column = 0;
+            this.rowMax = array.length - 1;
+            this.columnMax = buffer.length - 1;
+            return;
+        }
+
+        this.charset = charset;
+        this.array = array;
+        this.newLine = NEW_LINE.getBytes(charset);
+
+        this.buffer = array[0].length() == 0 ? array[1].getBytes(charset) : array[0].getBytes(charset);
+        this.row = array[0].length() == 0 ? 1 : 0;
+        this.column = array[0].length() == 0 ? -newLine.length : 0;
+
+        this.rowMax = array.length - 1;
+        this.columnMax = buffer.length - 1;
     }
 
     @Override
@@ -90,7 +108,7 @@ class BoltArrayInputStream extends InputStream {
             row++;
             if (row > rowMax) {
                 column = 0;
-                columnMax = 1 - newLine.length;
+                columnMax = -1;
                 return next;
             }
             buffer = array[row].getBytes(charset);

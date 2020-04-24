@@ -18,6 +18,7 @@ import static app.zoftwhere.bolt.deluge.DelugeBuilder.forResource;
 import static app.zoftwhere.bolt.deluge.DelugeBuilder.forSetting;
 import static app.zoftwhere.bolt.deluge.DelugeBuilder.forStringArray;
 import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.nio.charset.StandardCharsets.UTF_16;
 import static java.nio.charset.StandardCharsets.UTF_16BE;
 import static java.nio.charset.StandardCharsets.UTF_16LE;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -44,9 +45,9 @@ class BoltDelugeBarrage {
         System.out.println("Duration       : " + duration);
     }
 
-    private final Charset[] encodingArray = {null, US_ASCII, UTF_8, UTF_16LE, UTF_16BE};
+    private final Charset[] encodingArray = {null, US_ASCII, UTF_8, UTF_16LE, UTF_16BE, UTF_16};
 
-    private final Charset[] charsetArray = {null, US_ASCII, UTF_8, UTF_16LE, UTF_16BE};
+    private final Charset[] charsetArray = {null, US_ASCII, UTF_8, UTF_16LE, UTF_16BE, UTF_16};
 
     private final String[][] argumentArray = new String[][] {
         null,

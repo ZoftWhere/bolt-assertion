@@ -10,6 +10,7 @@ import app.zoftwhere.bolt.api.RunnerResult;
 import org.junit.jupiter.api.Test;
 
 import static app.zoftwhere.bolt.BoltProvide.NEW_LINE;
+import static app.zoftwhere.bolt.BoltTestHelper.assertClass;
 import static app.zoftwhere.bolt.Runner.newRunner;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_16;
@@ -28,7 +29,7 @@ class RunnerTest {
             throw result.error().orElse(new Exception());
         }
 
-        String errorMessage = result.message().orElse("") +
+        var errorMessage = result.message().orElse("") +
             NEW_LINE + "Expected : " + Arrays.toString(result.expected()) +
             NEW_LINE + "Found    : " + Arrays.toString(result.output());
         throw new RunnerException(errorMessage);
@@ -44,7 +45,7 @@ class RunnerTest {
 
     @Test
     void testDeprecatedThrowable() {
-        boolean caught = false;
+        var caught = false;
         try {
             runner.input()
                 .run((scanner, out) -> {
@@ -74,9 +75,9 @@ class RunnerTest {
             .expected("1", "2", "3")
             .result();
 
-        Exception error = result.error().orElse(null);
+        var error = result.error().orElse(null);
         assertNotNull(error);
-        BoltTestHelper.assertClass(NumberFormatException.class, error);
+        assertClass(NumberFormatException.class, error);
     }
 
     @Test
@@ -102,14 +103,16 @@ class RunnerTest {
                 try (Scanner scanner = new Scanner(in, UTF_16LE)) {
                     try (PrintStream print = new PrintStream(out, false, UTF_16LE)) {
                         scanner.useDelimiter("\\R");
+                        print.print(scanner.next());
                         while (scanner.hasNext()) {
-                            print.println(scanner.next());
+                            print.print(NEW_LINE);
+                            print.print(scanner.next());
                         }
                     }
                 }
             })
             .comparator(String::compareTo)
-            .expected("Hello World!", "1 ≤ A[i] ≤ 1014", "")
+            .expected("Hello World!", "1 ≤ A[i] ≤ 1014")
             .onOffence(consumer);
     }
 
@@ -122,13 +125,15 @@ class RunnerTest {
                 try (Scanner scanner = new Scanner(in, UTF_8)) {
                     try (PrintStream print = new PrintStream(out, false, UTF_8)) {
                         scanner.useDelimiter("\\R");
+                        print.print(scanner.next());
                         while (scanner.hasNext()) {
-                            print.println(scanner.next());
+                            print.print(NEW_LINE);
+                            print.print(scanner.next());
                         }
                     }
                 }
             })
-            .expected("1", "2", "3", "4", "5", "6", "7", "8", "")
+            .expected("1", "2", "3", "4", "5", "6", "7", "8")
             .onOffence(consumer);
     }
 
@@ -144,6 +149,29 @@ class RunnerTest {
                 }
             }))
             .expected("Hello World!", "1 ? A[i] ? 1014", "")
+            .onOffence(consumer);
+    }
+
+    @Test
+    void testUtf16Directional() {
+        newRunner()
+            .encoding(UTF_16)
+            .input(() -> new ByteArrayInputStream(new byte[] {-2, -1, 0, 32, 0, 13, 0, 13, 0, 32}))
+            .runConsole(UTF_16, (inputStream, outputStream) -> {
+                try (Scanner scanner = new Scanner(inputStream, UTF_16)) {
+                    try (PrintStream out = new PrintStream(outputStream, false, UTF_16LE)) {
+                        scanner.useDelimiter("\\R");
+                        out.print('\ufeff');
+                        out.print(scanner.next());
+                        while (scanner.hasNext()) {
+                            out.print(NEW_LINE);
+                            out.print(scanner.next());
+                        }
+                    }
+                }
+                outputStream.flush();
+            })
+            .expected(" ", "", " ")
             .onOffence(consumer);
     }
 

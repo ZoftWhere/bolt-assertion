@@ -65,9 +65,6 @@ class BoltReader extends Reader implements Iterator<String> {
 
     private final InputStreamReader reader;
 
-    /** First line read. */
-    private boolean firstLine = true;
-
     /** Last line empty. */
     private boolean lastLineEmpty = true;
 
@@ -89,6 +86,7 @@ class BoltReader extends Reader implements Iterator<String> {
         if (charset == null) {
             throw new RunnerException("bolt.runner.reader.charset.null");
         }
+
         this.reader = new InputStreamReader(new ByteArrayInputStream(data), charset);
         this.lock = super.lock;
     }
@@ -191,14 +189,6 @@ class BoltReader extends Reader implements Iterator<String> {
             }
         }
 
-        // Remove UTF-16 Byte Order Mark from start of first line.
-        if (firstLine) {
-            firstLine = false;
-            if (builder.length() > 0 && builder.substring(0, 1).equals("\ufeff")) {
-                return builder.substring(1);
-            }
-        }
-
         return builder.toString();
     }
 
@@ -226,7 +216,7 @@ class BoltReader extends Reader implements Iterator<String> {
 
     /** {@inheritDoc} */
     @Override
-    @SuppressWarnings({"RedundantThrows", "NullableProblems"})
+    @SuppressWarnings({"RedundantThrows", "NullableProblems", "RedundantSuppression"})
     public int read(char[] chars, int offset, int length) throws IOException {
         return -1;
     }
