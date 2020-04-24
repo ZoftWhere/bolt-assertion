@@ -3,7 +3,6 @@ package app.zoftwhere.bolt.scope;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.time.Duration;
 import java.util.Comparator;
 
 import app.zoftwhere.bolt.Runner;
@@ -65,7 +64,11 @@ class RunnerBlankScopeTest {
     }
 
     private void testProgramArgument(RunnerPreProgram preProgram) {
-        testProgramInput(preProgram.argument(""));
+        testProgramInput(preProgram.argument((String) null));
+        testProgramInput(preProgram.argument((String[]) null));
+        testProgramInput(preProgram.argument());
+        testProgramInput(preProgram.argument(emptyArray));
+        testProgramInput(preProgram.argument(blankArray));
     }
 
     private void testProgramInput(RunnerProgram program) {
@@ -99,8 +102,9 @@ class RunnerBlankScopeTest {
     }
 
     private void testOptionalArgument(RunnerProgramInput programInput) {
+        testProgramThree(programInput.argument((String) null));
+        testProgramThree(programInput.argument((String[]) null));
         testProgramThree(programInput.argument());
-        testProgramThree(programInput.argument(""));
         testProgramThree(programInput.argument(emptyArray));
         testProgramThree(programInput.argument(blankArray));
 
@@ -127,9 +131,9 @@ class RunnerBlankScopeTest {
     }
 
     private void testRunnerOutput(RunnerPreTest preTest) {
-        String[] output = preTest.output();
-        Duration duration = preTest.executionDuration();
-        Exception error = preTest.error().orElse(null);
+        var output = preTest.output();
+        var duration = preTest.executionDuration();
+        var error = preTest.error().orElse(null);
         assertNotNull(output);
         assertNotNull(duration);
         assertNull(error);
@@ -148,6 +152,7 @@ class RunnerBlankScopeTest {
 
     private void testAsserter(RunnerAsserter asserter) {
         asserter.assertSuccess();
+
         try {
             asserter.assertFailure();
             fail("exception.expected");
@@ -155,6 +160,7 @@ class RunnerBlankScopeTest {
         catch (Exception e) {
             assertClass(RunnerException.class, e);
         }
+
         try {
             asserter.assertError();
             fail("exception.expected");
@@ -164,6 +170,10 @@ class RunnerBlankScopeTest {
         }
 
         asserter.assertCheck(this::testResult);
+        asserter.onOffence(result -> {
+            // Event should not be triggered for success.
+            throw new Error("Event should not be triggered for success.");
+        });
     }
 
     private void testResult(RunnerResult result) {
