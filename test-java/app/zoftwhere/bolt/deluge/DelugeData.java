@@ -66,7 +66,7 @@ public class DelugeData {
     private DelugeData(String[] array, Charset charset) {
         this.type = ARRAY_ENCODED;
         this.array = array;
-        this.supplier = newInputStreamSupplier(charset, array);
+        this.supplier = newInputStreamSupplier(array, charset);
         this.withClass = null;
         this.resource = null;
         this.charset = charset;
@@ -77,7 +77,7 @@ public class DelugeData {
         Assertions.assertTrue(type == STREAM || type == STREAM_ENCODED);
         this.type = type;
         this.array = array;
-        this.supplier = newInputStreamSupplier(charset, array);
+        this.supplier = newInputStreamSupplier(array, charset);
         this.withClass = null;
         this.resource = null;
         this.charset = type == STREAM ? null : charset;
@@ -144,10 +144,10 @@ public class DelugeData {
     }
 
     InputStreamSupplier newInputStreamSupplier(Charset charset) {
-        return newInputStreamSupplier(charset, array);
+        return newInputStreamSupplier(array, charset);
     }
 
-    private InputStreamSupplier newInputStreamSupplier(Charset charset, String[] input) {
+    private InputStreamSupplier newInputStreamSupplier(String[] input, Charset charset) {
         if (input == null) {
             return null;
         }
