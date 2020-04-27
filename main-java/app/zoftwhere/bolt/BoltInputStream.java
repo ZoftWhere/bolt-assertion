@@ -3,6 +3,7 @@ package app.zoftwhere.bolt;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
@@ -56,7 +57,8 @@ class BoltInputStream extends InputStream {
                 size += 2;
             }
         }
-        catch (IOException ignore) {
+        catch (IOException e) {
+            throw new UncheckedIOException(e.getMessage(), e);
         }
     }
 

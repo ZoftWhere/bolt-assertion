@@ -4,11 +4,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import static app.zoftwhere.bolt.BoltTestHelper.assertClass;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_16;
 import static java.nio.charset.StandardCharsets.UTF_16BE;
@@ -128,6 +130,36 @@ class BoltInputStreamTest {
                 assertTrue(closedFlag.get());
             }
         }
+    }
+
+    @Test
+    void testIOFailure() {
+        final var message = "bolt.input.stream.failure.for.code.coverage";
+        final var failure = new InputStream() {
+            @Override
+            @SuppressWarnings("RedundantThrows")
+            public int read() throws IOException {
+                return 0;
+            }
+
+            @Override
+            public int read(byte[] b, int off, int len) throws IOException {
+                throw new IOException(message, null);
+            }
+        };
+        var pass = true;
+
+        try (var reader = new BoltInputStream(failure, UTF_8, UTF_16)) {
+            reader.reset();
+            pass = false;
+        }
+        catch (Exception e) {
+            assertClass(UncheckedIOException.class, e);
+            assertEquals(message, e.getMessage());
+            pass = true;
+        }
+
+        assertTrue(pass, "bolt.input.stream.io.exception.expected");
     }
 
     private InputStream forString(String string, Charset charset) {
