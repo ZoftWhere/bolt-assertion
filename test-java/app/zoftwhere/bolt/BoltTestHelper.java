@@ -2,13 +2,16 @@ package app.zoftwhere.bolt;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.Iterator;
 import java.util.Objects;
+import java.util.Scanner;
 
 import org.opentest4j.AssertionFailedError;
 
 public class BoltTestHelper {
 
     /** New line definition for parsing that allows testing to be system agnostic. */
+    @SuppressWarnings("WeakerAccess")
     public static final String NEW_LINE = BoltProvide.NEW_LINE;
 
     public static String[] array(String... array) {
@@ -52,6 +55,14 @@ public class BoltTestHelper {
             return inputStream;
         }
         return new BoltInputStream(inputStream, source, destination);
+    }
+
+    public static Iterator<String> newStringIterator(InputStream inputStream, Charset charset) {
+        return new BoltLineIterator(inputStream, charset);
+    }
+
+    public static Iterator<String> newStringIterator(Scanner scanner) {
+        return new BoltLineIterator(scanner);
     }
 
     public static String[] readArray(byte[] data, Charset encoding) {

@@ -6,14 +6,15 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.time.Duration;
-import java.util.Scanner;
+import java.util.Iterator;
 
+import app.zoftwhere.bolt.BoltTestHelper;
 import app.zoftwhere.bolt.RunnerException;
 import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 
 import static app.zoftwhere.bolt.BoltTestHelper.array;
 import static app.zoftwhere.bolt.BoltTestHelper.arrayHasNull;
-import static app.zoftwhere.bolt.BoltTestHelper.escapeString;
+import static app.zoftwhere.bolt.BoltTestHelper.newStringIterator;
 import static app.zoftwhere.bolt.BoltTestHelper.readArray;
 import static app.zoftwhere.bolt.BoltTestHelper.transcode;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.ARRAY;
@@ -42,7 +43,6 @@ class DelugeMock {
     }
 
     DelugeProgramOutput buildExpectedOutput() {
-
         if (input.hasCharset() && input.charset() == null) {
             var exceptionMessage = "bolt.runner.input.charset.null";
             var error = new RunnerException(exceptionMessage, null);
@@ -128,43 +128,34 @@ class DelugeMock {
         var out = new PrintStream(outputStream, false, outEnc);
 
         if (!type.isArgued()) {
-            out.println("Argument: <null>");
+            out.print("Argument: <null>\n");
         }
         else if (setting.argumentArray() == null) {
             // Runner should pass an empty array.
-            out.println("Argument: <none>");
+            out.print("Argument: <none>\n");
         }
         else if (setting.argumentArray().length == 0) {
-            out.println("Argument: <none>");
+            out.print("Argument: <none>\n");
         }
         else {
             for (var argument : setting.argumentArray()) {
-                if (argument == null) {
-                    out.println("Argument: <null>");
-                }
-                else {
-                    out.println(String.format("Argument: \"%s\"", escapeString(argument)));
-                }
+                out.print("Argument: " + escapeString(argument) + "\n");
             }
         }
 
         var supplier = newSupplier();
         try (var inputStream = supplier != null ? supplier.get() : null) {
-            try (var scanner = inputStream != null ? newScanner(inputStream, inEnc, outEnc) : new Scanner("")) {
-                var lineScanner = new DelugeLineScanner(scanner);
-
-                out.printf("Line: \"%s\"", escapeString(lineScanner.firstLine()));
-                while (lineScanner.hasMore()) {
-                    out.println();
-                    out.printf("Line: \"%s\"", escapeString(lineScanner.readLine()));
-                }
+            var iterator = newIterator(inputStream, inEnc, outEnc);
+            out.print("Line: " + escapeString(iterator.next()));
+            while (iterator.hasNext()) {
+                out.print("\nLine: " + escapeString(iterator.next()));
             }
         }
         catch (Exception e) {
             error = e;
         }
 
-        final var data = outputStream.toByteArray();
+        var data = outputStream.toByteArray();
 
         var lines = readArray(data, outEnc);
         return DelugeProgramOutput.from(lines, Duration.ofDays(1), error);
@@ -183,15 +174,24 @@ class DelugeMock {
         return input.streamSupplier();
     }
 
-    private Scanner newScanner(InputStream inputStream, Charset inEnc, Charset outEnc) {
+    private Iterator<String> newIterator(InputStream inputStream, Charset inEnc, Charset outEnc) {
         if (type.isStandard()) {
-            return new Scanner(inputStream, builder.inputCharset());
+            return newStringIterator(inputStream, builder.inputCharset());
         }
         else if (type.isConsole()) {
-            return new Scanner(transcode(inputStream, inEnc, outEnc), outEnc);
+            return newStringIterator(transcode(inputStream, inEnc, outEnc), outEnc);
         }
         else {
             throw new RuntimeException();
+        }
+    }
+
+    private static String escapeString(String string) {
+        if (string == null) {
+            return "<null>";
+        }
+        else {
+            return "\"" + BoltTestHelper.escapeString(string) + "\"";
         }
     }
 

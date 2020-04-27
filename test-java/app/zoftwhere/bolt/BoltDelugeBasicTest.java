@@ -7,6 +7,7 @@ import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Iterator;
 import java.util.Scanner;
 
 import app.zoftwhere.bolt.api.RunnerInterface;
@@ -15,12 +16,11 @@ import app.zoftwhere.bolt.api.RunnerProgramInput;
 import app.zoftwhere.bolt.api.RunnerProgramOutput;
 import app.zoftwhere.bolt.deluge.DelugeBuilder;
 import app.zoftwhere.bolt.deluge.DelugeData;
-import app.zoftwhere.bolt.deluge.DelugeLineScanner;
 import app.zoftwhere.bolt.deluge.DelugeProgramOutput;
 import org.junit.jupiter.api.Test;
 
+import static app.zoftwhere.bolt.BoltTestHelper.newStringIterator;
 import static app.zoftwhere.bolt.Runner.newRunner;
-import static app.zoftwhere.bolt.deluge.DelugeBuilder.newLineScanner;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.ARRAY;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.ARRAY_ENCODED;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.RESOURCE;
@@ -71,6 +71,7 @@ class BoltDelugeBasicTest {
     };
 
     private final Charset[] charsets = {
+        null,
         US_ASCII,
         UTF_16LE,
     };
@@ -448,48 +449,37 @@ class BoltDelugeBasicTest {
         if (error != null) {
             throw error;
         }
-        try (Scanner scanner = new Scanner(inputStream, inputCharset)) {
-            try (PrintStream out = new PrintStream(outputStream, false, outputCharset)) {
-                process(arguments, scanner, out);
-            }
-        }
-    }
 
-    private void process(String[] arguments, Scanner scanner, PrintStream out) {
-        process(arguments, newLineScanner(scanner), out);
+        try (PrintStream out = new PrintStream(outputStream, false, outputCharset)) {
+            final var iterator = newStringIterator(inputStream, inputCharset);
+            process(arguments, iterator, out);
+        }
     }
 
     private void process(String[] arguments, Scanner scanner, PrintStream out, Exception error) throws Exception {
         if (error != null) {
             throw error;
         }
-        process(arguments, newLineScanner(scanner), out);
+
+        process(arguments, newStringIterator(scanner), out);
     }
 
-    private void process(String[] arguments, DelugeLineScanner scanner, PrintStream out) {
+    private void process(String[] arguments, Iterator<String> stringIterator, PrintStream out) {
         if (arguments == null) {
-            out.print("Argument: <null>");
+            out.print("Argument: <null>\n");
         }
         else if (arguments.length == 0) {
-            out.print("Argument: <none>");
+            out.print("Argument: <none>\n");
         }
         else {
-            out.printf("Argument: %s", escapeString(arguments[0]));
-
-            for (int i = 1, s = arguments.length; i < s; i++) {
-                out.println();
-                out.printf("Argument: %s", escapeString(arguments[i]));
+            for (var argument : arguments) {
+                out.print("Argument: " + escapeString(argument) + "\n");
             }
         }
 
-        String line = scanner.firstLine();
-        out.println();
-        out.printf("Line: %s", escapeString(line));
-
-        while (scanner.hasMore()) {
-            line = scanner.readLine();
-            out.println();
-            out.printf("Line: %s", escapeString(line));
+        out.print("Line: " + escapeString(stringIterator.next()));
+        while (stringIterator.hasNext()) {
+            out.print("\nLine: " + escapeString(stringIterator.next()));
         }
     }
 

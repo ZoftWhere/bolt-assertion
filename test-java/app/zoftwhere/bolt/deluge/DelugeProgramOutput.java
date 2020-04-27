@@ -24,7 +24,7 @@ public class DelugeProgramOutput {
 
     private final Duration duration;
 
-    DelugeProgramOutput(String[] output, Duration duration, Exception error) {
+    private DelugeProgramOutput(String[] output, Duration duration, Exception error) {
         this.output = output;
         this.duration = duration;
         this.error = error;

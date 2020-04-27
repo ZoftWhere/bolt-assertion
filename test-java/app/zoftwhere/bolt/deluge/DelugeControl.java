@@ -7,17 +7,6 @@ import app.zoftwhere.bolt.BoltSingleReturn;
 
 class DelugeControl {
 
-    static void runTest(DelugeProgramType type, DelugeSetting setting, DelugeData input) {
-        DelugeProgramOutput actual = DelugeProgram.from(type, setting, input).buildActualResult();
-        DelugeProgramOutput expected = DelugeMock.from(type, setting, input).buildExpectedOutput();
-
-        String message = runComparison(expected, actual);
-
-        if (message != null) {
-            throw new DelugeException(message, actual.error());
-        }
-    }
-
     static String runComparison(DelugeProgramOutput expected, DelugeProgramOutput actual) {
         BoltSingleReturn<String> switcher = new BoltSingleReturn<>();
 
@@ -59,6 +48,7 @@ class DelugeControl {
                     return String.format("deluge.program.check.comparison.failed[%d]", i);
                 }
             }
+
             return null;
         });
 

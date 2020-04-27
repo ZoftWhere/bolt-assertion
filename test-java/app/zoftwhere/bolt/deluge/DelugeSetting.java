@@ -130,6 +130,7 @@ public class DelugeSetting {
         return encoding;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public boolean hasArgumentArray() {
         return hasArgumentArray;
     }
@@ -155,6 +156,10 @@ public class DelugeSetting {
 
     public Charset charset() {
         return charset;
+    }
+
+    DelugeSetting updateEncoding(Charset charset) {
+        return new DelugeSetting(true, charset, hasArgumentArray, argumentArray, error, hasCharSet, this.charset);
     }
 
 }
