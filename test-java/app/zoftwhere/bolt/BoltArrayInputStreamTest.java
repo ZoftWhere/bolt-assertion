@@ -39,8 +39,8 @@ class BoltArrayInputStreamTest {
     }
 
     private byte[] buildActual(String[] input, Charset charset) throws Exception {
-        try (BoltArrayInputStream inputStream = new BoltArrayInputStream(input, charset)) {
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try (var inputStream = new BoltArrayInputStream(input, charset)) {
+            var output = new ByteArrayOutputStream();
             int i = inputStream.read();
             while (i != -1) {
                 output.write(i);

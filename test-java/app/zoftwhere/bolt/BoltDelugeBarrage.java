@@ -26,14 +26,14 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 class BoltDelugeBarrage {
 
     public static void main(String[] args) {
-        BoltDelugeBarrage test = new BoltDelugeBarrage();
+        var test = new BoltDelugeBarrage();
         long rx = 2 + 2 * test.encodingArray.length;
         long ax = test.argumentArray.length;
         long cx = test.charsetArray.length;
         long ex = 1 + test.errorArray.length;
         long dx = test.dataList.size();
 
-        long expected = rx * 2 * (1 + ax + cx + ax * cx) * ex * dx;
+        var expected = rx * 2 * (1 + ax + cx + ax * cx) * ex * dx;
         System.out.println("Tests expected : " + expected);
 
         var start = Instant.now();
@@ -72,15 +72,15 @@ class BoltDelugeBarrage {
     private int count = 0;
 
     private void barrageTest() {
-        DelugeProgramType[] programTypes = DelugeProgramType.values();
+        var programTypes = DelugeProgramType.values();
 
-        for (DelugeSetting setting : settingList) {
-            for (DelugeProgramType programType : programTypes) {
+        for (var setting : settingList) {
+            for (var programType : programTypes) {
                 if (programType.isArgued() != setting.hasArgumentArray()) {
                     continue;
                 }
 
-                for (DelugeData data : dataList) {
+                for (var data : dataList) {
                     DelugeBuilder.runTest(programType, setting, data);
                     count++;
                 }
@@ -89,8 +89,8 @@ class BoltDelugeBarrage {
     }
 
     private List<DelugeData> expansiveData() {
-        final String[] arraySingleNull = new String[] {null};
-        List<DelugeData> list = new ArrayList<>();
+        final var arraySingleNull = new String[] {null};
+        final var list = new ArrayList<DelugeData>();
 
         list.addAll(listForData(null));
         list.addAll(listForData(arraySingleNull));
@@ -124,9 +124,9 @@ class BoltDelugeBarrage {
     }
 
     private List<DelugeData> listForData(String[] data) {
-        List<DelugeData> list = new ArrayList<>();
+        final var list = new ArrayList<DelugeData>();
         list.add(forStringArray(data));
-        for (Charset charset : charsetArray) {
+        for (var charset : charsetArray) {
             list.add(forStringArray(data, charset));
             list.add(forInputStream(data, charset, true));
 
@@ -138,67 +138,67 @@ class BoltDelugeBarrage {
     }
 
     private List<DelugeSetting> expansiveSetting() {
-        List<DelugeSetting> list = new ArrayList<>();
+        var list = new ArrayList<DelugeSetting>();
 
         list.add(forSetting());
 
-        for (Charset encoding : encodingArray) {
+        for (var encoding : encodingArray) {
             list.add(forSetting(encoding, true));
 
-            for (String[] argument : argumentArray) {
+            for (var argument : argumentArray) {
                 list.add(forSetting(encoding, argument));
 
-                for (Exception error : errorArray) {
+                for (var error : errorArray) {
                     list.add(forSetting(encoding, argument, error));
 
-                    for (Charset charset : charsetArray) {
+                    for (var charset : charsetArray) {
                         list.add(forSetting(encoding, argument, error, charset));
                     }
                 }
 
-                for (Charset charset : charsetArray) {
+                for (var charset : charsetArray) {
                     list.add(forSetting(encoding, argument, charset));
                 }
             }
 
-            for (Exception error : errorArray) {
+            for (var error : errorArray) {
                 list.add(forSetting(encoding, error));
 
-                for (Charset charset : charsetArray) {
+                for (var charset : charsetArray) {
                     list.add(forSetting(encoding, error, charset));
                 }
             }
 
-            for (Charset charset : charsetArray) {
+            for (var charset : charsetArray) {
                 list.add(forSetting(encoding, charset));
             }
         }
 
-        for (String[] argument : argumentArray) {
+        for (var argument : argumentArray) {
             list.add(forSetting(argument));
 
-            for (Exception error : errorArray) {
+            for (var error : errorArray) {
                 list.add(forSetting(argument, error));
 
-                for (Charset charset : charsetArray) {
+                for (var charset : charsetArray) {
                     list.add(forSetting(argument, error, charset));
                 }
             }
 
-            for (Charset charset : charsetArray) {
+            for (var charset : charsetArray) {
                 list.add(forSetting(argument, charset));
             }
         }
 
-        for (Exception error : errorArray) {
+        for (var error : errorArray) {
             list.add(forSetting(error));
 
-            for (Charset charset : charsetArray) {
+            for (var charset : charsetArray) {
                 list.add(forSetting(error, charset));
             }
         }
 
-        for (Charset charset : charsetArray) {
+        for (var charset : charsetArray) {
             list.add(forSetting(charset, false));
         }
 
