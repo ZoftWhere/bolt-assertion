@@ -71,11 +71,10 @@ class DelugeControl {
                 return "deluge.program.found.expected.duration.null";
             }
 
-            if (expected.executionDuration().isZero()) {
-                if (!actual.executionDuration().isZero()) {
-                    return "deluge.program.found.actual.execution.duration.exceeds.expectation";
-                }
+            if (expected.executionDuration().compareTo(actual.executionDuration()) < 0) {
+                return "deluge.program.found.actual.execution.duration.exceeds.expectation";
             }
+
             return null;
         });
 
