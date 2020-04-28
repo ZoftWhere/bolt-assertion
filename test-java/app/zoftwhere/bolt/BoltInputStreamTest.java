@@ -27,59 +27,45 @@ class BoltInputStreamTest {
 
     @Test
     void testSameCodec() throws IOException {
-        // UTF_16 works here, but UTF_16BE and/or UTF_16LE should be used instead.
-        var charset = UTF_16;
         var string = "Unicode(\ud801\udc10)";
-        var array = forString(string, charset).readAllBytes();
-        var result = new String(array, charset);
+        var array = forString(string, UTF_16).readAllBytes();
+        var result = new String(array, UTF_16);
 
         assertEquals(string, result);
     }
 
     @Test
     void testCrossCodec() throws IOException {
-        @SuppressWarnings("UnnecessaryLocalVariable")
-        var charset = US_ASCII; // Use ASCII for base.
-        var decode = UTF_16LE; // Use UTF-16LE for input stream.
         var string = "ASCII(Hello World)";
-        var array = forString(string, charset, decode).readAllBytes();
-        var result = new String(array, decode);
+        var array = forString(string, US_ASCII, UTF_16LE).readAllBytes();
+        var result = new String(array, UTF_16LE);
 
         assertEquals(string, result);
     }
 
     @Test
     void testUnicode() throws IOException {
-        @SuppressWarnings("UnnecessaryLocalVariable")
-        var charset = UTF_16LE; // Use ASCII for base.
-        var decode = UTF_8; // Use UTF-16LE for input stream.
         var string = "Unicode(\ud801\udc10)";
-        var array = forString(string, charset, decode).readAllBytes();
-        var result = new String(array, decode);
+        var array = forString(string, UTF_16LE, UTF_8).readAllBytes();
+        var result = new String(array, UTF_8);
 
         assertEquals(string, result);
     }
 
     @Test
     void testByteOrderMark1() throws IOException {
-        @SuppressWarnings("UnnecessaryLocalVariable")
-        var charset = UTF_8; // Use ASCII for base.
-        var decode = UTF_16; // Use UTF-16 for input stream.
         var string = "";
-        var array = forString(string, charset, decode).readAllBytes();
-        var expected = string.getBytes(decode);
+        var array = forString(string, UTF_8, UTF_16).readAllBytes();
+        var expected = string.getBytes(UTF_16);
 
         assertArrayEquals(expected, array);
     }
 
     @Test
     void testByteOrderMark2() throws IOException {
-        @SuppressWarnings("UnnecessaryLocalVariable")
-        var charset = UTF_8; // Use ASCII for base.
-        var decode = UTF_16; // Use UTF-16 for input stream.
         var string = "Hello";
-        var array = forString(string, charset, decode).readAllBytes();
-        var expected = string.getBytes(decode);
+        var array = forString(string, UTF_8, UTF_16).readAllBytes();
+        var expected = string.getBytes(UTF_16);
 
         assertArrayEquals(expected, array);
     }
