@@ -114,7 +114,7 @@ class BoltArrayInputStream extends InputStream {
                 return next;
             }
             buffer = array[row].getBytes(charset);
-            column = 0 - newLine.length;
+            column = -newLine.length;
             columnMax = buffer.length - 1;
         }
         return next;
