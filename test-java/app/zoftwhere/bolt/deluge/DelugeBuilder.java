@@ -1,14 +1,14 @@
 package app.zoftwhere.bolt.deluge;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 import app.zoftwhere.bolt.Runner;
 
 public class DelugeBuilder {
 
-    @SuppressWarnings("WeakerAccess")
-    public static DelugeBuilder from(DelugeProgramType type, DelugeSetting setting, DelugeData input) {
+    static DelugeBuilder from(DelugeProgramType type, DelugeSetting setting, DelugeData input) {
         return new DelugeBuilder(type, setting, input);
     }
 
@@ -16,8 +16,49 @@ public class DelugeBuilder {
         return new DelugeForge(encodingList, settingList, inputList).runTest();
     }
 
-    public static String runComparison(DelugeProgramOutput expected, DelugeProgramOutput actual) {
+    static String runComparison(DelugeProgramOutput expected, DelugeProgramOutput actual) {
         return DelugeControl.runComparison(expected, actual);
+    }
+
+    public static List<DelugeSetting> programSetting(
+        List<String[]> argumentList,
+        List<Exception> errorList,
+        List<Charset> charsetList
+    )
+    {
+        var list = new ArrayList<DelugeSetting>();
+
+        list.add(forSetting());
+
+        for (var argument : argumentList) {
+            list.add(forSetting(argument));
+
+            for (var error : errorList) {
+                list.add(forSetting(argument, error));
+
+                for (var charset : charsetList) {
+                    list.add(forSetting(argument, error, charset));
+                }
+            }
+
+            for (var charset : charsetList) {
+                list.add(forSetting(argument, charset));
+            }
+        }
+
+        for (var error : errorList) {
+            list.add(forSetting(error));
+
+            for (var charset : charsetList) {
+                list.add(forSetting(error, charset));
+            }
+        }
+
+        for (var charset : charsetList) {
+            list.add(forSetting(charset, false));
+        }
+
+        return list;
     }
 
     public static DelugeSetting forSetting() {

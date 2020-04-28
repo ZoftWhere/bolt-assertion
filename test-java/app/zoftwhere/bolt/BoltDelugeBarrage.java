@@ -10,13 +10,12 @@ import java.util.List;
 
 import app.zoftwhere.bolt.deluge.DelugeBuilder;
 import app.zoftwhere.bolt.deluge.DelugeData;
-import app.zoftwhere.bolt.deluge.DelugeSetting;
 
 import static app.zoftwhere.bolt.BoltTestHelper.array;
 import static app.zoftwhere.bolt.deluge.DelugeBuilder.forInputStream;
 import static app.zoftwhere.bolt.deluge.DelugeBuilder.forResource;
-import static app.zoftwhere.bolt.deluge.DelugeBuilder.forSetting;
 import static app.zoftwhere.bolt.deluge.DelugeBuilder.forStringArray;
+import static app.zoftwhere.bolt.deluge.DelugeBuilder.programSetting;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_16;
 import static java.nio.charset.StandardCharsets.UTF_16BE;
@@ -27,11 +26,11 @@ class BoltDelugeBarrage {
 
     public static void main(String[] args) {
         var test = new BoltDelugeBarrage();
-        long rx = 2 + 2 * test.encodingArray.length;
-        long ax = test.argumentArray.length;
-        long cx = test.charsetArray.length;
-        long ex = 1 + test.errorArray.length;
-        long dx = test.dataList.size();
+        var rx = 2 + 2 * test.encodingArray.length;
+        var ax = test.argumentArray.length;
+        var cx = test.charsetArray.length;
+        var ex = 1 + test.errorArray.length;
+        var dx = test.dataList.size();
 
         var expected = rx * 2 * (1 + ax + cx + ax * cx) * ex * dx;
         System.out.println("Tests expected : " + expected);
@@ -49,7 +48,7 @@ class BoltDelugeBarrage {
 
     private final Charset[] charsetArray = {null, US_ASCII, UTF_8, UTF_16LE, UTF_16BE, UTF_16};
 
-    private final String[][] argumentArray = new String[][] {
+    private final String[][] argumentArray = {
         null,
         new String[] {null},
         new String[] {"\ufeff"},
@@ -68,46 +67,13 @@ class BoltDelugeBarrage {
     private final List<DelugeData> dataList = expansiveData();
 
     private int main() {
-        final var settingList = programSetting();
         final var encodingList = Arrays.asList(encodingArray);
+        final var argumentList = Arrays.asList(argumentArray);
+        final var errorList = Arrays.asList(errorArray);
+        final var charsetList = Arrays.asList(charsetArray);
+        final var settingList = programSetting(argumentList, errorList, charsetList);
 
         return DelugeBuilder.runTest(encodingList, settingList, dataList);
-    }
-
-    private List<DelugeSetting> programSetting() {
-        var list = new ArrayList<DelugeSetting>();
-
-        list.add(forSetting());
-
-        for (var argument : argumentArray) {
-            list.add(forSetting(argument));
-
-            for (var error : errorArray) {
-                list.add(forSetting(argument, error));
-
-                for (var charset : charsetArray) {
-                    list.add(forSetting(argument, error, charset));
-                }
-            }
-
-            for (var charset : charsetArray) {
-                list.add(forSetting(argument, charset));
-            }
-        }
-
-        for (var error : errorArray) {
-            list.add(forSetting(error));
-
-            for (var charset : charsetArray) {
-                list.add(forSetting(error, charset));
-            }
-        }
-
-        for (var charset : charsetArray) {
-            list.add(forSetting(charset, false));
-        }
-
-        return list;
     }
 
     private List<DelugeData> expansiveData() {
