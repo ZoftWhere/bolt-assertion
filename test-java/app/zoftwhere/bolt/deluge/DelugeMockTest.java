@@ -47,6 +47,23 @@ class DelugeMockTest {
     }
 
     @Test
+    void testTransCodeResourceUTF8_n2() {
+        var type = DelugeProgramType.INPUT_CONSOLE;
+        var setting = DelugeSetting.from(UTF_8, US_ASCII);
+        var data = DelugeData.forResource("RunnerTest.txt", Runner.class);
+        var programOutput = DelugeMock.from(type, setting, data).buildExpectedOutput();
+        var actual = programOutput.output();
+        var expected = new String[] {
+            "Argument: <null>",
+            "Line: \"Hello World!\"",
+            "Line: \"1 ? A[i] ? 1014\"",
+            "Line: \"\""
+        };
+        assertNull(programOutput.error());
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
     void testTransCodeResourceUTF16() {
         var type = DelugeProgramType.INPUT_CONSOLE;
         var setting = DelugeSetting.from(US_ASCII, UTF_8);
