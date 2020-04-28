@@ -33,7 +33,7 @@ class BoltDelugeBasicTest {
         System.out.println("Tests expected : " + expected);
 
         var start = Instant.now();
-        var count = test.runnerTest();
+        var count = test.run();
         var finish = Instant.now();
         var duration = Duration.ofMillis(start.until(finish, ChronoUnit.MILLIS));
 
@@ -91,7 +91,11 @@ class BoltDelugeBasicTest {
     };
 
     @Test
-    int runnerTest() {
+    void runnerTest() {
+        run();
+    }
+
+    private int run() {
         final var encodingList = Arrays.asList(encodingArray);
         final var argumentList = Arrays.asList(argumentArray);
         final var errorList = Arrays.asList(errorArray);
