@@ -321,7 +321,6 @@ class BoltResultTest {
         fire.onOffence(runnerResult -> {});
     }
 
-
     @Test
     void testForSuccessState() {
         var inputArray = new String[][] {null, nullArray, emptyArray, blankArray};
