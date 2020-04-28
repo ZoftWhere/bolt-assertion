@@ -42,6 +42,11 @@ class RunnerProxyTest {
     private final Comparator<String> comparator = Comparator.nullsFirst(Comparator.naturalOrder());
 
     @Test
+    void testEncoding() {
+        assertEquals(encoding, new RunnerProxy().encoding(encoding).encoding());
+    }
+
+    @Test
     void testProgramFirst() {
         testProgramFirst(proxy);
     }
