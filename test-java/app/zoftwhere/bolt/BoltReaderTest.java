@@ -3,6 +3,7 @@ package app.zoftwhere.bolt;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -18,6 +19,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class BoltReaderTest {
@@ -108,19 +110,6 @@ class BoltReaderTest {
     }
 
     @Test
-    void testReadBuffer() throws IOException {
-        var reader = new BoltReader("".getBytes(), UTF_8);
-        assertEquals(-1, reader.read());
-    }
-
-    @Test
-    void testRead() throws IOException {
-        var reader = new BoltReader("".getBytes(), UTF_8);
-        var chars = new char[0];
-        assertEquals(-1, reader.read(chars, 0, 0));
-    }
-
-    @Test
     void testNullPointer() {
         try {
             new BoltReader((byte[]) null, UTF_8);
@@ -162,7 +151,7 @@ class BoltReaderTest {
     }
 
     @Test
-    void testIOException() {
+    void testInputStreamAutoClose() {
         final var inputStream = new ByteArrayInputStream("\r\r\r".getBytes()) {
             @Override
             public void close() throws IOException {
@@ -181,21 +170,38 @@ class BoltReaderTest {
     }
 
     @Test
+    void testReaderAutoCloseSkip() {
+        var stream = new ByteArrayInputStream(new byte[0]);
+        var closeFlag = new BoltPlaceHolder<>(false);
+        var reader = new InputStreamReader(stream) {
+            @Override
+            public void close() throws IOException {
+                super.close();
+                closeFlag.set(true);
+            }
+        };
+
+        try (var boltReader = new BoltReader(reader)) {
+            boltReader.next();
+        }
+        catch (IOException e) {
+            fail(e);
+        }
+        assertFalse(closeFlag.get());
+
+        try {
+            reader.close();
+        }
+        catch (Exception e) {
+            fail(e);
+        }
+        assertTrue(closeFlag.get());
+    }
+
+    @Test
     void testHasNextFail() throws IOException {
-        var stream = new ByteArrayInputStream("".getBytes()) {
-            @Override
-            public synchronized int read(byte[] b, int off, int len) {
-                return -1;
-            }
-        };
-
-        var runner = new BoltReader(stream, UTF_8) {
-            @Override
-            public boolean ready() throws IOException {
-                throw new IOException();
-            }
-        };
-
+        var stream = new ByteArrayInputStream("".getBytes());
+        var runner = new BoltReader(stream, UTF_8);
         runner.readLine();
         assertFalse(runner.hasNext());
     }
@@ -223,14 +229,15 @@ class BoltReaderTest {
     @Test
     void testReadArrayFail() {
         var stream = new ByteArrayInputStream(new byte[0]);
+        var reader = new InputStreamReader(stream) {
+            @Override
+            public boolean ready() throws IOException {
+                throw new IOException("Fake IO Exception.");
+            }
+        };
 
         try {
-            BoltReader.readArray(() -> new BoltReader(stream, UTF_8) {
-                @Override
-                public void close() {
-                    throw new UncheckedIOException(new IOException("Fake IO Exception."));
-                }
-            });
+            BoltReader.readArray(() -> new BoltReader(reader));
             fail();
         }
         catch (Exception e) {
@@ -239,19 +246,27 @@ class BoltReaderTest {
             assertClass(UncheckedIOException.class, e.getCause());
             assertEquals("java.io.IOException: Fake IO Exception.", e.getCause().getMessage());
         }
+
+        try {
+            reader.close();
+        }
+        catch (IOException e) {
+            fail(e);
+        }
     }
 
     @Test
     void testReadListFail() {
         var stream = new ByteArrayInputStream(new byte[0]);
+        var reader = new InputStreamReader(stream) {
+            @Override
+            public boolean ready() throws IOException {
+                throw new IOException("Fake IO Exception.");
+            }
+        };
 
         try {
-            BoltReader.readList(() -> new BoltReader(stream, UTF_8) {
-                @Override
-                public void close() {
-                    throw new UncheckedIOException(new IOException("Fake IO Exception."));
-                }
-            });
+            BoltReader.readList(() -> new BoltReader(reader));
             fail();
         }
         catch (Exception e) {
@@ -259,6 +274,13 @@ class BoltReaderTest {
             assertEquals("bolt.runner.reader.read.list", e.getMessage());
             assertClass(UncheckedIOException.class, e.getCause());
             assertEquals("java.io.IOException: Fake IO Exception.", e.getCause().getMessage());
+        }
+
+        try {
+            reader.close();
+        }
+        catch (IOException e) {
+            fail(e);
         }
     }
 
