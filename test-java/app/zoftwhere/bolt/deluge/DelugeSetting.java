@@ -25,24 +25,12 @@ public class DelugeSetting {
         return new DelugeSetting(false, ENCODING, true, argumentArray, null, false, ENCODING);
     }
 
-    static DelugeSetting from(Charset defaultEncoding, String[] argumentArray) {
-        return new DelugeSetting(true, defaultEncoding, true, argumentArray, null, false, ENCODING);
-    }
-
     static DelugeSetting from(Exception error) {
         return new DelugeSetting(false, ENCODING, false, null, error, false, ENCODING);
     }
 
-    static DelugeSetting from(Charset defaultEncoding, Exception error) {
-        return new DelugeSetting(true, defaultEncoding, false, null, error, false, ENCODING);
-    }
-
     static DelugeSetting from(String[] argumentArray, Exception error) {
         return new DelugeSetting(false, ENCODING, true, argumentArray, error, false, ENCODING);
-    }
-
-    static DelugeSetting from(Charset defaultEncoding, String[] argumentArray, Exception error) {
-        return new DelugeSetting(true, defaultEncoding, true, argumentArray, error, false, ENCODING);
     }
 
     static DelugeSetting from(Charset defaultEncoding, Charset charset) {
@@ -53,24 +41,12 @@ public class DelugeSetting {
         return new DelugeSetting(false, ENCODING, true, argumentArray, null, true, charset);
     }
 
-    static DelugeSetting from(Charset defaultEncoding, String[] argumentArray, Charset charset) {
-        return new DelugeSetting(true, defaultEncoding, true, argumentArray, null, true, charset);
-    }
-
     static DelugeSetting from(Exception error, Charset charset) {
         return new DelugeSetting(false, ENCODING, false, null, error, true, charset);
     }
 
-    static DelugeSetting from(Charset defaultEncoding, Exception error, Charset charset) {
-        return new DelugeSetting(true, defaultEncoding, false, null, error, true, charset);
-    }
-
     static DelugeSetting from(String[] argumentArray, Exception error, Charset charset) {
         return new DelugeSetting(false, ENCODING, true, argumentArray, error, true, charset);
-    }
-
-    static DelugeSetting from(Charset defaultEncoding, String[] argumentArray, Exception error, Charset charset) {
-        return new DelugeSetting(true, defaultEncoding, true, argumentArray, error, true, charset);
     }
 
     private final boolean hasArgumentArray;
@@ -85,8 +61,6 @@ public class DelugeSetting {
 
     private final Charset charset;
 
-    private final boolean hasDefaultEncoding;
-
     private final Charset encoding;
 
     private DelugeSetting(
@@ -98,7 +72,6 @@ public class DelugeSetting {
         boolean hasCharSet,
         Charset charset)
     {
-        this.hasDefaultEncoding = hasDefaultEncoding;
         this.encoding = encoding;
         this.hasArgumentArray = hasArgumentArray;
         this.argumentArray = argumentArray;
@@ -120,46 +93,36 @@ public class DelugeSetting {
         }
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public boolean hasEncoding() {
-        return hasDefaultEncoding;
+    DelugeSetting updateEncoding(Charset encoding) {
+        return new DelugeSetting(true, encoding, hasArgumentArray, argumentArray, error, hasCharSet, charset);
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public Charset defaultEncoding() {
+    Charset defaultEncoding() {
         return encoding;
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public boolean hasArgumentArray() {
+    boolean hasArgumentArray() {
         return hasArgumentArray;
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public String[] argumentArray() {
+    String[] argumentArray() {
         return argumentArray;
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public boolean hasError() {
+    boolean hasError() {
         return hasError;
     }
 
-    public Exception error() {
+    Exception error() {
         return error;
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public boolean hasCharSet() {
+    boolean hasCharSet() {
         return hasCharSet;
     }
 
-    public Charset charset() {
+    Charset charset() {
         return charset;
-    }
-
-    DelugeSetting updateEncoding(Charset charset) {
-        return new DelugeSetting(true, charset, hasArgumentArray, argumentArray, error, hasCharSet, this.charset);
     }
 
 }
