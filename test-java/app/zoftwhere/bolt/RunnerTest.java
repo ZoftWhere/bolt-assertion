@@ -1,7 +1,9 @@
 package app.zoftwhere.bolt;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -63,6 +65,29 @@ class RunnerTest {
         if (caught) {
             fail("bolt.runner.test.error.throwable.deprecated");
         }
+    }
+
+    @Test
+    void testNewLine() {
+        // BoltProvide NEW_LINE should be "\r\\n" for this reason.
+        runner
+            .runConsole(UTF_8, (in, out) -> {
+                try (InputStreamReader reader = new InputStreamReader(in, UTF_8)) {
+                    try (BufferedReader buffer = new BufferedReader(reader)) {
+                        try (PrintStream print = new PrintStream(out, false, UTF_8)) {
+                            print.print(buffer.readLine());
+                            while (buffer.ready()) {
+                                print.print("\r\n");
+                                print.print(buffer.readLine());
+                            }
+                        }
+                    }
+                }
+            })
+            // "1\r" "\r\n" "\n" "4\r\n" "done"
+            .input("1\r", "\n4", "done")
+            .expected("1", "", "", "4", "done")
+            .onOffence(consumer);
     }
 
     @Test
