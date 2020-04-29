@@ -39,7 +39,6 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         return newBoltResult(output, expected, duration, comparator);
     }
 
-    @SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
     static BoltResult newBoltResult(
         String[] output,
         String[] expected,
