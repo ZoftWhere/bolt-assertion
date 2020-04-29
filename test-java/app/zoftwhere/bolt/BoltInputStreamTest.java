@@ -96,7 +96,6 @@ class BoltInputStreamTest {
     @Test
     void testClose() throws Exception {
         final var codec = List.of(US_ASCII, UTF_8, UTF_16LE, UTF_16BE, UTF_16);
-        final var string = "Test Close.\n\n\n";
         final var closedFlag = new BoltPlaceHolder<>(Boolean.FALSE);
 
         assertNotNull(closedFlag.get());
@@ -106,7 +105,7 @@ class BoltInputStreamTest {
                 closedFlag.set(false);
                 assertFalse(closedFlag.get());
 
-                try (var input = forString(string, from, to, closedFlag)) {
+                try (var input = forString(from.name(), from, to, closedFlag)) {
                     var array = input.readAllBytes();
                     assertTrue(array.length > 0);
                 }
@@ -123,9 +122,8 @@ class BoltInputStreamTest {
         final var message = "bolt.input.stream.failure.for.code.coverage";
         final var failure = new InputStream() {
             @Override
-            @SuppressWarnings("RedundantThrows")
             public int read() throws IOException {
-                return 0;
+                throw new IOException();
             }
 
             @Override
@@ -156,7 +154,6 @@ class BoltInputStreamTest {
         return new BoltInputStream(forString(string, charset), charset, decode);
     }
 
-    @SuppressWarnings("SameParameterValue")
     private InputStream forString(String string, Charset charset, Charset decode, BoltPlaceHolder<Boolean> closeFlag) {
         return new BoltInputStream(forString(string, charset), charset, decode) {
             @Override
