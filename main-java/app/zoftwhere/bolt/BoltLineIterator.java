@@ -31,7 +31,7 @@ class BoltLineIterator implements Iterator<String> {
 
             return scanner.next();
         };
-        this.loader = () -> {
+        loader = () -> {
             if (scanner.hasNext()) {
                 return scanner.next();
             }
@@ -42,21 +42,21 @@ class BoltLineIterator implements Iterator<String> {
             return null;
         };
 
-        this.next = firstLine.get();
-        this.hasNext = true;
+        next = firstLine.get();
+        hasNext = true;
     }
 
     BoltLineIterator(InputStream inputStream, Charset charset) {
         final BoltReader reader = new BoltReader(inputStream, charset);
-        this.loader = () -> {
+        loader = () -> {
             if (!reader.hasNext()) {
                 return null;
             }
             return reader.next();
         };
 
-        this.next = loader.get();
-        this.hasNext = next != null;
+        next = loader.get();
+        hasNext = next != null;
     }
 
     @Override
@@ -71,8 +71,8 @@ class BoltLineIterator implements Iterator<String> {
         }
 
         String current = next;
-        this.next = loader.get();
-        this.hasNext = next != null;
+        next = loader.get();
+        hasNext = next != null;
         return current;
     }
 
