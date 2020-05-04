@@ -36,46 +36,7 @@ class BoltResult implements RunnerResult, RunnerAsserter {
             return new BoltResult(output, expected, duration, error);
         }
 
-        return newBoltResult(output, expected, duration, comparator);
-    }
-
-    static BoltResult newBoltResult(
-        String[] output,
-        String[] expected,
-        Duration duration,
-        Comparator<String> comparator
-    )
-    {
-        if (arrayHasNull(expected)) {
-            RunnerException exception = new RunnerException("bolt.runner.variable.argument.expected.has.null");
-            return new BoltResult(output, expected, duration, exception);
-        }
-
-        if (expected.length != output.length) {
-            int none = -1;
-            String message = "bolt.runner.asserter.output.length.mismatch";
-            return new BoltResult(output, expected, duration, none, message);
-        }
-
-        final int size = output.length;
-        if (comparator == null) {
-            for (int index = 0; index < size; index++) {
-                if (!Objects.equals(expected[index], output[index])) {
-                    String message = "bolt.runner.asserter.output.data.mismatch";
-                    return new BoltResult(output, expected, duration, index, message);
-                }
-            }
-        }
-        else {
-            for (int index = 0; index < size; index++) {
-                if (comparator.compare(expected[index], output[index]) != 0) {
-                    String message = "bolt.runner.asserter.output.data.mismatch";
-                    return new BoltResult(output, expected, duration, index, message);
-                }
-            }
-        }
-
-        return new BoltResult(output, expected, duration);
+        return performComparison(output, expected, duration, comparator);
     }
 
     static BoltResult newBoltResult(
@@ -107,8 +68,8 @@ class BoltResult implements RunnerResult, RunnerAsserter {
                 RunnerException exception = new RunnerException("bolt.runner.load.expectation.stream.null");
                 return new BoltResult(output, new String[0], duration, exception);
             }
-            final String[] expected = readArray(() -> new BoltReader(inputStream, inputCharset));
-            return newBoltResult(output, expected, duration, comparator);
+            String[] expected = readArray(() -> new BoltReader(inputStream, inputCharset));
+            return performComparison(output, expected, duration, comparator);
         }
         catch (Exception e) {
             return new BoltResult(output, new String[0], duration, e);
@@ -320,6 +281,45 @@ class BoltResult implements RunnerResult, RunnerAsserter {
     @Override
     public RunnerResult result() {
         return this;
+    }
+
+    private static BoltResult performComparison(
+        String[] output,
+        String[] expected,
+        Duration duration,
+        Comparator<String> comparator
+    )
+    {
+        if (arrayHasNull(expected)) {
+            RunnerException exception = new RunnerException("bolt.runner.variable.argument.expected.has.null");
+            return new BoltResult(output, expected, duration, exception);
+        }
+
+        if (expected.length != output.length) {
+            int none = -1;
+            String message = "bolt.runner.asserter.output.length.mismatch";
+            return new BoltResult(output, expected, duration, none, message);
+        }
+
+        final int size = output.length;
+        if (comparator == null) {
+            for (int index = 0; index < size; index++) {
+                if (!Objects.equals(expected[index], output[index])) {
+                    String message = "bolt.runner.asserter.output.data.mismatch";
+                    return new BoltResult(output, expected, duration, index, message);
+                }
+            }
+        }
+        else {
+            for (int index = 0; index < size; index++) {
+                if (comparator.compare(expected[index], output[index]) != 0) {
+                    String message = "bolt.runner.asserter.output.data.mismatch";
+                    return new BoltResult(output, expected, duration, index, message);
+                }
+            }
+        }
+
+        return new BoltResult(output, expected, duration);
     }
 
 }
