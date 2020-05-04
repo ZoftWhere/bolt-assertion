@@ -4,9 +4,9 @@ import java.time.Duration;
 
 import app.zoftwhere.bolt.api.RunnerProgramOutput;
 
-public class DelugeProgramOutput {
+class DelugeProgramOutput {
 
-    public static DelugeProgramOutput from(RunnerProgramOutput programOutput) {
+    static DelugeProgramOutput from(RunnerProgramOutput programOutput) {
         var output = programOutput.output();
         var duration = programOutput.executionDuration();
         var error = programOutput.error().orElse(null);
