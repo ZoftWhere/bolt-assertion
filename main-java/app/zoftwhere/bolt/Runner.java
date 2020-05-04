@@ -40,7 +40,7 @@ public class Runner extends AbstractRunner {
      * @since 2.0.0
      */
     public Runner() {
-        this.encoding = DEFAULT_ENCODING;
+        encoding = DEFAULT_ENCODING;
     }
 
     /**
