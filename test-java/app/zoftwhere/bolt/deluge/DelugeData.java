@@ -107,23 +107,23 @@ public class DelugeData {
         this.error = error;
     }
 
-    public DelugeDataType type() {
+    DelugeDataType type() {
         return type;
     }
 
-    public String[] array() {
+    String[] array() {
         return array;
     }
 
-    public InputStreamSupplier streamSupplier() {
+    InputStreamSupplier streamSupplier() {
         return supplier;
     }
 
-    public String resource() {
+    String resource() {
         return resource;
     }
 
-    public Class<?> withClass() {
+    Class<?> withClass() {
         return withClass;
     }
 
