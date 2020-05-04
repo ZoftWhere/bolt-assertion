@@ -83,8 +83,8 @@ class BoltReader implements Iterator<String>, AutoCloseable {
             throw new RunnerException("bolt.runner.reader.charset.null");
         }
 
-        this.reader = new InputStreamReader(new ByteArrayInputStream(data), charset);
-        this.autoClose = true;
+        reader = new InputStreamReader(new ByteArrayInputStream(data), charset);
+        autoClose = true;
     }
 
     /**
@@ -103,8 +103,8 @@ class BoltReader implements Iterator<String>, AutoCloseable {
             throw new RunnerException("bolt.runner.reader.charset.null");
         }
 
-        this.reader = new InputStreamReader(inputStream, charset);
-        this.autoClose = true;
+        reader = new InputStreamReader(inputStream, charset);
+        autoClose = true;
     }
 
     /**
@@ -118,7 +118,7 @@ class BoltReader implements Iterator<String>, AutoCloseable {
      */
     BoltReader(Reader reader) {
         this.reader = reader;
-        this.autoClose = false;
+        autoClose = false;
     }
 
     /**
