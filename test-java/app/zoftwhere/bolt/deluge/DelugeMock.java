@@ -31,8 +31,11 @@ class DelugeMock {
     }
 
     private final DelugeBuilder builder;
+
     private final DelugeProgramType type;
+
     private final DelugeSetting setting;
+
     private final DelugeData input;
 
     private DelugeMock(DelugeProgramType type, DelugeSetting setting, DelugeData input) {
