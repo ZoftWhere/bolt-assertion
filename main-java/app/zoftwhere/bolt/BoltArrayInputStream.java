@@ -43,39 +43,39 @@ class BoltArrayInputStream extends InputStream {
         if (array.length <= 1) {
             this.array = array;
             this.charset = charset;
-            this.newLine = new byte[0];
-            this.buffer = array.length == 1 ? array[0].getBytes(charset) : new byte[0];
-            this.rowMax = 0;
-            this.row = 0;
-            this.columnMax = buffer.length - 1;
-            this.column = 0;
+            newLine = new byte[0];
+            buffer = array.length == 1 ? array[0].getBytes(charset) : new byte[0];
+            rowMax = 0;
+            row = 0;
+            columnMax = buffer.length - 1;
+            column = 0;
             return;
         }
 
         Charset baseCharset = charset.name().equals("UTF-16") ? UTF_16BE : charset;
 
-        this.charset = baseCharset;
         this.array = array;
-        this.newLine = NEW_LINE.getBytes(baseCharset);
-        this.rowMax = array.length - 1;
+        this.charset = baseCharset;
+        newLine = NEW_LINE.getBytes(baseCharset);
+        rowMax = array.length - 1;
 
         if (array[0].length() != 0) {
-            this.buffer = array[0].getBytes(charset);
-            this.row = 0;
-            this.columnMax = buffer.length - 1;
-            this.column = 0;
+            buffer = array[0].getBytes(charset);
+            row = 0;
+            columnMax = buffer.length - 1;
+            column = 0;
         }
         else if (charset.name().equals("UTF-16")) {
-            this.buffer = (NEW_LINE + array[1]).getBytes(charset);
-            this.row = 1;
-            this.columnMax = buffer.length - 1;
-            this.column = 0;
+            buffer = (NEW_LINE + array[1]).getBytes(charset);
+            row = 1;
+            columnMax = buffer.length - 1;
+            column = 0;
         }
         else {
-            this.buffer = array[1].getBytes(charset);
-            this.row = 1;
-            this.columnMax = buffer.length - 1;
-            this.column = -newLine.length;
+            buffer = array[1].getBytes(charset);
+            row = 1;
+            columnMax = buffer.length - 1;
+            column = -newLine.length;
         }
     }
 
