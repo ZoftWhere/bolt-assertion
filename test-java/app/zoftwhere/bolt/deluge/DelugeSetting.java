@@ -53,8 +53,6 @@ public class DelugeSetting {
 
     private final String[] argumentArray;
 
-    private final boolean hasError;
-
     private final Exception error;
 
     private final boolean hasCharSet;
@@ -75,7 +73,6 @@ public class DelugeSetting {
         this.encoding = encoding;
         this.hasArgumentArray = hasArgumentArray;
         this.argumentArray = argumentArray;
-        this.hasError = error != null;
         this.error = error;
         this.hasCharSet = hasCharSet;
         this.charset = charset;
@@ -110,7 +107,7 @@ public class DelugeSetting {
     }
 
     boolean hasError() {
-        return hasError;
+        return error != null;
     }
 
     Exception error() {
