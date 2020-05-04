@@ -1,6 +1,6 @@
 package app.zoftwhere.bolt.deluge;
 
-public enum DelugeDataType {
+enum DelugeDataType {
     ARRAY,
     ARRAY_ENCODED,
     STREAM,
