@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import org.junit.jupiter.api.Test;
 
+import static app.zoftwhere.bolt.BoltTestHelper.newStringArrayInputStream;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_16;
 import static java.nio.charset.StandardCharsets.UTF_16BE;
@@ -39,7 +40,7 @@ class BoltLineIteratorTest {
     @Test
     void testInputStreamBlank() throws Exception {
         final var input = new String[] {""};
-        try (InputStream inputStream = BoltTestHelper.newStringArrayInputStream(input, UTF_8)) {
+        try (InputStream inputStream = newStringArrayInputStream(input, UTF_8)) {
             BoltLineIterator iterator = new BoltLineIterator(inputStream, UTF_8);
             assertEquals("", iterator.next());
             assertNull(iterator.next());
@@ -49,7 +50,7 @@ class BoltLineIteratorTest {
     @Test
     void testInputStreamBlank2() throws Exception {
         final var input = new String[] {"", ""};
-        try (InputStream inputStream = BoltTestHelper.newStringArrayInputStream(input, UTF_8)) {
+        try (InputStream inputStream = newStringArrayInputStream(input, UTF_8)) {
             BoltLineIterator iterator = new BoltLineIterator(inputStream, UTF_8);
             assertEquals("", iterator.next());
             assertEquals("", iterator.next());
