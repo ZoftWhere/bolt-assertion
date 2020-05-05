@@ -6,14 +6,15 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.time.Duration;
-import java.util.Scanner;
+import java.util.Iterator;
 
+import app.zoftwhere.bolt.BoltTestHelper;
 import app.zoftwhere.bolt.RunnerException;
 import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 
 import static app.zoftwhere.bolt.BoltTestHelper.array;
 import static app.zoftwhere.bolt.BoltTestHelper.arrayHasNull;
-import static app.zoftwhere.bolt.BoltTestHelper.escapeString;
+import static app.zoftwhere.bolt.BoltTestHelper.newStringIterator;
 import static app.zoftwhere.bolt.BoltTestHelper.readArray;
 import static app.zoftwhere.bolt.BoltTestHelper.transcode;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.ARRAY;
@@ -30,8 +31,11 @@ class DelugeMock {
     }
 
     private final DelugeBuilder builder;
+
     private final DelugeProgramType type;
+
     private final DelugeSetting setting;
+
     private final DelugeData input;
 
     private DelugeMock(DelugeProgramType type, DelugeSetting setting, DelugeData input) {
@@ -42,49 +46,48 @@ class DelugeMock {
     }
 
     DelugeProgramOutput buildExpectedOutput() {
-
         if (input.hasCharset() && input.charset() == null) {
-            String exceptionMessage = "bolt.runner.input.charset.null";
-            Exception error = new RunnerException(exceptionMessage, null);
+            var exceptionMessage = "bolt.runner.input.charset.null";
+            var error = new RunnerException(exceptionMessage, null);
             return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
         }
 
         if (setting.hasCharSet() && setting.charset() == null) {
-            String exceptionMessage = "bolt.runner.output.charset.null";
-            Exception error = new RunnerException(exceptionMessage, null);
+            var exceptionMessage = "bolt.runner.output.charset.null";
+            var error = new RunnerException(exceptionMessage, null);
             return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
         }
 
         if (ARRAY == input.type() || ARRAY_ENCODED == input.type()) {
             if (input.array() == null) {
-                String exceptionMessage = "bolt.runner.variable.argument.input.null";
-                Exception error = new RunnerException(exceptionMessage, null);
+                var exceptionMessage = "bolt.runner.variable.argument.input.null";
+                var error = new RunnerException(exceptionMessage, null);
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
 
             if (arrayHasNull(input.array())) {
-                String exceptionMessage = "bolt.runner.variable.argument.input.has.null";
-                Exception error = new RunnerException(exceptionMessage, null);
+                var exceptionMessage = "bolt.runner.variable.argument.input.has.null";
+                var error = new RunnerException(exceptionMessage, null);
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
         }
         else if (RESOURCE == input.type() || RESOURCE_ENCODED == input.type()) {
             if (input.resource() == null) {
-                String exceptionMessage = "bolt.runner.load.input.resource.name.null";
-                Exception error = new RunnerException(exceptionMessage, null);
+                var exceptionMessage = "bolt.runner.load.input.resource.name.null";
+                var error = new RunnerException(exceptionMessage, null);
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
 
             if (input.withClass() == null) {
-                String exceptionMessage = "bolt.runner.load.input.resource.class.null";
-                Exception error = new RunnerException(exceptionMessage, null);
+                var exceptionMessage = "bolt.runner.load.input.resource.class.null";
+                var error = new RunnerException(exceptionMessage, null);
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
 
             final var url = input.withClass().getResource(input.resource());
             if (url == null) {
-                String exceptionMessage = "bolt.runner.load.input.resource.not.found";
-                Exception error = new RunnerException(exceptionMessage, null);
+                var exceptionMessage = "bolt.runner.load.input.resource.not.found";
+                var error = new RunnerException(exceptionMessage, null);
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
         }
@@ -94,14 +97,14 @@ class DelugeMock {
             }
 
             if (input.array() == null) {
-                String exceptionMessage = "bolt.runner.input.stream.supplier.null";
-                Exception error = new RunnerException(exceptionMessage, null);
+                var exceptionMessage = "bolt.runner.input.stream.supplier.null";
+                var error = new RunnerException(exceptionMessage, null);
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
 
             if (arrayHasNull(input.array())) {
-                String exceptionMessage = "bolt.runner.load.input.input.stream.null";
-                Exception error = new RunnerException(exceptionMessage, null);
+                var exceptionMessage = "bolt.runner.load.input.input.stream.null";
+                var error = new RunnerException(exceptionMessage, null);
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
         }
@@ -121,52 +124,43 @@ class DelugeMock {
     }
 
     private DelugeProgramOutput buildOutput() {
-        Exception error = null;
-        Charset inEnc = builder.inputCharset();
-        Charset outEnc = builder.outputCharset();
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        PrintStream out = new PrintStream(outputStream, false, outEnc);
+        var error = (Exception) null;
+        var inEnc = builder.inputCharset();
+        var outEnc = builder.outputCharset();
+        var outputStream = new ByteArrayOutputStream();
+        var out = new PrintStream(outputStream, false, outEnc);
 
         if (!type.isArgued()) {
-            out.println("Argument: <null>");
+            out.print("Argument: <null>\n");
         }
         else if (setting.argumentArray() == null) {
             // Runner should pass an empty array.
-            out.println("Argument: <none>");
+            out.print("Argument: <none>\n");
         }
         else if (setting.argumentArray().length == 0) {
-            out.println("Argument: <none>");
+            out.print("Argument: <none>\n");
         }
         else {
-            for (String argument : setting.argumentArray()) {
-                if (argument == null) {
-                    out.println("Argument: <null>");
-                }
-                else {
-                    out.println(String.format("Argument: \"%s\"", escapeString(argument)));
-                }
+            for (var argument : setting.argumentArray()) {
+                out.print("Argument: " + escapeString(argument) + "\n");
             }
         }
 
-        InputStreamSupplier supplier = newSupplier();
-        try (InputStream inputStream = supplier != null ? supplier.get() : null) {
-            try (Scanner scanner = inputStream != null ? newScanner(inputStream, inEnc, outEnc) : new Scanner("")) {
-                DelugeLineScanner lineScanner = new DelugeLineScanner(scanner);
-
-                out.printf("Line: \"%s\"", escapeString(lineScanner.firstLine()));
-                while (lineScanner.hasMore()) {
-                    out.println();
-                    out.printf("Line: \"%s\"", escapeString(lineScanner.readLine()));
-                }
+        var supplier = newSupplier();
+        try (var inputStream = supplier != null ? supplier.get() : null) {
+            var iterator = newIterator(inputStream, inEnc, outEnc);
+            out.print("Line: " + escapeString(iterator.next()));
+            while (iterator.hasNext()) {
+                out.print("\nLine: " + escapeString(iterator.next()));
             }
         }
         catch (Exception e) {
             error = e;
         }
 
-        final byte[] data = outputStream.toByteArray();
+        var data = outputStream.toByteArray();
 
-        String[] lines = readArray(data, outEnc);
+        var lines = readArray(data, outEnc);
         return DelugeProgramOutput.from(lines, Duration.ofDays(1), error);
     }
 
@@ -176,22 +170,31 @@ class DelugeMock {
                 return () -> new ByteArrayInputStream(new byte[0]);
             }
 
-            Charset charset = builder.inputCharset();
+            var charset = builder.inputCharset();
             return input.newInputStreamSupplier(charset);
         }
 
         return input.streamSupplier();
     }
 
-    private Scanner newScanner(InputStream inputStream, Charset inEnc, Charset outEnc) {
+    private Iterator<String> newIterator(InputStream inputStream, Charset inEnc, Charset outEnc) {
         if (type.isStandard()) {
-            return new Scanner(inputStream, builder.inputCharset());
+            return newStringIterator(inputStream, builder.inputCharset());
         }
         else if (type.isConsole()) {
-            return new Scanner(transcode(inputStream, inEnc, outEnc), outEnc);
+            return newStringIterator(transcode(inputStream, inEnc, outEnc), outEnc);
         }
         else {
             throw new RuntimeException();
+        }
+    }
+
+    private static String escapeString(String string) {
+        if (string == null) {
+            return "<null>";
+        }
+        else {
+            return "\"" + BoltTestHelper.escapeString(string) + "\"";
         }
     }
 

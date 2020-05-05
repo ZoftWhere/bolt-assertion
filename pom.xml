@@ -5,7 +5,7 @@
 
     <groupId>app.zoftwhere.bolt</groupId>
     <artifactId>bolt-assertion</artifactId>
-    <version>11.0.0</version>
+    <version>11.1.0</version>
     <organization>
         <name>ZoftWhere</name>
         <url>https://www.zoftwhere.app</url>
@@ -204,8 +204,9 @@
                                 --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt.scope=ALL-UNNAMED
                                 --add-opens&#32;zoftwhere.bolt.assertion/example=ALL-UNNAMED
                             </argLine>
-                            <forkCount>10</forkCount>
-                            <reuseForks>false</reuseForks>
+                            <forkCount>0</forkCount>
+                            <useSystemClassLoader>false</useSystemClassLoader>
+                            <reuseForks>true</reuseForks>
                             <printSummary>${surefire.printSummary}</printSummary>
                             <includes>
                                 <!-- Include default classes -->

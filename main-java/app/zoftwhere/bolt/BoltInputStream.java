@@ -3,7 +3,9 @@ package app.zoftwhere.bolt;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * <p>A Bolt {@link InputStream} for cross encoding use.
@@ -34,8 +36,30 @@ class BoltInputStream extends InputStream {
      * @since 4.0.0
      */
     BoltInputStream(InputStream inputStream, Charset source, Charset destination) {
-        this.destination = destination;
+        if (!"UTF-16".equals(destination.name())) {
+            this.destination = destination;
+            this.reader = new InputStreamReader(inputStream, source);
+            return;
+        }
+
+        this.destination = StandardCharsets.UTF_16BE;
         this.reader = new InputStreamReader(inputStream, source);
+
+        // Pad non-empty text with UTF-16 BOM (UTF-16BE encoding);
+        try {
+            fill();
+            if (size > 0) {
+                byte[] newBuffer = new byte[size + 2];
+                newBuffer[0] = -2;
+                newBuffer[1] = -1;
+                System.arraycopy(buffer, 0, newBuffer, 2, size);
+                buffer = newBuffer;
+                size += 2;
+            }
+        }
+        catch (IOException e) {
+            throw new UncheckedIOException(e.getMessage(), e);
+        }
     }
 
     /** {@inheritDoc} */
@@ -48,9 +72,7 @@ class BoltInputStream extends InputStream {
             }
         }
 
-        int v = buffer[index] & 0xff;
-        ++index;
-        return v;
+        return buffer[index++] & 0xff;
     }
 
     /**

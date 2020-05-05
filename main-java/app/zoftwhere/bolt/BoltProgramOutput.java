@@ -95,17 +95,17 @@ class BoltProgramOutput implements RunnerProgramOutput {
     @Override
     public RunnerAsserter expected(String... expected) {
         String[] expectation = expected == null || expected.length == 0 ? new String[] {""} : expected;
-        return BoltResult.newBoltResult(output, expectation, duration, comparator, error);
+        return newBoltResult(output, expectation, duration, comparator, error);
     }
 
     @Override
     public RunnerAsserter expected(InputStreamSupplier supplier) {
-        return BoltResult.newBoltResult(output, supplier, encoding, duration, comparator, error);
+        return newBoltResult(output, supplier, encoding, duration, comparator, error);
     }
 
     @Override
     public RunnerAsserter expected(InputStreamSupplier supplier, Charset charset) {
-        return BoltResult.newBoltResult(output, supplier, charset, duration, comparator, error);
+        return newBoltResult(output, supplier, charset, duration, comparator, error);
     }
 
     @Override

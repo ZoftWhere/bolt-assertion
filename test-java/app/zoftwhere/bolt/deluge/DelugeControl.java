@@ -7,39 +7,6 @@ import app.zoftwhere.bolt.BoltSingleReturn;
 
 class DelugeControl {
 
-    static void runTest(DelugeProgramType type, DelugeSetting setting, DelugeData input) {
-        if (input.streamSupplier() != null) {
-            input.resetFlags();
-        }
-
-        DelugeProgramOutput expected = DelugeMock.from(type, setting, input).buildExpectedOutput();
-
-        DelugeProgramOutput actual = DelugeProgram.from(type, setting, input).buildActualResult();
-
-        BoltSingleReturn<String> switcher = new BoltSingleReturn<>();
-
-        switcher.block(() -> {
-            if (input.streamSupplier() == null) {
-                return null;
-            }
-
-            if (input.isOpened()) {
-                return input.isClosed() ? null : "deluge.program.data.input.stream.auto.closing";
-            }
-            else {
-                return !input.isClosed() ? null : "deluge.program.data.input.stream.auto.closing.unopened";
-            }
-        });
-        switcher.block(
-            () -> runComparison(expected, actual)
-        );
-        String message = switcher.end();
-
-        if (message != null) {
-            throw new DelugeException(message, actual.error());
-        }
-    }
-
     static String runComparison(DelugeProgramOutput expected, DelugeProgramOutput actual) {
         BoltSingleReturn<String> switcher = new BoltSingleReturn<>();
 
@@ -81,6 +48,7 @@ class DelugeControl {
                     return String.format("deluge.program.check.comparison.failed[%d]", i);
                 }
             }
+
             return null;
         });
 
@@ -93,11 +61,10 @@ class DelugeControl {
                 return "deluge.program.found.expected.duration.null";
             }
 
-            if (expected.executionDuration().isZero()) {
-                if (!actual.executionDuration().isZero()) {
-                    return "deluge.program.found.actual.execution.duration.exceeds.expectation";
-                }
+            if (expected.executionDuration().compareTo(actual.executionDuration()) < 0) {
+                return "deluge.program.found.actual.execution.duration.exceeds.expectation";
             }
+
             return null;
         });
 

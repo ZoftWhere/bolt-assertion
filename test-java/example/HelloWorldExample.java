@@ -6,7 +6,6 @@ import java.util.Scanner;
 import app.zoftwhere.bolt.Runner;
 import org.junit.jupiter.api.Test;
 
-@SuppressWarnings("CodeBlock2Expr")
 class HelloWorldExample {
 
     // An immutable runner that can be reused.
@@ -15,9 +14,9 @@ class HelloWorldExample {
     @Test
     void testCase() {
 
-        // Hello World lambda.
         runner.run(
             (Scanner scanner, PrintStream out) -> {
+                // Hello World lambda.
                 out.print("Hello World!");
             })
             .input()

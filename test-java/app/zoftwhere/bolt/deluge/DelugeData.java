@@ -1,17 +1,12 @@
 package app.zoftwhere.bolt.deluge;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 
-import app.zoftwhere.bolt.BoltPlaceHolder;
 import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 import org.junit.jupiter.api.Assertions;
 
 import static app.zoftwhere.bolt.BoltTestHelper.isOrHasNull;
+import static app.zoftwhere.bolt.BoltTestHelper.newStringArrayInputStream;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.ARRAY;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.ARRAY_ENCODED;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.RESOURCE;
@@ -20,9 +15,6 @@ import static app.zoftwhere.bolt.deluge.DelugeDataType.STREAM;
 import static app.zoftwhere.bolt.deluge.DelugeDataType.STREAM_ENCODED;
 
 public class DelugeData {
-
-    /** New line definition for parsing that allows testing to be system agnostic. */
-    private static final String NEW_LINE = "\r\n";
 
     static DelugeData forStringArray(String[] data) {
         return new DelugeData(data);
@@ -60,8 +52,6 @@ public class DelugeData {
     private final Class<?> withClass;
     private final Charset charset;
     private final Exception error;
-    private final BoltPlaceHolder<Boolean> openFlag = new BoltPlaceHolder<>(false);
-    private final BoltPlaceHolder<Boolean> closedFlag = new BoltPlaceHolder<>(false);
 
     private DelugeData(String[] array) {
         this.type = ARRAY;
@@ -76,7 +66,7 @@ public class DelugeData {
     private DelugeData(String[] array, Charset charset) {
         this.type = ARRAY_ENCODED;
         this.array = array;
-        this.supplier = newInputStreamSupplier(charset, array);
+        this.supplier = newInputStreamSupplier(array, charset);
         this.withClass = null;
         this.resource = null;
         this.charset = charset;
@@ -87,7 +77,7 @@ public class DelugeData {
         Assertions.assertTrue(type == STREAM || type == STREAM_ENCODED);
         this.type = type;
         this.array = array;
-        this.supplier = newInputStreamSupplier(charset, array);
+        this.supplier = newInputStreamSupplier(array, charset);
         this.withClass = null;
         this.resource = null;
         this.charset = type == STREAM ? null : charset;
@@ -117,23 +107,23 @@ public class DelugeData {
         this.error = error;
     }
 
-    public DelugeDataType type() {
+    DelugeDataType type() {
         return type;
     }
 
-    public String[] array() {
+    String[] array() {
         return array;
     }
 
-    public InputStreamSupplier streamSupplier() {
+    InputStreamSupplier streamSupplier() {
         return supplier;
     }
 
-    public String resource() {
+    String resource() {
         return resource;
     }
 
-    public Class<?> withClass() {
+    Class<?> withClass() {
         return withClass;
     }
 
@@ -153,24 +143,11 @@ public class DelugeData {
         return error;
     }
 
-    void resetFlags() {
-        openFlag.set(false);
-        closedFlag.set(false);
-    }
-
-    boolean isOpened() {
-        return openFlag.get();
-    }
-
-    boolean isClosed() {
-        return closedFlag.get();
-    }
-
     InputStreamSupplier newInputStreamSupplier(Charset charset) {
-        return newInputStreamSupplier(charset, array);
+        return newInputStreamSupplier(array, charset);
     }
 
-    private InputStreamSupplier newInputStreamSupplier(Charset charset, String[] input) {
+    private InputStreamSupplier newInputStreamSupplier(String[] input, Charset charset) {
         if (input == null) {
             return null;
         }
@@ -183,33 +160,7 @@ public class DelugeData {
             return () -> null;
         }
 
-        return new InputStreamSupplier() {
-            @Override
-            public InputStream get() throws Exception {
-                openFlag.set(true);
-
-                try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-                    if (input.length > 0) {
-                        try (OutputStreamWriter writer = new OutputStreamWriter(output, charset)) {
-                            writer.append(input[0]);
-                            for (int i = 1, s = input.length; i < s; i++) {
-                                writer.append(NEW_LINE);
-                                writer.append(input[i]);
-                            }
-                            writer.flush();
-                        }
-                    }
-
-                    return new ByteArrayInputStream(output.toByteArray()) {
-                        @Override
-                        public void close() throws IOException {
-                            closedFlag.set(true);
-                            super.close();
-                        }
-                    };
-                }
-            }
-        };
+        return () -> newStringArrayInputStream(array, charset);
     }
 
 }

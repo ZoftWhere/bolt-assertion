@@ -3,6 +3,7 @@ package example;
 import app.zoftwhere.bolt.Runner;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("SimplifyOptionalCallChains")
 class ExceptionExample {
 
     // An immutable runner that can be reused.
@@ -25,7 +26,6 @@ class ExceptionExample {
                 if (result.isSuccess()) {
                     throw new Exception("The program should have thrown an exception!");
                 }
-                //noinspection SimplifyOptionalCallChains
                 if (!result.error().isPresent()) {
                     throw new NullPointerException("Handle null pointers.");
                 }

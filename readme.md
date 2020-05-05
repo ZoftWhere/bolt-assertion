@@ -11,7 +11,7 @@ The ZoftWhere Bolt Assertion Library is a bolt-on for unit-testing.  It has an e
 
 ## Compiling and Installing the Library
 
-The source code can be compiled with Java language version 8.  It has been tested with Oracle JDK8, JDK11 and JDK12.  The test sources are compiled against JDK 11.
+The source code can be compiled with Java language version 8.  It has been tested with Oracle JDK8, JDK11 and JDK12.  The test sources, including examples, compile with JUnit (v5.6.0), and JDK 11.
 
 The project is Maven based, so executing the ```mvn install``` should install the library to the local repository (Requires at least JDK11).  It has been tested with Apache Maven v3.6.1.
 
@@ -29,6 +29,8 @@ The [ZoftWhere Bolt Assertion Release Notes](/main-github/release-notes) are ava
 
 ## Examples
 
+Note that the example code includes the JUnit @Test annotation.  Java programmers may omit/replace these as is needed with the unit testing-framework of their choice. 
+
 ### Hello World Lambda
 
 The bolt assertion provides a Runner instance.  Here is a Hello World example:
@@ -41,9 +43,9 @@ public class HelloWorldExample {
     @Test
     void testCase() {
 
-        // Hello World lambda.
         runner.run(
             (Scanner scanner, PrintStream out) -> {
+                // Hello World lambda.
                 out.print("Hello World!");
             })
             .input()
@@ -56,7 +58,7 @@ public class HelloWorldExample {
 
 ### Structured Command Line Programs
 
-Java programs that need to read from an input stream, and write to a file (based on environment variables), can be written to be easily testable.  The following is an example of this:
+Java programs that need to read from an input stream, and write to a file (based on environment variables), can be written for testing.  The following is an example of this:
 ``` kotlin
 public class CommandLineExample {
 
@@ -95,7 +97,8 @@ class CommandLineExampleTest {
 
 ### Standard Java Output Redirection
 
-Although it is not recommended, with the correct unit testing framework, an existing program can be run, as is, with the standard console input/output/error stream redirected.  The user will be responsible for ensuring that the console input/output/error streams are properly returned.
+Although it is not recommended, with the correct unit testing framework, an existing program can be run, as is, with the standard console input/output/error stream redirected.  Calling code should include resetting the input/output/error streams afterward.
+
 ``` kotlin
 public class ConsoleOutputExample {
 

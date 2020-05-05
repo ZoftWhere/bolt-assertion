@@ -1,10 +1,8 @@
 package app.zoftwhere.bolt;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -37,26 +35,6 @@ interface BoltProvide {
 
     default String[] emptyOnNull(String[] value) {
         return value != null ? value : new String[0];
-    }
-
-    default InputStreamSupplier newInputStreamSupplier(Charset charset, String... input) {
-        if (input == null || input.length <= 0) {
-            return () -> new ByteArrayInputStream(new byte[0]);
-        }
-
-        return () -> {
-            try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-                try (OutputStreamWriter writer = new OutputStreamWriter(output, charset)) {
-                    writer.append(input[0]);
-                    for (int i = 1, s = input.length; i < s; i++) {
-                        writer.append(NEW_LINE);
-                        writer.append(input[i]);
-                    }
-                    writer.flush();
-                }
-                return new ByteArrayInputStream(output.toByteArray());
-            }
-        };
     }
 
     default InputStream newInputStream(InputStream inputStream, Charset source, Charset destination) {

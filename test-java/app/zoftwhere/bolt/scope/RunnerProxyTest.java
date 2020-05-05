@@ -29,9 +29,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-class RunnerBlankScopeTest {
+class RunnerProxyTest {
 
-    private final RunnerInterface runner = new Runner();
+    private final RunnerInterface proxy = new RunnerProxy();
 
     private final Charset encoding = UTF_8;
 
@@ -42,13 +42,18 @@ class RunnerBlankScopeTest {
     private final Comparator<String> comparator = Comparator.nullsFirst(Comparator.naturalOrder());
 
     @Test
+    void testEncoding() {
+        assertEquals(encoding, new RunnerProxy().encoding(encoding).encoding());
+    }
+
+    @Test
     void testProgramFirst() {
-        testProgramFirst(runner);
+        testProgramFirst(proxy);
     }
 
     @Test
     void testInputFirst() {
-        testInputFirst(runner);
+        testInputFirst(proxy);
     }
 
     private void testProgramFirst(RunnerProvideProgram runner) {
@@ -145,9 +150,9 @@ class RunnerBlankScopeTest {
         testAsserter(preTest.expected(emptyArray));
         testAsserter(preTest.expected(blankArray));
         testAsserter(preTest.expected(this::blankStream));
-        testAsserter(preTest.expected(this::blankStream, UTF_8));
+        testAsserter(preTest.expected(this::blankStream, encoding));
         testAsserter(preTest.loadExpectation("RunnerBlankScopeTest.txt", Runner.class));
-        testAsserter(preTest.loadExpectation("RunnerBlankScopeTest.txt", Runner.class, UTF_8));
+        testAsserter(preTest.loadExpectation("RunnerBlankScopeTest.txt", Runner.class, encoding));
     }
 
     private void testAsserter(RunnerAsserter asserter) {

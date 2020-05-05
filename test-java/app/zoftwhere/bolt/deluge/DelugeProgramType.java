@@ -1,7 +1,5 @@
 package app.zoftwhere.bolt.deluge;
 
-import static app.zoftwhere.bolt.BoltTestHelper.objectInArray;
-
 public enum DelugeProgramType {
     INPUT_STANDARD,
     INPUT_STANDARD_ARGUED,
@@ -13,38 +11,38 @@ public enum DelugeProgramType {
     PROGRAM_CONSOLE_ARGUED;
 
     public boolean isArgued() {
-        DelugeProgramType[] array = {
-            INPUT_STANDARD_ARGUED, INPUT_CONSOLE_ARGUED, PROGRAM_STANDARD_ARGUED, PROGRAM_CONSOLE_ARGUED
-        };
-        return objectInArray(this, array);
+        return this == INPUT_STANDARD_ARGUED ||
+            this == INPUT_CONSOLE_ARGUED ||
+            this == PROGRAM_STANDARD_ARGUED ||
+            this == PROGRAM_CONSOLE_ARGUED;
     }
 
     public boolean isProgramFirst() {
-        DelugeProgramType[] array = {
-            PROGRAM_STANDARD, PROGRAM_CONSOLE, PROGRAM_STANDARD_ARGUED, PROGRAM_CONSOLE_ARGUED
-        };
-        return objectInArray(this, array);
+        return this == PROGRAM_STANDARD ||
+            this == PROGRAM_CONSOLE ||
+            this == PROGRAM_STANDARD_ARGUED ||
+            this == PROGRAM_CONSOLE_ARGUED;
     }
 
     public boolean isInputFirst() {
-        DelugeProgramType[] array = {
-            INPUT_STANDARD, INPUT_STANDARD_ARGUED, INPUT_CONSOLE, INPUT_CONSOLE_ARGUED
-        };
-        return objectInArray(this, array);
+        return this == INPUT_STANDARD ||
+            this == INPUT_STANDARD_ARGUED ||
+            this == INPUT_CONSOLE ||
+            this == INPUT_CONSOLE_ARGUED;
     }
 
     public boolean isStandard() {
-        DelugeProgramType[] array = {
-            INPUT_STANDARD, INPUT_STANDARD_ARGUED, PROGRAM_STANDARD, PROGRAM_STANDARD_ARGUED
-        };
-        return objectInArray(this, array);
+        return this == INPUT_STANDARD ||
+            this == INPUT_STANDARD_ARGUED ||
+            this == PROGRAM_STANDARD ||
+            this == PROGRAM_STANDARD_ARGUED;
     }
 
     public boolean isConsole() {
-        DelugeProgramType[] array = {
-            INPUT_CONSOLE, INPUT_CONSOLE_ARGUED, PROGRAM_CONSOLE, PROGRAM_CONSOLE_ARGUED
-        };
-        return objectInArray(this, array);
+        return this == INPUT_CONSOLE ||
+            this == INPUT_CONSOLE_ARGUED ||
+            this == PROGRAM_CONSOLE ||
+            this == PROGRAM_CONSOLE_ARGUED;
     }
 
 }

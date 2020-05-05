@@ -2,11 +2,17 @@ package app.zoftwhere.bolt;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.Iterator;
 import java.util.Objects;
+import java.util.Scanner;
 
 import org.opentest4j.AssertionFailedError;
 
 public class BoltTestHelper {
+
+    /** New line definition for parsing that allows testing to be system agnostic. */
+    @SuppressWarnings("WeakerAccess")
+    public static final String NEW_LINE = BoltProvide.NEW_LINE;
 
     public static String[] array(String... array) {
         return array;
@@ -44,20 +50,6 @@ public class BoltTestHelper {
         }
     }
 
-    public static <T> boolean objectInArray(T item, T[] array) {
-        if (array == null || array.length == 0) {
-            return false;
-        }
-
-        for (T test : array) {
-            if (Objects.equals(test, item)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public static InputStream transcode(InputStream inputStream, Charset source, Charset destination) {
         if (Objects.equals(source, destination)) {
             return inputStream;
@@ -65,8 +57,20 @@ public class BoltTestHelper {
         return new BoltInputStream(inputStream, source, destination);
     }
 
+    public static Iterator<String> newStringIterator(InputStream inputStream, Charset charset) {
+        return new BoltLineIterator(inputStream, charset);
+    }
+
+    public static Iterator<String> newStringIterator(Scanner scanner) {
+        return new BoltLineIterator(scanner);
+    }
+
     public static String[] readArray(byte[] data, Charset encoding) {
         return BoltReader.readArray(() -> new BoltReader(data, encoding));
+    }
+
+    public static InputStream newStringArrayInputStream(String[] array, Charset charset) {
+        return new BoltArrayInputStream(array, charset);
     }
 
     /**
@@ -84,12 +88,13 @@ public class BoltTestHelper {
                 builder.append("\\ufeff");
             }
             else if (i == '\\') { builder.append("\\\\"); }
-            else if (i == '\r') { builder.append("\\r"); }
+            else if (i == '\f') { builder.append("\\f"); }
             else if (i == '\n') { builder.append("\\n"); }
+            else if (i == '\r') { builder.append("\\r"); }
             else if (i == '\t') { builder.append("\\t"); }
+            else if (i == '\u0085') { builder.append("\\u0085"); }
             else if (i == '\u2028') { builder.append("\\u2028"); }
             else if (i == '\u2029') { builder.append("\\u2029"); }
-            else if (i == '\u0085') { builder.append("\\u0085"); }
             else { builder.appendCodePoint(i); }
         });
         return builder.toString();
