@@ -36,7 +36,7 @@
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-site-plugin.version>3.8.2</maven-site-plugin.version>
         <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
-        <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <maven-toolchains-plugin.version>3.0.0</maven-toolchains-plugin.version>
 
         <!-- > -->
@@ -194,6 +194,10 @@
                 <executions>
                     <execution>
                         <id>default-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
                         <configuration>
                             <argLine>
                                 <!-- main-java packages -->
@@ -204,13 +208,13 @@
                                 --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt.scope=ALL-UNNAMED
                                 --add-opens&#32;zoftwhere.bolt.assertion/example=ALL-UNNAMED
                             </argLine>
-                            <forkCount>0</forkCount>
+                            <forkCount>1</forkCount>
                             <useSystemClassLoader>false</useSystemClassLoader>
                             <reuseForks>true</reuseForks>
                             <printSummary>${surefire.printSummary}</printSummary>
                             <includes>
                                 <!-- Include default classes -->
-                                <include>**/*Test.java</include>
+                                <include>app/zoftwhere/bolt/**/*Test.java</include>
                                 <!-- Include example classes -->
                                 <include>example/*.java</include>
                             </includes>
