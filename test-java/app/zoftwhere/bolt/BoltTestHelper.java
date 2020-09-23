@@ -36,11 +36,11 @@ public class BoltTestHelper {
 
     public static void assertClass(Class<?> expected, Object test) {
         if (expected == null) {
-            throw new IllegalArgumentException("bolt.test.helper.is-class.expected.is.null");
+            throw new IllegalArgumentException("bolt.test.helper.assertClass.expected.is.null");
         }
 
         if (test == null) {
-            throw new IllegalArgumentException("bolt.test.helper.is-class.test.is.null");
+            throw new IllegalArgumentException("bolt.test.helper.assertClass.test.is.null");
         }
 
         String expectedString = expected.getName();
