@@ -48,6 +48,15 @@ class RunnerTest {
     }
 
     @Test
+    void testCompiler() {
+        // A purely paranoid test (based on a bug encountered).
+        //noinspection ConstantConditions
+        if (!"\r\n".equals(NEW_LINE)) {
+            throw new RunnerException("bolt.runner.new.line.invalid");
+        }
+    }
+
+    @Test
     void testDeprecatedThrowable() {
         var caught = false;
         try {
@@ -69,7 +78,7 @@ class RunnerTest {
 
     @Test
     void testNewLine() {
-        // BoltProvide NEW_LINE should be "\r\\n" for this reason.
+        // BoltProvide NEW_LINE should be "\r\n" for this reason.
         runner
             .runConsole(UTF_8, (in, out) -> {
                 try (InputStreamReader reader = new InputStreamReader(in, UTF_8)) {
