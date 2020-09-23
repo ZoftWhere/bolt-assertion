@@ -84,8 +84,12 @@ class DelugeControl {
         String actualString = getter.apply(actual);
         try {
             if (!Objects.equals(expectedString, actualString)) {
-                if (actualString == null) { return noActual; }
-                if (expectedString == null) { return noExpected; }
+                if (actualString == null) {
+                    return noActual;
+                }
+                if (expectedString == null) {
+                    return noExpected;
+                }
                 return noMatch;
             }
 
@@ -97,24 +101,36 @@ class DelugeControl {
     }
 
     private static String exceptionClass(DelugeProgramOutput programOutput) {
-        if (programOutput.error() == null) { return null; }
+        if (programOutput.error() == null) {
+            return null;
+        }
         return programOutput.error().getClass().getName();
     }
 
     private static String exceptionMessage(DelugeProgramOutput programOutput) {
-        if (programOutput.error() == null) { return null; }
+        if (programOutput.error() == null) {
+            return null;
+        }
         return programOutput.error().getMessage();
     }
 
     private static String causeClass(DelugeProgramOutput programOutput) {
-        if (programOutput.error() == null) { return null; }
-        if (programOutput.error().getCause() == null) { return null; }
+        if (programOutput.error() == null) {
+            return null;
+        }
+        if (programOutput.error().getCause() == null) {
+            return null;
+        }
         return programOutput.error().getCause().getClass().getName();
     }
 
     private static String causeMessage(DelugeProgramOutput programOutput) {
-        if (programOutput.error() == null) { return null; }
-        if (programOutput.error().getCause() == null) { return null; }
+        if (programOutput.error() == null) {
+            return null;
+        }
+        if (programOutput.error().getCause() == null) {
+            return null;
+        }
         return programOutput.error().getCause().getMessage();
     }
 

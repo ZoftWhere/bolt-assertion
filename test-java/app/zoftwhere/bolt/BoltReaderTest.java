@@ -166,7 +166,8 @@ class BoltReaderTest {
 
             fail("bolt.reader.close.exception.expected");
         }
-        catch (IOException ignore) { }
+        catch (IOException ignore) {
+        }
     }
 
     @Test
