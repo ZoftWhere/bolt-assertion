@@ -36,11 +36,11 @@ public class BoltTestHelper {
 
     public static void assertClass(Class<?> expected, Object test) {
         if (expected == null) {
-            throw new IllegalArgumentException("bolt.test.helper.is-class.expected.is.null");
+            throw new IllegalArgumentException("bolt.test.helper.assertClass.expected.is.null");
         }
 
         if (test == null) {
-            throw new IllegalArgumentException("bolt.test.helper.is-class.test.is.null");
+            throw new IllegalArgumentException("bolt.test.helper.assertClass.test.is.null");
         }
 
         String expectedString = expected.getName();
@@ -87,15 +87,33 @@ public class BoltTestHelper {
                 //noinspection SpellCheckingInspection
                 builder.append("\\ufeff");
             }
-            else if (i == '\\') { builder.append("\\\\"); }
-            else if (i == '\f') { builder.append("\\f"); }
-            else if (i == '\n') { builder.append("\\n"); }
-            else if (i == '\r') { builder.append("\\r"); }
-            else if (i == '\t') { builder.append("\\t"); }
-            else if (i == '\u0085') { builder.append("\\u0085"); }
-            else if (i == '\u2028') { builder.append("\\u2028"); }
-            else if (i == '\u2029') { builder.append("\\u2029"); }
-            else { builder.appendCodePoint(i); }
+            else if (i == '\\') {
+                builder.append("\\\\");
+            }
+            else if (i == '\f') {
+                builder.append("\\f");
+            }
+            else if (i == '\n') {
+                builder.append("\\n");
+            }
+            else if (i == '\r') {
+                builder.append("\\r");
+            }
+            else if (i == '\t') {
+                builder.append("\\t");
+            }
+            else if (i == '\u0085') {
+                builder.append("\\u0085");
+            }
+            else if (i == '\u2028') {
+                builder.append("\\u2028");
+            }
+            else if (i == '\u2029') {
+                builder.append("\\u2029");
+            }
+            else {
+                builder.appendCodePoint(i);
+            }
         });
         return builder.toString();
     }

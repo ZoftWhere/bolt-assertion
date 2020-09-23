@@ -10,6 +10,7 @@ import java.util.List;
 
 import app.zoftwhere.bolt.deluge.DelugeBuilder;
 import app.zoftwhere.bolt.deluge.DelugeData;
+import org.junit.jupiter.api.Test;
 
 import static app.zoftwhere.bolt.BoltTestHelper.array;
 import static app.zoftwhere.bolt.deluge.DelugeBuilder.forInputStream;
@@ -24,6 +25,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 class BoltDelugeBarrage {
 
+    @SuppressWarnings("WeakerAccess")
     public static void main(String[] args) {
         var test = new BoltDelugeBarrage();
         var rx = 2 + 2 * test.encodingArray.length;
@@ -65,6 +67,19 @@ class BoltDelugeBarrage {
     };
 
     private final List<DelugeData> dataList = expansiveData();
+
+    @Test
+    void runnerTest() {
+        if (!System.getProperties().containsKey("bolt.runner.deluge.test")) {
+            var cause = new RunnerException("This exception is to manage long running tests.");
+            throw new RunnerException("bolt.runner.deluge.test.flag.missing", cause);
+        }
+        if (!"barrage".equals(System.getProperties().getProperty("bolt.runner.deluge.test"))) {
+            throw new RunnerException("bolt.runner.deluge.test.flag.mismatched");
+        }
+
+        new BoltDelugeBarrage().main();
+    }
 
     private int main() {
         final var encodingList = Arrays.asList(encodingArray);

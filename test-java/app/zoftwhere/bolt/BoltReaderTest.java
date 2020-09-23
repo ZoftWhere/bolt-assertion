@@ -164,16 +164,17 @@ class BoltReaderTest {
                 reader.readLine();
             }
 
-            fail("bolt.reader.close.exception.expected");
+            fail("bolt.runner.reader.close.exception.expected");
         }
-        catch (IOException ignore) { }
+        catch (IOException ignore) {
+        }
     }
 
     @Test
     void testReaderAutoCloseSkip() {
-        var stream = new ByteArrayInputStream(new byte[0]);
-        var closeFlag = new BoltPlaceHolder<>(false);
-        var reader = new InputStreamReader(stream) {
+        final var stream = new ByteArrayInputStream(new byte[0]);
+        final var closeFlag = new BoltPlaceHolder<>(false);
+        final var reader = new InputStreamReader(stream) {
             @Override
             public void close() throws IOException {
                 super.close();
@@ -200,17 +201,17 @@ class BoltReaderTest {
 
     @Test
     void testHasNextFail() throws IOException {
-        var stream = new ByteArrayInputStream("".getBytes());
-        var runner = new BoltReader(stream, UTF_8);
+        final var stream = new ByteArrayInputStream("".getBytes());
+        final var runner = new BoltReader(stream, UTF_8);
         runner.readLine();
         assertFalse(runner.hasNext());
     }
 
     @Test
     void testNextFail() {
-        var stream = new ByteArrayInputStream("".getBytes());
+        final var stream = new ByteArrayInputStream("".getBytes());
 
-        var reader = new BoltReader(stream, UTF_8) {
+        final var reader = new BoltReader(stream, UTF_8) {
             @Override
             String readLine() throws IOException {
                 throw new IOException();
@@ -228,8 +229,8 @@ class BoltReaderTest {
 
     @Test
     void testReadArrayFail() {
-        var stream = new ByteArrayInputStream(new byte[0]);
-        var reader = new InputStreamReader(stream) {
+        final var stream = new ByteArrayInputStream(new byte[0]);
+        final var reader = new InputStreamReader(stream) {
             @Override
             public boolean ready() throws IOException {
                 throw new IOException("Fake IO Exception.");
@@ -257,8 +258,8 @@ class BoltReaderTest {
 
     @Test
     void testReadListFail() {
-        var stream = new ByteArrayInputStream(new byte[0]);
-        var reader = new InputStreamReader(stream) {
+        final var stream = new ByteArrayInputStream(new byte[0]);
+        final var reader = new InputStreamReader(stream) {
             @Override
             public boolean ready() throws IOException {
                 throw new IOException("Fake IO Exception.");
@@ -324,14 +325,14 @@ class BoltReaderTest {
 
     private void testThis(String test, String... array) {
         final var size = array.length;
-        var builder = new StringBuilder();
+        final var builder = new StringBuilder();
         if (size > 0) {
             builder.append(array[0]);
         }
         for (var i = 1; i < size; i++) {
             builder.append("\n").append(array[i]);
         }
-        var input = builder.toString();
+        final var input = builder.toString();
         final var list = BoltReader.readList(() -> forString(input, UTF_8));
 
         if (array.length != list.size()) {

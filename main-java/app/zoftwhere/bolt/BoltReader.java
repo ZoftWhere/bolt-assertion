@@ -199,7 +199,9 @@ class BoltReader implements Iterator<String>, AutoCloseable {
 
     @Override
     public void close() throws IOException {
-        if (autoClose) { reader.close(); }
+        if (autoClose) {
+            reader.close();
+        }
     }
 
 }

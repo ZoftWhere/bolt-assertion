@@ -2,7 +2,7 @@ package app.zoftwhere.bolt;
 
 import java.util.Objects;
 
-class BoltUtility {
+abstract class BoltUtility {
 
     static boolean arrayHasNull(String[] array) {
         for (String item : Objects.requireNonNull(array, "array")) {
@@ -11,6 +11,9 @@ class BoltUtility {
             }
         }
         return false;
+    }
+
+    private BoltUtility() {
     }
 
 }
