@@ -243,6 +243,33 @@
                             </includes>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>bolt-deluge-barrage</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <argLine>
+                                <!-- main-java packages -->
+                                --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt=ALL-UNNAMED
+                                --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt.api=ALL-UNNAMED
+                                <!-- test-java packages -->
+                                --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt.deluge=ALL-UNNAMED
+                                --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt.scope=ALL-UNNAMED
+                            </argLine>
+                            <systemPropertyVariables>
+                                <bolt.runner.deluge.test>barrage</bolt.runner.deluge.test>
+                            </systemPropertyVariables>
+                            <forkCount>1</forkCount>
+                            <useSystemClassLoader>false</useSystemClassLoader>
+                            <reuseForks>true</reuseForks>
+                            <printSummary>${surefire.printSummary}</printSummary>
+                            <includes>
+                                <include>app/zoftwhere/bolt/BoltDelugeBarrage.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
                 </executions>
                 <dependencies>
                     <dependency>
