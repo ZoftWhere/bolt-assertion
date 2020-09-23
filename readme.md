@@ -19,7 +19,17 @@ If the project needs to be installed against JDK8, it can be accomplished by cal
 
 ``` shell script
 mvn clean compiler:compile@main-compile-jdk8 jar:jar@main-jar source:jar@main-sources javadoc:jar@main-javadoc moditect:add-module-info@main-jpms install:install-file@main-install
-``` 
+```
+
+
+## Testing the Library
+
+The library source code can/should be tested when using Maven to package to library to a Java archive.
+
+To check for any hidden issue, a barrage of tests can be run by issuing the following command:
+``` bash
+mvn compile test-compile surefire:test@bolt-deluge-barrage
+```
 
 
 ## Release Notes
@@ -29,7 +39,7 @@ The [ZoftWhere Bolt Assertion Release Notes](/main-github/release-notes) are ava
 
 ## Examples
 
-Note that the example code includes the JUnit @Test annotation.  Java programmers may omit/replace these as is needed with the unit testing-framework of their choice. 
+Note that the example code includes the JUnit @Test annotation.  Java programmers may omit/replace these as is needed with the unit testing-framework of their choice.
 
 ### Hello World Lambda
 
@@ -78,7 +88,7 @@ public class CommandLineExample {
 
 }
 ```
-``` kotlin 
+``` kotlin
 class CommandLineExampleTest {
 
     private final Runner runner = new Runner();
