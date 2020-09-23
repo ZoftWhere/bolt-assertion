@@ -164,7 +164,7 @@ class BoltReaderTest {
                 reader.readLine();
             }
 
-            fail("bolt.reader.close.exception.expected");
+            fail("bolt.runner.reader.close.exception.expected");
         }
         catch (IOException ignore) {
         }
