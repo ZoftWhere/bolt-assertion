@@ -4,7 +4,7 @@ import java.util.Objects;
 
 abstract class BoltUtility {
 
-    protected static boolean arrayHasNull(String[] array) {
+    static boolean arrayHasNull(String[] array) {
         for (String item : Objects.requireNonNull(array, "array")) {
             if (item == null) {
                 return true;
