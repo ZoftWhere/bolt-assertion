@@ -6,6 +6,16 @@ import java.util.Iterator;
 import java.util.Scanner;
 import java.util.function.Supplier;
 
+/**
+ * <p>Bolt line iterator class.
+ * </p>
+ * <p>This is a package-private class for providing its functionality.
+ * </p>
+ *
+ * @author Osmund
+ * @version 11.2.0
+ * @since 11.1.0
+ */
 class BoltLineIterator implements Iterator<String> {
 
     private final Supplier<String> loader;

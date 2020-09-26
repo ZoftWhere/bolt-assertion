@@ -26,6 +26,8 @@ import static app.zoftwhere.bolt.BoltReader.readArray;
  * <p>This is a package-private interface for providing default functionality.
  * </p>
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 6.0.0
  */
 interface BoltProvide {

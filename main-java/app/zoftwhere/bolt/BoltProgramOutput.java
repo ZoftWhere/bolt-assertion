@@ -15,8 +15,13 @@ import static app.zoftwhere.bolt.BoltResult.newBoltResult;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Bolt program output class.
+ * <p>Bolt program output class.
+ * </p>
+ * <p>This is a package-private class for providing its functionality.
+ * </p>
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 6.0.0
  */
 class BoltProgramOutput implements RunnerProgramOutput {

@@ -9,8 +9,11 @@ import app.zoftwhere.bolt.api.RunnerProgram;
 import app.zoftwhere.bolt.api.RunnerProgramInput;
 
 /**
- * Runner abstract class.
+ * Bolt Assertion Abstract Runner.
  *
+ * @author Osmund
+ * @version 11.2.0
+ * @see app.zoftwhere.bolt.Runner
  * @since 6.0.0
  */
 public abstract class AbstractRunner implements RunnerInterface, RunnerEncoding {

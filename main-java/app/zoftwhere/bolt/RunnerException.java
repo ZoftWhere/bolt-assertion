@@ -3,6 +3,8 @@ package app.zoftwhere.bolt;
 /**
  * Runner runtime-exception class for API exceptions.
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 6.0.0
  */
 public class RunnerException extends RuntimeException {

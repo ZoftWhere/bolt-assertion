@@ -20,7 +20,7 @@ import app.zoftwhere.bolt.api.RunnerInterface.RunnerResultConsumer;
  *
  * @author Osmund
  * @version 11.2.0
- * @since 1.0.0
+ * @since 6.0.0
  */
 abstract class AbstractUnit {
 

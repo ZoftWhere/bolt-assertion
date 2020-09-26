@@ -18,6 +18,8 @@ import static java.util.Objects.requireNonNull;
 /**
  * Bolt Provide Program class.
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 6.0.0
  */
 class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, RunnerProgram, BoltProvide {

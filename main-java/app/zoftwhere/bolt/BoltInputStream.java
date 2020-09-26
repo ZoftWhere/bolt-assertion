@@ -8,11 +8,13 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
- * <p>A Bolt {@link InputStream} for cross encoding use.
+ * <p>A Bolt {@link java.io.InputStream} for cross encoding use.
  * </p>
  * <p>This is a package-private class for providing this functionality.
  * </p>
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 4.0.0
  */
 class BoltInputStream extends InputStream {

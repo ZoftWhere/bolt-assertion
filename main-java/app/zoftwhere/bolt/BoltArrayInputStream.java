@@ -13,6 +13,8 @@ import static java.nio.charset.StandardCharsets.UTF_16BE;
  * <p>This is a package-private class for providing this functionality.
  * </p>
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 11.1.0
  */
 class BoltArrayInputStream extends InputStream {
@@ -38,6 +40,7 @@ class BoltArrayInputStream extends InputStream {
      *
      * @param array   {@code String} array
      * @param charset character encoding for {@code InputStream}
+     * @since 11.1.0
      */
     BoltArrayInputStream(String[] array, Charset charset) {
         if (array.length <= 1) {

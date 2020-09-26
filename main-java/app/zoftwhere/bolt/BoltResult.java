@@ -18,8 +18,13 @@ import static app.zoftwhere.bolt.BoltUtility.arrayHasNull;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Bolt execution result class.
+ * <p>Bolt execution result class.
+ * </p>
+ * <p>This is a package-private class for providing this functionality.
+ * </p>
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 6.0.0
  */
 class BoltResult implements RunnerResult, RunnerAsserter {

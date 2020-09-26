@@ -18,6 +18,8 @@ import java.util.function.Supplier;
  * <p>This is a package-private class for providing this functionality.
  * </p>
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 4.0.0
  */
 class BoltReader implements Iterator<String>, AutoCloseable {

@@ -10,6 +10,8 @@ import java.nio.charset.Charset;
  * <p>This is a package-private interface for creating internal implementations with lambdas.
  * </p>
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 9.0.0
  */
 @FunctionalInterface

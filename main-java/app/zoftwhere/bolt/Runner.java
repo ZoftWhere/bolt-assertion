@@ -11,10 +11,18 @@ import app.zoftwhere.bolt.api.RunnerProgramInput;
 /**
  * Bolt Assertion Runner.
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 1.0.0
  */
 public class Runner extends AbstractRunner {
 
+    /**
+     * <p>Default Runner character encoding (UTF-8).
+     * </p>
+     *
+     * @since 11.0.0
+     */
     public static final Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
 
     /**
