@@ -3,6 +3,14 @@ package example;
 import app.zoftwhere.bolt.Runner;
 import org.junit.jupiter.api.Test;
 
+/**
+ * <p>Example to show how to handle/throw exceptions.
+ * </p>
+ *
+ * @author Osmund
+ * @version 11.2.0
+ * @since 1.0.0
+ */
 @SuppressWarnings("SimplifyOptionalCallChains")
 class ExceptionExample {
 

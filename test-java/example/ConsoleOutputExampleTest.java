@@ -6,6 +6,14 @@ import app.zoftwhere.bolt.Runner;
 import app.zoftwhere.bolt.api.RunnerInterface.RunConsoleArgued;
 import org.junit.jupiter.api.Test;
 
+/**
+ * <p>Example test class with input/output redirected for console program.
+ * </p>
+ *
+ * @author Osmund
+ * @version 11.2.0
+ * @since 1.0.0
+ */
 @SuppressWarnings({"RedundantThrows", "RedundantSuppression"})
 class ConsoleOutputExampleTest {
 

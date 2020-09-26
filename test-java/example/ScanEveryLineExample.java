@@ -9,7 +9,9 @@ import org.junit.jupiter.api.Test;
 /**
  * Scan Every Line example.
  *
- * @since 7.1.0
+ * @author Osmund
+ * @version 11.2.0
+ * @since 2.0.0
  */
 class ScanEveryLineExample {
 

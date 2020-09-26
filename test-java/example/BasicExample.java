@@ -6,6 +6,14 @@ import java.util.Scanner;
 import app.zoftwhere.bolt.Runner;
 import org.junit.jupiter.api.Test;
 
+/**
+ * <p>A couple of basic examples of how the Bolt Assertion runner can be used in tests.
+ * </p>
+ *
+ * @author Osmund
+ * @version 11.2.0
+ * @since 1.0.0
+ */
 class BasicExample {
 
     // An immutable runner that can be reused.
