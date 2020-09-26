@@ -31,7 +31,7 @@ abstract class BoltUtility {
     }
 
     /**
-     * <p>Constructor for BoltUtility (private).</p>
+     * Constructor for BoltUtility (private).
      *
      * @since 11.0.0
      */
