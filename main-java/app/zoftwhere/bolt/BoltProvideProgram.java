@@ -70,60 +70,71 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
         this.error = error;
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerProgram run(RunStandard program) {
         return run(encoding, program);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerProgram run(Charset charset, RunStandard program) {
         BoltExecutor executor = buildStandardExecutor(proxyRunStandard(program));
         return new BoltProvideProgram(encoding, arguments, charset, executor, error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerProgram runConsole(RunConsole program) {
         return runConsole(encoding, program);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerProgram runConsole(Charset charset, RunConsole program) {
         BoltExecutor executor = buildConsoleExecutor(proxyRunConsole(program));
         return new BoltProvideProgram(encoding, arguments, charset, executor, error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerPreProgram run(RunStandardArgued program) {
         return run(encoding, program);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerPreProgram run(Charset charset, RunStandardArgued program) {
         BoltExecutor executor = buildStandardExecutor(program);
         return new BoltProvideProgram(encoding, arguments, charset, executor, error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerPreProgram runConsole(RunConsoleArgued program) {
         return runConsole(encoding, program);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerPreProgram runConsole(Charset charset, RunConsoleArgued program) {
         BoltExecutor executor = buildConsoleExecutor(program);
         return new BoltProvideProgram(encoding, arguments, charset, executor, error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerProgram argument(String... arguments) {
         return new BoltProvideProgram(encoding, emptyOnNull(arguments), outputCharset, executor, error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerProgramOutput input(String... input) {
         return input(encoding, input);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerProgramOutput input(Charset charset, String... input) {
         if (charset == null) {
@@ -145,21 +156,25 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
         return buildOutput(encoding, arguments, charset, supplier, outputCharset, executor, error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerProgramOutput input(InputStreamSupplier supplier) {
         return buildOutput(encoding, arguments, encoding, supplier, outputCharset, executor, error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerProgramOutput input(InputStreamSupplier supplier, Charset charset) {
         return buildOutput(encoding, arguments, charset, supplier, outputCharset, executor, error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerProgramOutput loadInput(String resourceName, Class<?> withClass) {
         return loadInput(resourceName, withClass, encoding);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerProgramOutput loadInput(String resourceName, Class<?> withClass, Charset charset) {
         if (charset == null) {

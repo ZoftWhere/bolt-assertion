@@ -176,51 +176,61 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         this.error = requireNonNull(error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isSuccess() {
         return message == null && error == null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isFailure() {
         return message != null && error == null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isError() {
         return error != null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String[] output() {
         return Arrays.copyOf(output, output.length);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String[] expected() {
         return Arrays.copyOf(expected, expected.length);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int offendingIndex() {
         return offendingIndex;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<String> message() {
         return Optional.ofNullable(message);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Exception> error() {
         return Optional.ofNullable(error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Duration executionDuration() {
         return executionDuration;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void assertSuccess() {
         if (isFailure()) {
@@ -232,6 +242,7 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void assertFailure() {
         if (isSuccess()) {
@@ -243,6 +254,7 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void assertError() {
         if (isSuccess()) {
@@ -254,6 +266,7 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void assertCheck(RunnerResultConsumer consumer) {
         try {
@@ -264,6 +277,7 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onOffence(RunnerResultConsumer consumer) {
         if (isSuccess()) {
@@ -278,6 +292,7 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerResult result() {
         return this;

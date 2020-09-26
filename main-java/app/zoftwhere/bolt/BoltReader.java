@@ -136,6 +136,7 @@ class BoltReader implements Iterator<String>, AutoCloseable {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public String next() {
         try {
@@ -197,6 +198,7 @@ class BoltReader implements Iterator<String>, AutoCloseable {
         return list().toArray(new String[] { });
     }
 
+    /** {@inheritDoc} */
     @Override
     public void close() throws IOException {
         if (autoClose) {

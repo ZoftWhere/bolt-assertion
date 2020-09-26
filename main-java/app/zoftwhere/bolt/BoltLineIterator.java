@@ -59,11 +59,13 @@ class BoltLineIterator implements Iterator<String> {
         hasNext = next != null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean hasNext() {
         return hasNext;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String next() {
         if (!hasNext) {

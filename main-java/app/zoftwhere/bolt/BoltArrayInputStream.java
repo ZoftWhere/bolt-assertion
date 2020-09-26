@@ -79,6 +79,7 @@ class BoltArrayInputStream extends InputStream {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     @SuppressWarnings("RedundantThrows")
     public int read() throws IOException {

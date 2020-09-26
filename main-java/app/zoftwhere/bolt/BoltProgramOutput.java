@@ -63,21 +63,25 @@ class BoltProgramOutput implements RunnerProgramOutput {
         this.comparator = comparator;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String[] output() {
         return Arrays.copyOf(output, output.length);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Exception> error() {
         return Optional.ofNullable(error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Duration executionDuration() {
         return duration;
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerPreTest comparator(Comparator<String> comparator) {
         if (error != null) {
@@ -92,27 +96,32 @@ class BoltProgramOutput implements RunnerProgramOutput {
         return new BoltProgramOutput(encoding, output, duration, comparator);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerAsserter expected(String... expected) {
         String[] expectation = expected == null || expected.length == 0 ? new String[] {""} : expected;
         return newBoltResult(output, expectation, duration, comparator, error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerAsserter expected(InputStreamSupplier supplier) {
         return newBoltResult(output, supplier, encoding, duration, comparator, error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerAsserter expected(InputStreamSupplier supplier, Charset charset) {
         return newBoltResult(output, supplier, charset, duration, comparator, error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerAsserter loadExpectation(String resourceName, Class<?> withClass) {
         return newBoltResult(output, resourceName, withClass, encoding, duration, comparator, error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerAsserter loadExpectation(String resourceName, Class<?> withClass, Charset charset) {
         return newBoltResult(output, resourceName, withClass, charset, duration, comparator, error);

@@ -31,27 +31,35 @@ public interface RunnerProgramOutput
     @Override
     RunnerPreTest comparator(Comparator<String> comparator);
 
+    /** {@inheritDoc} */
     @Override
     String[] output();
 
+    /** {@inheritDoc} */
     @Override
     Optional<Exception> error();
 
+    /** {@inheritDoc} */
     @Override
     Duration executionDuration();
 
+    /** {@inheritDoc} */
     @Override
     RunnerAsserter expected(String... expected);
 
+    /** {@inheritDoc} */
     @Override
     RunnerAsserter expected(InputStreamSupplier supplier);
 
+    /** {@inheritDoc} */
     @Override
     RunnerAsserter expected(InputStreamSupplier supplier, Charset charset);
 
+    /** {@inheritDoc} */
     @Override
     RunnerAsserter loadExpectation(String resourceName, Class<?> withClass);
 
+    /** {@inheritDoc} */
     @Override
     RunnerAsserter loadExpectation(String resourceName, Class<?> withClass, Charset charset);
 

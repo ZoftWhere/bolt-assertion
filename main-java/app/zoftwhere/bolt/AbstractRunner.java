@@ -18,51 +18,67 @@ public abstract class AbstractRunner implements RunnerInterface, RunnerEncoding 
     public AbstractRunner() {
     }
 
+    /** {@inheritDoc} */
     @Override
     public abstract Charset encoding();
 
+    /** {@inheritDoc} */
     @Override
     public abstract RunnerInterface encoding(Charset encoding);
 
+    /** {@inheritDoc} */
     @Override
     public abstract RunnerProgram run(RunStandard program);
 
+    /** {@inheritDoc} */
     @Override
     public abstract RunnerProgram run(Charset charset, RunStandard program);
 
+    /** {@inheritDoc} */
     @Override
     public abstract RunnerProgram runConsole(RunConsole program);
 
+    /** {@inheritDoc} */
     @Override
     public abstract RunnerProgram runConsole(Charset charset, RunConsole program);
 
+    /** {@inheritDoc} */
     @Override
     public abstract RunnerPreProgram run(RunStandardArgued program);
 
+    /** {@inheritDoc} */
     @Override
     public abstract RunnerPreProgram run(Charset charset, RunStandardArgued program);
 
+    /** {@inheritDoc} */
     @Override
     public abstract RunnerPreProgram runConsole(RunConsoleArgued program);
 
+    /** {@inheritDoc} */
     @Override
     public abstract RunnerPreProgram runConsole(Charset charset, RunConsoleArgued program);
 
+    /** {@inheritDoc} */
     @Override
     public abstract RunnerProgramInput input(String... input);
 
+    /** {@inheritDoc} */
     @Override
     public abstract RunnerProgramInput input(Charset charset, String... input);
 
+    /** {@inheritDoc} */
     @Override
     public abstract RunnerProgramInput input(InputStreamSupplier supplier);
 
+    /** {@inheritDoc} */
     @Override
     public abstract RunnerProgramInput input(InputStreamSupplier supplier, Charset charset);
 
+    /** {@inheritDoc} */
     @Override
     public abstract RunnerProgramInput loadInput(String resourceName, Class<?> withClass);
 
+    /** {@inheritDoc} */
     @Override
     public abstract RunnerProgramInput loadInput(String resourceName, Class<?> withClass, Charset charset);
 
