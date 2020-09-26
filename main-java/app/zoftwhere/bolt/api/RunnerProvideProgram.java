@@ -13,6 +13,8 @@ import app.zoftwhere.bolt.api.RunnerInterface.RunStandardArgued;
  * <p>This interface that forms the basis for Runner#run() and Runner#runConsole().
  * </p>
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 6.0.0
  */
 public interface RunnerProvideProgram

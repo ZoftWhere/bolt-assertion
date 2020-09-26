@@ -9,6 +9,8 @@ import java.util.Scanner;
 /**
  * Runner instance interface.
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 6.0.0
  */
 public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInput {

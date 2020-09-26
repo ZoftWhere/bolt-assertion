@@ -10,6 +10,8 @@ import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
  * <p>This interface that forms the basis for Runner#input() and Runner#loadInput().
  * </p>
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 6.0.0
  */
 public interface RunnerProvideInput extends AbstractUnit.Input<RunnerProgramInput> {

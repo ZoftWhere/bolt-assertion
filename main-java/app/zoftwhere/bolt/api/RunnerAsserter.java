@@ -6,6 +6,8 @@ import app.zoftwhere.bolt.api.RunnerInterface.RunnerResultConsumer;
 /**
  * Runner asserter interface.
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 6.0.0
  */
 public interface RunnerAsserter extends AbstractUnit.Assertions<RunnerResult> {

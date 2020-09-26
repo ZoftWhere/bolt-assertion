@@ -6,6 +6,8 @@ import java.util.Optional;
 /**
  * Runner execution result interface.
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 8.0.0
  */
 public interface RunnerResult extends AbstractUnit.Result {

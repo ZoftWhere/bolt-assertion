@@ -3,6 +3,8 @@ package app.zoftwhere.bolt.api;
 /**
  * Runner pre-program interface.
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 6.0.0
  */
 public interface RunnerPreProgram extends AbstractUnit.Arguments<RunnerProgram> {

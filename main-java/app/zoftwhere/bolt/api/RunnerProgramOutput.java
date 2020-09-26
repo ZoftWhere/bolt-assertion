@@ -10,6 +10,8 @@ import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 /**
  * Runner program execution output interface.
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 6.0.0
  */
 public interface RunnerProgramOutput
