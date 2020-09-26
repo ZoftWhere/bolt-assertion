@@ -32,13 +32,33 @@ import static app.zoftwhere.bolt.BoltReader.readArray;
  */
 interface BoltProvide {
 
-    /** New line definition for parsing that allows execution to be system agnostic. */
+    /**
+     * New line definition for parsing that allows execution to be system agnostic.
+     *
+     * @since 11.0.0
+     */
     String NEW_LINE = "\r\n";
 
+    /**
+     * Return an empty array if any elements in {@code value} are null.
+     *
+     * @param value an array of {@link java.lang.String}
+     * @return empty array if any elements in {@code value} are null, {@code value} otherwise
+     * @since 6.0.0
+     */
     default String[] emptyOnNull(String[] value) {
         return value != null ? value : new String[0];
     }
 
+    /**
+     * Return a new {@link java.io.InputStream} transcoder.
+     *
+     * @param inputStream input stream to transcode
+     * @param source      source character encoding
+     * @param destination destination character encoding.
+     * @return {@link BoltInputStream} as {@link java.io.InputStream} if transcoding, {@code inputStream} otherwise
+     * @since 6.0.0
+     */
     default InputStream newInputStream(InputStream inputStream, Charset source, Charset destination) {
         if (Objects.equals(source, destination)) {
             return inputStream;
@@ -47,11 +67,28 @@ interface BoltProvide {
         return new BoltInputStream(inputStream, source, destination);
     }
 
+    /**
+     * Return a new {@link java.util.Scanner}.
+     *
+     * @param inputStream input stream
+     * @param charset     input stream character encoding
+     * @return {@link java.util.Scanner} for input stream
+     * @since 6.0.0
+     */
     default Scanner newScanner(InputStream inputStream, Charset charset) {
         // Charset.name() for backwards compatibility.
         return new Scanner(inputStream, charset.name());
     }
 
+    /**
+     * Return a new {@link java.io.PrintStream}.
+     *
+     * @param outputStream output stream
+     * @param charset      output stream character encoding
+     * @return {@link java.io.PrintStream} for {@link java.io.OutputStream}
+     * @throws java.io.UnsupportedEncodingException if any.
+     * @since 7.0.0
+     */
     default PrintStream newPrintStream(OutputStream outputStream, Charset charset)
     throws UnsupportedEncodingException
     {
