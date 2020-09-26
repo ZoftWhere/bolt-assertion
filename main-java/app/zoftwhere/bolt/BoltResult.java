@@ -29,6 +29,17 @@ import static java.util.Objects.requireNonNull;
  */
 class BoltResult implements RunnerResult, RunnerAsserter {
 
+    /**
+     * BoltResult factory method (package-private).
+     *
+     * @param output     program (actual) output
+     * @param expected   program expected output
+     * @param duration   program execution duration
+     * @param comparator program output comparator
+     * @param error      program error
+     * @return {@link app.zoftwhere.bolt.BoltResult}
+     * @since 11.0.0
+     */
     static BoltResult newBoltResult(
         String[] output,
         String[] expected,
@@ -44,6 +55,18 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         return performComparison(output, expected, duration, comparator);
     }
 
+    /**
+     * BoltResult factory method (package-private).
+     *
+     * @param output       program (actual) output
+     * @param supplier     input stream supplier
+     * @param inputCharset input stream character encoding
+     * @param duration     program execution duration
+     * @param comparator   program output comparator
+     * @param error        program error
+     * @return {@link app.zoftwhere.bolt.BoltResult}
+     * @since 11.0.0
+     */
     static BoltResult newBoltResult(
         String[] output,
         InputStreamSupplier supplier,
@@ -81,6 +104,19 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         }
     }
 
+    /**
+     * BoltResult factory method (package-private).
+     *
+     * @param output       program output
+     * @param resourceName input resource name
+     * @param withClass    input resource class
+     * @param charset      input resource character encoding
+     * @param duration     program execution duration
+     * @param comparator   program output comparator
+     * @param error        program error
+     * @return {@link app.zoftwhere.bolt.BoltResult}
+     * @since 11.0.0
+     */
     static BoltResult newBoltResult(
         String[] output,
         String resourceName,
