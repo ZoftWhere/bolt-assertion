@@ -70,7 +70,7 @@ public interface RunnerResult extends AbstractUnit.Result {
     String[] expected();
 
     /**
-     * Retrieve the execution duration.
+     * Retrieve execution duration.
      *
      * @return {@link java.time.Duration} duration from execution call till program completion or execution error.
      * @since 9.0.0
@@ -79,7 +79,7 @@ public interface RunnerResult extends AbstractUnit.Result {
     Duration executionDuration();
 
     /**
-     * Retrieve the offending index for output comparison.
+     * Retrieve offending index for output comparison.
      *
      * @return array index for mismatch, -1 on length or none
      * @since 5.0.0
