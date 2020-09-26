@@ -99,7 +99,7 @@ public interface RunnerResult extends AbstractUnit.Result {
     /**
      * Retrieve execution error for error state.
      *
-     * @return {@code Optional} {@link java.lang.Exception} for execution error
+     * @return {@link java.util.Optional} {@link java.lang.Exception} for execution error
      * @since 8.0.0
      */
     @Override
