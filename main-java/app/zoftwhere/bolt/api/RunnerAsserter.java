@@ -13,7 +13,7 @@ public interface RunnerAsserter extends AbstractUnit.Assertions<RunnerResult> {
     /**
      * <p>Asserts that execution result is for a success state.
      * </p>
-     * <p>Throws {@link RunnerException} for failure state or error state.
+     * <p>Throws {@link app.zoftwhere.bolt.RunnerException} for failure state or error state.
      * </p>
      *
      * @since 1.0.0
@@ -24,7 +24,7 @@ public interface RunnerAsserter extends AbstractUnit.Assertions<RunnerResult> {
     /**
      * <p>Asserts that execution result is for a failure state.
      * </p>
-     * <p>Throws {@link RunnerException} for success state or error state.
+     * <p>Throws {@link app.zoftwhere.bolt.RunnerException} for success state or error state.
      * </p>
      *
      * @since 4.0.0
@@ -35,7 +35,7 @@ public interface RunnerAsserter extends AbstractUnit.Assertions<RunnerResult> {
     /**
      * <p>Asserts that execution result is for an error state.
      * </p>
-     * <p>Throws {@link RunnerException} for success state or failure state.
+     * <p>Throws {@link app.zoftwhere.bolt.RunnerException} for success state or failure state.
      * </p>
      *
      * @since 8.0.0
@@ -50,7 +50,7 @@ public interface RunnerAsserter extends AbstractUnit.Assertions<RunnerResult> {
      * </p>
      *
      * @param consumer custom consumer
-     * @throws RunnerException around {@link Exception} thrown by consumer.
+     * @throws RunnerException around {@link java.lang.Exception} thrown by consumer.
      * @since 6.0.0
      */
     @Override
@@ -63,7 +63,7 @@ public interface RunnerAsserter extends AbstractUnit.Assertions<RunnerResult> {
      * </p>
      *
      * @param consumer custom consumer
-     * @throws RunnerException around {@link Exception} thrown by consumer.
+     * @throws RunnerException around {@link java.lang.Exception} thrown by consumer.
      * @since 6.0.0
      */
     @Override

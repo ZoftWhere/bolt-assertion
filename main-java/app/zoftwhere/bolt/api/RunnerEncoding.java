@@ -9,7 +9,7 @@ public interface RunnerEncoding extends AbstractUnit.Encoding<RunnerInterface> {
      * </p>
      *
      * @param encoding character encoding to use as default.
-     * @return {@link RunnerInterface} with specified default encoding.
+     * @return {@link app.zoftwhere.bolt.api.RunnerInterface} with specified default encoding.
      * @since 11.0.0
      */
     @Override

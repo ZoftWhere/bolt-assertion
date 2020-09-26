@@ -10,7 +10,7 @@ public class RunnerException extends RuntimeException {
     static final long serialVersionUID = 0x407c5c6e5485db90L;
 
     /**
-     * <p>Creates a {@link RunnerException} with specified message.
+     * <p>Creates a {@link app.zoftwhere.bolt.RunnerException} with specified message.
      * </p>
      * <p>The cause is automatically set to null.</p>
      *
@@ -22,7 +22,7 @@ public class RunnerException extends RuntimeException {
     }
 
     /**
-     * <p>Creates a {@link RunnerException} with specified message and cause.
+     * <p>Creates a {@link app.zoftwhere.bolt.RunnerException} with specified message and cause.
      * </p>
      *
      * @param message error message

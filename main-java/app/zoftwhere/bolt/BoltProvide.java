@@ -80,10 +80,10 @@ interface BoltProvide {
     }
 
     /**
-     * Retrieve {@link BoltExecutor} for program.
+     * Retrieve {@link app.zoftwhere.bolt.BoltExecutor} for program.
      *
      * @param program scanner-printer program with arguments (or proxy)
-     * @return {@link BoltExecutor} if program non-null, null otherwise
+     * @return {@link app.zoftwhere.bolt.BoltExecutor} if program non-null, null otherwise
      * @since 10.0.0
      */
     default BoltExecutor buildStandardExecutor(RunStandardArgued program) {
@@ -105,10 +105,10 @@ interface BoltProvide {
     }
 
     /**
-     * Retrieve {@link BoltExecutor} for program.
+     * Retrieve {@link app.zoftwhere.bolt.BoltExecutor} for program.
      *
      * @param program input-output-stream program with arguments (or proxy)
-     * @return {@link BoltExecutor} if program non-null, null otherwise
+     * @return {@link app.zoftwhere.bolt.BoltExecutor} if program non-null, null otherwise
      * @since 11.0.0
      */
     default BoltExecutor buildConsoleExecutor(RunConsoleArgued program) {
@@ -130,12 +130,14 @@ interface BoltProvide {
     /**
      * Returns the program output.
      *
+     * @param encoding       a {@link java.nio.charset.Charset} object.
      * @param arguments      program argument array
-     * @param inputCharset   character encoding for program input {@link InputStream}
-     * @param streamSupplier {@link InputStream} supplier for program input
+     * @param inputCharset   character encoding for program input {@link java.io.InputStream}
+     * @param streamSupplier {@link java.io.InputStream} supplier for program input
      * @param outputCharset  character encoding for program output
      * @param executor       program executor
-     * @return {@link BoltProgramOutput}
+     * @param loadError      a {@link java.lang.Exception} object.
+     * @return {@link app.zoftwhere.bolt.BoltProgramOutput}
      * @since 11.0.0
      */
     default BoltProgramOutput buildOutput(

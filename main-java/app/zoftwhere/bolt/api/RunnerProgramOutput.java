@@ -24,8 +24,8 @@ public interface RunnerProgramOutput
      * <p>The execution result will contain an exception if the loaded comparator is null.
      * </p>
      *
-     * @param comparator {@link String} {@link Comparator} for program line output
-     * @return {@link RunnerPreTest}
+     * @param comparator {@link java.lang.String} {@link java.util.Comparator} for program line output
+     * @return {@link app.zoftwhere.bolt.api.RunnerPreTest}
      * @since 1.0.0
      */
     @Override

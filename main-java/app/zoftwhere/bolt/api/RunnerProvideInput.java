@@ -18,7 +18,7 @@ public interface RunnerProvideInput extends AbstractUnit.Input<RunnerProgramInpu
      * Specify the input.
      *
      * @param input program input
-     * @return {@link RunnerProgramOutput}
+     * @return {@link app.zoftwhere.bolt.api.RunnerProgramOutput}
      * @since 1.0.0
      */
     @Override
@@ -28,7 +28,7 @@ public interface RunnerProvideInput extends AbstractUnit.Input<RunnerProgramInpu
      * Specify the input.
      *
      * @param input program input
-     * @return {@link RunnerProgramOutput}
+     * @return {@link app.zoftwhere.bolt.api.RunnerProgramOutput}
      * @since 11.0.0
      */
     @Override
@@ -38,7 +38,7 @@ public interface RunnerProvideInput extends AbstractUnit.Input<RunnerProgramInpu
      * Specify the input.
      *
      * @param supplier {@link java.io.InputStream} supplier for program input
-     * @return {@link RunnerProgramOutput}
+     * @return {@link app.zoftwhere.bolt.api.RunnerProgramOutput}
      * @since 6.0.0
      */
     @Override
@@ -49,7 +49,7 @@ public interface RunnerProvideInput extends AbstractUnit.Input<RunnerProgramInpu
      *
      * @param supplier {@link java.io.InputStream} supplier for program input
      * @param charset  character encoding of {@link java.io.InputStream}
-     * @return {@link RunnerProgramOutput}
+     * @return {@link app.zoftwhere.bolt.api.RunnerProgramOutput}
      * @since 6.0.0
      */
     @Override
@@ -59,8 +59,8 @@ public interface RunnerProvideInput extends AbstractUnit.Input<RunnerProgramInpu
      * Specify the input.
      *
      * @param resourceName resource name for loading program input
-     * @param withClass    {@link Class} with which to retrieve the program input
-     * @return {@link RunnerProgramOutput}
+     * @param withClass    {@link java.lang.Class} with which to retrieve the program input
+     * @return {@link app.zoftwhere.bolt.api.RunnerProgramOutput}
      * @since 1.0.0
      */
     @Override
@@ -70,9 +70,9 @@ public interface RunnerProvideInput extends AbstractUnit.Input<RunnerProgramInpu
      * Specify the input.
      *
      * @param resourceName resource name for loading program input
-     * @param withClass    {@link Class} with which to retrieve the program input
+     * @param withClass    {@link java.lang.Class} with which to retrieve the program input
      * @param charset      character encoding of resource
-     * @return {@link RunnerProgramOutput}
+     * @return {@link app.zoftwhere.bolt.api.RunnerProgramOutput}
      * @since 1.0.0
      */
     @Override

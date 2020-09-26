@@ -1,7 +1,5 @@
 package app.zoftwhere.bolt.api;
 
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.nio.charset.Charset;
 
 import app.zoftwhere.bolt.api.RunnerInterface.RunConsoleArgued;
@@ -18,7 +16,7 @@ public interface RunnerLoader extends AbstractUnit.RunWithArguments<RunnerProgra
      * Specify the scanner-printer program with arguments.
      *
      * @param program scanner-printer program with arguments
-     * @return {@link RunnerProgramOutput}
+     * @return {@link app.zoftwhere.bolt.api.RunnerProgramOutput}
      * @since 7.0.0
      */
     @Override
@@ -28,8 +26,8 @@ public interface RunnerLoader extends AbstractUnit.RunWithArguments<RunnerProgra
      * Specify the scanner-printer program with arguments.
      *
      * @param program scanner-printer program with arguments
-     * @param charset character encoding of program {@link PrintStream}
-     * @return {@link RunnerProgramOutput}
+     * @param charset character encoding of program {@link java.io.PrintStream}
+     * @return {@link app.zoftwhere.bolt.api.RunnerProgramOutput}
      * @since 7.0.0
      */
     @Override
@@ -39,7 +37,7 @@ public interface RunnerLoader extends AbstractUnit.RunWithArguments<RunnerProgra
      * Specify the input-output-stream program with arguments.
      *
      * @param program input-output-stream program with arguments
-     * @return {@link RunnerProgramOutput}
+     * @return {@link app.zoftwhere.bolt.api.RunnerProgramOutput}
      * @since 6.0.0
      */
     @Override
@@ -49,8 +47,8 @@ public interface RunnerLoader extends AbstractUnit.RunWithArguments<RunnerProgra
      * Specify the input-output-stream program with arguments.
      *
      * @param program input-output-stream program with arguments
-     * @param charset character encoding of program {@link OutputStream}
-     * @return {@link RunnerProgramOutput}
+     * @param charset character encoding of program {@link java.io.OutputStream}
+     * @return {@link app.zoftwhere.bolt.api.RunnerProgramOutput}
      * @since 6.0.0
      */
     @Override

@@ -79,8 +79,8 @@ class ScanEveryLineExample {
     /**
      * Example for running a program with scanner against fixed/file/resource input.
      *
-     * @param scanner program {@link Scanner}
-     * @param out     program {@link PrintStream}
+     * @param scanner program {@link java.util.Scanner}
+     * @param out     program {@link java.io.PrintStream}
      */
     private static void program(Scanner scanner, PrintStream out) {
         String line = firstLine(scanner);

@@ -28,11 +28,11 @@ class BoltInputStream extends InputStream {
     private int size = 0;
 
     /**
-     * Constructor for creating an {@link InputStream} from {@link InputStream} transcoder.
+     * Constructor for creating an {@link java.io.InputStream} from {@link java.io.InputStream} transcoder.
      *
-     * @param inputStream {@link InputStream} to transcode
-     * @param source      character encoding of source {@link InputStream}
-     * @param destination character encoding of target {@link BoltInputStream}
+     * @param inputStream {@link java.io.InputStream} to transcode
+     * @param source      character encoding of source {@link java.io.InputStream}
+     * @param destination character encoding of target {@link app.zoftwhere.bolt.BoltInputStream}
      * @since 4.0.0
      */
     BoltInputStream(InputStream inputStream, Charset source, Charset destination) {

@@ -128,7 +128,7 @@ class BoltResult implements RunnerResult, RunnerAsserter {
      *
      * @param output            program output lines
      * @param expected          expected program output lines
-     * @param executionDuration {@link Duration} of execution
+     * @param executionDuration {@link java.time.Duration} of execution
      * @since 9.0.0
      */
     BoltResult(String[] output, String[] expected, Duration executionDuration) {

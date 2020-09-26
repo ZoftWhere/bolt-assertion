@@ -33,7 +33,7 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
     private final RunnerException error;
 
     /**
-     * Constructor for {@link Runner} program first interface implementation.
+     * Constructor for {@link app.zoftwhere.bolt.Runner} program first interface implementation.
      *
      * @since 11.0.0
      */

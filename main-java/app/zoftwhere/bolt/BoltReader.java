@@ -23,10 +23,10 @@ import java.util.function.Supplier;
 class BoltReader implements Iterator<String>, AutoCloseable {
 
     /**
-     * Static helper method for retrieving text lines as a {@link List} of type {@link String}.
+     * Static helper method for retrieving text lines as a {@link java.util.List} of type {@link java.lang.String}.
      *
-     * @param supplier {@link BoltReader} supplier
-     * @return text lines as a {@link List} of type {@link String}
+     * @param supplier {@link app.zoftwhere.bolt.BoltReader} supplier
+     * @return text lines as a {@link java.util.List} of type {@link java.lang.String}
      * @since 4.0.0
      */
     static List<String> readList(Supplier<BoltReader> supplier) {
@@ -39,10 +39,10 @@ class BoltReader implements Iterator<String>, AutoCloseable {
     }
 
     /**
-     * Static helper method for retrieving text lines as an array of type {@link String}.
+     * Static helper method for retrieving text lines as an array of type {@link java.lang.String}.
      *
-     * @param supplier {@link BoltReader} supplier
-     * @return text lines as an array of type {@link String}
+     * @param supplier {@link app.zoftwhere.bolt.BoltReader} supplier
+     * @return text lines as an array of type {@link java.lang.String}
      * @since 4.0.0
      */
     static String[] readArray(Supplier<BoltReader> supplier) {
@@ -91,7 +91,7 @@ class BoltReader implements Iterator<String>, AutoCloseable {
      * Constructor for input stream.
      *
      * @param inputStream input stream for text
-     * @param charset     character encoding of {@link InputStream}
+     * @param charset     character encoding of {@link java.io.InputStream}
      * @since 4.0.0
      */
     BoltReader(InputStream inputStream, Charset charset) {

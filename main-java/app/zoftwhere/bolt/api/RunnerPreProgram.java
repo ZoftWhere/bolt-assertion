@@ -11,7 +11,7 @@ public interface RunnerPreProgram extends AbstractUnit.Arguments<RunnerProgram> 
      * Specify the program arguments.
      *
      * @param arguments program argument array
-     * @return {@link RunnerProgram}
+     * @return {@link app.zoftwhere.bolt.api.RunnerProgram}
      * @since 1.0.0
      */
     @Override
