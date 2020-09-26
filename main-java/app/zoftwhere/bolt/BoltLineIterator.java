@@ -24,6 +24,12 @@ class BoltLineIterator implements Iterator<String> {
 
     private String next;
 
+    /**
+     * Constructor for BoltLineIterator (package-private).
+     *
+     * @param scanner scanner for text
+     * @since 11.1.0
+     */
     BoltLineIterator(Scanner scanner) {
         final Supplier<String> firstLine = () -> {
             // Check for empty first line.
@@ -56,6 +62,13 @@ class BoltLineIterator implements Iterator<String> {
         hasNext = true;
     }
 
+    /**
+     * Constructor for BoltLineIterator (package-private).
+     *
+     * @param inputStream input stream for text
+     * @param charset     character encoding of {@link java.io.InputStream}
+     * @since 11.1.0
+     */
     BoltLineIterator(InputStream inputStream, Charset charset) {
         final BoltReader reader = new BoltReader(inputStream, charset);
         loader = () -> {

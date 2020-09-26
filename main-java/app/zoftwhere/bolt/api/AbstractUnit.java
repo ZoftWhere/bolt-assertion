@@ -24,6 +24,11 @@ import app.zoftwhere.bolt.api.RunnerInterface.RunnerResultConsumer;
  */
 abstract class AbstractUnit {
 
+    /**
+     * Constructor for AbstractUnit.
+     *
+     * @since 6.0.0
+     */
     public AbstractUnit() {
     }
 

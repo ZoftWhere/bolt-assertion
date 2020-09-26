@@ -30,6 +30,11 @@ abstract class BoltUtility {
         return false;
     }
 
+    /**
+     * <p>Constructor for BoltUtility (private).</p>
+     *
+     * @since 11.0.0
+     */
     private BoltUtility() {
     }
 

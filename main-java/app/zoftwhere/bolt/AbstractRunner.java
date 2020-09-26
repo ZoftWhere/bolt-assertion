@@ -18,6 +18,11 @@ import app.zoftwhere.bolt.api.RunnerProgramInput;
  */
 public abstract class AbstractRunner implements RunnerInterface, RunnerEncoding {
 
+    /**
+     * Constructor for AbstractRunner.
+     *
+     * @since 6.0.0
+     */
     public AbstractRunner() {
     }
 
