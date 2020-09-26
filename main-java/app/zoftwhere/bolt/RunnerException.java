@@ -14,7 +14,8 @@ public class RunnerException extends RuntimeException {
     /**
      * <p>Creates a {@link app.zoftwhere.bolt.RunnerException} with specified message.
      * </p>
-     * <p>The cause is automatically set to null.</p>
+     * <p>The cause is automatically set to null.
+     * </p>
      *
      * @param message error message
      * @since 6.0.0
