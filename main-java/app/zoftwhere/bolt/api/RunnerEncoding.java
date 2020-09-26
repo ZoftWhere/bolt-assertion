@@ -12,7 +12,7 @@ import java.nio.charset.Charset;
 public interface RunnerEncoding extends AbstractUnit.Encoding<RunnerInterface> {
 
     /**
-     * <p>Specifies the default character encoding to use for methods where one is not specified.
+     * <p>Specifies the default character encoding to use for methods when one is not specified.
      * </p>
      *
      * @param encoding character encoding to use as default.
