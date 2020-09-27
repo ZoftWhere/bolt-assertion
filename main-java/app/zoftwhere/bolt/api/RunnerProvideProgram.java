@@ -34,8 +34,8 @@ public interface RunnerProvideProgram
     /**
      * Specify the scanner-printer program without arguments.
      *
-     * @param program scanner-printer program without arguments
      * @param charset character encoding of program {@link java.io.PrintStream}
+     * @param program scanner-printer program without arguments
      * @return {@link app.zoftwhere.bolt.api.RunnerProgram}
      * @since 7.0.0
      */
@@ -55,8 +55,8 @@ public interface RunnerProvideProgram
     /**
      * Specify the input-output-stream program without arguments.
      *
-     * @param program input-output-stream program without arguments
      * @param charset character encoding of program {@link java.io.OutputStream}
+     * @param program input-output-stream program without arguments
      * @return {@link app.zoftwhere.bolt.api.RunnerProgram}
      * @since 6.0.0
      */
@@ -76,8 +76,8 @@ public interface RunnerProvideProgram
     /**
      * Specify the scanner-printer program with arguments.
      *
-     * @param program scanner-printer program with arguments
      * @param charset character encoding of program {@link java.io.PrintStream}
+     * @param program scanner-printer program with arguments
      * @return {@link app.zoftwhere.bolt.api.RunnerProgram}
      * @since 7.0.0
      */
@@ -97,8 +97,8 @@ public interface RunnerProvideProgram
     /**
      * Specify the input-output-stream program with arguments.
      *
-     * @param program input-output-stream program with arguments
      * @param charset character encoding of program {@link java.io.OutputStream}
+     * @param program input-output-stream program with arguments
      * @return {@link app.zoftwhere.bolt.api.RunnerProgram}
      * @since 6.0.0
      */
