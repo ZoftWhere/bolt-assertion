@@ -16,7 +16,10 @@ import static app.zoftwhere.bolt.BoltUtility.arrayHasNull;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Bolt Provide Program class.
+ * <p>Bolt Provide Program class.
+ * </p>
+ * <p>This is a package-private class for {@link app.zoftwhere.bolt.Runner} program first interface implementation.
+ * </p>
  *
  * @author Osmund
  * @version 11.2.0
@@ -35,7 +38,10 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
     private final RunnerException error;
 
     /**
-     * Constructor for {@link app.zoftwhere.bolt.Runner} program first interface implementation.
+     * <p>Constructor for BoltProvideProgram (package-private).
+     * </p>
+     * <p>Create instance of this multi-interfaced class for handling of runners that accept program first.
+     * </p>
      *
      * @param encoding default character encoding
      * @since 11.0.0
@@ -49,7 +55,7 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
     }
 
     /**
-     * Private constructor for the multi-interfaced class.
+     * Constructor for BoltProvideProgram (private).
      *
      * @param encoding  character encoding to use by default when not specified
      * @param arguments program argument array

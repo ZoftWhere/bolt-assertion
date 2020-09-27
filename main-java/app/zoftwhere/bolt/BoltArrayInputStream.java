@@ -8,9 +8,9 @@ import static app.zoftwhere.bolt.BoltProvide.NEW_LINE;
 import static java.nio.charset.StandardCharsets.UTF_16BE;
 
 /**
- * <p>A Bolt Array {@link java.io.InputStream} for {@link java.lang.String} array use.
+ * <p>Bolt Array Input Stream class.
  * </p>
- * <p>This is a package-private class for providing this functionality.
+ * <p>This is a package-private class for providing an input stream for a {@link java.lang.String} array.
  * </p>
  *
  * @author Osmund
@@ -36,10 +36,13 @@ class BoltArrayInputStream extends InputStream {
     private byte[] buffer;
 
     /**
-     * Constructor for creating an {@link java.io.InputStream} from an array of {@link java.lang.String}.
+     * <p>Constructor for BoltArrayInputStream (package-private).
+     * </p>
+     * <p>Creates an instance for an array of {@link java.lang.String}.
+     * </p>
      *
-     * @param array   {@code String} array
-     * @param charset character encoding for {@code InputStream}
+     * @param array   input {@link java.lang.String} array
+     * @param charset character encoding for {@link java.io.InputStream}
      * @since 11.1.0
      */
     BoltArrayInputStream(String[] array, Charset charset) {

@@ -7,7 +7,7 @@ import java.util.Scanner;
 import java.util.function.Supplier;
 
 /**
- * <p>Bolt line iterator class.
+ * <p>Bolt Line Iterator class.
  * </p>
  * <p>This is a package-private class for providing its functionality.
  * </p>
@@ -25,9 +25,12 @@ class BoltLineIterator implements Iterator<String> {
     private String next;
 
     /**
-     * Constructor for BoltLineIterator (package-private).
+     * <p>Constructor for BoltLineIterator (package-private).
+     * </p>
+     * <p>Creates an instance with scanner provided.
+     * </p>
      *
-     * @param scanner scanner for text
+     * @param scanner program {@link java.util.Scanner}
      * @since 11.1.0
      */
     BoltLineIterator(Scanner scanner) {
@@ -63,9 +66,12 @@ class BoltLineIterator implements Iterator<String> {
     }
 
     /**
-     * Constructor for BoltLineIterator (package-private).
+     * <p>Constructor for BoltLineIterator (package-private).
+     * </p>
+     * <p>Creates an instance with input stream and character encoding provided.
+     * </p>
      *
-     * @param inputStream input stream for text
+     * @param inputStream {@link java.io.InputStream}
      * @param charset     character encoding of {@link java.io.InputStream}
      * @since 11.1.0
      */

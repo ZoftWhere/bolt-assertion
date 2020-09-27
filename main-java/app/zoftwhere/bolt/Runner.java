@@ -52,7 +52,10 @@ public class Runner extends AbstractRunner {
     }
 
     /**
-     * Private constructor creating an instance with a user-defined default encoding.
+     * <p>Constructor for Runner (private).
+     * </p>
+     * <p>Creates an instance with a user-defined default encoding.
+     * </p>
      *
      * @param encoding default encoding
      * @since 11.0.0

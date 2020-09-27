@@ -70,7 +70,10 @@ class BoltReader implements Iterator<String>, AutoCloseable {
     private boolean skipLF = false;
 
     /**
-     * Constructor for byte array data.
+     * <p>Constructor for BoltReader (package-private).
+     * </p>
+     * <p>Creates an instance with byte array data and character encoding provided.
+     * </p>
      *
      * @param data    byte array for text
      * @param charset character encoding of byte array
@@ -90,7 +93,10 @@ class BoltReader implements Iterator<String>, AutoCloseable {
     }
 
     /**
-     * Constructor for input stream.
+     * <p>Constructor for BoltReader (package-private).
+     * </p>
+     * <p>Creates an instance with input stream and character encoding provided.
+     * </p>
      *
      * @param inputStream input stream for text
      * @param charset     character encoding of {@link java.io.InputStream}
@@ -110,7 +116,9 @@ class BoltReader implements Iterator<String>, AutoCloseable {
     }
 
     /**
-     * <p>Constructor for reader.
+     * <p>Constructor for BoltReader (package-private).
+     * </p>
+     * <p>Creates an instance with reader provided.
      * </p>
      * <p>Note that BoltReader does not close the reader provided.
      * </p>

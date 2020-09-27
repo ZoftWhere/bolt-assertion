@@ -37,11 +37,14 @@ class BoltProgramOutput implements RunnerProgramOutput {
     private final Comparator<String> comparator;
 
     /**
-     * Create an program output instance based on the program output and program exception.
+     * <p>Constructor for BoltProgramOutput (package-private).
+     * </p>
+     * <p>Creates an instance based on the program output and program exception.
+     * </p>
      *
      * @param encoding default character encoding
-     * @param output   program output lines
-     * @param duration duration of program execution
+     * @param output   program (actual) output lines
+     * @param duration program execution duration
      * @param error    execution error, if any, null otherwise
      * @since 11.0.0
      */
@@ -54,11 +57,12 @@ class BoltProgramOutput implements RunnerProgramOutput {
     }
 
     /**
-     * Private constructor for program output.
+     * <p>Constructor for BoltProgramOutput (private).
+     * </p>
      *
      * @param encoding   default character encoding
-     * @param output     program output lines
-     * @param duration   duration of program execution
+     * @param output     program (actual) output lines
+     * @param duration   program execution duration
      * @param comparator program output comparator, if any, null otherwise
      * @since 11.0.0
      */

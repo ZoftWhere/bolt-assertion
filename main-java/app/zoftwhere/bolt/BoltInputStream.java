@@ -8,9 +8,9 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
- * <p>A Bolt {@link java.io.InputStream} for cross encoding use.
+ * <p>Bolt Input Stream class.
  * </p>
- * <p>This is a package-private class for providing this functionality.
+ * <p>This is a package-private class for providing input stream transcoding.
  * </p>
  *
  * @author Osmund
@@ -30,7 +30,10 @@ class BoltInputStream extends InputStream {
     private int size = 0;
 
     /**
-     * Constructor for creating an {@link java.io.InputStream} from {@link java.io.InputStream} transcoder.
+     * <p>Constructor for BoltInputStream (package-private).
+     * </p>
+     * <p>Creates an instance for {@link java.io.InputStream} transcoding.
+     * </p>
      *
      * @param inputStream {@link java.io.InputStream} to transcode
      * @param source      character encoding of source {@link java.io.InputStream}

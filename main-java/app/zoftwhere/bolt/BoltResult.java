@@ -30,10 +30,13 @@ import static java.util.Objects.requireNonNull;
 class BoltResult implements RunnerResult, RunnerAsserter {
 
     /**
-     * BoltResult factory method (package-private).
+     * <p>BoltResult factory method (package-private).
+     * </p>
+     * <p>Creates an instance of {@code BoltResult} based on lines and error provided.
+     * </p>
      *
-     * @param output     program (actual) output
-     * @param expected   program expected output
+     * @param output     program (actual) output lines
+     * @param expected   program expected output lines
      * @param duration   program execution duration
      * @param comparator program output comparator
      * @param error      execution error
@@ -56,9 +59,12 @@ class BoltResult implements RunnerResult, RunnerAsserter {
     }
 
     /**
-     * BoltResult factory method (package-private).
+     * <p>BoltResult factory method (package-private).
+     * </p>
+     * <p>Creates an instance of {@code BoltResult} based on input stream and error provided.
+     * </p>
      *
-     * @param output       program (actual) output
+     * @param output       program (actual) output lines
      * @param supplier     input stream supplier
      * @param inputCharset input stream character encoding
      * @param duration     program execution duration
@@ -105,9 +111,12 @@ class BoltResult implements RunnerResult, RunnerAsserter {
     }
 
     /**
-     * BoltResult factory method (package-private).
+     * <p>BoltResult factory method (package-private).
+     * </p>
+     * <p>Creates an instance of {@code BoltResult} based on input resource and error provided.
+     * </p>
      *
-     * @param output       program output
+     * @param output       program (actual) output lines
      * @param resourceName input resource name
      * @param withClass    input resource class
      * @param charset      input resource character encoding
@@ -165,11 +174,14 @@ class BoltResult implements RunnerResult, RunnerAsserter {
     private final Duration executionDuration;
 
     /**
-     * Create a execution result for a success state.
+     * <p>Constructor for BoltResult (package-private).
+     * </p>
+     * <p>Creates an instance for a success state.
+     * </p>
      *
-     * @param output            program output lines
-     * @param expected          expected program output lines
-     * @param duration       program execution duration
+     * @param output   program (actual) output lines
+     * @param expected program expected output lines
+     * @param duration program execution duration
      * @since 9.0.0
      */
     BoltResult(String[] output, String[] expected, Duration duration) {
@@ -182,9 +194,12 @@ class BoltResult implements RunnerResult, RunnerAsserter {
     }
 
     /**
-     * Create a execution result for a failure state.
+     * <p>Constructor for BoltResult (package-private).
+     * </p>
+     * <p>Creates an instance for a failure state.
+     * </p>
      *
-     * @param output         program output lines
+     * @param output         program (actual) output lines
      * @param expected       program expected output lines
      * @param duration       program execution duration
      * @param offendingIndex zero-based index of erroneous line, if any, -1 otherwise.
@@ -202,9 +217,12 @@ class BoltResult implements RunnerResult, RunnerAsserter {
     }
 
     /**
-     * Create a execution result for an error state.
+     * <p>Constructor for BoltResult (package-private).
+     * </p>
+     * <p>Creates an instance for an error state.
+     * </p>
      *
-     * @param output   program output lines
+     * @param output   program (actual) output lines
      * @param expected program expected output lines
      * @param duration program execution duration
      * @param error    execution error
