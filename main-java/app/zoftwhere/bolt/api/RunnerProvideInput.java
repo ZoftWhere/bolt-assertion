@@ -27,9 +27,13 @@ public interface RunnerProvideInput extends AbstractUnit.Input<RunnerProgramInpu
     RunnerProgramInput input(String... input);
 
     /**
-     * Specify the input.
+     * <p>Specify the input.
+     * </p>
+     * <p>The variable-argument input will be converted to a program input {@link java.io.InputStream} with the {@link
+     * java.nio.charset.Charset} provided.</p>
      *
-     * @param input program input
+     * @param charset character encoding of input
+     * @param input   program input
      * @return {@link app.zoftwhere.bolt.api.RunnerProgramOutput}
      * @since 11.0.0
      */
