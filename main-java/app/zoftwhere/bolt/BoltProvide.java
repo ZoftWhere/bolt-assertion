@@ -148,7 +148,7 @@ interface BoltProvide {
      *
      * @param program input-output-stream program with arguments (or proxy)
      * @return {@link app.zoftwhere.bolt.BoltExecutor} if program non-null, null otherwise
-     * @since 11.0.0
+     * @since 10.0.0
      */
     default BoltExecutor buildConsoleExecutor(RunConsoleArgued program) {
         if (program == null) {
