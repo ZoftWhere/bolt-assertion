@@ -382,9 +382,6 @@
                     <execution>
                         <id>main-javadoc-jdk8</id>
                         <phase>none</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
                         <configuration>
                             <failOnWarnings>true</failOnWarnings>
                             <sourceFileExcludes>
