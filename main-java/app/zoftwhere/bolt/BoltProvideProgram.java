@@ -37,6 +37,7 @@ class BoltProvideProgram implements RunnerProvideProgram, RunnerPreProgram, Runn
     /**
      * Constructor for {@link app.zoftwhere.bolt.Runner} program first interface implementation.
      *
+     * @param encoding default character encoding
      * @since 11.0.0
      */
     BoltProvideProgram(Charset encoding) {
