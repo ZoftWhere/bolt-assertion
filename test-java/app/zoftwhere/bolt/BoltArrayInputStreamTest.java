@@ -31,17 +31,17 @@ class BoltArrayInputStreamTest {
 
         for (var charset : charsetArray) {
             for (var input : inputMatrix) {
-                byte[] actual = buildActual(input, charset);
-                byte[] expected = buildExpected(input, charset);
+                final var actual = buildActual(input, charset);
+                final var expected = buildExpected(input, charset);
                 assertArrayEquals(expected, actual);
             }
         }
     }
 
     private byte[] buildActual(String[] input, Charset charset) throws Exception {
-        try (var inputStream = new BoltArrayInputStream(input, charset)) {
-            var output = new ByteArrayOutputStream();
-            int i = inputStream.read();
+        try (final var inputStream = new BoltArrayInputStream(input, charset)) {
+            final var output = new ByteArrayOutputStream();
+            var i = inputStream.read();
             while (i != -1) {
                 output.write(i);
                 i = inputStream.read();
@@ -51,10 +51,10 @@ class BoltArrayInputStreamTest {
     }
 
     private byte[] buildExpected(String[] input, Charset charset) throws Exception {
-        try (var outputStream = new ByteArrayOutputStream()) {
-            try (var out = new PrintStream(outputStream, false, charset)) {
+        try (final var outputStream = new ByteArrayOutputStream()) {
+            try (final var out = new PrintStream(outputStream, false, charset)) {
                 out.print(input[0]);
-                for (int i = 1; i < input.length; i++) {
+                for (var i = 1; i < input.length; i++) {
                     out.print(NEW_LINE);
                     out.print(input[i]);
                 }

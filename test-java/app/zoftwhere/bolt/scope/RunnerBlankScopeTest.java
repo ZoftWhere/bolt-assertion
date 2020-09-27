@@ -131,9 +131,9 @@ class RunnerBlankScopeTest {
     }
 
     private void testRunnerOutput(RunnerPreTest preTest) {
-        var output = preTest.output();
-        var duration = preTest.executionDuration();
-        var error = preTest.error().orElse(null);
+        final var output = preTest.output();
+        final var duration = preTest.executionDuration();
+        final var error = preTest.error().orElse(null);
         assertNotNull(output);
         assertNotNull(duration);
         assertNull(error);

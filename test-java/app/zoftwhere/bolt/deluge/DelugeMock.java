@@ -47,47 +47,47 @@ class DelugeMock {
 
     DelugeProgramOutput buildExpectedOutput() {
         if (input.hasCharset() && input.charset() == null) {
-            var exceptionMessage = "bolt.runner.input.charset.null";
-            var error = new RunnerException(exceptionMessage, null);
+            final var exceptionMessage = "bolt.runner.input.charset.null";
+            final var error = new RunnerException(exceptionMessage, null);
             return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
         }
 
         if (setting.hasCharSet() && setting.charset() == null) {
-            var exceptionMessage = "bolt.runner.output.charset.null";
-            var error = new RunnerException(exceptionMessage, null);
+            final var exceptionMessage = "bolt.runner.output.charset.null";
+            final var error = new RunnerException(exceptionMessage, null);
             return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
         }
 
         if (ARRAY == input.type() || ARRAY_ENCODED == input.type()) {
             if (input.array() == null) {
-                var exceptionMessage = "bolt.runner.variable.argument.input.null";
-                var error = new RunnerException(exceptionMessage, null);
+                final var exceptionMessage = "bolt.runner.variable.argument.input.null";
+                final var error = new RunnerException(exceptionMessage, null);
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
 
             if (arrayHasNull(input.array())) {
-                var exceptionMessage = "bolt.runner.variable.argument.input.has.null";
-                var error = new RunnerException(exceptionMessage, null);
+                final var exceptionMessage = "bolt.runner.variable.argument.input.has.null";
+                final var error = new RunnerException(exceptionMessage, null);
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
         }
         else if (RESOURCE == input.type() || RESOURCE_ENCODED == input.type()) {
             if (input.resource() == null) {
-                var exceptionMessage = "bolt.runner.load.input.resource.name.null";
-                var error = new RunnerException(exceptionMessage, null);
+                final var exceptionMessage = "bolt.runner.load.input.resource.name.null";
+                final var error = new RunnerException(exceptionMessage, null);
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
 
             if (input.withClass() == null) {
-                var exceptionMessage = "bolt.runner.load.input.resource.class.null";
-                var error = new RunnerException(exceptionMessage, null);
+                final var exceptionMessage = "bolt.runner.load.input.resource.class.null";
+                final var error = new RunnerException(exceptionMessage, null);
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
 
             final var url = input.withClass().getResource(input.resource());
             if (url == null) {
-                var exceptionMessage = "bolt.runner.load.input.resource.not.found";
-                var error = new RunnerException(exceptionMessage, null);
+                final var exceptionMessage = "bolt.runner.load.input.resource.not.found";
+                final var error = new RunnerException(exceptionMessage, null);
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
         }
@@ -97,14 +97,14 @@ class DelugeMock {
             }
 
             if (input.array() == null) {
-                var exceptionMessage = "bolt.runner.input.stream.supplier.null";
-                var error = new RunnerException(exceptionMessage, null);
+                final var exceptionMessage = "bolt.runner.input.stream.supplier.null";
+                final var error = new RunnerException(exceptionMessage, null);
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
 
             if (arrayHasNull(input.array())) {
-                var exceptionMessage = "bolt.runner.load.input.input.stream.null";
-                var error = new RunnerException(exceptionMessage, null);
+                final var exceptionMessage = "bolt.runner.load.input.input.stream.null";
+                final var error = new RunnerException(exceptionMessage, null);
                 return DelugeProgramOutput.from(array(""), Duration.ZERO, error);
             }
         }
@@ -124,11 +124,11 @@ class DelugeMock {
     }
 
     private DelugeProgramOutput buildOutput() {
+        final var inEnc = builder.inputCharset();
+        final var outEnc = builder.outputCharset();
+        final var outputStream = new ByteArrayOutputStream();
+        final var out = new PrintStream(outputStream, false, outEnc);
         var error = (Exception) null;
-        var inEnc = builder.inputCharset();
-        var outEnc = builder.outputCharset();
-        var outputStream = new ByteArrayOutputStream();
-        var out = new PrintStream(outputStream, false, outEnc);
 
         if (!type.isArgued()) {
             out.print("Argument: <null>\n");
@@ -146,21 +146,21 @@ class DelugeMock {
             }
         }
 
-        var supplier = newSupplier();
-        try (var inputStream = supplier != null ? supplier.get() : null) {
-            var iterator = newIterator(inputStream, inEnc, outEnc);
+        final var supplier = newSupplier();
+        try (final var inputStream = supplier != null ? supplier.get() : null) {
+            final var iterator = newIterator(inputStream, inEnc, outEnc);
             out.print("Line: " + escapeString(iterator.next()));
             while (iterator.hasNext()) {
                 out.print("\nLine: " + escapeString(iterator.next()));
             }
         }
-        catch (Exception e) {
-            error = e;
+        catch (Exception runError) {
+            error = runError;
         }
 
-        var data = outputStream.toByteArray();
+        final var data = outputStream.toByteArray();
 
-        var lines = readArray(data, outEnc);
+        final var lines = readArray(data, outEnc);
         return DelugeProgramOutput.from(lines, Duration.ofDays(1), error);
     }
 
@@ -170,7 +170,7 @@ class DelugeMock {
                 return () -> new ByteArrayInputStream(new byte[0]);
             }
 
-            var charset = builder.inputCharset();
+            final var charset = builder.inputCharset();
             return input.newInputStreamSupplier(charset);
         }
 

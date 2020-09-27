@@ -8,7 +8,7 @@ class AbstractUnitTest {
 
     @Test
     void forCodeCoverage() {
-        var unit = new AbstractUnit() { };
+        final var unit = new AbstractUnit() { };
         assertNotNull(unit);
     }
 

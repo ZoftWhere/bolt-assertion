@@ -8,7 +8,7 @@ import app.zoftwhere.bolt.BoltSingleReturn;
 class DelugeControl {
 
     static String runComparison(DelugeProgramOutput expected, DelugeProgramOutput actual) {
-        BoltSingleReturn<String> switcher = new BoltSingleReturn<>();
+        final var switcher = new BoltSingleReturn<String>();
 
         switcher.block(() -> compareResult(expected, actual, DelugeControl::exceptionClass,
             "deluge.program.exception.expected",
@@ -80,8 +80,8 @@ class DelugeControl {
         String noMatch
     )
     {
-        String expectedString = getter.apply(expected);
-        String actualString = getter.apply(actual);
+        final var expectedString = getter.apply(expected);
+        final var actualString = getter.apply(actual);
         try {
             if (!Objects.equals(expectedString, actualString)) {
                 if (actualString == null) {

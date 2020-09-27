@@ -15,13 +15,13 @@ class DelugeMockTest {
 
     @Test
     void testTransCodeInputUTF8() {
-        var type = DelugeProgramType.INPUT_CONSOLE;
-        var setting = DelugeSetting.from(UTF_8, true);
-        var data = DelugeData.forStringArray(new String[] {"\ufeffTestInputArray"}, UTF_16);
-        var programOutput = DelugeMock.from(type, setting, data).buildExpectedOutput();
-        var actual = programOutput.output();
-        var zeroWidthSpace = BoltTestHelper.escapeString("\ufeff");
-        var expected = new String[] {
+        final var type = DelugeProgramType.INPUT_CONSOLE;
+        final var setting = DelugeSetting.from(UTF_8, true);
+        final var data = DelugeData.forStringArray(new String[] {"\ufeffTestInputArray"}, UTF_16);
+        final var programOutput = DelugeMock.from(type, setting, data).buildExpectedOutput();
+        final var actual = programOutput.output();
+        final var zeroWidthSpace = BoltTestHelper.escapeString("\ufeff");
+        final var expected = new String[] {
             "Argument: <null>",
             "Line: \"" + zeroWidthSpace + "TestInputArray\""
         };
@@ -31,12 +31,12 @@ class DelugeMockTest {
 
     @Test
     void testTransCodeResourceUTF8() {
-        var type = DelugeProgramType.INPUT_CONSOLE;
-        var setting = DelugeSetting.from(US_ASCII, true);
-        var data = DelugeData.forResource("RunnerTest.txt", Runner.class);
-        var programOutput = DelugeMock.from(type, setting, data).buildExpectedOutput();
-        var actual = programOutput.output();
-        var expected = new String[] {
+        final var type = DelugeProgramType.INPUT_CONSOLE;
+        final var setting = DelugeSetting.from(US_ASCII, true);
+        final var data = DelugeData.forResource("RunnerTest.txt", Runner.class);
+        final var programOutput = DelugeMock.from(type, setting, data).buildExpectedOutput();
+        final var actual = programOutput.output();
+        final var expected = new String[] {
             "Argument: <null>",
             "Line: \"Hello World!\"",
             "Line: \"1 ??? A[i] ??? 1014\"",
@@ -48,12 +48,12 @@ class DelugeMockTest {
 
     @Test
     void testTransCodeResourceUTF8_n2() {
-        var type = DelugeProgramType.INPUT_CONSOLE;
-        var setting = DelugeSetting.from(UTF_8, US_ASCII);
-        var data = DelugeData.forResource("RunnerTest.txt", Runner.class);
-        var programOutput = DelugeMock.from(type, setting, data).buildExpectedOutput();
-        var actual = programOutput.output();
-        var expected = new String[] {
+        final var type = DelugeProgramType.INPUT_CONSOLE;
+        final var setting = DelugeSetting.from(UTF_8, US_ASCII);
+        final var data = DelugeData.forResource("RunnerTest.txt", Runner.class);
+        final var programOutput = DelugeMock.from(type, setting, data).buildExpectedOutput();
+        final var actual = programOutput.output();
+        final var expected = new String[] {
             "Argument: <null>",
             "Line: \"Hello World!\"",
             "Line: \"1 ? A[i] ? 1014\"",
@@ -65,12 +65,12 @@ class DelugeMockTest {
 
     @Test
     void testTransCodeResourceUTF16() {
-        var type = DelugeProgramType.INPUT_CONSOLE;
-        var setting = DelugeSetting.from(US_ASCII, UTF_8);
-        var data = DelugeData.forResource("RunnerTestUTF16.txt", Runner.class, UTF_16);
-        var programOutput = DelugeMock.from(type, setting, data).buildExpectedOutput();
-        var actual = programOutput.output();
-        var expected = new String[] {
+        final var type = DelugeProgramType.INPUT_CONSOLE;
+        final var setting = DelugeSetting.from(US_ASCII, UTF_8);
+        final var data = DelugeData.forResource("RunnerTestUTF16.txt", Runner.class, UTF_16);
+        final var programOutput = DelugeMock.from(type, setting, data).buildExpectedOutput();
+        final var actual = programOutput.output();
+        final var expected = new String[] {
             "Argument: <null>",
             "Line: \"1\"",
             "Line: \"2\"",
@@ -87,13 +87,13 @@ class DelugeMockTest {
 
     @Test
     void testTransCodeResourceUTF16BE() {
-        var type = DelugeProgramType.INPUT_CONSOLE;
-        var setting = DelugeSetting.from(US_ASCII, UTF_8);
-        var data = DelugeData.forResource("RunnerTestUTF16.txt", Runner.class, UTF_16BE);
-        var programOutput = DelugeMock.from(type, setting, data).buildExpectedOutput();
-        var actual = programOutput.output();
-        var zeroWidthSpace = BoltTestHelper.escapeString("\ufeff");
-        var expected = new String[] {
+        final var type = DelugeProgramType.INPUT_CONSOLE;
+        final var setting = DelugeSetting.from(US_ASCII, UTF_8);
+        final var data = DelugeData.forResource("RunnerTestUTF16.txt", Runner.class, UTF_16BE);
+        final var programOutput = DelugeMock.from(type, setting, data).buildExpectedOutput();
+        final var actual = programOutput.output();
+        final var zeroWidthSpace = BoltTestHelper.escapeString("\ufeff");
+        final var expected = new String[] {
             "Argument: <null>",
             "Line: \"" + zeroWidthSpace + "1\"",
             "Line: \"2\"",

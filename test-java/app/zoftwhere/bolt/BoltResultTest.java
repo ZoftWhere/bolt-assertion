@@ -161,7 +161,7 @@ class BoltResultTest {
 
         assertNull(fire.message().orElse(null));
 
-        Exception error = fire.error().orElse(null);
+        final var error = fire.error().orElse(null);
         assertNotNull(error);
         assertClass(exception.getClass(), error);
         assertEquals("Throwable?", error.getMessage());
@@ -218,8 +218,8 @@ class BoltResultTest {
 
     @Test
     void testRunTestFailureExpectedLength() {
-        var outputLines = array("");
-        var expectedLines = array("", "");
+        final var outputLines = array("");
+        final var expectedLines = array("", "");
         final var programOutput = new BoltProgramOutput(encoding, outputLines, instant, null);
         final var fire = programOutput.expected(expectedLines);
 
@@ -257,7 +257,7 @@ class BoltResultTest {
             assertEquals("bolt.runner.asserter.output.length.mismatch", e.getCause().getMessage());
         }
 
-        var result = fire.result();
+        final var result = fire.result();
         assertEquals(-1, result.offendingIndex());
         assertNull(result.error().orElse(null));
         assertEquals("bolt.runner.asserter.output.length.mismatch", result.message().orElse(null));
@@ -265,8 +265,8 @@ class BoltResultTest {
 
     @Test
     void testRunTestFailureComparisonFailure() {
-        var outputLines = array("");
-        var expectedLines = array("mismatch");
+        final var outputLines = array("");
+        final var expectedLines = array("mismatch");
         final var programOutput = new BoltProgramOutput(encoding, outputLines, instant, null);
         final var fire = programOutput.expected(expectedLines);
 
@@ -304,7 +304,7 @@ class BoltResultTest {
             assertEquals("bolt.runner.asserter.output.data.mismatch", e.getCause().getMessage());
         }
 
-        var result = fire.result();
+        final var result = fire.result();
         assertEquals(0, result.offendingIndex());
         assertNull(result.error().orElse(null));
         assertEquals("bolt.runner.asserter.output.data.mismatch", result.message().orElse(null));
@@ -323,11 +323,11 @@ class BoltResultTest {
 
     @Test
     void testForSuccessState() {
-        var inputArray = new String[][] {null, nullArray, emptyArray, blankArray};
-        for (String[] outputStringArray : inputArray) {
-            for (String[] expectedStringArray : inputArray) {
+        final var inputArray = new String[][] {null, nullArray, emptyArray, blankArray};
+        for (var outputStringArray : inputArray) {
+            for (var expectedStringArray : inputArray) {
                 try {
-                    var fire = new BoltResult(outputStringArray, expectedStringArray, instant);
+                    final var fire = new BoltResult(outputStringArray, expectedStringArray, instant);
 
                     if (outputStringArray == null || expectedStringArray == null) {
                         fail("null.pointer.exception.expected");
@@ -337,11 +337,11 @@ class BoltResultTest {
                     assertFalse(fire.isFailure());
                     assertFalse(fire.isError());
 
-                    String[] output = fire.output();
-                    String[] expected = fire.expected();
-                    int offendingIndex = fire.offendingIndex();
-                    String message = fire.message().orElse(null);
-                    Exception error = fire.error().orElse(null);
+                    final var output = fire.output();
+                    final var expected = fire.expected();
+                    final var offendingIndex = fire.offendingIndex();
+                    final var message = fire.message().orElse(null);
+                    final var error = fire.error().orElse(null);
 
                     assertEquals(outputStringArray.length, output.length);
                     assertEquals(expectedStringArray.length, expected.length);
@@ -362,16 +362,16 @@ class BoltResultTest {
 
     @Test
     void testForFailureState() {
-        var inputArray = new String[][] {null, nullArray, emptyArray, blankArray};
-        var messageArray = new String[] {null, "", "message"};
-        var indexArray = new int[] {-3, -2, -1, 0, 1, 2};
+        final var inputArray = new String[][] {null, nullArray, emptyArray, blankArray};
+        final var messageArray = new String[] {null, "", "message"};
+        final var indexArray = new int[] {-3, -2, -1, 0, 1, 2};
 
-        for (String[] pOutput : inputArray) {
-            for (String[] pExpected : inputArray) {
-                for (int pIndex : indexArray) {
-                    for (String pMessage : messageArray) {
+        for (var pOutput : inputArray) {
+            for (var pExpected : inputArray) {
+                for (var pIndex : indexArray) {
+                    for (var pMessage : messageArray) {
                         try {
-                            var result = new BoltResult(pOutput, pExpected, instant, pIndex, pMessage);
+                            final var result = new BoltResult(pOutput, pExpected, instant, pIndex, pMessage);
 
                             if (pOutput == null || pExpected == null || pMessage == null) {
                                 fail("null.pointer.exception.expected");
@@ -381,11 +381,11 @@ class BoltResultTest {
                             assertTrue(result.isFailure());
                             assertFalse(result.isError());
 
-                            String[] output = result.output();
-                            String[] expected = result.expected();
-                            int offendingIndex = result.offendingIndex();
-                            String message = result.message().orElse(null);
-                            Exception error = result.error().orElse(null);
+                            final var output = result.output();
+                            final var expected = result.expected();
+                            final var offendingIndex = result.offendingIndex();
+                            final var message = result.message().orElse(null);
+                            final var error = result.error().orElse(null);
 
                             assertEquals(pOutput.length, output.length);
                             assertEquals(pExpected.length, expected.length);
@@ -408,13 +408,13 @@ class BoltResultTest {
 
     @Test
     void testForErrorState() {
-        var inputArray = new String[][] {null, nullArray, emptyArray, blankArray};
-        var exceptionArray = new Exception[] {null, new Exception("")};
-        for (String[] pOutput : inputArray) {
-            for (String[] pExpected : inputArray) {
-                for (Exception pException : exceptionArray) {
+        final var inputArray = new String[][] {null, nullArray, emptyArray, blankArray};
+        final var exceptionArray = new Exception[] {null, new Exception("")};
+        for (var pOutput : inputArray) {
+            for (var pExpected : inputArray) {
+                for (var pException : exceptionArray) {
                     try {
-                        var result = new BoltResult(pOutput, pExpected, instant, pException);
+                        final var result = new BoltResult(pOutput, pExpected, instant, pException);
                         if (pOutput == null || pExpected == null || pException == null) {
                             fail("null.pointer.exception.expected");
                         }
@@ -423,11 +423,11 @@ class BoltResultTest {
                         assertFalse(result.isFailure());
                         assertTrue(result.isError());
 
-                        String[] output = result.output();
-                        String[] expected = result.expected();
-                        String message = result.message().orElse(null);
-                        int offendingIndex = result.offendingIndex();
-                        Exception error = result.error().orElse(null);
+                        final var output = result.output();
+                        final var expected = result.expected();
+                        final var message = result.message().orElse(null);
+                        final var offendingIndex = result.offendingIndex();
+                        final var error = result.error().orElse(null);
 
                         assertEquals(pOutput.length, output.length);
                         assertEquals(pExpected.length, expected.length);

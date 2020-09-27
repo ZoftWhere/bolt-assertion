@@ -28,7 +28,7 @@ public class DelugeBuilder {
         List<Charset> charsetList
     )
     {
-        var list = new ArrayList<DelugeSetting>();
+        final var list = new ArrayList<DelugeSetting>();
 
         list.add(forSetting());
 

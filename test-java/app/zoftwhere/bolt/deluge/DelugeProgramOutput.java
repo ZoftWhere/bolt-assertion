@@ -7,9 +7,9 @@ import app.zoftwhere.bolt.api.RunnerProgramOutput;
 class DelugeProgramOutput {
 
     static DelugeProgramOutput from(RunnerProgramOutput programOutput) {
-        var output = programOutput.output();
-        var duration = programOutput.executionDuration();
-        var error = programOutput.error().orElse(null);
+        final var output = programOutput.output();
+        final var duration = programOutput.executionDuration();
+        final var error = programOutput.error().orElse(null);
         return new DelugeProgramOutput(output, duration, error);
     }
 

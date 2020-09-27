@@ -25,7 +25,7 @@ public class DelugeData {
     }
 
     static DelugeData forInputStream(String[] data, Charset charset, boolean withCharset) {
-        DelugeDataType type = withCharset ? STREAM_ENCODED : STREAM;
+        final var type = withCharset ? STREAM_ENCODED : STREAM;
         return new DelugeData(type, data, charset);
     }
 

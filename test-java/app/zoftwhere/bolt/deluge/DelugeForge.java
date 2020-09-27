@@ -79,8 +79,8 @@ class DelugeForge {
             throw globalError.get();
         }
 
-        var charset = outEnc.get();
-        try (var out = new PrintStream(outputStream, false, charset)) {
+        final var charset = outEnc.get();
+        try (final var out = new PrintStream(outputStream, false, charset)) {
             if (arguments == null) {
                 out.print("Argument: <null>\n");
             }
@@ -126,7 +126,7 @@ class DelugeForge {
 
     private int programFirst(RunnerInterface runner, boolean withEncoding, Charset encoding) {
         var count = 0;
-        var typeArray = DelugeProgramType.values();
+        final var typeArray = DelugeProgramType.values();
         for (var type : typeArray) {
             if (!type.isProgramFirst()) {
                 continue;
@@ -137,7 +137,7 @@ class DelugeForge {
                 }
                 globalError.set(programSetting.error());
 
-                var program = forProgram(runner, type, programSetting);
+                final var program = forProgram(runner, type, programSetting);
 
                 for (var input : inputList) {
                     var builder = DelugeBuilder.from(type, programSetting, input);
@@ -146,10 +146,10 @@ class DelugeForge {
                     }
                     outEnc.set(builder.outputCharset());
 
-                    var programOutput = withInput(program, input);
-                    var actual = DelugeProgramOutput.from(programOutput);
-                    var expected = builder.buildExpectedOutput();
-                    var message = DelugeBuilder.runComparison(expected, actual);
+                    final var programOutput = withInput(program, input);
+                    final var actual = DelugeProgramOutput.from(programOutput);
+                    final var expected = builder.buildExpectedOutput();
+                    final var message = DelugeBuilder.runComparison(expected, actual);
                     if (message != null) {
                         throw new DelugeException(message, null);
                     }
@@ -173,14 +173,14 @@ class DelugeForge {
 
     private int inputFirst(RunnerInterface runner, boolean withEncoding, Charset encoding) {
         var count = 0;
-        var typeArray = DelugeProgramType.values();
+        final var typeArray = DelugeProgramType.values();
         for (var type : typeArray) {
             if (!type.isInputFirst()) {
                 continue;
             }
 
             for (var input : inputList) {
-                var programInput = forInput(runner, input);
+                final var programInput = forInput(runner, input);
 
                 for (var programSetting : settingList) {
                     if (type.isArgued() != programSetting.hasArgumentArray()) {
@@ -193,10 +193,10 @@ class DelugeForge {
                     }
                     outEnc.set(builder.outputCharset());
 
-                    var programOutput = withProgram(programInput, type, programSetting);
-                    var actual = DelugeProgramOutput.from(programOutput);
-                    var expected = builder.buildExpectedOutput();
-                    var message = DelugeBuilder.runComparison(expected, actual);
+                    final var programOutput = withProgram(programInput, type, programSetting);
+                    final var actual = DelugeProgramOutput.from(programOutput);
+                    final var expected = builder.buildExpectedOutput();
+                    final var message = DelugeBuilder.runComparison(expected, actual);
                     if (message != null) {
                         throw new DelugeException(message, null);
                     }
@@ -246,7 +246,7 @@ class DelugeForge {
     }
 
     private RunnerProgramOutput withInput(RunnerProgram program, DelugeData input) {
-        var type = input.type();
+        final var type = input.type();
         if (ARRAY == type) {
             return program.input(input.array());
         }
@@ -271,7 +271,7 @@ class DelugeForge {
     }
 
     private RunnerProgramInput forInput(RunnerInterface runner, DelugeData input) {
-        var type = input.type();
+        final var type = input.type();
         if (ARRAY == type) {
             return runner.input(input.array());
         }

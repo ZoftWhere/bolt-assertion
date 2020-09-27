@@ -27,20 +27,20 @@ class BoltDelugeBarrage {
 
     @SuppressWarnings("WeakerAccess")
     public static void main(String[] args) {
-        var test = new BoltDelugeBarrage();
-        var rx = 2 + 2 * test.encodingArray.length;
-        var ax = test.argumentArray.length;
-        var cx = test.charsetArray.length;
-        var ex = 1 + test.errorArray.length;
-        var dx = test.dataList.size();
+        final var test = new BoltDelugeBarrage();
+        final var rx = 2 + 2 * test.encodingArray.length;
+        final var ax = test.argumentArray.length;
+        final var cx = test.charsetArray.length;
+        final var ex = 1 + test.errorArray.length;
+        final var dx = test.dataList.size();
 
-        var expected = rx * 2 * (1 + ax + cx + ax * cx) * ex * dx;
+        final var expected = rx * 2 * (1 + ax + cx + ax * cx) * ex * dx;
         System.out.println("Tests expected : " + expected);
 
-        var start = Instant.now();
-        var count = test.main();
-        var finish = Instant.now();
-        var duration = Duration.ofMillis(start.until(finish, ChronoUnit.MILLIS));
+        final var start = Instant.now();
+        final var count = test.main();
+        final var finish = Instant.now();
+        final var duration = Duration.ofMillis(start.until(finish, ChronoUnit.MILLIS));
 
         System.out.println("Tests run      : " + count);
         System.out.println("Duration       : " + duration);
@@ -71,7 +71,7 @@ class BoltDelugeBarrage {
     @Test
     void runnerTest() {
         if (!System.getProperties().containsKey("bolt.runner.deluge.test")) {
-            var cause = new RunnerException("This exception is to manage long running tests.");
+            final var cause = new RunnerException("This exception is to manage long running tests.");
             throw new RunnerException("bolt.runner.deluge.test.flag.missing", cause);
         }
         if (!"barrage".equals(System.getProperties().getProperty("bolt.runner.deluge.test"))) {
@@ -127,7 +127,7 @@ class BoltDelugeBarrage {
     }
 
     private List<DelugeData> listForData(String[] data) {
-        var list = new ArrayList<DelugeData>();
+        final var list = new ArrayList<DelugeData>();
         list.add(forStringArray(data));
         for (var charset : charsetArray) {
             list.add(forStringArray(data, charset));
