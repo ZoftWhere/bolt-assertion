@@ -341,6 +341,18 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         return this;
     }
 
+    /**
+     * <p>BoltResult factory method (private).
+     * </p>
+     * <p>Returns a BoltResult instance after performing output comparison.
+     * </p>
+     *
+     * @param output     program (actual) output lines
+     * @param expected   program expected output lines
+     * @param duration   program execution duration
+     * @param comparator program output comparator
+     * @return a BoltResult instance after performing output comparison
+     */
     private static BoltResult performComparison(
         String[] output,
         String[] expected,
