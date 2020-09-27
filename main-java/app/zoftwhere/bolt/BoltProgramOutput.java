@@ -39,6 +39,7 @@ class BoltProgramOutput implements RunnerProgramOutput {
     /**
      * Create an program output instance based on the program output and program exception.
      *
+     * @param encoding default character encoding
      * @param output   program output lines
      * @param duration duration of program execution
      * @param error    execution error, if any, null otherwise
@@ -55,6 +56,7 @@ class BoltProgramOutput implements RunnerProgramOutput {
     /**
      * Private constructor for program output.
      *
+     * @param encoding   default character encoding
      * @param output     program output lines
      * @param duration   duration of program execution
      * @param comparator program output comparator, if any, null otherwise
