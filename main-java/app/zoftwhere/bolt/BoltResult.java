@@ -36,7 +36,7 @@ class BoltResult implements RunnerResult, RunnerAsserter {
      * @param expected   program expected output
      * @param duration   program execution duration
      * @param comparator program output comparator
-     * @param error      program error
+     * @param error      execution error
      * @return {@link app.zoftwhere.bolt.BoltResult}
      * @since 11.0.0
      */
@@ -63,7 +63,7 @@ class BoltResult implements RunnerResult, RunnerAsserter {
      * @param inputCharset input stream character encoding
      * @param duration     program execution duration
      * @param comparator   program output comparator
-     * @param error        program error
+     * @param error        execution error
      * @return {@link app.zoftwhere.bolt.BoltResult}
      * @since 11.0.0
      */
@@ -81,26 +81,26 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         }
 
         if (inputCharset == null) {
-            RunnerException exception = new RunnerException("bolt.runner.load.expectation.charset.null");
-            return new BoltResult(output, new String[0], duration, exception);
+            RunnerException nullError = new RunnerException("bolt.runner.load.expectation.charset.null");
+            return new BoltResult(output, new String[0], duration, nullError);
         }
 
         if (supplier == null) {
-            RunnerException exception = new RunnerException("bolt.runner.load.expectation.supplier.null");
-            return new BoltResult(output, new String[0], duration, exception);
+            RunnerException nullError = new RunnerException("bolt.runner.load.expectation.supplier.null");
+            return new BoltResult(output, new String[0], duration, nullError);
         }
 
         try (InputStream inputStream = supplier.get()) {
             if (inputStream == null) {
                 // throw new RunnerException("bolt.runner.load.expectation.stream.null");
-                RunnerException exception = new RunnerException("bolt.runner.load.expectation.stream.null");
-                return new BoltResult(output, new String[0], duration, exception);
+                RunnerException nullError = new RunnerException("bolt.runner.load.expectation.stream.null");
+                return new BoltResult(output, new String[0], duration, nullError);
             }
             String[] expected = readArray(() -> new BoltReader(inputStream, inputCharset));
             return performComparison(output, expected, duration, comparator);
         }
-        catch (Exception e) {
-            return new BoltResult(output, new String[0], duration, e);
+        catch (Exception runError) {
+            return new BoltResult(output, new String[0], duration, runError);
         }
     }
 
@@ -113,7 +113,7 @@ class BoltResult implements RunnerResult, RunnerAsserter {
      * @param charset      input resource character encoding
      * @param duration     program execution duration
      * @param comparator   program output comparator
-     * @param error        program error
+     * @param error        execution error
      * @return {@link app.zoftwhere.bolt.BoltResult}
      * @since 11.0.0
      */
@@ -349,8 +349,8 @@ class BoltResult implements RunnerResult, RunnerAsserter {
     )
     {
         if (arrayHasNull(expected)) {
-            RunnerException exception = new RunnerException("bolt.runner.variable.argument.expected.has.null");
-            return new BoltResult(output, expected, duration, exception);
+            RunnerException nullError = new RunnerException("bolt.runner.variable.argument.expected.has.null");
+            return new BoltResult(output, expected, duration, nullError);
         }
 
         if (expected.length != output.length) {

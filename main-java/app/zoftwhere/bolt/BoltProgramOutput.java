@@ -96,8 +96,8 @@ class BoltProgramOutput implements RunnerProgramOutput {
         }
 
         if (comparator == null) {
-            RunnerException exception = new RunnerException("bolt.runner.expectation.comparator.null");
-            return new BoltProgramOutput(encoding, output, Duration.ZERO, exception);
+            RunnerException nullError = new RunnerException("bolt.runner.expectation.comparator.null");
+            return new BoltProgramOutput(encoding, output, Duration.ZERO, nullError);
         }
 
         return new BoltProgramOutput(encoding, output, duration, comparator);

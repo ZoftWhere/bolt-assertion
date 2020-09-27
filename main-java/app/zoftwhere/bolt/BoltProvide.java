@@ -175,7 +175,7 @@ interface BoltProvide {
      * @param streamSupplier {@link java.io.InputStream} supplier for program input
      * @param outputCharset  character encoding for program output
      * @param executor       program executor
-     * @param loadError      a {@link java.lang.Exception} object.
+     * @param error          execution error
      * @return {@link app.zoftwhere.bolt.BoltProgramOutput}
      * @since 11.0.0
      */
@@ -186,44 +186,44 @@ interface BoltProvide {
         InputStreamSupplier streamSupplier,
         Charset outputCharset,
         BoltExecutor executor,
-        Exception loadError)
+        Exception error)
     {
         final String[] blank = new String[] {""};
         if (executor == null) {
-            RunnerException error = new RunnerException("bolt.runner.program.null");
-            return new BoltProgramOutput(encoding, blank, Duration.ZERO, error);
+            RunnerException nullError = new RunnerException("bolt.runner.program.null");
+            return new BoltProgramOutput(encoding, blank, Duration.ZERO, nullError);
         }
 
         if (inputCharset == null) {
-            RunnerException error = new RunnerException("bolt.runner.input.charset.null");
-            return new BoltProgramOutput(encoding, blank, Duration.ZERO, error);
+            RunnerException nullError = new RunnerException("bolt.runner.input.charset.null");
+            return new BoltProgramOutput(encoding, blank, Duration.ZERO, nullError);
         }
 
         if (outputCharset == null) {
-            RunnerException error = new RunnerException("bolt.runner.output.charset.null");
-            return new BoltProgramOutput(encoding, blank, Duration.ZERO, error);
+            RunnerException nullError = new RunnerException("bolt.runner.output.charset.null");
+            return new BoltProgramOutput(encoding, blank, Duration.ZERO, nullError);
         }
 
         if (streamSupplier == null) {
-            RunnerException error = new RunnerException("bolt.runner.input.stream.supplier.null");
-            return new BoltProgramOutput(encoding, blank, Duration.ZERO, error);
+            RunnerException nullError = new RunnerException("bolt.runner.input.stream.supplier.null");
+            return new BoltProgramOutput(encoding, blank, Duration.ZERO, nullError);
         }
 
-        if (loadError != null) {
-            return new BoltProgramOutput(encoding, blank, Duration.ZERO, loadError);
+        if (error != null) {
+            return new BoltProgramOutput(encoding, blank, Duration.ZERO, error);
         }
 
         try (InputStream inputStream = streamSupplier.get()) {
             if (inputStream == null) {
-                RunnerException error = new RunnerException("bolt.runner.load.input.input.stream.null");
-                return new BoltProgramOutput(encoding, blank, Duration.ZERO, error);
+                RunnerException nullError = new RunnerException("bolt.runner.load.input.input.stream.null");
+                return new BoltProgramOutput(encoding, blank, Duration.ZERO, nullError);
             }
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
             // Call the executor.
             Instant from = Instant.now();
-            Exception error = executor.execute(arguments, inputCharset, inputStream, outputCharset, outputStream);
+            Exception runError = executor.execute(arguments, inputCharset, inputStream, outputCharset, outputStream);
             Instant to = Instant.now();
 
             // Execution duration calculation is correct if duration is less than 292 years.
@@ -231,10 +231,10 @@ interface BoltProvide {
 
             final byte[] data = outputStream.toByteArray();
             final String[] output = readArray(() -> new BoltReader(data, outputCharset));
-            return new BoltProgramOutput(encoding, output, time, error);
+            return new BoltProgramOutput(encoding, output, time, runError);
         }
-        catch (Exception e) {
-            return new BoltProgramOutput(encoding, blank, Duration.ZERO, e);
+        catch (Exception runError) {
+            return new BoltProgramOutput(encoding, blank, Duration.ZERO, runError);
         }
     }
 
