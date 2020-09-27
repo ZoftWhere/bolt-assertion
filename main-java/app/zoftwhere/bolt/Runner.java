@@ -174,7 +174,7 @@ public class Runner extends AbstractRunner {
     /**
      * {@inheritDoc}
      *
-     * @since 1.0.0
+     * @since 11.0.0
      */
     @Override
     public RunnerProgramInput input(Charset charset, String... input) {
