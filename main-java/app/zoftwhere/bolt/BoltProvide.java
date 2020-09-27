@@ -169,7 +169,7 @@ interface BoltProvide {
     /**
      * Returns the program output.
      *
-     * @param encoding       a {@link java.nio.charset.Charset} object.
+     * @param encoding       default character encoding
      * @param arguments      program argument array
      * @param inputCharset   character encoding for program input {@link java.io.InputStream}
      * @param streamSupplier {@link java.io.InputStream} supplier for program input
