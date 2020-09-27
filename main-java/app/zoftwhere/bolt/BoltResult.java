@@ -169,13 +169,13 @@ class BoltResult implements RunnerResult, RunnerAsserter {
      *
      * @param output            program output lines
      * @param expected          expected program output lines
-     * @param executionDuration {@link java.time.Duration} of execution
+     * @param duration       program execution duration
      * @since 9.0.0
      */
-    BoltResult(String[] output, String[] expected, Duration executionDuration) {
+    BoltResult(String[] output, String[] expected, Duration duration) {
         this.output = requireNonNull(output);
         this.expected = requireNonNull(expected);
-        this.executionDuration = requireNonNull(executionDuration);
+        this.executionDuration = requireNonNull(duration);
         this.offendingIndex = -1;
         this.message = null;
         this.error = null;
@@ -186,14 +186,15 @@ class BoltResult implements RunnerResult, RunnerAsserter {
      *
      * @param output         program output lines
      * @param expected       program expected output lines
+     * @param duration       program execution duration
      * @param offendingIndex zero-based index of erroneous line, if any, -1 otherwise.
      * @param message        program failure state message
      * @since 9.0.0
      */
-    BoltResult(String[] output, String[] expected, Duration executionDuration, int offendingIndex, String message) {
+    BoltResult(String[] output, String[] expected, Duration duration, int offendingIndex, String message) {
         this.output = requireNonNull(output);
         this.expected = requireNonNull(expected);
-        this.executionDuration = requireNonNull(executionDuration);
+        this.executionDuration = requireNonNull(duration);
         //noinspection ManualMinMaxCalculation
         this.offendingIndex = offendingIndex >= -1 ? offendingIndex : -1;
         this.message = requireNonNull(message);
@@ -205,13 +206,14 @@ class BoltResult implements RunnerResult, RunnerAsserter {
      *
      * @param output   program output lines
      * @param expected program expected output lines
+     * @param duration program execution duration
      * @param error    execution error
      * @since 9.0.0
      */
-    BoltResult(String[] output, String[] expected, Duration executionDuration, Exception error) {
+    BoltResult(String[] output, String[] expected, Duration duration, Exception error) {
         this.output = requireNonNull(output);
         this.expected = requireNonNull(expected);
-        this.executionDuration = requireNonNull(executionDuration);
+        this.executionDuration = requireNonNull(duration);
         this.offendingIndex = -1;
         this.message = null;
         this.error = requireNonNull(error);
