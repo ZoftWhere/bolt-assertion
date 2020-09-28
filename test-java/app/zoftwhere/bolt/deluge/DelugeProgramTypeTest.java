@@ -2,6 +2,15 @@ package app.zoftwhere.bolt.deluge;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * <p>Deluge Program Type Test.
+ * </p>
+ * <p>This is a package-private class for testing the {@link app.zoftwhere.bolt.deluge.DelugeProgramType} enum.
+ * </p>
+ *
+ * @author Osmund
+ * @since 6.0.0
+ */
 class DelugeProgramTypeTest {
 
     @Test
