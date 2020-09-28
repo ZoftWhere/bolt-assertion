@@ -9,6 +9,8 @@ import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 /**
  * Runner pre-test interface.
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 6.0.0
  */
 public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, AbstractUnit.Output {
@@ -25,7 +27,7 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
     /**
      * Retrieve the execution error.
      *
-     * @return {@link Optional} of the execution error (empty on success or failure)
+     * @return {@link java.util.Optional} of the execution error (empty on success or failure)
      * @since 8.0.0
      */
     @Override
@@ -34,7 +36,7 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
     /**
      * Retrieve the execution duration.
      *
-     * @return {@link Duration} duration from execution call till program completion or execution error.
+     * @return {@link java.time.Duration} duration from execution call till program completion or execution error.
      * @since 9.0.0
      */
     @Override
@@ -50,7 +52,7 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
      * </p>
      *
      * @param expected variable argument for expected program line output
-     * @return {@link RunnerAsserter}
+     * @return {@link app.zoftwhere.bolt.api.RunnerAsserter}
      * @since 1.0.0
      */
     @Override
@@ -66,7 +68,7 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
      * </p>
      *
      * @param supplier {@link java.io.InputStream} supplier for expected program output
-     * @return {@link RunnerAsserter}
+     * @return {@link app.zoftwhere.bolt.api.RunnerAsserter}
      * @since 6.0.0
      */
     @Override
@@ -83,7 +85,7 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
      *
      * @param supplier {@link java.io.InputStream} supplier for expected program output
      * @param charset  character encoding of supplied {@link java.io.InputStream}
-     * @return {@link RunnerAsserter}
+     * @return {@link app.zoftwhere.bolt.api.RunnerAsserter}
      * @since 6.0.0
      */
     @Override
@@ -99,8 +101,8 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
      * </p>
      *
      * @param resourceName resource name for loading expected program output
-     * @param withClass    {@link Class} with which to retrieve the expected program output
-     * @return {@link RunnerAsserter}
+     * @param withClass    {@link java.lang.Class} with which to retrieve the expected program output
+     * @return {@link app.zoftwhere.bolt.api.RunnerAsserter}
      * @since 1.0.0
      */
     @Override
@@ -116,9 +118,9 @@ public interface RunnerPreTest extends AbstractUnit.Expected<RunnerAsserter>, Ab
      * </p>
      *
      * @param resourceName resource name for loading expected program output
-     * @param withClass    {@link Class} with which to retrieve the expected program output
+     * @param withClass    {@link java.lang.Class} with which to retrieve the expected program output
      * @param charset      character encoding of resource
-     * @return {@link RunnerAsserter}
+     * @return {@link app.zoftwhere.bolt.api.RunnerAsserter}
      * @since 1.0.0
      */
     @Override

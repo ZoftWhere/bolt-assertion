@@ -135,9 +135,9 @@ class RunnerNullProgramTest {
     }
 
     private void testRunnerOutput(RunnerPreTest preTest) {
-        var output = preTest.output();
-        var duration = preTest.executionDuration();
-        var error = preTest.error().orElse(null);
+        final var output = preTest.output();
+        final var duration = preTest.executionDuration();
+        final var error = preTest.error().orElse(null);
         assertNotNull(output);
         assertNotNull(duration);
         assertNotNull(error);
@@ -177,7 +177,7 @@ class RunnerNullProgramTest {
 
         asserter.assertCheck(this::testResult);
         asserter.onOffence(result -> {
-            Exception error = result.error().orElse(null);
+            final var error = result.error().orElse(null);
             assertNotNull(error);
             assertNull(error.getCause());
             assertClass(RunnerException.class, error);

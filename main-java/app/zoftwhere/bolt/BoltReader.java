@@ -18,15 +18,17 @@ import java.util.function.Supplier;
  * <p>This is a package-private class for providing this functionality.
  * </p>
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 4.0.0
  */
 class BoltReader implements Iterator<String>, AutoCloseable {
 
     /**
-     * Static helper method for retrieving text lines as a {@link List} of type {@link String}.
+     * Static helper method for retrieving text lines as a {@link java.util.List} of type {@link java.lang.String}.
      *
-     * @param supplier {@link BoltReader} supplier
-     * @return text lines as a {@link List} of type {@link String}
+     * @param supplier {@link app.zoftwhere.bolt.BoltReader} supplier
+     * @return text lines as a {@link java.util.List} of type {@link java.lang.String}
      * @since 4.0.0
      */
     static List<String> readList(Supplier<BoltReader> supplier) {
@@ -39,10 +41,10 @@ class BoltReader implements Iterator<String>, AutoCloseable {
     }
 
     /**
-     * Static helper method for retrieving text lines as an array of type {@link String}.
+     * Static helper method for retrieving text lines as an array of type {@link java.lang.String}.
      *
-     * @param supplier {@link BoltReader} supplier
-     * @return text lines as an array of type {@link String}
+     * @param supplier {@link app.zoftwhere.bolt.BoltReader} supplier
+     * @return text lines as an array of type {@link java.lang.String}
      * @since 4.0.0
      */
     static String[] readArray(Supplier<BoltReader> supplier) {
@@ -68,7 +70,10 @@ class BoltReader implements Iterator<String>, AutoCloseable {
     private boolean skipLF = false;
 
     /**
-     * Constructor for byte array data.
+     * <p>Constructor for BoltReader (package-private).
+     * </p>
+     * <p>Creates an instance with byte array data and character encoding provided.
+     * </p>
      *
      * @param data    byte array for text
      * @param charset character encoding of byte array
@@ -88,10 +93,13 @@ class BoltReader implements Iterator<String>, AutoCloseable {
     }
 
     /**
-     * Constructor for input stream.
+     * <p>Constructor for BoltReader (package-private).
+     * </p>
+     * <p>Creates an instance with input stream and character encoding provided.
+     * </p>
      *
      * @param inputStream input stream for text
-     * @param charset     character encoding of {@link InputStream}
+     * @param charset     character encoding of {@link java.io.InputStream}
      * @since 4.0.0
      */
     BoltReader(InputStream inputStream, Charset charset) {
@@ -108,7 +116,9 @@ class BoltReader implements Iterator<String>, AutoCloseable {
     }
 
     /**
-     * <p>Constructor for reader.
+     * <p>Constructor for BoltReader (package-private).
+     * </p>
+     * <p>Creates an instance with reader provided.
      * </p>
      * <p>Note that BoltReader does not close the reader provided.
      * </p>
@@ -136,6 +146,7 @@ class BoltReader implements Iterator<String>, AutoCloseable {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public String next() {
         try {
@@ -197,6 +208,7 @@ class BoltReader implements Iterator<String>, AutoCloseable {
         return list().toArray(new String[] { });
     }
 
+    /** {@inheritDoc} */
     @Override
     public void close() throws IOException {
         if (autoClose) {

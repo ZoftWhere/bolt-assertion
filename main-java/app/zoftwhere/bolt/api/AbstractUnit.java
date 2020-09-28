@@ -12,8 +12,23 @@ import app.zoftwhere.bolt.api.RunnerInterface.RunStandard;
 import app.zoftwhere.bolt.api.RunnerInterface.RunStandardArgued;
 import app.zoftwhere.bolt.api.RunnerInterface.RunnerResultConsumer;
 
+/**
+ * <p>Bolt Assertion Runner Abstract Unit class.
+ * </p>
+ * <p>This is a package-private abstract class for domain-specific language composition.
+ * </p>
+ *
+ * @author Osmund
+ * @version 11.2.0
+ * @since 6.0.0
+ */
 abstract class AbstractUnit {
 
+    /**
+     * Constructor for AbstractUnit.
+     *
+     * @since 6.0.0
+     */
     public AbstractUnit() {
     }
 

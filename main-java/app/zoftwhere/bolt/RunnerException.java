@@ -1,8 +1,13 @@
 package app.zoftwhere.bolt;
 
 /**
- * Runner runtime-exception class for API exceptions.
+ * <p>Bolt Assertion Runner Exception.
+ * </p>
+ * <p>{@code RunnerException} is a runtime-exception class for API exceptions.
+ * </p>
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 6.0.0
  */
 public class RunnerException extends RuntimeException {
@@ -10,9 +15,12 @@ public class RunnerException extends RuntimeException {
     static final long serialVersionUID = 0x407c5c6e5485db90L;
 
     /**
-     * <p>Creates a {@link RunnerException} with specified message.
+     * <p>Constructor for RunnerException.
      * </p>
-     * <p>The cause is automatically set to null.</p>
+     * <p>Creates a {@code RunnerException} with specified message.
+     * </p>
+     * <p>The cause is automatically set to null.
+     * </p>
      *
      * @param message error message
      * @since 6.0.0
@@ -22,7 +30,9 @@ public class RunnerException extends RuntimeException {
     }
 
     /**
-     * <p>Creates a {@link RunnerException} with specified message and cause.
+     * <p>Constructor for RunnerException.
+     * </p>
+     * <p>Creates a {@code RunnerException} with specified message and cause.
      * </p>
      *
      * @param message error message

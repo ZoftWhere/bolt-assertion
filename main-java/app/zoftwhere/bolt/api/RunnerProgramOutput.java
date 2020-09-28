@@ -10,6 +10,8 @@ import app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier;
 /**
  * Runner program execution output interface.
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 6.0.0
  */
 public interface RunnerProgramOutput
@@ -24,34 +26,42 @@ public interface RunnerProgramOutput
      * <p>The execution result will contain an exception if the loaded comparator is null.
      * </p>
      *
-     * @param comparator {@link String} {@link Comparator} for program line output
-     * @return {@link RunnerPreTest}
+     * @param comparator {@link java.lang.String} {@link java.util.Comparator} for program line output
+     * @return {@link app.zoftwhere.bolt.api.RunnerPreTest}
      * @since 1.0.0
      */
     @Override
     RunnerPreTest comparator(Comparator<String> comparator);
 
+    /** {@inheritDoc} */
     @Override
     String[] output();
 
+    /** {@inheritDoc} */
     @Override
     Optional<Exception> error();
 
+    /** {@inheritDoc} */
     @Override
     Duration executionDuration();
 
+    /** {@inheritDoc} */
     @Override
     RunnerAsserter expected(String... expected);
 
+    /** {@inheritDoc} */
     @Override
     RunnerAsserter expected(InputStreamSupplier supplier);
 
+    /** {@inheritDoc} */
     @Override
     RunnerAsserter expected(InputStreamSupplier supplier, Charset charset);
 
+    /** {@inheritDoc} */
     @Override
     RunnerAsserter loadExpectation(String resourceName, Class<?> withClass);
 
+    /** {@inheritDoc} */
     @Override
     RunnerAsserter loadExpectation(String resourceName, Class<?> withClass, Charset charset);
 

@@ -15,8 +15,13 @@ import static app.zoftwhere.bolt.BoltResult.newBoltResult;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Bolt program output class.
+ * <p>Bolt program output class.
+ * </p>
+ * <p>This is a package-private class for providing its functionality.
+ * </p>
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 6.0.0
  */
 class BoltProgramOutput implements RunnerProgramOutput {
@@ -32,10 +37,14 @@ class BoltProgramOutput implements RunnerProgramOutput {
     private final Comparator<String> comparator;
 
     /**
-     * Create an program output instance based on the program output and program exception.
+     * <p>Constructor for BoltProgramOutput (package-private).
+     * </p>
+     * <p>Creates an instance based on the program output and program exception.
+     * </p>
      *
-     * @param output   program output lines
-     * @param duration duration of program execution
+     * @param encoding default character encoding
+     * @param output   program (actual) output lines
+     * @param duration program execution duration
      * @param error    execution error, if any, null otherwise
      * @since 11.0.0
      */
@@ -48,10 +57,12 @@ class BoltProgramOutput implements RunnerProgramOutput {
     }
 
     /**
-     * Private constructor for program output.
+     * <p>Constructor for BoltProgramOutput (private).
+     * </p>
      *
-     * @param output     program output lines
-     * @param duration   duration of program execution
+     * @param encoding   default character encoding
+     * @param output     program (actual) output lines
+     * @param duration   program execution duration
      * @param comparator program output comparator, if any, null otherwise
      * @since 11.0.0
      */
@@ -63,21 +74,25 @@ class BoltProgramOutput implements RunnerProgramOutput {
         this.comparator = comparator;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String[] output() {
         return Arrays.copyOf(output, output.length);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Exception> error() {
         return Optional.ofNullable(error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Duration executionDuration() {
         return duration;
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerPreTest comparator(Comparator<String> comparator) {
         if (error != null) {
@@ -85,34 +100,39 @@ class BoltProgramOutput implements RunnerProgramOutput {
         }
 
         if (comparator == null) {
-            RunnerException exception = new RunnerException("bolt.runner.expectation.comparator.null");
-            return new BoltProgramOutput(encoding, output, Duration.ZERO, exception);
+            RunnerException nullError = new RunnerException("bolt.runner.expectation.comparator.null");
+            return new BoltProgramOutput(encoding, output, Duration.ZERO, nullError);
         }
 
         return new BoltProgramOutput(encoding, output, duration, comparator);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerAsserter expected(String... expected) {
         String[] expectation = expected == null || expected.length == 0 ? new String[] {""} : expected;
         return newBoltResult(output, expectation, duration, comparator, error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerAsserter expected(InputStreamSupplier supplier) {
         return newBoltResult(output, supplier, encoding, duration, comparator, error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerAsserter expected(InputStreamSupplier supplier, Charset charset) {
         return newBoltResult(output, supplier, charset, duration, comparator, error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerAsserter loadExpectation(String resourceName, Class<?> withClass) {
         return newBoltResult(output, resourceName, withClass, encoding, duration, comparator, error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerAsserter loadExpectation(String resourceName, Class<?> withClass, Charset charset) {
         return newBoltResult(output, resourceName, withClass, charset, duration, comparator, error);

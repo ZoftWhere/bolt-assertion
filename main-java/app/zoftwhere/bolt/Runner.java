@@ -11,10 +11,18 @@ import app.zoftwhere.bolt.api.RunnerProgramInput;
 /**
  * Bolt Assertion Runner.
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 1.0.0
  */
 public class Runner extends AbstractRunner {
 
+    /**
+     * <p>Default Runner character encoding (UTF-8).
+     * </p>
+     *
+     * @since 11.0.0
+     */
     public static final Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
 
     /**
@@ -44,7 +52,10 @@ public class Runner extends AbstractRunner {
     }
 
     /**
-     * Private constructor creating an instance with a user-defined default encoding.
+     * <p>Constructor for Runner (private).
+     * </p>
+     * <p>Creates an instance with a user-defined default encoding.
+     * </p>
      *
      * @param encoding default encoding
      * @since 11.0.0
@@ -166,7 +177,7 @@ public class Runner extends AbstractRunner {
     /**
      * {@inheritDoc}
      *
-     * @since 1.0.0
+     * @since 11.0.0
      */
     @Override
     public RunnerProgramInput input(Charset charset, String... input) {

@@ -26,7 +26,7 @@ public class BoltTestHelper {
         if (array == null) {
             return true;
         }
-        for (T item : array) {
+        for (var item : array) {
             if (item == null) {
                 return true;
             }
@@ -43,8 +43,8 @@ public class BoltTestHelper {
             throw new IllegalArgumentException("bolt.test.helper.assertClass.test.is.null");
         }
 
-        String expectedString = expected.getName();
-        String actualString = test.getClass().getName();
+        final var expectedString = expected.getName();
+        final var actualString = test.getClass().getName();
         if (!Objects.equals(expectedString, actualString)) {
             throw new AssertionFailedError("bolt.test.class.not.equal", expectedString, actualString);
         }
@@ -81,7 +81,7 @@ public class BoltTestHelper {
      * @since 11.0.0
      */
     public static String escapeString(String input) {
-        StringBuilder builder = new StringBuilder();
+        final var builder = new StringBuilder();
         input.codePoints().forEach(i -> {
             if (i == '\ufeff') {
                 //noinspection SpellCheckingInspection

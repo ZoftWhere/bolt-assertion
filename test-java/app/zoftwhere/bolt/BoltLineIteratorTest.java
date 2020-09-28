@@ -20,7 +20,7 @@ class BoltLineIteratorTest {
     void testScannerBlank() {
         final var input = "";
         try (Scanner scanner = new Scanner(input)) {
-            var iterator = new BoltLineIterator(scanner);
+            final var iterator = new BoltLineIterator(scanner);
             assertEquals("", iterator.next());
             assertNull(iterator.next());
         }
@@ -30,7 +30,7 @@ class BoltLineIteratorTest {
     void testScannerBlank2() {
         final var input = "\r\n";
         try (Scanner scanner = new Scanner(input)) {
-            var iterator = new BoltLineIterator(scanner);
+            final var iterator = new BoltLineIterator(scanner);
             assertEquals("", iterator.next());
             assertEquals("", iterator.next());
             assertNull(iterator.next());

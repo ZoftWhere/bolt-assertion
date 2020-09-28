@@ -18,12 +18,31 @@ import static app.zoftwhere.bolt.BoltUtility.arrayHasNull;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Bolt execution result class.
+ * <p>Bolt execution result class.
+ * </p>
+ * <p>This is a package-private class for providing this functionality.
+ * </p>
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 6.0.0
  */
 class BoltResult implements RunnerResult, RunnerAsserter {
 
+    /**
+     * <p>BoltResult factory method (package-private).
+     * </p>
+     * <p>Creates an instance of {@code BoltResult} based on lines and error provided.
+     * </p>
+     *
+     * @param output     program (actual) output lines
+     * @param expected   program expected output lines
+     * @param duration   program execution duration
+     * @param comparator program output comparator
+     * @param error      execution error
+     * @return {@link app.zoftwhere.bolt.BoltResult}
+     * @since 11.0.0
+     */
     static BoltResult newBoltResult(
         String[] output,
         String[] expected,
@@ -39,6 +58,21 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         return performComparison(output, expected, duration, comparator);
     }
 
+    /**
+     * <p>BoltResult factory method (package-private).
+     * </p>
+     * <p>Creates an instance of {@code BoltResult} based on input stream and error provided.
+     * </p>
+     *
+     * @param output       program (actual) output lines
+     * @param supplier     input stream supplier
+     * @param inputCharset input stream character encoding
+     * @param duration     program execution duration
+     * @param comparator   program output comparator
+     * @param error        execution error
+     * @return {@link app.zoftwhere.bolt.BoltResult}
+     * @since 11.0.0
+     */
     static BoltResult newBoltResult(
         String[] output,
         InputStreamSupplier supplier,
@@ -53,29 +87,45 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         }
 
         if (inputCharset == null) {
-            RunnerException exception = new RunnerException("bolt.runner.load.expectation.charset.null");
-            return new BoltResult(output, new String[0], duration, exception);
+            RunnerException nullError = new RunnerException("bolt.runner.load.expectation.charset.null");
+            return new BoltResult(output, new String[0], duration, nullError);
         }
 
         if (supplier == null) {
-            RunnerException exception = new RunnerException("bolt.runner.load.expectation.supplier.null");
-            return new BoltResult(output, new String[0], duration, exception);
+            RunnerException nullError = new RunnerException("bolt.runner.load.expectation.supplier.null");
+            return new BoltResult(output, new String[0], duration, nullError);
         }
 
         try (InputStream inputStream = supplier.get()) {
             if (inputStream == null) {
                 // throw new RunnerException("bolt.runner.load.expectation.stream.null");
-                RunnerException exception = new RunnerException("bolt.runner.load.expectation.stream.null");
-                return new BoltResult(output, new String[0], duration, exception);
+                RunnerException nullError = new RunnerException("bolt.runner.load.expectation.stream.null");
+                return new BoltResult(output, new String[0], duration, nullError);
             }
             String[] expected = readArray(() -> new BoltReader(inputStream, inputCharset));
             return performComparison(output, expected, duration, comparator);
         }
-        catch (Exception e) {
-            return new BoltResult(output, new String[0], duration, e);
+        catch (Exception runError) {
+            return new BoltResult(output, new String[0], duration, runError);
         }
     }
 
+    /**
+     * <p>BoltResult factory method (package-private).
+     * </p>
+     * <p>Creates an instance of {@code BoltResult} based on input resource and error provided.
+     * </p>
+     *
+     * @param output       program (actual) output lines
+     * @param resourceName input resource name
+     * @param withClass    input resource class
+     * @param charset      input resource character encoding
+     * @param duration     program execution duration
+     * @param comparator   program output comparator
+     * @param error        execution error
+     * @return {@link app.zoftwhere.bolt.BoltResult}
+     * @since 11.0.0
+     */
     static BoltResult newBoltResult(
         String[] output,
         String resourceName,
@@ -124,35 +174,42 @@ class BoltResult implements RunnerResult, RunnerAsserter {
     private final Duration executionDuration;
 
     /**
-     * Create a execution result for a success state.
+     * <p>Constructor for BoltResult (package-private).
+     * </p>
+     * <p>Creates an instance for a success state.
+     * </p>
      *
-     * @param output            program output lines
-     * @param expected          expected program output lines
-     * @param executionDuration {@link Duration} of execution
+     * @param output   program (actual) output lines
+     * @param expected program expected output lines
+     * @param duration program execution duration
      * @since 9.0.0
      */
-    BoltResult(String[] output, String[] expected, Duration executionDuration) {
+    BoltResult(String[] output, String[] expected, Duration duration) {
         this.output = requireNonNull(output);
         this.expected = requireNonNull(expected);
-        this.executionDuration = requireNonNull(executionDuration);
+        this.executionDuration = requireNonNull(duration);
         this.offendingIndex = -1;
         this.message = null;
         this.error = null;
     }
 
     /**
-     * Create a execution result for a failure state.
+     * <p>Constructor for BoltResult (package-private).
+     * </p>
+     * <p>Creates an instance for a failure state.
+     * </p>
      *
-     * @param output         program output lines
+     * @param output         program (actual) output lines
      * @param expected       program expected output lines
+     * @param duration       program execution duration
      * @param offendingIndex zero-based index of erroneous line, if any, -1 otherwise.
      * @param message        program failure state message
      * @since 9.0.0
      */
-    BoltResult(String[] output, String[] expected, Duration executionDuration, int offendingIndex, String message) {
+    BoltResult(String[] output, String[] expected, Duration duration, int offendingIndex, String message) {
         this.output = requireNonNull(output);
         this.expected = requireNonNull(expected);
-        this.executionDuration = requireNonNull(executionDuration);
+        this.executionDuration = requireNonNull(duration);
         //noinspection ManualMinMaxCalculation
         this.offendingIndex = offendingIndex >= -1 ? offendingIndex : -1;
         this.message = requireNonNull(message);
@@ -160,67 +217,81 @@ class BoltResult implements RunnerResult, RunnerAsserter {
     }
 
     /**
-     * Create a execution result for an error state.
+     * <p>Constructor for BoltResult (package-private).
+     * </p>
+     * <p>Creates an instance for an error state.
+     * </p>
      *
-     * @param output   program output lines
+     * @param output   program (actual) output lines
      * @param expected program expected output lines
+     * @param duration program execution duration
      * @param error    execution error
      * @since 9.0.0
      */
-    BoltResult(String[] output, String[] expected, Duration executionDuration, Exception error) {
+    BoltResult(String[] output, String[] expected, Duration duration, Exception error) {
         this.output = requireNonNull(output);
         this.expected = requireNonNull(expected);
-        this.executionDuration = requireNonNull(executionDuration);
+        this.executionDuration = requireNonNull(duration);
         this.offendingIndex = -1;
         this.message = null;
         this.error = requireNonNull(error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isSuccess() {
         return message == null && error == null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isFailure() {
         return message != null && error == null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isError() {
         return error != null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String[] output() {
         return Arrays.copyOf(output, output.length);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String[] expected() {
         return Arrays.copyOf(expected, expected.length);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int offendingIndex() {
         return offendingIndex;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<String> message() {
         return Optional.ofNullable(message);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Exception> error() {
         return Optional.ofNullable(error);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Duration executionDuration() {
         return executionDuration;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void assertSuccess() {
         if (isFailure()) {
@@ -232,6 +303,7 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void assertFailure() {
         if (isSuccess()) {
@@ -243,6 +315,7 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void assertError() {
         if (isSuccess()) {
@@ -254,6 +327,7 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void assertCheck(RunnerResultConsumer consumer) {
         try {
@@ -264,6 +338,7 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onOffence(RunnerResultConsumer consumer) {
         if (isSuccess()) {
@@ -278,11 +353,24 @@ class BoltResult implements RunnerResult, RunnerAsserter {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public RunnerResult result() {
         return this;
     }
 
+    /**
+     * <p>BoltResult factory method (private).
+     * </p>
+     * <p>Returns a BoltResult instance after performing output comparison.
+     * </p>
+     *
+     * @param output     program (actual) output lines
+     * @param expected   program expected output lines
+     * @param duration   program execution duration
+     * @param comparator program output comparator
+     * @return a BoltResult instance after performing output comparison
+     */
     private static BoltResult performComparison(
         String[] output,
         String[] expected,
@@ -291,8 +379,8 @@ class BoltResult implements RunnerResult, RunnerAsserter {
     )
     {
         if (arrayHasNull(expected)) {
-            RunnerException exception = new RunnerException("bolt.runner.variable.argument.expected.has.null");
-            return new BoltResult(output, expected, duration, exception);
+            RunnerException nullError = new RunnerException("bolt.runner.variable.argument.expected.has.null");
+            return new BoltResult(output, expected, duration, nullError);
         }
 
         if (expected.length != output.length) {

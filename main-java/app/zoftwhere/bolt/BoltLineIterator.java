@@ -6,6 +6,16 @@ import java.util.Iterator;
 import java.util.Scanner;
 import java.util.function.Supplier;
 
+/**
+ * <p>Bolt Line Iterator class.
+ * </p>
+ * <p>This is a package-private class for providing its functionality.
+ * </p>
+ *
+ * @author Osmund
+ * @version 11.2.0
+ * @since 11.1.0
+ */
 class BoltLineIterator implements Iterator<String> {
 
     private final Supplier<String> loader;
@@ -14,6 +24,15 @@ class BoltLineIterator implements Iterator<String> {
 
     private String next;
 
+    /**
+     * <p>Constructor for BoltLineIterator (package-private).
+     * </p>
+     * <p>Creates an instance with scanner provided.
+     * </p>
+     *
+     * @param scanner program {@link java.util.Scanner}
+     * @since 11.1.0
+     */
     BoltLineIterator(Scanner scanner) {
         final Supplier<String> firstLine = () -> {
             // Check for empty first line.
@@ -46,6 +65,16 @@ class BoltLineIterator implements Iterator<String> {
         hasNext = true;
     }
 
+    /**
+     * <p>Constructor for BoltLineIterator (package-private).
+     * </p>
+     * <p>Creates an instance with input stream and character encoding provided.
+     * </p>
+     *
+     * @param inputStream {@link java.io.InputStream}
+     * @param charset     character encoding of {@link java.io.InputStream}
+     * @since 11.1.0
+     */
     BoltLineIterator(InputStream inputStream, Charset charset) {
         final BoltReader reader = new BoltReader(inputStream, charset);
         loader = () -> {
@@ -59,11 +88,13 @@ class BoltLineIterator implements Iterator<String> {
         hasNext = next != null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean hasNext() {
         return hasNext;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String next() {
         if (!hasNext) {

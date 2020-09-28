@@ -9,6 +9,8 @@ import java.util.Scanner;
 /**
  * Runner instance interface.
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 6.0.0
  */
 public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInput {
@@ -16,8 +18,8 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     /**
      * <p>Retrieve Runner character encoding.
      * </p>
-     * <p>If the runner was not specified a character encoding, or loaded with a ${@code null} ${@link Charset}, then
-     * the Runner return the value of {@link app.zoftwhere.bolt.Runner#DEFAULT_ENCODING}.
+     * <p>If the runner was not specified a character encoding, or loaded with a ${@code null} ${@link
+     * java.nio.charset.Charset}, then the Runner return the value of {@link app.zoftwhere.bolt.Runner#DEFAULT_ENCODING}.
      * </p>
      *
      * @return character encoding
@@ -26,7 +28,8 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     Charset encoding();
 
     /**
-     * {@link InputStreamSupplier} provides a functional interface for creating an {@link InputStream} supplier.
+     * {@link app.zoftwhere.bolt.api.RunnerInterface.InputStreamSupplier} provides a functional interface for creating
+     * an {@link java.io.InputStream} supplier.
      *
      * @since 6.0.0
      */
@@ -34,15 +37,16 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     interface InputStreamSupplier extends AbstractUnit.ThrowingSupplier<InputStream> {
 
         /**
-         * @return {@link InputStream}
-         * @throws Exception for {@link InputStream} error
+         * @return {@link java.io.InputStream}
+         * @throws Exception for {@link java.io.InputStream} error
          */
         @Override
         InputStream get() throws Exception;
     }
 
     /**
-     * {@link RunConsole} provides a functional interface for creating program calls.
+     * {@link app.zoftwhere.bolt.api.RunnerInterface.RunConsole} provides a functional interface for creating program
+     * calls.
      *
      * @since 6.0.0
      */
@@ -50,8 +54,8 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     interface RunConsole extends AbstractUnit.CallerNoArguments<InputStream, OutputStream> {
 
         /**
-         * @param inputStream  program {@link InputStream}
-         * @param outputStream program {@link OutputStream}
+         * @param inputStream  program {@link java.io.InputStream}
+         * @param outputStream program {@link java.io.OutputStream}
          * @throws Exception program error
          */
         @Override
@@ -59,7 +63,8 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     }
 
     /**
-     * {@link RunConsoleArgued} provides a functional interface for creating program calls.
+     * {@link app.zoftwhere.bolt.api.RunnerInterface.RunConsoleArgued} provides a functional interface for creating
+     * program calls.
      *
      * @since 6.0.0
      */
@@ -68,8 +73,8 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
 
         /**
          * @param arguments    program argument array
-         * @param inputStream  program {@link InputStream}
-         * @param outputStream program {@link OutputStream}
+         * @param inputStream  program {@link java.io.InputStream}
+         * @param outputStream program {@link java.io.OutputStream}
          * @throws Exception program error
          */
         @Override
@@ -77,7 +82,8 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     }
 
     /**
-     * {@link RunnerResultConsumer} provides a functional interface for creating execution result asserters.
+     * {@link app.zoftwhere.bolt.api.RunnerInterface.RunnerResultConsumer} provides a functional interface for creating
+     * execution result asserters.
      *
      * @since 6.0.0
      */
@@ -95,7 +101,8 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     }
 
     /**
-     * {@link RunStandard} provides a functional interface for creating program calls.
+     * {@link app.zoftwhere.bolt.api.RunnerInterface.RunStandard} provides a functional interface for creating program
+     * calls.
      *
      * @since 7.0.0
      */
@@ -103,8 +110,8 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     interface RunStandard extends AbstractUnit.CallerNoArguments<Scanner, PrintStream> {
 
         /**
-         * @param scanner program {@link Scanner}
-         * @param out     program {@link PrintStream}
+         * @param scanner program {@link java.util.Scanner}
+         * @param out     program {@link java.io.PrintStream}
          * @throws Exception on program error
          */
         @Override
@@ -112,7 +119,8 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
     }
 
     /**
-     * {@link RunStandardArgued} provides a functional interface for creating program calls.
+     * {@link app.zoftwhere.bolt.api.RunnerInterface.RunStandardArgued} provides a functional interface for creating
+     * program calls.
      *
      * @since 7.0.0
      */
@@ -121,8 +129,8 @@ public interface RunnerInterface extends RunnerProvideProgram, RunnerProvideInpu
 
         /**
          * @param arguments program argument array
-         * @param scanner   program {@link Scanner}
-         * @param out       program {@link PrintStream}
+         * @param scanner   program {@link java.util.Scanner}
+         * @param out       program {@link java.io.PrintStream}
          * @throws Exception on program error
          */
         @Override

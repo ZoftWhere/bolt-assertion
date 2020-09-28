@@ -3,6 +3,14 @@ package example;
 import java.io.PrintStream;
 import java.util.Scanner;
 
+/**
+ * <p>An example of how a command-line program can be tested by means of a proxy method.
+ * </p>
+ *
+ * @author Osmund
+ * @version 11.2.0
+ * @since 1.0.0
+ */
 @SuppressWarnings({"WeakerAccess", "unused", "RedundantSuppression"})
 public class CommandLineExample {
 

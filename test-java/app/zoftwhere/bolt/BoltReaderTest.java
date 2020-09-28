@@ -37,7 +37,7 @@ class BoltReaderTest {
         final var string = "UTF-16\ufeff";
         final var data = string.getBytes(UTF_16);
         final var stream = new ByteArrayInputStream(data);
-        try (var reader = new BoltReader(stream, UTF_16)) {
+        try (final var reader = new BoltReader(stream, UTF_16)) {
             assertEquals("UTF-16\ufeff", reader.readLine());
         }
     }
@@ -45,7 +45,7 @@ class BoltReaderTest {
     @Test
     void testByteOrderMark2() throws IOException {
         final var string = "\ufeffUTF-16\ufeff";
-        try (var reader = forString(string, UTF_16BE)) {
+        try (final var reader = forString(string, UTF_16BE)) {
             assertEquals("\ufeffUTF-16\ufeff", reader.readLine());
         }
     }
@@ -53,7 +53,7 @@ class BoltReaderTest {
     @Test
     void testByteOrderMark3() throws IOException {
         final var string = "\ufeffUTF-16\ufeff";
-        try (var reader = forString(string, UTF_16LE)) {
+        try (final var reader = forString(string, UTF_16LE)) {
             assertEquals("\ufeffUTF-16\ufeff", reader.readLine());
         }
     }
@@ -62,7 +62,7 @@ class BoltReaderTest {
     void testByteOrderMark4() throws IOException {
         final var string = "\ufeffUTF-16\ufeff";
         final var data = string.getBytes(UTF_16);
-        try (var reader = new BoltReader(data, UTF_16)) {
+        try (final var reader = new BoltReader(data, UTF_16)) {
             assertEquals("\ufeffUTF-16\ufeff", reader.readLine());
         }
     }
@@ -160,7 +160,7 @@ class BoltReaderTest {
             }
         };
         try {
-            try (var reader = new BoltReader(inputStream, UTF_8)) {
+            try (final var reader = new BoltReader(inputStream, UTF_8)) {
                 reader.readLine();
             }
 
@@ -182,7 +182,7 @@ class BoltReaderTest {
             }
         };
 
-        try (var boltReader = new BoltReader(reader)) {
+        try (final var boltReader = new BoltReader(reader)) {
             boltReader.next();
         }
         catch (IOException e) {

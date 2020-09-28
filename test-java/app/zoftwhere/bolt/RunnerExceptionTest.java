@@ -1,6 +1,5 @@
 package app.zoftwhere.bolt;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
 import org.junit.jupiter.api.Test;
@@ -22,7 +21,7 @@ class RunnerExceptionTest {
             throw exception;
         }
         catch (Exception e) {
-            String className = RunnerExceptionTest.class.getName() + "$1";
+            final var className = RunnerExceptionTest.class.getName() + "$1";
             assertEquals(className, e.getClass().getName());
         }
     }
@@ -35,9 +34,9 @@ class RunnerExceptionTest {
 
     private void assertPublicConstructor(Class<?>[] parameters) {
         try {
-            Constructor<RunnerException> constructor = RunnerException.class.getConstructor(parameters);
-            int accessMask = Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED;
-            int flag = constructor.getModifiers() & accessMask;
+            final var constructor = RunnerException.class.getConstructor(parameters);
+            final var accessMask = Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED;
+            final var flag = constructor.getModifiers() & accessMask;
 
             if (flag == Modifier.PUBLIC) {
                 return;
@@ -46,7 +45,7 @@ class RunnerExceptionTest {
         catch (NoSuchMethodException ignore) {
         }
 
-        String expected = publicConstructorString(parameters);
+        final var expected = publicConstructorString(parameters);
         throw new AssertionFailedError("bolt.runner.constructor.check", expected, "<none>");
     }
 
@@ -55,7 +54,7 @@ class RunnerExceptionTest {
     }
 
     private String publicConstructorString(Class<?>[] parameters) {
-        StringBuilder builder = new StringBuilder("public")
+        final var builder = new StringBuilder("public")
             .append(" ")
             .append(RunnerException.class.getName())
             .append("(");

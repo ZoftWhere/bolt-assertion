@@ -11,6 +11,10 @@ import static app.zoftwhere.bolt.Runner.newRunner;
  * </p>
  * <p>The program triggers an offence as the word "world" is expected to be with an upper case 'W'
  * </p>
+ *
+ * @author Osmund
+ * @version 11.2.0
+ * @since 5.0.0
  */
 @SuppressWarnings("WeakerAccess")
 public class TriggerOnOffenceExample {

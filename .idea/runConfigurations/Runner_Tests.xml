@@ -1,6 +1,16 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Runner Tests" type="JUnit" factoryName="JUnit">
     <module name="bolt-assertion" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="app.zoftwhere.bolt.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="app.zoftwhere.bolt.api.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
     <option name="PACKAGE_NAME" value="" />
     <option name="MAIN_CLASS_NAME" value="" />
     <option name="METHOD_NAME" value="" />

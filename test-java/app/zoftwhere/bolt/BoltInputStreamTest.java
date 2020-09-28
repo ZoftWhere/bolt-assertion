@@ -27,45 +27,45 @@ class BoltInputStreamTest {
 
     @Test
     void testSameCodec() throws IOException {
-        var string = "Unicode(\ud801\udc10)";
-        var array = forString(string, UTF_16).readAllBytes();
-        var result = new String(array, UTF_16);
+        final var string = "Unicode(\ud801\udc10)";
+        final var array = forString(string, UTF_16).readAllBytes();
+        final var result = new String(array, UTF_16);
 
         assertEquals(string, result);
     }
 
     @Test
     void testCrossCodec() throws IOException {
-        var string = "ASCII(Hello World)";
-        var array = forString(string, US_ASCII, UTF_16LE).readAllBytes();
-        var result = new String(array, UTF_16LE);
+        final var string = "ASCII(Hello World)";
+        final var array = forString(string, US_ASCII, UTF_16LE).readAllBytes();
+        final var result = new String(array, UTF_16LE);
 
         assertEquals(string, result);
     }
 
     @Test
     void testUnicode() throws IOException {
-        var string = "Unicode(\ud801\udc10)";
-        var array = forString(string, UTF_16LE, UTF_8).readAllBytes();
-        var result = new String(array, UTF_8);
+        final var string = "Unicode(\ud801\udc10)";
+        final var array = forString(string, UTF_16LE, UTF_8).readAllBytes();
+        final var result = new String(array, UTF_8);
 
         assertEquals(string, result);
     }
 
     @Test
     void testByteOrderMark1() throws IOException {
-        var string = "";
-        var array = forString(string, UTF_8, UTF_16).readAllBytes();
-        var expected = string.getBytes(UTF_16);
+        final var string = "";
+        final var array = forString(string, UTF_8, UTF_16).readAllBytes();
+        final var expected = string.getBytes(UTF_16);
 
         assertArrayEquals(expected, array);
     }
 
     @Test
     void testByteOrderMark2() throws IOException {
-        var string = "Hello";
-        var array = forString(string, UTF_8, UTF_16).readAllBytes();
-        var expected = string.getBytes(UTF_16);
+        final var string = "Hello";
+        final var array = forString(string, UTF_8, UTF_16).readAllBytes();
+        final var expected = string.getBytes(UTF_16);
 
         assertArrayEquals(expected, array);
     }
@@ -79,10 +79,10 @@ class BoltInputStreamTest {
 
         for (var from : codec) {
             for (var to : codec) {
-                var input = forString(string, from, to);
-                try (var reader = new InputStreamReader(input, to)) {
-                    var n = reader.read(buffer, 0, size);
-                    var s = new String(buffer, 0, size);
+                final var input = forString(string, from, to);
+                try (final var reader = new InputStreamReader(input, to)) {
+                    final var n = reader.read(buffer, 0, size);
+                    final var s = new String(buffer, 0, size);
                     assertEquals(size, n);
                     assertEquals(string, s);
                 }
@@ -105,8 +105,8 @@ class BoltInputStreamTest {
                 closedFlag.set(false);
                 assertFalse(closedFlag.get());
 
-                try (var input = forString(from.name(), from, to, closedFlag)) {
-                    var array = input.readAllBytes();
+                try (final var input = forString(from.name(), from, to, closedFlag)) {
+                    final var array = input.readAllBytes();
                     assertTrue(array.length > 0);
                 }
 
@@ -133,7 +133,7 @@ class BoltInputStreamTest {
         };
         var pass = true;
 
-        try (var reader = new BoltInputStream(failure, UTF_8, UTF_16)) {
+        try (final var reader = new BoltInputStream(failure, UTF_8, UTF_16)) {
             reader.reset();
             pass = false;
         }

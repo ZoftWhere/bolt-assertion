@@ -6,6 +6,8 @@ import java.util.Optional;
 /**
  * Runner execution result interface.
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 8.0.0
  */
 public interface RunnerResult extends AbstractUnit.Result {
@@ -68,16 +70,16 @@ public interface RunnerResult extends AbstractUnit.Result {
     String[] expected();
 
     /**
-     * Retrieve the execution duration.
+     * Retrieve execution duration.
      *
-     * @return {@link Duration} duration from execution call till program completion or execution error.
+     * @return {@link java.time.Duration} duration from execution call till program completion or execution error.
      * @since 9.0.0
      */
     @Override
     Duration executionDuration();
 
     /**
-     * Retrieve the offending index for output comparison.
+     * Retrieve offending index for output comparison.
      *
      * @return array index for mismatch, -1 on length or none
      * @since 5.0.0
@@ -88,7 +90,7 @@ public interface RunnerResult extends AbstractUnit.Result {
     /**
      * Retrieve program message for failure state or error state.
      *
-     * @return {@link Optional} {@link String} for failure state or error state
+     * @return {@link java.util.Optional} {@link java.lang.String} for failure state or error state
      * @since 8.0.0
      */
     @Override
@@ -97,7 +99,7 @@ public interface RunnerResult extends AbstractUnit.Result {
     /**
      * Retrieve execution error for error state.
      *
-     * @return {@code Optional} {@link Exception} for execution error
+     * @return {@link java.util.Optional} {@link java.lang.Exception} for execution error
      * @since 8.0.0
      */
     @Override

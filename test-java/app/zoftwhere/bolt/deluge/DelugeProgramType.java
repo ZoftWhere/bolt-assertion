@@ -1,6 +1,7 @@
 package app.zoftwhere.bolt.deluge;
 
 public enum DelugeProgramType {
+
     INPUT_STANDARD,
     INPUT_STANDARD_ARGUED,
     INPUT_CONSOLE,
@@ -9,6 +10,9 @@ public enum DelugeProgramType {
     PROGRAM_STANDARD_ARGUED,
     PROGRAM_CONSOLE,
     PROGRAM_CONSOLE_ARGUED;
+
+    DelugeProgramType() {
+    }
 
     public boolean isArgued() {
         return this == INPUT_STANDARD_ARGUED ||

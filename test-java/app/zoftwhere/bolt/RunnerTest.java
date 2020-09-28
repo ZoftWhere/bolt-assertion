@@ -33,7 +33,7 @@ class RunnerTest {
             throw result.error().orElse(new Exception());
         }
 
-        var errorMessage = result.message().orElse("") +
+        final var errorMessage = result.message().orElse("") +
             NEW_LINE + "Expected : " + Arrays.toString(result.expected()) +
             NEW_LINE + "Found    : " + Arrays.toString(result.output());
         throw new RunnerException(errorMessage);
@@ -81,9 +81,9 @@ class RunnerTest {
         // BoltProvide NEW_LINE should be "\r\n" for this reason.
         runner
             .runConsole(UTF_8, (in, out) -> {
-                try (InputStreamReader reader = new InputStreamReader(in, UTF_8)) {
-                    try (BufferedReader buffer = new BufferedReader(reader)) {
-                        try (PrintStream print = new PrintStream(out, false, UTF_8)) {
+                try (final var reader = new InputStreamReader(in, UTF_8)) {
+                    try (final var buffer = new BufferedReader(reader)) {
+                        try (final var print = new PrintStream(out, false, UTF_8)) {
                             print.print(buffer.readLine());
                             while (buffer.ready()) {
                                 print.print("\r\n");
@@ -101,7 +101,7 @@ class RunnerTest {
 
     @Test
     void testPartialOutput() {
-        var result = runner.input("1", "2", "3", "4.5")
+        final var result = runner.input("1", "2", "3", "4.5")
             .run((scanner, out) -> {
                 scanner.useDelimiter("\\R");
                 while (scanner.hasNext()) {
@@ -111,7 +111,7 @@ class RunnerTest {
             .expected("1", "2", "3")
             .result();
 
-        var error = result.error().orElse(null);
+        final var error = result.error().orElse(null);
         assertNotNull(error);
         assertClass(NumberFormatException.class, error);
     }
@@ -136,8 +136,8 @@ class RunnerTest {
             .loadInput("RunnerTest.txt", Runner.class, UTF_8)
             .argument()
             .runConsole(UTF_16LE, (arguments, in, out) -> {
-                try (Scanner scanner = new Scanner(in, UTF_16LE)) {
-                    try (PrintStream print = new PrintStream(out, false, UTF_16LE)) {
+                try (final var scanner = new Scanner(in, UTF_16LE)) {
+                    try (final var print = new PrintStream(out, false, UTF_16LE)) {
                         scanner.useDelimiter("\\R");
                         print.print(scanner.next());
                         while (scanner.hasNext()) {
@@ -158,8 +158,8 @@ class RunnerTest {
             .encoding(UTF_16)
             .loadInput("RunnerTestUTF16.txt", Runner.class)
             .runConsole(UTF_8, (in, out) -> {
-                try (Scanner scanner = new Scanner(in, UTF_8)) {
-                    try (PrintStream print = new PrintStream(out, false, UTF_8)) {
+                try (final var scanner = new Scanner(in, UTF_8)) {
+                    try (final var print = new PrintStream(out, false, UTF_8)) {
                         scanner.useDelimiter("\\R");
                         print.print(scanner.next());
                         while (scanner.hasNext()) {
@@ -194,8 +194,8 @@ class RunnerTest {
             .encoding(UTF_16)
             .input(() -> new ByteArrayInputStream(new byte[] {-2, -1, 0, 32, 0, 13, 0, 13, 0, 32}))
             .runConsole(UTF_16, (inputStream, outputStream) -> {
-                try (Scanner scanner = new Scanner(inputStream, UTF_16)) {
-                    try (PrintStream out = new PrintStream(outputStream, false, UTF_16LE)) {
+                try (final var scanner = new Scanner(inputStream, UTF_16)) {
+                    try (final var out = new PrintStream(outputStream, false, UTF_16LE)) {
                         scanner.useDelimiter("\\R");
                         out.print('\ufeff');
                         out.print(scanner.next());
@@ -220,7 +220,7 @@ class RunnerTest {
     }
 
     private static void runEcho(InputStream inputStream, OutputStream outputStream) throws Exception {
-        var buffer = new byte[1024];
+        final var buffer = new byte[1024];
         var n = inputStream.read(buffer, 0, 1024);
         while (n >= 0) {
             outputStream.write(buffer, 0, n);

@@ -8,11 +8,13 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
- * <p>A Bolt {@link InputStream} for cross encoding use.
+ * <p>Bolt Input Stream class.
  * </p>
- * <p>This is a package-private class for providing this functionality.
+ * <p>This is a package-private class for providing input stream transcoding.
  * </p>
  *
+ * @author Osmund
+ * @version 11.2.0
  * @since 4.0.0
  */
 class BoltInputStream extends InputStream {
@@ -28,11 +30,14 @@ class BoltInputStream extends InputStream {
     private int size = 0;
 
     /**
-     * Constructor for creating an {@link InputStream} from {@link InputStream} transcoder.
+     * <p>Constructor for BoltInputStream (package-private).
+     * </p>
+     * <p>Creates an instance for {@link java.io.InputStream} transcoding.
+     * </p>
      *
-     * @param inputStream {@link InputStream} to transcode
-     * @param source      character encoding of source {@link InputStream}
-     * @param destination character encoding of target {@link BoltInputStream}
+     * @param inputStream {@link java.io.InputStream} to transcode
+     * @param source      character encoding of source {@link java.io.InputStream}
+     * @param destination character encoding of target {@link app.zoftwhere.bolt.BoltInputStream}
      * @since 4.0.0
      */
     BoltInputStream(InputStream inputStream, Charset source, Charset destination) {

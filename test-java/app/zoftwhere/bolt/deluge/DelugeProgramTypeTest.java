@@ -6,7 +6,7 @@ class DelugeProgramTypeTest {
 
     @Test
     void testProgramTypeCompleteness() {
-        for (DelugeProgramType programType : DelugeProgramType.values()) {
+        for (var programType : DelugeProgramType.values()) {
             if (programType.isProgramFirst() && programType.isInputFirst()) {
                 throw new DelugeException("deluge.program.type.occlusion");
             }
