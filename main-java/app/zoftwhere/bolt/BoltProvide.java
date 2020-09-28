@@ -27,7 +27,7 @@ import static app.zoftwhere.bolt.BoltReader.readArray;
  * </p>
  *
  * @author Osmund
- * @version 11.2.0
+ * @version 11.3.0
  * @since 6.0.0
  */
 interface BoltProvide {
