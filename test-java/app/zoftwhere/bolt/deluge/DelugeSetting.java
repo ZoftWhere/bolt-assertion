@@ -8,6 +8,16 @@ public class DelugeSetting {
 
     private static final Charset ENCODING = Runner.DEFAULT_ENCODING;
 
+    public static DelugeSetting withEncoding(DelugeSetting setting, Charset encoding) {
+        final var hasEncoding = true;
+        final var hasArgumentArray = setting.hasArgumentArray;
+        final var argumentArray = setting.argumentArray;
+        final var error = setting.error;
+        final var hasCharSet = setting.hasCharSet;
+        final var charset = setting.charset;
+        return new DelugeSetting(hasEncoding, encoding, hasArgumentArray, argumentArray, error, hasCharSet, charset);
+    }
+
     static DelugeSetting from() {
         return new DelugeSetting(false, ENCODING, false, null, null, false, ENCODING);
     }
