@@ -13,6 +13,18 @@ public class DelugeBuilder {
         return new DelugeBuilder(type, setting, input);
     }
 
+    @SuppressWarnings("WeakerAccess")
+    public static DelugeBuilder from(
+        Charset encoding,
+        DelugeProgramType type,
+        DelugeSetting setting,
+        DelugeData input
+    )
+    {
+        final var withEncoding = setting != null ? DelugeSetting.withEncoding(setting, encoding) : null;
+        return new DelugeBuilder(type, withEncoding, input);
+    }
+
     public static int runTest(List<Charset> encodingList, List<DelugeSetting> settingList, List<DelugeData> inputList) {
         return new DelugeForge(encodingList, settingList, inputList).runTest();
     }
