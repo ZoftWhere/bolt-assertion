@@ -29,8 +29,8 @@ class BoltArrayInputStreamTest {
         };
         final var charsetArray = new Charset[] {US_ASCII, ISO_8859_1, UTF_8, UTF_16LE, UTF_16BE, UTF_16};
 
-        for (var charset : charsetArray) {
-            for (var input : inputMatrix) {
+        for (final var charset : charsetArray) {
+            for (final var input : inputMatrix) {
                 final var actual = buildActual(input, charset);
                 final var expected = buildExpected(input, charset);
                 assertArrayEquals(expected, actual);

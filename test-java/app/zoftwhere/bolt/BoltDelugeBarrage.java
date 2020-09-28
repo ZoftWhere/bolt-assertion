@@ -129,7 +129,7 @@ class BoltDelugeBarrage {
     private List<DelugeData> listForData(String[] data) {
         final var list = new ArrayList<DelugeData>();
         list.add(forStringArray(data));
-        for (var charset : charsetArray) {
+        for (final var charset : charsetArray) {
             list.add(forStringArray(data, charset));
             list.add(forInputStream(data, charset, true));
 

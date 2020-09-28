@@ -32,34 +32,34 @@ public class DelugeBuilder {
 
         list.add(forSetting());
 
-        for (var argument : argumentList) {
+        for (final var argument : argumentList) {
             list.add(forSetting(argument));
 
-            for (var error : errorList) {
+            for (final var error : errorList) {
                 list.add(forSetting(argument, error));
 
-                for (var charset : charsetList) {
+                for (final var charset : charsetList) {
                     list.add(forSetting(argument, error, charset));
                 }
 
             }
 
-            for (var charset : charsetList) {
+            for (final var charset : charsetList) {
                 list.add(forSetting(argument, charset));
             }
 
         }
 
-        for (var error : errorList) {
+        for (final var error : errorList) {
             list.add(forSetting(error));
 
-            for (var charset : charsetList) {
+            for (final var charset : charsetList) {
                 list.add(forSetting(error, charset));
             }
 
         }
 
-        for (var charset : charsetList) {
+        for (final var charset : charsetList) {
             list.add(forSetting(charset));
         }
 

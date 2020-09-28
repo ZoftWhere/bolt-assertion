@@ -77,8 +77,8 @@ class BoltInputStreamTest {
         final var size = (int) string.chars().count();
         final var buffer = new char[size];
 
-        for (var from : codec) {
-            for (var to : codec) {
+        for (final var from : codec) {
+            for (final var to : codec) {
                 final var input = forString(string, from, to);
                 try (final var reader = new InputStreamReader(input, to)) {
                     final var n = reader.read(buffer, 0, size);
@@ -100,8 +100,8 @@ class BoltInputStreamTest {
 
         assertNotNull(closedFlag.get());
 
-        for (var from : codec) {
-            for (var to : codec) {
+        for (final var from : codec) {
+            for (final var to : codec) {
                 closedFlag.set(false);
                 assertFalse(closedFlag.get());
 
