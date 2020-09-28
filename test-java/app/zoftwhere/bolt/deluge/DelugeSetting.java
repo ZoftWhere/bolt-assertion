@@ -100,10 +100,6 @@ public class DelugeSetting {
         }
     }
 
-    DelugeSetting updateEncoding(Charset encoding) {
-        return new DelugeSetting(true, encoding, hasArgumentArray, argumentArray, error, hasCharSet, charset);
-    }
-
     Charset defaultEncoding() {
         return encoding;
     }

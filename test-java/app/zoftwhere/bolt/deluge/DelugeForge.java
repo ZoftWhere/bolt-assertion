@@ -140,10 +140,9 @@ class DelugeForge {
                 final var program = forProgram(runner, type, programSetting);
 
                 for (final var input : inputList) {
-                    var builder = DelugeBuilder.from(type, programSetting, input);
-                    if (withEncoding) {
-                        builder = builder.withEncoding(encoding);
-                    }
+                    final var builder = withEncoding //
+                        ? DelugeBuilder.from(encoding, type, programSetting, input) //
+                        : DelugeBuilder.from(type, programSetting, input);
                     outEnc.set(builder.outputCharset());
 
                     final var programOutput = withInput(program, input);
@@ -187,10 +186,9 @@ class DelugeForge {
                         continue;
                     }
                     globalError.set(programSetting.error());
-                    var builder = DelugeBuilder.from(type, programSetting, input);
-                    if (withEncoding) {
-                        builder = builder.withEncoding(encoding);
-                    }
+                    final var builder = withEncoding //
+                        ? DelugeBuilder.from(encoding, type, programSetting, input) //
+                        : DelugeBuilder.from(type, programSetting, input);
                     outEnc.set(builder.outputCharset());
 
                     final var programOutput = withProgram(programInput, type, programSetting);

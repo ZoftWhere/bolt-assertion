@@ -118,10 +118,6 @@ public class DelugeBuilder {
         this.input = input;
     }
 
-    DelugeBuilder withEncoding(Charset charset) {
-        return new DelugeBuilder(type, setting.updateEncoding(charset), input);
-    }
-
     DelugeProgramOutput buildExpectedOutput() {
         return DelugeMock.from(type, setting, input).buildExpectedOutput();
     }
