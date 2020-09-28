@@ -379,7 +379,8 @@ class BoltProgramOutputTest {
             try (final var output = new ByteArrayOutputStream()) {
                 try (final var writer = new OutputStreamWriter(output, charset)) {
                     writer.append(input[0]);
-                    for (int i = 1, s = input.length; i < s; i++) {
+                    final var s = input.length;
+                    for (var i = 1; i < s; i++) {
                         writer.append(System.lineSeparator());
                         writer.append(input[i]);
                     }

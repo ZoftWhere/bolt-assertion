@@ -60,7 +60,8 @@ class RunnerExceptionTest {
             .append("(");
         if (parameters.length > 0) {
             builder.append(parameters[0].getName());
-            for (int s = parameters.length, i = 1; i < s; i++) {
+            final var s = parameters.length;
+            for (var i = 1; i < s; i++) {
                 builder.append(",").append(parameters[i].getName());
             }
         }
