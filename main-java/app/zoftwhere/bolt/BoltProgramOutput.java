@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
  * </p>
  *
  * @author Osmund
- * @version 11.2.0
+ * @version 11.3.0
  * @since 6.0.0
  */
 class BoltProgramOutput implements RunnerProgramOutput {
