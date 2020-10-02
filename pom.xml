@@ -11,7 +11,7 @@
         <url>https://github.com/ZoftWhere</url>
     </organization>
     <name>zoftwhere.bolt.assertion</name>
-    <description>Bolt-on unit test assertion for program output..</description>
+    <description>Bolt-on unit test assertion for program output.</description>
     <url>https://github.com/ZoftWhere/bolt-assertion</url>
 
     <properties>
