@@ -371,8 +371,11 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
+                            <!-- Workaround for: https://issues.apache.org/jira/browse/MJAVADOC-623 -->
                             <release>${maven.compiler.main-jdk}</release>
+                            <!-- -->
                             <failOnWarnings>true</failOnWarnings>
+                            <isOffline>true</isOffline>
                             <!-- Workaround for https://issues.apache.org/jira/browse/MJAVADOC-614 -->
                             <sourceFileExcludes>
                                 <exclude>module-info.java</exclude>
@@ -383,22 +386,32 @@
                     <execution>
                         <id>main-javadoc-jdk8</id>
                         <phase>none</phase>
+                        <goals>
+                            <goal>javadoc</goal>
+                            <goal>jar</goal>
+                        </goals>
                         <configuration>
                             <failOnWarnings>true</failOnWarnings>
+                            <isOffline>true</isOffline>
+                            <!-- Workaround for https://issues.apache.org/jira/browse/MJAVADOC-614 -->
                             <sourceFileExcludes>
                                 <exclude>module-info.java</exclude>
                             </sourceFileExcludes>
+                            <!-- -->
                         </configuration>
                     </execution>
                     <execution>
                         <id>main-javadoc-check</id>
                         <phase>none</phase>
+                        <goals>
+                            <goal>javadoc</goal>
+                        </goals>
                         <configuration>
+                            <!-- Workaround for: https://issues.apache.org/jira/browse/MJAVADOC-623 -->
                             <release>${maven.compiler.main-jdk}</release>
+                            <!-- -->
                             <doclint>all</doclint>
                             <show>private</show>
-                            <quiet>true</quiet>
-                            <verbose>false</verbose>
                             <failOnWarnings>true</failOnWarnings>
                             <!-- Workaround for https://issues.apache.org/jira/browse/MJAVADOC-614 -->
                             <sourceFileExcludes>
@@ -411,17 +424,20 @@
                         <id>test-javadoc</id>
                         <phase>none</phase>
                         <goals>
+                            <goal>test-javadoc</goal>
                             <goal>test-jar</goal>
                         </goals>
                         <configuration>
                             <!-- Workaround for: https://issues.apache.org/jira/browse/MJAVADOC-623 -->
                             <release>${maven.compiler.test-jdk}</release>
+                            <!-- -->
+                            <failOnWarnings>false</failOnWarnings>
+                            <isOffline>true</isOffline>
                             <!-- Workaround for https://issues.apache.org/jira/browse/MJAVADOC-614 -->
                             <sourceFileExcludes>
                                 <exclude>module-info.java</exclude>
                             </sourceFileExcludes>
                             <!-- -->
-                            <failOnWarnings>false</failOnWarnings>
                         </configuration>
                     </execution>
                 </executions>
