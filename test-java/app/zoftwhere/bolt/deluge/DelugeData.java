@@ -219,7 +219,7 @@ public class DelugeData {
      * @return data type
      * @since 11.1.0
      */
-    DelugeDataType type() {
+    public DelugeDataType type() {
         return type;
     }
 

@@ -7,7 +7,7 @@ package app.zoftwhere.bolt.deluge;
  * @author Osmund
  * @since 11.0.0
  */
-enum DelugeDataType {
+public enum DelugeDataType {
 
     /**
      * Array data type.
