@@ -49,47 +49,130 @@ public class DelugeBuilder {
         return new DelugeBuilder(type, withEncoding, input);
     }
 
+    /**
+     * Return number of tests run.
+     *
+     * @param encodingList character encoding list.
+     * @param settingList  deluge setting list.
+     * @param inputList    program input data list.
+     * @return number of tests run
+     */
     public static int runTest(List<Charset> encodingList, List<DelugeSetting> settingList, List<DelugeData> inputList) {
         return new DelugeForge(encodingList, settingList, inputList).runTest();
     }
 
+    /**
+     * Return error message for comparison.
+     *
+     * @param expected expected program output.
+     * @param actual   actual program output.
+     * @return error message for comparison, null otherwise
+     */
     @SuppressWarnings("WeakerAccess")
     public static String runComparison(DelugeProgramOutput expected, DelugeProgramOutput actual) {
         return DelugeControl.runComparison(expected, actual);
     }
 
+    /**
+     * Return instance with default settings.
+     *
+     * @return instance with default settings
+     * @since 11.0.0
+     */
     public static DelugeSetting forSetting() {
         return DelugeSetting.from();
     }
 
+    /**
+     * {@link app.zoftwhere.bolt.deluge.DelugeSetting} factory method.
+     *
+     * @param charset program data character encoding
+     * @return {@link app.zoftwhere.bolt.deluge.DelugeSetting} instance
+     * @since 11.0.0
+     */
     public static DelugeSetting forSetting(Charset charset) {
         return DelugeSetting.from(charset, false);
     }
 
+    /**
+     * {@link app.zoftwhere.bolt.deluge.DelugeSetting} factory method.
+     *
+     * @param argumentArray program argument array
+     * @return {@link app.zoftwhere.bolt.deluge.DelugeSetting} instance
+     * @since 11.4.0
+     */
     public static DelugeSetting forSetting(String[] argumentArray) {
         return DelugeSetting.from(argumentArray);
     }
 
+    /**
+     * {@link app.zoftwhere.bolt.deluge.DelugeSetting} factory method.
+     *
+     * @param argumentArray program argument array
+     * @param charset       program data character encoding
+     * @return {@link app.zoftwhere.bolt.deluge.DelugeSetting} instance
+     * @since 11.4.0
+     */
     public static DelugeSetting forSetting(String[] argumentArray, Charset charset) {
         return DelugeSetting.from(argumentArray, charset);
     }
 
+    /**
+     * {@link app.zoftwhere.bolt.deluge.DelugeSetting} factory method.
+     *
+     * @param argumentArray program argument array
+     * @param error         loading program data exception
+     * @return {@link app.zoftwhere.bolt.deluge.DelugeSetting} instance
+     * @since 11.4.0
+     */
     public static DelugeSetting forSetting(String[] argumentArray, Exception error) {
         return DelugeSetting.from(argumentArray, error);
     }
 
+    /**
+     * {@link app.zoftwhere.bolt.deluge.DelugeSetting} factory method.
+     *
+     * @param argumentArray program argument array
+     * @param error         loading program data exception
+     * @param charset       program data character encoding
+     * @return {@link app.zoftwhere.bolt.deluge.DelugeSetting} instance
+     * @since 11.4.0
+     */
     public static DelugeSetting forSetting(String[] argumentArray, Exception error, Charset charset) {
         return DelugeSetting.from(argumentArray, error, charset);
     }
 
+    /**
+     * {@link app.zoftwhere.bolt.deluge.DelugeSetting} factory method.
+     *
+     * @param error loading program data exception
+     * @return {@link app.zoftwhere.bolt.deluge.DelugeSetting} instance
+     * @since 11.4.0
+     */
     public static DelugeSetting forSetting(Exception error) {
         return DelugeSetting.from(error);
     }
 
+    /**
+     * {@link app.zoftwhere.bolt.deluge.DelugeSetting} factory method.
+     *
+     * @param error   loading program data exception
+     * @param charset program data character encoding
+     * @return {@link app.zoftwhere.bolt.deluge.DelugeSetting} instance
+     * @since 11.4.0
+     */
     public static DelugeSetting forSetting(Exception error, Charset charset) {
         return DelugeSetting.from(error, charset);
     }
 
+    /**
+     * Return a list of {@link app.zoftwhere.bolt.deluge.DelugeSetting} for configurations.
+     *
+     * @param argumentList program argument list
+     * @param errorList    program error list
+     * @param charsetList  program character encoding list
+     * @return {@link java.util.List} of {@link app.zoftwhere.bolt.deluge.DelugeSetting}
+     */
     public static List<DelugeSetting> programSetting(
         List<String[]> argumentList,
         List<Exception> errorList,
