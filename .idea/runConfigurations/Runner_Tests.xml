@@ -17,8 +17,7 @@
     <option name="TEST_OBJECT" value="pattern" />
     <option name="PARAMETERS" value="" />
     <patterns>
-      <pattern testClass="(example\..*)" />
-      <pattern testClass="(app\.zoftwhere\.bolt\..*Test)" />
+      <pattern testClass="(example\..*)|(app\.zoftwhere\.bolt\..*Test)" />
     </patterns>
     <method v="2">
       <option name="Make" enabled="true" />
