@@ -236,8 +236,8 @@
                                 --add-opens&#32;zoftwhere.bolt.assertion/example=ALL-UNNAMED
                             </argLine>
                             <forkCount>1</forkCount>
-                            <useSystemClassLoader>false</useSystemClassLoader>
                             <reuseForks>true</reuseForks>
+                            <useSystemClassLoader>false</useSystemClassLoader>
                             <printSummary>${surefire.printSummary}</printSummary>
                             <includes>
                                 <!-- Include default classes -->
