@@ -239,7 +239,8 @@ class DelugeForge {
                 .argument(setting.argumentArray());
         }
         else {
-            throw new DelugeException("deluge.program.type.switch.default: " + type);
+            final var cause = new Exception("type: " + type);
+            throw new DelugeException("deluge.program.type.switch.default", cause);
         }
     }
 
@@ -264,7 +265,8 @@ class DelugeForge {
             return program.loadInput(input.resource(), input.withClass(), input.charset());
         }
         else {
-            throw new DelugeException("deluge.data.type.switch.default: " + type);
+            final var cause = new Exception("type: " + type);
+            throw new DelugeException("deluge.program.type.switch.default", cause);
         }
     }
 
@@ -289,7 +291,8 @@ class DelugeForge {
             return runner.loadInput(input.resource(), input.withClass(), input.charset());
         }
         else {
-            throw new DelugeException("deluge.data.type.switch.default: " + type);
+            final var cause = new Exception("type: " + type);
+            throw new DelugeException("deluge.program.type.switch.default", cause);
         }
     }
 
@@ -329,7 +332,8 @@ class DelugeForge {
                 .runConsole(runConsoleArgued);
         }
         else {
-            throw new DelugeException("deluge.program.type.switch.default: " + type);
+            final var cause = new Exception("type: " + type);
+            throw new DelugeException("deluge.program.type.switch.default", cause);
         }
     }
 
