@@ -265,8 +265,8 @@ class BoltProgramOutputTest {
             }
         };
 
-        for (var name : names) {
-            for (var withClass : withClasses) {
+        for (final var name : names) {
+            for (final var withClass : withClasses) {
                 final var asserter = output.loadExpectation(name, withClass);
                 final var errorMessage = name == null ? "bolt.runner.load.expectation.resource.name.null"
                     : withClass == null ? "bolt.runner.load.expectation.resource.class.null"
@@ -277,9 +277,9 @@ class BoltProgramOutputTest {
             }
         }
 
-        for (var name : names) {
-            for (var withClass : withClasses) {
-                for (var charset : charsets) {
+        for (final var name : names) {
+            for (final var withClass : withClasses) {
+                for (final var charset : charsets) {
                     final var asserter = output.loadExpectation(name, withClass, charset);
                     final var errorMessage = charset == null ? "bolt.runner.load.expectation.charset.null"
                         : name == null ? "bolt.runner.load.expectation.resource.name.null"
@@ -317,16 +317,16 @@ class BoltProgramOutputTest {
             });
         };
 
-        for (var name : names) {
-            for (var withClass : withClasses) {
+        for (final var name : names) {
+            for (final var withClass : withClasses) {
                 final var asserter = programOutput.loadExpectation(name, withClass);
                 check.accept(asserter);
             }
         }
 
-        for (var name : names) {
-            for (var withClass : withClasses) {
-                for (var charset : charsets) {
+        for (final var name : names) {
+            for (final var withClass : withClasses) {
+                for (final var charset : charsets) {
                     final var asserter = programOutput.loadExpectation(name, withClass, charset);
                     check.accept(asserter);
                 }
@@ -345,7 +345,7 @@ class BoltProgramOutputTest {
             assertArrayEquals(expectation, result.expected());
         };
 
-        for (var encoding : encodingArray) {
+        for (final var encoding : encodingArray) {
             RunnerResult result;
             if (encoding == null) {
                 final var supplier = forStringArray(expectation, UTF_8);
@@ -379,7 +379,8 @@ class BoltProgramOutputTest {
             try (final var output = new ByteArrayOutputStream()) {
                 try (final var writer = new OutputStreamWriter(output, charset)) {
                     writer.append(input[0]);
-                    for (int i = 1, s = input.length; i < s; i++) {
+                    final var s = input.length;
+                    for (var i = 1; i < s; i++) {
                         writer.append(System.lineSeparator());
                         writer.append(input[i]);
                     }

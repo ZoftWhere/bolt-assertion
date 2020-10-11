@@ -59,7 +59,7 @@ class DelugeForge {
             out.print("Argument: <none>\n");
         }
         else {
-            for (var argument : arguments) {
+            for (final var argument : arguments) {
                 out.print("Argument: " + escapeString(argument) + "\n");
             }
         }
@@ -88,7 +88,7 @@ class DelugeForge {
                 out.print("Argument: <none>\n");
             }
             else {
-                for (var argument : arguments) {
+                for (final var argument : arguments) {
                     out.print("Argument: " + escapeString(argument) + "\n");
                 }
             }
@@ -117,7 +117,7 @@ class DelugeForge {
         var count = 0;
 
         count += programFirst(runner, false, DEFAULT_ENCODING);
-        for (var encoding : encodingList) {
+        for (final var encoding : encodingList) {
             count += programFirst(runner.encoding(encoding), true, encoding);
         }
 
@@ -127,11 +127,11 @@ class DelugeForge {
     private int programFirst(RunnerInterface runner, boolean withEncoding, Charset encoding) {
         var count = 0;
         final var typeArray = DelugeProgramType.values();
-        for (var type : typeArray) {
+        for (final var type : typeArray) {
             if (!type.isProgramFirst()) {
                 continue;
             }
-            for (var programSetting : settingList) {
+            for (final var programSetting : settingList) {
                 if (type.isArgued() != programSetting.hasArgumentArray()) {
                     continue;
                 }
@@ -139,11 +139,10 @@ class DelugeForge {
 
                 final var program = forProgram(runner, type, programSetting);
 
-                for (var input : inputList) {
-                    var builder = DelugeBuilder.from(type, programSetting, input);
-                    if (withEncoding) {
-                        builder = builder.withEncoding(encoding);
-                    }
+                for (final var input : inputList) {
+                    final var builder = withEncoding //
+                        ? DelugeBuilder.from(encoding, type, programSetting, input) //
+                        : DelugeBuilder.from(type, programSetting, input);
                     outEnc.set(builder.outputCharset());
 
                     final var programOutput = withInput(program, input);
@@ -164,7 +163,7 @@ class DelugeForge {
         var count = 0;
 
         count += inputFirst(runner, false, DEFAULT_ENCODING);
-        for (var encoding : encodingList) {
+        for (final var encoding : encodingList) {
             count += inputFirst(runner.encoding(encoding), true, encoding);
         }
 
@@ -174,23 +173,22 @@ class DelugeForge {
     private int inputFirst(RunnerInterface runner, boolean withEncoding, Charset encoding) {
         var count = 0;
         final var typeArray = DelugeProgramType.values();
-        for (var type : typeArray) {
+        for (final var type : typeArray) {
             if (!type.isInputFirst()) {
                 continue;
             }
 
-            for (var input : inputList) {
+            for (final var input : inputList) {
                 final var programInput = forInput(runner, input);
 
-                for (var programSetting : settingList) {
+                for (final var programSetting : settingList) {
                     if (type.isArgued() != programSetting.hasArgumentArray()) {
                         continue;
                     }
                     globalError.set(programSetting.error());
-                    var builder = DelugeBuilder.from(type, programSetting, input);
-                    if (withEncoding) {
-                        builder = builder.withEncoding(encoding);
-                    }
+                    final var builder = withEncoding //
+                        ? DelugeBuilder.from(encoding, type, programSetting, input) //
+                        : DelugeBuilder.from(type, programSetting, input);
                     outEnc.set(builder.outputCharset());
 
                     final var programOutput = withProgram(programInput, type, programSetting);
@@ -241,7 +239,8 @@ class DelugeForge {
                 .argument(setting.argumentArray());
         }
         else {
-            throw new DelugeException("deluge.program.type.switch.default: " + type);
+            final var cause = new Exception("type: " + type);
+            throw new DelugeException("deluge.program.type.switch.default", cause);
         }
     }
 
@@ -266,7 +265,8 @@ class DelugeForge {
             return program.loadInput(input.resource(), input.withClass(), input.charset());
         }
         else {
-            throw new DelugeException("deluge.data.type.switch.default: " + type);
+            final var cause = new Exception("type: " + type);
+            throw new DelugeException("deluge.program.type.switch.default", cause);
         }
     }
 
@@ -291,7 +291,8 @@ class DelugeForge {
             return runner.loadInput(input.resource(), input.withClass(), input.charset());
         }
         else {
-            throw new DelugeException("deluge.data.type.switch.default: " + type);
+            final var cause = new Exception("type: " + type);
+            throw new DelugeException("deluge.program.type.switch.default", cause);
         }
     }
 
@@ -331,7 +332,8 @@ class DelugeForge {
                 .runConsole(runConsoleArgued);
         }
         else {
-            throw new DelugeException("deluge.program.type.switch.default: " + type);
+            final var cause = new Exception("type: " + type);
+            throw new DelugeException("deluge.program.type.switch.default", cause);
         }
     }
 

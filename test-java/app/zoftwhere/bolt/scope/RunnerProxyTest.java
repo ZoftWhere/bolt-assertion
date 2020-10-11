@@ -29,6 +29,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+/**
+ * <p>Runner Proxy Test.
+ * </p>
+ *
+ * @author Osmund
+ * @since 11.1.0
+ */
 class RunnerProxyTest {
 
     private final RunnerInterface proxy = new RunnerProxy();

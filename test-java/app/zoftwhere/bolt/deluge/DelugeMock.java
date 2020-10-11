@@ -141,7 +141,7 @@ class DelugeMock {
             out.print("Argument: <none>\n");
         }
         else {
-            for (var argument : setting.argumentArray()) {
+            for (final var argument : setting.argumentArray()) {
                 out.print("Argument: " + escapeString(argument) + "\n");
             }
         }

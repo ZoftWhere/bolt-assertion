@@ -1,17 +1,29 @@
-package app.zoftwhere.bolt;
+package app.zoftwhere.bolt.deluge;
 
 import java.lang.reflect.Modifier;
 
+import app.zoftwhere.bolt.RunnerException;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
+import static app.zoftwhere.bolt.BoltTestHelper.assertClass;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class RunnerExceptionTest {
+/**
+ * <p>Deluge Exception Test.
+ * </p>
+ * <p>This is a package-private class for testing the {@link app.zoftwhere.bolt.deluge.DelugeException} class.
+ * </p>
+ *
+ * @author Osmund
+ * @since 11.4.0
+ */
+class DelugeExceptionTest {
 
     @Test
     void testNonFinal() {
-        RuntimeException exception = new RunnerException("open", null) {
+        DelugeException exception = new DelugeException("open", null) {
             @Override
             public String toString() {
                 return "ExtensionException.class";
@@ -21,9 +33,24 @@ class RunnerExceptionTest {
             throw exception;
         }
         catch (Exception e) {
-            final var className = RunnerExceptionTest.class.getName() + "$1";
+            final var className = DelugeExceptionTest.class.getName() + "$1";
             assertEquals(className, e.getClass().getName());
         }
+    }
+
+    @Test
+    void testMessageConstructor() {
+        final var exception = new DelugeException("test");
+        assertNotNull(exception);
+    }
+
+    @Test
+    void testMessageCauseConstructor() {
+        final var cause = new NullPointerException("null");
+        final var exception = new DelugeException("test.cause", cause);
+        assertNotNull(exception);
+        assertClass(DelugeException.class, exception);
+        assertClass(NullPointerException.class, exception.getCause());
     }
 
     @Test
@@ -34,7 +61,7 @@ class RunnerExceptionTest {
 
     private void assertPublicConstructor(Class<?>[] parameters) {
         try {
-            final var constructor = RunnerException.class.getConstructor(parameters);
+            final var constructor = DelugeException.class.getConstructor(parameters);
             final var accessMask = Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED;
             final var flag = constructor.getModifiers() & accessMask;
 
@@ -46,7 +73,7 @@ class RunnerExceptionTest {
         }
 
         final var expected = publicConstructorString(parameters);
-        throw new AssertionFailedError("bolt.runner.constructor.check", expected, "<none>");
+        throw new AssertionFailedError("bolt.deluge.exception.constructor.check", expected, "<none>");
     }
 
     private Class<?>[] array(Class<?>... array) {

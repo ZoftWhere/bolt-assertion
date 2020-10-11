@@ -324,8 +324,8 @@ class BoltResultTest {
     @Test
     void testForSuccessState() {
         final var inputArray = new String[][] {null, nullArray, emptyArray, blankArray};
-        for (var outputStringArray : inputArray) {
-            for (var expectedStringArray : inputArray) {
+        for (final var outputStringArray : inputArray) {
+            for (final var expectedStringArray : inputArray) {
                 try {
                     final var fire = new BoltResult(outputStringArray, expectedStringArray, instant);
 
@@ -366,10 +366,10 @@ class BoltResultTest {
         final var messageArray = new String[] {null, "", "message"};
         final var indexArray = new int[] {-3, -2, -1, 0, 1, 2};
 
-        for (var pOutput : inputArray) {
-            for (var pExpected : inputArray) {
-                for (var pIndex : indexArray) {
-                    for (var pMessage : messageArray) {
+        for (final var pOutput : inputArray) {
+            for (final var pExpected : inputArray) {
+                for (final var pIndex : indexArray) {
+                    for (final var pMessage : messageArray) {
                         try {
                             final var result = new BoltResult(pOutput, pExpected, instant, pIndex, pMessage);
 
@@ -410,9 +410,9 @@ class BoltResultTest {
     void testForErrorState() {
         final var inputArray = new String[][] {null, nullArray, emptyArray, blankArray};
         final var exceptionArray = new Exception[] {null, new Exception("")};
-        for (var pOutput : inputArray) {
-            for (var pExpected : inputArray) {
-                for (var pException : exceptionArray) {
+        for (final var pOutput : inputArray) {
+            for (final var pExpected : inputArray) {
+                for (final var pException : exceptionArray) {
                     try {
                         final var result = new BoltResult(pOutput, pExpected, instant, pException);
                         if (pOutput == null || pExpected == null || pException == null) {

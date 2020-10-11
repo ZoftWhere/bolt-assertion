@@ -43,7 +43,8 @@ class DelugeControl {
                 return "deluge.program.check.length.mismatch";
             }
 
-            for (int s = expected.output().length, i = 0; i < s; i++) {
+            final var s = expected.output().length;
+            for (var i = 0; i < s; i++) {
                 if (!Objects.equals(expected.output()[i], actual.output()[i])) {
                     return String.format("deluge.program.check.comparison.failed[%d]", i);
                 }

@@ -9,7 +9,7 @@ import java.util.Objects;
  * </p>
  *
  * @author Osmund
- * @version 11.2.0
+ * @version 11.4.0
  * @since 11.0.0
  */
 abstract class BoltUtility {
@@ -22,7 +22,7 @@ abstract class BoltUtility {
      * @since 11.0.0
      */
     static boolean arrayHasNull(String[] array) {
-        for (String item : Objects.requireNonNull(array, "array")) {
+        for (final String item : Objects.requireNonNull(array, "array")) {
             if (item == null) {
                 return true;
             }

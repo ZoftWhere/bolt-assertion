@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
  * </p>
  *
  * @author Osmund
- * @version 11.2.0
+ * @version 11.4.0
  * @since 1.0.0
  */
 class BasicExample {
@@ -70,7 +70,7 @@ class BasicExample {
 
     private static void main(String[] argumentArray, Scanner scanner, PrintStream out) {
         out.print("Program arguments:");
-        for (String line : argumentArray) {
+        for (final String line : argumentArray) {
             out.println();
             out.print(line);
         }

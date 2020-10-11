@@ -26,7 +26,7 @@ public class BoltTestHelper {
         if (array == null) {
             return true;
         }
-        for (var item : array) {
+        for (final var item : array) {
             if (item == null) {
                 return true;
             }

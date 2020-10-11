@@ -5,13 +5,13 @@
 
     <groupId>app.zoftwhere.bolt</groupId>
     <artifactId>bolt-assertion</artifactId>
-    <version>11.3.0</version>
+    <version>11.4.0</version>
     <organization>
         <name>ZoftWhere</name>
         <url>https://github.com/ZoftWhere</url>
     </organization>
     <name>zoftwhere.bolt.assertion</name>
-    <description>Bolt-on unit test assertion for program output..</description>
+    <description>Bolt-on unit test assertion for program output.</description>
     <url>https://github.com/ZoftWhere/bolt-assertion</url>
 
     <properties>
@@ -38,13 +38,14 @@
         <maven-project-info-reports-plugin.version>3.1.1</maven-project-info-reports-plugin.version>
         <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
         <maven-site-plugin.version>3.9.1</maven-site-plugin.version>
-        <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <maven-toolchains-plugin.version>3.0.0</maven-toolchains-plugin.version>
 
         <!-- > -->
         <surefire.printSummary>false</surefire.printSummary>
         <org.junit.5.version>5.6.2</org.junit.5.version>
+        <moditect-maven-plugin.version>1.0.0.Beta2</moditect-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -215,18 +216,6 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.9.1</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>3.1.1</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
                 <executions>
@@ -247,8 +236,8 @@
                                 --add-opens&#32;zoftwhere.bolt.assertion/example=ALL-UNNAMED
                             </argLine>
                             <forkCount>1</forkCount>
-                            <useSystemClassLoader>false</useSystemClassLoader>
                             <reuseForks>true</reuseForks>
+                            <useSystemClassLoader>false</useSystemClassLoader>
                             <printSummary>${surefire.printSummary}</printSummary>
                             <includes>
                                 <!-- Include default classes -->
@@ -360,6 +349,18 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>${maven-project-info-reports-plugin.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>${maven-site-plugin.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${maven-javadoc-plugin.version}</version>
                 <executions>
@@ -370,8 +371,11 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
+                            <!-- Workaround for: https://issues.apache.org/jira/browse/MJAVADOC-623 -->
                             <release>${maven.compiler.main-jdk}</release>
+                            <!-- -->
                             <failOnWarnings>true</failOnWarnings>
+                            <isOffline>true</isOffline>
                             <!-- Workaround for https://issues.apache.org/jira/browse/MJAVADOC-614 -->
                             <sourceFileExcludes>
                                 <exclude>module-info.java</exclude>
@@ -382,22 +386,32 @@
                     <execution>
                         <id>main-javadoc-jdk8</id>
                         <phase>none</phase>
+                        <goals>
+                            <goal>javadoc</goal>
+                            <goal>jar</goal>
+                        </goals>
                         <configuration>
                             <failOnWarnings>true</failOnWarnings>
+                            <isOffline>true</isOffline>
+                            <!-- Workaround for https://issues.apache.org/jira/browse/MJAVADOC-614 -->
                             <sourceFileExcludes>
                                 <exclude>module-info.java</exclude>
                             </sourceFileExcludes>
+                            <!-- -->
                         </configuration>
                     </execution>
                     <execution>
                         <id>main-javadoc-check</id>
                         <phase>none</phase>
+                        <goals>
+                            <goal>javadoc</goal>
+                        </goals>
                         <configuration>
+                            <!-- Workaround for: https://issues.apache.org/jira/browse/MJAVADOC-623 -->
                             <release>${maven.compiler.main-jdk}</release>
+                            <!-- -->
                             <doclint>all</doclint>
                             <show>private</show>
-                            <quiet>true</quiet>
-                            <verbose>false</verbose>
                             <failOnWarnings>true</failOnWarnings>
                             <!-- Workaround for https://issues.apache.org/jira/browse/MJAVADOC-614 -->
                             <sourceFileExcludes>
@@ -410,17 +424,20 @@
                         <id>test-javadoc</id>
                         <phase>none</phase>
                         <goals>
+                            <goal>test-javadoc</goal>
                             <goal>test-jar</goal>
                         </goals>
                         <configuration>
                             <!-- Workaround for: https://issues.apache.org/jira/browse/MJAVADOC-623 -->
                             <release>${maven.compiler.test-jdk}</release>
+                            <!-- -->
+                            <failOnWarnings>false</failOnWarnings>
+                            <isOffline>true</isOffline>
                             <!-- Workaround for https://issues.apache.org/jira/browse/MJAVADOC-614 -->
                             <sourceFileExcludes>
                                 <exclude>module-info.java</exclude>
                             </sourceFileExcludes>
                             <!-- -->
-                            <failOnWarnings>false</failOnWarnings>
                         </configuration>
                     </execution>
                 </executions>
@@ -471,6 +488,23 @@
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <archive>
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                        <manifest>
+                            <addClasspath>false</addClasspath>
+                        </manifest>
+                        <manifestEntries>
+                            <Build-DateTime>${maven.build.timestamp}</Build-DateTime>
+                            <Implementation-Title>${project.artifactId}</Implementation-Title>
+                            <Implementation-Vendor>${project.groupId}</Implementation-Vendor>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Specification-Title>${project.artifactId}</Specification-Title>
+                            <Specification-Vendor>${project.groupId}</Specification-Vendor>
+                            <Specification-Version>${project.version}</Specification-Version>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -507,7 +541,7 @@
             <plugin>
                 <groupId>org.moditect</groupId>
                 <artifactId>moditect-maven-plugin</artifactId>
-                <version>1.0.0.Beta2</version>
+                <version>${moditect-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>main-jpms</id>

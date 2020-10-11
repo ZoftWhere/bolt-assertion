@@ -18,10 +18,23 @@ import static java.nio.charset.StandardCharsets.UTF_16BE;
 import static java.nio.charset.StandardCharsets.UTF_16LE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * <p>Bolt Deluge Basic Test.
+ * </p>
+ *
+ * @author Osmund
+ * @since 11.0.0
+ */
 class BoltDelugeBasicTest {
 
+    /**
+     * <p>Java main method for quick IDE execution.</p>
+     *
+     * @param arguments input arguments
+     * @since 11.0.0
+     */
     @SuppressWarnings("WeakerAccess")
-    public static void main(String[] args) {
+    public static void main(String[] arguments) {
         final var test = new BoltDelugeBasicTest();
         final var rx = 2 + 2 * test.encodingArray.length;
         final var ax = test.argumentArray.length;
