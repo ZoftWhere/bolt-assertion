@@ -24,6 +24,7 @@ class RunnerProxy extends AbstractRunner {
 
     /**
      * Constructor for RunnerProxy (package-private).
+     *
      * @since 7.1.0
      */
     RunnerProxy() {

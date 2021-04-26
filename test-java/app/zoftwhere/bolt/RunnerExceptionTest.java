@@ -1,10 +1,9 @@
 package app.zoftwhere.bolt;
 
-import java.lang.reflect.Modifier;
-
 import org.junit.jupiter.api.Test;
-import org.opentest4j.AssertionFailedError;
 
+import static app.zoftwhere.bolt.BoltTestHelper.arrayOfClass;
+import static app.zoftwhere.bolt.BoltTestHelper.assertPublicConstructor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RunnerExceptionTest {
@@ -28,45 +27,8 @@ class RunnerExceptionTest {
 
     @Test
     void testPublicConstructors() {
-        assertPublicConstructor(array(String.class));
-        assertPublicConstructor(array(String.class, Throwable.class));
-    }
-
-    private void assertPublicConstructor(Class<?>[] parameters) {
-        try {
-            final var constructor = RunnerException.class.getConstructor(parameters);
-            final var accessMask = Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED;
-            final var flag = constructor.getModifiers() & accessMask;
-
-            if (flag == Modifier.PUBLIC) {
-                return;
-            }
-        }
-        catch (NoSuchMethodException ignore) {
-        }
-
-        final var expected = publicConstructorString(parameters);
-        throw new AssertionFailedError("bolt.runner.constructor.check", expected, "<none>");
-    }
-
-    private Class<?>[] array(Class<?>... array) {
-        return array;
-    }
-
-    private String publicConstructorString(Class<?>[] parameters) {
-        final var builder = new StringBuilder("public")
-            .append(" ")
-            .append(RunnerException.class.getName())
-            .append("(");
-        if (parameters.length > 0) {
-            builder.append(parameters[0].getName());
-            final var s = parameters.length;
-            for (var i = 1; i < s; i++) {
-                builder.append(",").append(parameters[i].getName());
-            }
-        }
-        builder.append(")");
-        return builder.toString();
+        assertPublicConstructor(RunnerException.class, arrayOfClass(String.class));
+        assertPublicConstructor(RunnerException.class, arrayOfClass(String.class, Throwable.class));
     }
 
 }

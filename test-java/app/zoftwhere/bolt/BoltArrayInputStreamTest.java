@@ -6,7 +6,7 @@ import java.nio.charset.Charset;
 
 import org.junit.jupiter.api.Test;
 
-import static app.zoftwhere.bolt.BoltTestHelper.NEW_LINE;
+import static app.zoftwhere.bolt.BoltProvide.NEW_LINE;
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_16;
