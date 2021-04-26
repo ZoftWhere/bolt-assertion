@@ -9,6 +9,15 @@ import java.util.Scanner;
 
 import org.opentest4j.AssertionFailedError;
 
+/**
+ * <p>Bolt Test Helper class.
+ * </p>
+ * <p>This is a test-only class for providing common functionality.
+ * </p>
+ *
+ * @author Osmund
+ * @since 6.0.0
+ */
 public class BoltTestHelper {
 
     /** New line definition for parsing that allows testing to be system agnostic. */
