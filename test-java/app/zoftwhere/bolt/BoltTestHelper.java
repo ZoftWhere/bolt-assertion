@@ -1,6 +1,7 @@
 package app.zoftwhere.bolt;
 
 import java.io.InputStream;
+import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Objects;
@@ -15,6 +16,10 @@ public class BoltTestHelper {
     public static final String NEW_LINE = BoltProvide.NEW_LINE;
 
     public static String[] array(String... array) {
+        return array;
+    }
+
+    public static Class<?>[] arrayOfClass(Class<?>... array) {
         return array;
     }
 
@@ -115,6 +120,57 @@ public class BoltTestHelper {
                 builder.appendCodePoint(i);
             }
         });
+        return builder.toString();
+    }
+
+    /**
+     * Assert public constructor.
+     *
+     * @param clazz      Class to inspect.
+     * @param parameters Array of constructor parameters.
+     * @param <T>        Class type of class.
+     * @since 11.5.0
+     */
+    public static <T> void assertPublicConstructor(Class<T> clazz, Class<?>[] parameters) {
+        try {
+            final var constructor = clazz.getConstructor(parameters);
+            final var accessMask = Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED;
+            final var flag = constructor.getModifiers() & accessMask;
+
+            if (flag == Modifier.PUBLIC) {
+                return;
+            }
+        }
+        catch (NoSuchMethodException ignore) {
+        }
+
+        final var expected = publicConstructorString(clazz, parameters);
+        final var message = "bolt.test.helper.assert.public.constructor.failed";
+        throw new AssertionFailedError(message, expected, "<none>");
+    }
+
+    /**
+     * Private helper method for building public constructor string.
+     *
+     * @param clazz      Class to inspect.
+     * @param parameters Array of constructor parameters.
+     * @param <T>        Class type of class.
+     * @return Public constructor string.
+     * @since 11.5.0
+     */
+    private static <T> String publicConstructorString(Class<T> clazz, Class<?>[] parameters) {
+        final var builder = new StringBuilder("public")
+            .append(" ")
+            .append(clazz.getName())
+            .append("(");
+        if (parameters.length > 0) {
+            builder.append(parameters[0].getName());
+            final var s = parameters.length;
+            for (var i = 1; i < s; i++) {
+                builder.append(",").append(parameters[i].getName());
+            }
+        }
+        builder.append(")");
         return builder.toString();
     }
 
