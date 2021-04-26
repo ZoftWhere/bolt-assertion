@@ -13,7 +13,7 @@ import app.zoftwhere.bolt.api.RunnerInterface.RunnerResultConsumer;
 import app.zoftwhere.bolt.api.RunnerResult;
 import org.junit.jupiter.api.Test;
 
-import static app.zoftwhere.bolt.BoltTestHelper.NEW_LINE;
+import static app.zoftwhere.bolt.BoltProvide.NEW_LINE;
 import static app.zoftwhere.bolt.BoltTestHelper.assertClass;
 import static app.zoftwhere.bolt.Runner.newRunner;
 import static java.nio.charset.StandardCharsets.US_ASCII;

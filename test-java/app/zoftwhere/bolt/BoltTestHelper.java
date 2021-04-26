@@ -20,10 +20,6 @@ import org.opentest4j.AssertionFailedError;
  */
 public class BoltTestHelper {
 
-    /** New line definition for parsing that allows testing to be system agnostic. */
-    @SuppressWarnings("WeakerAccess")
-    public static final String NEW_LINE = BoltProvide.NEW_LINE;
-
     public static String[] array(String... array) {
         return array;
     }
@@ -137,7 +133,7 @@ public class BoltTestHelper {
      *
      * @param clazz      Class to inspect.
      * @param parameters Array of constructor parameters.
-     * @param <T>        Class type of class.
+     * @param <T>        The class type.
      * @since 11.5.0
      */
     public static <T> void assertPublicConstructor(Class<T> clazz, Class<?>[] parameters) {
@@ -163,7 +159,7 @@ public class BoltTestHelper {
      *
      * @param clazz      Class to inspect.
      * @param parameters Array of constructor parameters.
-     * @param <T>        Class type of class.
+     * @param <T>        The class type.
      * @return Public constructor string.
      * @since 11.5.0
      */
