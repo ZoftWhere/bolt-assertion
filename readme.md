@@ -1,4 +1,5 @@
 # ZoftWhere Bolt Assertion
+
 ![Language](https://img.shields.io/github/languages/top/ZoftWhere/bolt-assertion)
 [![License](https://img.shields.io/github/license/ZoftWhere/bolt-assertion)](https://github.com/ZoftWhere/bolt-assertion/blob/master/license.txt)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/ZoftWhere/bolt-assertion)
@@ -9,16 +10,18 @@ Bolt-on unit test assertion for program output.
 
 ## Overview
 
-The ZoftWhere Bolt Assertion Library is a bolt-on for unit-testing.  It has an elegant Java based DSL for testing the output of a program.
-
+The ZoftWhere Bolt Assertion Library is a bolt-on for unit-testing. It has an elegant Java based DSL for testing the output of a program.
 
 ## Compiling and Installing the Library
 
-The source code can be compiled with Java language version 8.  It has been tested with Oracle JDK8, JDK11 and JDK14.  The test sources, including examples, compile with JUnit (v5.6.2), and JDK 11.
+The source code can be compiled with Java language version 8. It has been tested with Oracle JDK8, JDK11 and JDK14. The test sources,
+including examples, compile with JUnit \(v5.6.2\), and JDK 11.
 
-The project is Maven based, so executing the ```mvn install``` should install the library to the local repository (Requires at least JDK11).  It has been tested with Apache Maven v3.6.3.
+The project is Maven based, so executing the ```mvn install``` should install the library to the local repository \(Requires at least
+JDK11\). It has been tested with Apache Maven v3.6.3.
 
-The project will package the JavaDoc archive using JDK8 rules and styles.  The JavaDoc archive can be set to a later release by specifying the ```maven.compiler.main-jdk``` property.  For example, the JavaDoc will be packaged and installed for JDK11 by calling:
+The project will package the JavaDoc archive using JDK8 rules and styles. The JavaDoc archive can be set to a later release by specifying
+the ```maven.compiler.main-jdk``` property. For example, the JavaDoc will be packaged and installed for JDK11 by calling:
 
 ``` shell script
 mvn clean install -Dmaven.compiler.main-jdk=11
@@ -30,29 +33,30 @@ If the project needs to be installed against JDK8, it can be accomplished by cal
 mvn clean compiler:compile@main-compile-jdk8 jar:jar@main-jar source:jar@main-sources javadoc:jar@main-javadoc-jdk8 moditect:add-module-info@main-jpms install:install-file@main-install
 ```
 
-
 ## Testing the Library
 
 The library source code can/should be tested when using Maven to package to library to a Java archive.
 
 To check for any hidden issue, a barrage of tests can be run by issuing the following command:
+
 ``` shell script
 mvn compile test-compile surefire:test@bolt-deluge-barrage
 ```
 
-
 ## Release Notes
 
-The [ZoftWhere Bolt Assertion Release Notes](/main-github/release-notes) are available for viewing/download [here](/main-github/release-notes).
-
+The [ZoftWhere Bolt Assertion Release Notes](/main-github/release-notes) are available for
+viewing/download [here](/main-github/release-notes).
 
 ## Examples
 
-Note that the example code includes the JUnit @Test annotation.  Java programmers may omit/replace these as is needed with the unit testing-framework of their choice.
+Note that the example code includes the JUnit @Test annotation. Java programmers may omit/replace these as is needed with the unit
+testing-framework of their choice.
 
 ### Hello World Lambda
 
-The bolt assertion provides a Runner instance.  Here is a Hello World example:
+The bolt assertion provides a Runner instance. Here is a Hello World example:
+
 ``` kotlin
 public class HelloWorldExample {
 
@@ -77,7 +81,9 @@ public class HelloWorldExample {
 
 ### Structured Command Line Programs
 
-Java programs that need to read from an input stream, and write to a file (based on environment variables), can be written for testing.  The following is an example of this:
+Java programs that need to read from an input stream, and write to a file \(based on environment variables\), can be written for testing.
+The following is an example of this:
+
 ``` kotlin
 public class CommandLineExample {
 
@@ -97,6 +103,7 @@ public class CommandLineExample {
 
 }
 ```
+
 ``` kotlin
 class CommandLineExampleTest {
 
@@ -116,7 +123,8 @@ class CommandLineExampleTest {
 
 ### Standard Java Output Redirection
 
-Although it is not recommended, with the correct unit testing framework, an existing program can be run, as is, with the standard console input/output/error stream redirected.  Calling code should include resetting the input/output/error streams afterward.
+Although it is not recommended, with the correct unit testing framework, an existing program can be run, as is, with the standard console
+input/output/error stream redirected. Calling code should include resetting the input/output/error streams afterward.
 
 ``` kotlin
 public class ConsoleOutputExample {
@@ -130,6 +138,7 @@ public class ConsoleOutputExample {
 
 }
 ```
+
 ``` kotlin
 class ConsoleOutputExampleTest {
 
@@ -179,8 +188,8 @@ class ConsoleOutputExampleTest {
 
 ### More Examples
 
-The source code for the [ZoftWhere Bolt Assertion Examples](/test-java/example), and more, are available for download [here](/test-java/example).
-
+The source code for the [ZoftWhere Bolt Assertion Examples](/test-java/example), and more, are available for
+download [here](/test-java/example).
 
 ## License
 
