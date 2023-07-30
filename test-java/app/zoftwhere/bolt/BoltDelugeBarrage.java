@@ -29,28 +29,6 @@ import java.util.List;
  */
 class BoltDelugeBarrage {
 
-  private final Charset[] encodingArray = {null, US_ASCII, UTF_8, UTF_16LE, UTF_16BE, UTF_16};
-
-  private final Charset[] charsetArray = {null, US_ASCII, UTF_8, UTF_16LE, UTF_16BE, UTF_16};
-
-  private final String[][] argumentArray = {
-    null,
-    new String[] {null},
-    new String[] {"\ufeff"},
-    new String[] {"HelloWorld"},
-    new String[] {"≤", null},
-    new String[] {null, "≥"},
-  };
-
-  private final Exception[] errorArray = {
-    new Exception("deluge.exception.test"),
-    new Exception("deluge.exception.test", new Exception("deluge.exception.test.cause")),
-    new RuntimeException("deluge.exception.test", null),
-    new RuntimeException("deluge.exception.test", new Exception("deluge.exception.test.cause")),
-  };
-
-  private final List<DelugeData> dataList = expansiveData();
-
   /**
    * Java main method for quick IDE execution.
    *
@@ -76,6 +54,28 @@ class BoltDelugeBarrage {
     System.out.println("Tests run      : " + count);
     System.out.println("Duration       : " + duration);
   }
+
+  private final Charset[] encodingArray = {null, US_ASCII, UTF_8, UTF_16LE, UTF_16BE, UTF_16};
+
+  private final Charset[] charsetArray = {null, US_ASCII, UTF_8, UTF_16LE, UTF_16BE, UTF_16};
+
+  private final String[][] argumentArray = {
+    null,
+    new String[] {null},
+    new String[] {"\ufeff"},
+    new String[] {"HelloWorld"},
+    new String[] {"≤", null},
+    new String[] {null, "≥"},
+  };
+
+  private final Exception[] errorArray = {
+    new Exception("deluge.exception.test"),
+    new Exception("deluge.exception.test", new Exception("deluge.exception.test.cause")),
+    new RuntimeException("deluge.exception.test", null),
+    new RuntimeException("deluge.exception.test", new Exception("deluge.exception.test.cause")),
+  };
+
+  private final List<DelugeData> dataList = expansiveData();
 
   private int run() {
     final var encodingList = Arrays.asList(encodingArray);

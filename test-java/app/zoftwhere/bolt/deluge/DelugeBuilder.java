@@ -13,6 +13,41 @@ import java.util.List;
  */
 public class DelugeBuilder {
 
+  private final DelugeProgramType type;
+
+  private final DelugeSetting setting;
+
+  private final DelugeData input;
+
+  /**
+   * Constructor for {@link app.zoftwhere.bolt.deluge.DelugeBuilder} (private).
+   *
+   * @param type program type
+   * @param setting deluge setting
+   * @param input program input data
+   */
+  private DelugeBuilder(DelugeProgramType type, DelugeSetting setting, DelugeData input) {
+    this.type = type;
+    this.setting = setting;
+    this.input = input;
+  }
+
+  DelugeProgramOutput buildExpectedOutput() {
+    return DelugeMock.from(type, setting, input).buildExpectedOutput();
+  }
+
+  public Charset outputCharset() {
+    return setting.hasCharSet() ? setting.charset() : defaultEncoding();
+  }
+
+  public Charset inputCharset() {
+    return input.hasCharset() ? input.charset() : defaultEncoding();
+  }
+
+  public Charset defaultEncoding() {
+    return setting.defaultEncoding() != null ? setting.defaultEncoding() : Runner.DEFAULT_ENCODING;
+  }
+
   /**
    * DelugeBuilder with program type, program setting, and program input.
    *
@@ -231,40 +266,5 @@ public class DelugeBuilder {
 
   public static DelugeData forResource(String name, Class<?> withClass, Charset charset) {
     return DelugeData.forResource(name, withClass, charset);
-  }
-
-  private final DelugeProgramType type;
-
-  private final DelugeSetting setting;
-
-  private final DelugeData input;
-
-  /**
-   * Constructor for {@link app.zoftwhere.bolt.deluge.DelugeBuilder} (private).
-   *
-   * @param type program type
-   * @param setting deluge setting
-   * @param input program input data
-   */
-  private DelugeBuilder(DelugeProgramType type, DelugeSetting setting, DelugeData input) {
-    this.type = type;
-    this.setting = setting;
-    this.input = input;
-  }
-
-  DelugeProgramOutput buildExpectedOutput() {
-    return DelugeMock.from(type, setting, input).buildExpectedOutput();
-  }
-
-  public Charset outputCharset() {
-    return setting.hasCharSet() ? setting.charset() : defaultEncoding();
-  }
-
-  public Charset inputCharset() {
-    return input.hasCharset() ? input.charset() : defaultEncoding();
-  }
-
-  public Charset defaultEncoding() {
-    return setting.defaultEncoding() != null ? setting.defaultEncoding() : Runner.DEFAULT_ENCODING;
   }
 }

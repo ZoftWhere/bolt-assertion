@@ -21,91 +21,6 @@ import org.junit.jupiter.api.Assertions;
  */
 public class DelugeData {
 
-  /**
-   * DelugeData factory method.
-   *
-   * @param data program input data
-   * @return {@link app.zoftwhere.bolt.deluge.DelugeData} instance
-   * @since 11.0.0
-   */
-  static DelugeData forStringArray(String[] data) {
-    return new DelugeData(data);
-  }
-
-  /**
-   * DelugeData factory method.
-   *
-   * @param data program input data
-   * @param charset input data character encoding
-   * @return {@link app.zoftwhere.bolt.deluge.DelugeData} instance
-   * @since 11.0.0
-   */
-  static DelugeData forStringArray(String[] data, Charset charset) {
-    return new DelugeData(data, charset);
-  }
-
-  /**
-   * DelugeData factory method.
-   *
-   * @param data program input data
-   * @param charset input data character encoding
-   * @param withCharset flag to indicate runner default encoding
-   * @return {@link app.zoftwhere.bolt.deluge.DelugeData} instance
-   * @since 11.0.0
-   */
-  static DelugeData forInputStream(String[] data, Charset charset, boolean withCharset) {
-    final var type = withCharset ? STREAM_ENCODED : STREAM;
-    return new DelugeData(type, data, charset);
-  }
-
-  /**
-   * DelugeData factory method.
-   *
-   * @param exception program exception
-   * @return {@link app.zoftwhere.bolt.deluge.DelugeData} instance
-   * @since 11.0.0
-   */
-  static DelugeData forInputStream(Exception exception) {
-    return new DelugeData(STREAM, exception, null);
-  }
-
-  /**
-   * DelugeData factory method.
-   *
-   * @param exception program exception
-   * @param charset runner default encoding
-   * @return {@link app.zoftwhere.bolt.deluge.DelugeData} instance
-   * @since 11.0.0
-   */
-  static DelugeData forInputStream(Exception exception, Charset charset) {
-    return new DelugeData(STREAM_ENCODED, exception, charset);
-  }
-
-  /**
-   * DelugeData factory method.
-   *
-   * @param resource program input data resource
-   * @param withClass class to load resource with
-   * @return {@link app.zoftwhere.bolt.deluge.DelugeData} instance
-   * @since 11.0.0
-   */
-  static DelugeData forResource(String resource, Class<?> withClass) {
-    return new DelugeData(RESOURCE, resource, withClass, null);
-  }
-
-  /**
-   * DelugeData factory method.
-   *
-   * @param resource program input data resource
-   * @param withClass class to load resource with
-   * @param charset resource character encoding
-   * @return {@link app.zoftwhere.bolt.deluge.DelugeData} instance
-   * @since 11.0.0
-   */
-  static DelugeData forResource(String resource, Class<?> withClass, Charset charset) {
-    return new DelugeData(RESOURCE_ENCODED, resource, withClass, charset);
-  }
-
   private final DelugeDataType type;
 
   private final String[] array;
@@ -216,6 +131,91 @@ public class DelugeData {
     this.withClass = null;
     this.charset = charset;
     this.error = error;
+  }
+
+  /**
+   * DelugeData factory method.
+   *
+   * @param data program input data
+   * @return {@link app.zoftwhere.bolt.deluge.DelugeData} instance
+   * @since 11.0.0
+   */
+  static DelugeData forStringArray(String[] data) {
+    return new DelugeData(data);
+  }
+
+  /**
+   * DelugeData factory method.
+   *
+   * @param data program input data
+   * @param charset input data character encoding
+   * @return {@link app.zoftwhere.bolt.deluge.DelugeData} instance
+   * @since 11.0.0
+   */
+  static DelugeData forStringArray(String[] data, Charset charset) {
+    return new DelugeData(data, charset);
+  }
+
+  /**
+   * DelugeData factory method.
+   *
+   * @param data program input data
+   * @param charset input data character encoding
+   * @param withCharset flag to indicate runner default encoding
+   * @return {@link app.zoftwhere.bolt.deluge.DelugeData} instance
+   * @since 11.0.0
+   */
+  static DelugeData forInputStream(String[] data, Charset charset, boolean withCharset) {
+    final var type = withCharset ? STREAM_ENCODED : STREAM;
+    return new DelugeData(type, data, charset);
+  }
+
+  /**
+   * DelugeData factory method.
+   *
+   * @param exception program exception
+   * @return {@link app.zoftwhere.bolt.deluge.DelugeData} instance
+   * @since 11.0.0
+   */
+  static DelugeData forInputStream(Exception exception) {
+    return new DelugeData(STREAM, exception, null);
+  }
+
+  /**
+   * DelugeData factory method.
+   *
+   * @param exception program exception
+   * @param charset runner default encoding
+   * @return {@link app.zoftwhere.bolt.deluge.DelugeData} instance
+   * @since 11.0.0
+   */
+  static DelugeData forInputStream(Exception exception, Charset charset) {
+    return new DelugeData(STREAM_ENCODED, exception, charset);
+  }
+
+  /**
+   * DelugeData factory method.
+   *
+   * @param resource program input data resource
+   * @param withClass class to load resource with
+   * @return {@link app.zoftwhere.bolt.deluge.DelugeData} instance
+   * @since 11.0.0
+   */
+  static DelugeData forResource(String resource, Class<?> withClass) {
+    return new DelugeData(RESOURCE, resource, withClass, null);
+  }
+
+  /**
+   * DelugeData factory method.
+   *
+   * @param resource program input data resource
+   * @param withClass class to load resource with
+   * @param charset resource character encoding
+   * @return {@link app.zoftwhere.bolt.deluge.DelugeData} instance
+   * @since 11.0.0
+   */
+  static DelugeData forResource(String resource, Class<?> withClass, Charset charset) {
+    return new DelugeData(RESOURCE_ENCODED, resource, withClass, charset);
   }
 
   /**

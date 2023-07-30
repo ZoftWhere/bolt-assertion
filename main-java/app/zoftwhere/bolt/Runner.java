@@ -23,16 +23,6 @@ public class Runner extends AbstractRunner {
    */
   public static final Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
 
-  /**
-   * This is an immutable runner (so get one, and run all the tests you need).
-   *
-   * @return an immutable runner instance
-   * @since 1.0.0
-   */
-  public static Runner newRunner() {
-    return new Runner();
-  }
-
   /** Default character encoding to use for input and program when none is specified. */
   private final Charset encoding;
 
@@ -57,6 +47,16 @@ public class Runner extends AbstractRunner {
    */
   private Runner(Charset encoding) {
     this.encoding = encoding != null ? encoding : DEFAULT_ENCODING;
+  }
+
+  /**
+   * This is an immutable runner (so get one, and run all the tests you need).
+   *
+   * @return an immutable runner instance
+   * @since 1.0.0
+   */
+  public static Runner newRunner() {
+    return new Runner();
   }
 
   /**

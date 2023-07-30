@@ -14,6 +14,13 @@ import java.util.Objects;
 abstract class BoltUtility {
 
   /**
+   * Constructor for BoltUtility (private).
+   *
+   * @since 11.0.0
+   */
+  private BoltUtility() {}
+
+  /**
    * Check if array contains a null element.
    *
    * @param array array to check
@@ -28,11 +35,4 @@ abstract class BoltUtility {
     }
     return false;
   }
-
-  /**
-   * Constructor for BoltUtility (private).
-   *
-   * @since 11.0.0
-   */
-  private BoltUtility() {}
 }

@@ -25,10 +25,6 @@ import java.util.Iterator;
 
 class DelugeMock {
 
-  static DelugeMock from(DelugeProgramType type, DelugeSetting setting, DelugeData input) {
-    return new DelugeMock(type, setting, input);
-  }
-
   private final DelugeBuilder builder;
 
   private final DelugeProgramType type;
@@ -42,6 +38,10 @@ class DelugeMock {
     this.type = type;
     this.setting = setting;
     this.input = input;
+  }
+
+  static DelugeMock from(DelugeProgramType type, DelugeSetting setting, DelugeData input) {
+    return new DelugeMock(type, setting, input);
   }
 
   DelugeProgramOutput buildExpectedOutput() {

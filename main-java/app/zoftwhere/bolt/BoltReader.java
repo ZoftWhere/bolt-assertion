@@ -23,37 +23,6 @@ import java.util.function.Supplier;
  */
 class BoltReader implements Iterator<String>, AutoCloseable {
 
-  /**
-   * Static helper method for retrieving text lines as a {@link java.util.List} of type {@link
-   * java.lang.String}.
-   *
-   * @param supplier {@link app.zoftwhere.bolt.BoltReader} supplier
-   * @return text lines as a {@link java.util.List} of type {@link java.lang.String}
-   * @since 4.0.0
-   */
-  static List<String> readList(Supplier<BoltReader> supplier) {
-    try (BoltReader reader = supplier.get()) {
-      return reader.list();
-    } catch (Exception e) {
-      throw new RunnerException("bolt.runner.reader.read.list", e);
-    }
-  }
-
-  /**
-   * Static helper method for retrieving text lines as an array of type {@link java.lang.String}.
-   *
-   * @param supplier {@link app.zoftwhere.bolt.BoltReader} supplier
-   * @return text lines as an array of type {@link java.lang.String}
-   * @since 4.0.0
-   */
-  static String[] readArray(Supplier<BoltReader> supplier) {
-    try (BoltReader reader = supplier.get()) {
-      return reader.array();
-    } catch (Exception e) {
-      throw new RunnerException("bolt.runner.reader.read.array", e);
-    }
-  }
-
   @SuppressWarnings("FieldCanBeLocal")
   private final int defaultExpectedLineLength = 80;
 
@@ -197,6 +166,37 @@ class BoltReader implements Iterator<String>, AutoCloseable {
 
   private String[] array() {
     return list().toArray(new String[] {});
+  }
+
+  /**
+   * Static helper method for retrieving text lines as a {@link java.util.List} of type {@link
+   * java.lang.String}.
+   *
+   * @param supplier {@link app.zoftwhere.bolt.BoltReader} supplier
+   * @return text lines as a {@link java.util.List} of type {@link java.lang.String}
+   * @since 4.0.0
+   */
+  static List<String> readList(Supplier<BoltReader> supplier) {
+    try (BoltReader reader = supplier.get()) {
+      return reader.list();
+    } catch (Exception e) {
+      throw new RunnerException("bolt.runner.reader.read.list", e);
+    }
+  }
+
+  /**
+   * Static helper method for retrieving text lines as an array of type {@link java.lang.String}.
+   *
+   * @param supplier {@link app.zoftwhere.bolt.BoltReader} supplier
+   * @return text lines as an array of type {@link java.lang.String}
+   * @since 4.0.0
+   */
+  static String[] readArray(Supplier<BoltReader> supplier) {
+    try (BoltReader reader = supplier.get()) {
+      return reader.array();
+    } catch (Exception e) {
+      throw new RunnerException("bolt.runner.reader.read.array", e);
+    }
   }
 
   /** {@inheritDoc} */

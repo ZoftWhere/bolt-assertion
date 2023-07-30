@@ -27,131 +27,6 @@ import java.util.Optional;
  */
 class BoltResult implements RunnerResult, RunnerAsserter {
 
-  /**
-   * BoltResult factory method (package-private).
-   *
-   * <p>Creates an instance of {@code BoltResult} based on lines and error provided.
-   *
-   * @param output program (actual) output lines
-   * @param expected program expected output lines
-   * @param duration program execution duration
-   * @param comparator program output comparator
-   * @param error execution error
-   * @return {@link app.zoftwhere.bolt.BoltResult}
-   * @since 11.0.0
-   */
-  static BoltResult newBoltResult(
-      String[] output,
-      String[] expected,
-      Duration duration,
-      Comparator<String> comparator,
-      Exception error) {
-    if (error != null) {
-      return new BoltResult(output, expected, duration, error);
-    }
-
-    return performComparison(output, expected, duration, comparator);
-  }
-
-  /**
-   * BoltResult factory method (package-private).
-   *
-   * <p>Creates an instance of {@code BoltResult} based on input stream and error provided.
-   *
-   * @param output program (actual) output lines
-   * @param supplier input stream supplier
-   * @param inputCharset input stream character encoding
-   * @param duration program execution duration
-   * @param comparator program output comparator
-   * @param error execution error
-   * @return {@link app.zoftwhere.bolt.BoltResult}
-   * @since 11.0.0
-   */
-  static BoltResult newBoltResult(
-      String[] output,
-      InputStreamSupplier supplier,
-      Charset inputCharset,
-      Duration duration,
-      Comparator<String> comparator,
-      Exception error) {
-    if (error != null) {
-      return new BoltResult(output, new String[0], duration, error);
-    }
-
-    if (inputCharset == null) {
-      RunnerException nullError = new RunnerException("bolt.runner.load.expectation.charset.null");
-      return new BoltResult(output, new String[0], duration, nullError);
-    }
-
-    if (supplier == null) {
-      RunnerException nullError = new RunnerException("bolt.runner.load.expectation.supplier.null");
-      return new BoltResult(output, new String[0], duration, nullError);
-    }
-
-    try (InputStream inputStream = supplier.get()) {
-      if (inputStream == null) {
-        // throw new RunnerException("bolt.runner.load.expectation.stream.null");
-        RunnerException nullError = new RunnerException("bolt.runner.load.expectation.stream.null");
-        return new BoltResult(output, new String[0], duration, nullError);
-      }
-      String[] expected = readArray(() -> new BoltReader(inputStream, inputCharset));
-      return performComparison(output, expected, duration, comparator);
-    } catch (Exception runError) {
-      return new BoltResult(output, new String[0], duration, runError);
-    }
-  }
-
-  /**
-   * BoltResult factory method (package-private).
-   *
-   * <p>Creates an instance of {@code BoltResult} based on input resource and error provided.
-   *
-   * @param output program (actual) output lines
-   * @param resourceName input resource name
-   * @param withClass input resource class
-   * @param charset input resource character encoding
-   * @param duration program execution duration
-   * @param comparator program output comparator
-   * @param error execution error
-   * @return {@link app.zoftwhere.bolt.BoltResult}
-   * @since 11.0.0
-   */
-  static BoltResult newBoltResult(
-      String[] output,
-      String resourceName,
-      Class<?> withClass,
-      Charset charset,
-      Duration duration,
-      Comparator<String> comparator,
-      Exception error) {
-    if (resourceName == null) {
-      InputStreamSupplier supplier =
-          () -> {
-            throw new RunnerException("bolt.runner.load.expectation.resource.name.null");
-          };
-      return newBoltResult(output, supplier, charset, duration, comparator, error);
-    }
-
-    if (withClass == null) {
-      InputStreamSupplier supplier =
-          () -> {
-            throw new RunnerException("bolt.runner.load.expectation.resource.class.null");
-          };
-      return newBoltResult(output, supplier, charset, duration, comparator, error);
-    }
-
-    if (withClass.getResource(resourceName) == null) {
-      InputStreamSupplier supplier =
-          () -> {
-            throw new RunnerException("bolt.runner.load.expectation.resource.not.found");
-          };
-      return newBoltResult(output, supplier, charset, duration, comparator, error);
-    }
-
-    InputStreamSupplier supplier = () -> withClass.getResourceAsStream(resourceName);
-    return newBoltResult(output, supplier, charset, duration, comparator, error);
-  }
-
   private final String[] output;
 
   private final String[] expected;
@@ -344,6 +219,131 @@ class BoltResult implements RunnerResult, RunnerAsserter {
   @Override
   public RunnerResult result() {
     return this;
+  }
+
+  /**
+   * BoltResult factory method (package-private).
+   *
+   * <p>Creates an instance of {@code BoltResult} based on lines and error provided.
+   *
+   * @param output program (actual) output lines
+   * @param expected program expected output lines
+   * @param duration program execution duration
+   * @param comparator program output comparator
+   * @param error execution error
+   * @return {@link app.zoftwhere.bolt.BoltResult}
+   * @since 11.0.0
+   */
+  static BoltResult newBoltResult(
+      String[] output,
+      String[] expected,
+      Duration duration,
+      Comparator<String> comparator,
+      Exception error) {
+    if (error != null) {
+      return new BoltResult(output, expected, duration, error);
+    }
+
+    return performComparison(output, expected, duration, comparator);
+  }
+
+  /**
+   * BoltResult factory method (package-private).
+   *
+   * <p>Creates an instance of {@code BoltResult} based on input stream and error provided.
+   *
+   * @param output program (actual) output lines
+   * @param supplier input stream supplier
+   * @param inputCharset input stream character encoding
+   * @param duration program execution duration
+   * @param comparator program output comparator
+   * @param error execution error
+   * @return {@link app.zoftwhere.bolt.BoltResult}
+   * @since 11.0.0
+   */
+  static BoltResult newBoltResult(
+      String[] output,
+      InputStreamSupplier supplier,
+      Charset inputCharset,
+      Duration duration,
+      Comparator<String> comparator,
+      Exception error) {
+    if (error != null) {
+      return new BoltResult(output, new String[0], duration, error);
+    }
+
+    if (inputCharset == null) {
+      RunnerException nullError = new RunnerException("bolt.runner.load.expectation.charset.null");
+      return new BoltResult(output, new String[0], duration, nullError);
+    }
+
+    if (supplier == null) {
+      RunnerException nullError = new RunnerException("bolt.runner.load.expectation.supplier.null");
+      return new BoltResult(output, new String[0], duration, nullError);
+    }
+
+    try (InputStream inputStream = supplier.get()) {
+      if (inputStream == null) {
+        // throw new RunnerException("bolt.runner.load.expectation.stream.null");
+        RunnerException nullError = new RunnerException("bolt.runner.load.expectation.stream.null");
+        return new BoltResult(output, new String[0], duration, nullError);
+      }
+      String[] expected = readArray(() -> new BoltReader(inputStream, inputCharset));
+      return performComparison(output, expected, duration, comparator);
+    } catch (Exception runError) {
+      return new BoltResult(output, new String[0], duration, runError);
+    }
+  }
+
+  /**
+   * BoltResult factory method (package-private).
+   *
+   * <p>Creates an instance of {@code BoltResult} based on input resource and error provided.
+   *
+   * @param output program (actual) output lines
+   * @param resourceName input resource name
+   * @param withClass input resource class
+   * @param charset input resource character encoding
+   * @param duration program execution duration
+   * @param comparator program output comparator
+   * @param error execution error
+   * @return {@link app.zoftwhere.bolt.BoltResult}
+   * @since 11.0.0
+   */
+  static BoltResult newBoltResult(
+      String[] output,
+      String resourceName,
+      Class<?> withClass,
+      Charset charset,
+      Duration duration,
+      Comparator<String> comparator,
+      Exception error) {
+    if (resourceName == null) {
+      InputStreamSupplier supplier =
+          () -> {
+            throw new RunnerException("bolt.runner.load.expectation.resource.name.null");
+          };
+      return newBoltResult(output, supplier, charset, duration, comparator, error);
+    }
+
+    if (withClass == null) {
+      InputStreamSupplier supplier =
+          () -> {
+            throw new RunnerException("bolt.runner.load.expectation.resource.class.null");
+          };
+      return newBoltResult(output, supplier, charset, duration, comparator, error);
+    }
+
+    if (withClass.getResource(resourceName) == null) {
+      InputStreamSupplier supplier =
+          () -> {
+            throw new RunnerException("bolt.runner.load.expectation.resource.not.found");
+          };
+      return newBoltResult(output, supplier, charset, duration, comparator, error);
+    }
+
+    InputStreamSupplier supplier = () -> withClass.getResourceAsStream(resourceName);
+    return newBoltResult(output, supplier, charset, duration, comparator, error);
   }
 
   /**

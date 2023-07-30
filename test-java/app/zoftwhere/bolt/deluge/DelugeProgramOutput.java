@@ -5,17 +5,6 @@ import java.time.Duration;
 
 class DelugeProgramOutput {
 
-  static DelugeProgramOutput from(RunnerProgramOutput programOutput) {
-    final var output = programOutput.output();
-    final var duration = programOutput.executionDuration();
-    final var error = programOutput.error().orElse(null);
-    return new DelugeProgramOutput(output, duration, error);
-  }
-
-  static DelugeProgramOutput from(String[] output, Duration duration, Exception error) {
-    return new DelugeProgramOutput(output, duration, error);
-  }
-
   private final String[] output;
 
   private final Exception error;
@@ -26,6 +15,17 @@ class DelugeProgramOutput {
     this.output = output;
     this.duration = duration;
     this.error = error;
+  }
+
+  static DelugeProgramOutput from(RunnerProgramOutput programOutput) {
+    final var output = programOutput.output();
+    final var duration = programOutput.executionDuration();
+    final var error = programOutput.error().orElse(null);
+    return new DelugeProgramOutput(output, duration, error);
+  }
+
+  static DelugeProgramOutput from(String[] output, Duration duration, Exception error) {
+    return new DelugeProgramOutput(output, duration, error);
   }
 
   String[] output() {

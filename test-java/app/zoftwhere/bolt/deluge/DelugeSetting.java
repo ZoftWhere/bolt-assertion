@@ -13,6 +13,57 @@ public class DelugeSetting {
 
   private static final Charset ENCODING = Runner.DEFAULT_ENCODING;
 
+  private final boolean hasArgumentArray;
+
+  private final String[] argumentArray;
+
+  private final Exception error;
+
+  private final boolean hasCharSet;
+
+  private final Charset charset;
+
+  private final Charset encoding;
+
+  /**
+   * Constructor for DelugeSetting (private).
+   *
+   * @param hasDefaultEncoding has encoding indicator
+   * @param encoding default character encoding
+   * @param hasArgumentArray has argument array indicator
+   * @param argumentArray argument array
+   * @param error program error
+   * @param hasCharSet has program input character encoding
+   * @param charset program input character encoding
+   */
+  private DelugeSetting(
+      boolean hasDefaultEncoding,
+      Charset encoding,
+      boolean hasArgumentArray,
+      String[] argumentArray,
+      Exception error,
+      boolean hasCharSet,
+      Charset charset) {
+    this.encoding = encoding;
+    this.hasArgumentArray = hasArgumentArray;
+    this.argumentArray = argumentArray;
+    this.error = error;
+    this.hasCharSet = hasCharSet;
+    this.charset = charset;
+
+    if (!hasArgumentArray && argumentArray != null) {
+      throw new IllegalArgumentException("deluge.program.setting.argument.null.expected");
+    }
+
+    if (!hasCharSet && charset != ENCODING) {
+      throw new IllegalArgumentException("deluge.program.setting.charset.null.expected");
+    }
+
+    if (!hasDefaultEncoding && encoding != ENCODING) {
+      throw new IllegalArgumentException("deluge.program.setting.encoding.utf-8.expected");
+    }
+  }
+
   /**
    * Return instance with user defined default encoding.
    *
@@ -139,57 +190,6 @@ public class DelugeSetting {
    */
   static DelugeSetting from(String[] argumentArray, Exception error, Charset charset) {
     return new DelugeSetting(false, ENCODING, true, argumentArray, error, true, charset);
-  }
-
-  private final boolean hasArgumentArray;
-
-  private final String[] argumentArray;
-
-  private final Exception error;
-
-  private final boolean hasCharSet;
-
-  private final Charset charset;
-
-  private final Charset encoding;
-
-  /**
-   * Constructor for DelugeSetting (private).
-   *
-   * @param hasDefaultEncoding has encoding indicator
-   * @param encoding default character encoding
-   * @param hasArgumentArray has argument array indicator
-   * @param argumentArray argument array
-   * @param error program error
-   * @param hasCharSet has program input character encoding
-   * @param charset program input character encoding
-   */
-  private DelugeSetting(
-      boolean hasDefaultEncoding,
-      Charset encoding,
-      boolean hasArgumentArray,
-      String[] argumentArray,
-      Exception error,
-      boolean hasCharSet,
-      Charset charset) {
-    this.encoding = encoding;
-    this.hasArgumentArray = hasArgumentArray;
-    this.argumentArray = argumentArray;
-    this.error = error;
-    this.hasCharSet = hasCharSet;
-    this.charset = charset;
-
-    if (!hasArgumentArray && argumentArray != null) {
-      throw new IllegalArgumentException("deluge.program.setting.argument.null.expected");
-    }
-
-    if (!hasCharSet && charset != ENCODING) {
-      throw new IllegalArgumentException("deluge.program.setting.charset.null.expected");
-    }
-
-    if (!hasDefaultEncoding && encoding != ENCODING) {
-      throw new IllegalArgumentException("deluge.program.setting.encoding.utf-8.expected");
-    }
   }
 
   public Charset defaultEncoding() {
