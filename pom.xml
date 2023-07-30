@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>app.zoftwhere.bolt</groupId>
     <artifactId>bolt-assertion</artifactId>
     <version>11.6.0-SNAPSHOT</version>
+
+    <name>zoftwhere.bolt.assertion</name>
+    <description>Bolt-on unit test assertion for program output.</description>
+    <url>https://github.com/ZoftWhere/bolt-assertion</url>
     <organization>
         <name>ZoftWhere</name>
         <url>https://github.com/ZoftWhere</url>
     </organization>
-    <name>zoftwhere.bolt.assertion</name>
-    <description>Bolt-on unit test assertion for program output.</description>
-    <url>https://github.com/ZoftWhere/bolt-assertion</url>
 
     <properties>
         <!-- Settings: maven-resource-plugin -->
@@ -27,7 +27,7 @@
         <!-- Settings: maven-build -->
         <maven.build.timestamp.format>yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;Z&apos;</maven.build.timestamp.format>
 
-        <!-- Settings: User defined plugin properties -->
+        <!-- Settings: Maven plugin properties -->
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-dependency-plugin.version>3.1.2</maven-dependency-plugin.version>
@@ -41,11 +41,15 @@
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <maven-toolchains-plugin.version>3.0.0</maven-toolchains-plugin.version>
-
-        <!-- > -->
         <surefire.printSummary>false</surefire.printSummary>
-        <org.junit.5.version>5.7.1</org.junit.5.version>
+
+        <!-- Settings: User defined plugin properties -->
         <moditect-maven-plugin.version>1.0.0.Beta2</moditect-maven-plugin.version>
+        <tidy-maven-plugin.version>1.2.0</tidy-maven-plugin.version>
+
+        <!-- User define dependencies (main) -->
+        <!-- User define dependencies (test) -->
+        <org.junit.5.version>5.7.1</org.junit.5.version>
     </properties>
 
     <dependencyManagement>
@@ -59,7 +63,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>org.junit.platform</groupId>
@@ -82,25 +85,22 @@
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}-${project.version}</finalName>
-        <directory>_target</directory>
-
         <sourceDirectory>main-java</sourceDirectory>
+        <testSourceDirectory>test-java</testSourceDirectory>
+        <directory>_target</directory>
+        <outputDirectory>_target/main-classes</outputDirectory>
+        <testOutputDirectory>_target/test-classes</testOutputDirectory>
+        <finalName>${project.artifactId}-${project.version}</finalName>
         <resources>
             <resource>
                 <directory>main-resources</directory>
             </resource>
         </resources>
-        <outputDirectory>_target/main-classes</outputDirectory>
-
-        <testSourceDirectory>test-java</testSourceDirectory>
         <testResources>
             <testResource>
                 <directory>test-resources</directory>
             </testResource>
         </testResources>
-        <testOutputDirectory>_target/test-classes</testOutputDirectory>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -547,6 +547,12 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>tidy-maven-plugin</artifactId>
+                <version>${tidy-maven-plugin.version}</version>
             </plugin>
         </plugins>
     </build>
