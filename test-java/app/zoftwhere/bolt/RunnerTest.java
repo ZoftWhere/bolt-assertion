@@ -213,7 +213,7 @@ class RunnerTest {
 
     @Test
     void testSplittingFormFeed() {
-        newRunner().input("1\f" + "2\r" + "3\r\n" + "4\n" + "5\f" + "")
+        newRunner().input("1\f" + "2\r" + "3\r\n" + "4\n" + "5\f")
             .runConsole(RunnerTest::runEcho)
             .expected("1", "2", "3", "4", "5", "")
             .onOffence(consumer);
