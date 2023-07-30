@@ -45,7 +45,7 @@
 
         <!-- Settings: User defined plugin properties -->
         <fmt-maven-plugin.version>2.20</fmt-maven-plugin.version>
-        <moditect-maven-plugin.version>1.0.0.Beta2</moditect-maven-plugin.version>
+        <moditect-maven-plugin.version>1.0.0.Final</moditect-maven-plugin.version>
         <tidy-maven-plugin.version>1.2.0</tidy-maven-plugin.version>
 
         <!-- User define dependencies (main) -->
