@@ -15,6 +15,12 @@ public class BoltSingleReturn<T> {
 
   private final BoltPlaceHolder<T> boltPlaceHolder = new BoltPlaceHolder<>(null);
 
+  /** Public constructor for Bolt Single Return. */
+  public BoltSingleReturn() {
+
+    // Public constructor for test classes.
+  }
+
   /**
    * Provide code block.
    *
