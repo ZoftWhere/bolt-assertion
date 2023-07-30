@@ -290,7 +290,7 @@ class BoltReaderTest {
 
   @Test
   void testPartitionSplit() {
-    final var string = "\r" + "\r\n" + "\n" + "\u0085" + "\u2028" + "\u2029" + "\f" + "";
+    final var string = "\r" + "\r\n" + "\n" + "\u0085" + "\u2028" + "\u2029" + "\f";
     final var supplier = (Supplier<BoltReader>) () -> forString(string, UTF_16);
     final var array = BoltReader.readArray(supplier);
     final var expected = new String[] {"", "", "", "", "", "", "", ""};
