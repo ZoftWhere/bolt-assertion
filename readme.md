@@ -176,6 +176,11 @@ public class ConsoleOutputExampleTest {
 }
 ```
 
+### More Examples
+
+The source code for the [ZoftWhere Bolt Assertion Examples](/test-java/example), and more, are available for
+download [here](/test-java/example).
+
 ## License
 
 Copyright (c) 2019-2023 ZoftWhere

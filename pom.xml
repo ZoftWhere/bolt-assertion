@@ -234,6 +234,7 @@
                                 <!-- test-java packages -->
                                 --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt.deluge=ALL-UNNAMED
                                 --add-opens&#32;zoftwhere.bolt.assertion/app.zoftwhere.bolt.scope=ALL-UNNAMED
+                                --add-opens&#32;zoftwhere.bolt.assertion/example=ALL-UNNAMED
                             </argLine>
                             <forkCount>1</forkCount>
                             <reuseForks>true</reuseForks>
@@ -242,6 +243,8 @@
                             <includes>
                                 <!-- Include default classes -->
                                 <include>app/zoftwhere/bolt/**/*Test.java</include>
+                                <!-- Include example classes -->
+                                <include>example/*Test.java</include>
                             </includes>
                         </configuration>
                     </execution>
