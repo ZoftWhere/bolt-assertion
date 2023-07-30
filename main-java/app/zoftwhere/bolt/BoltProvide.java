@@ -75,6 +75,7 @@ interface BoltProvide {
      * @return {@link java.util.Scanner} for input stream
      * @since 6.0.0
      */
+    @SuppressWarnings("CharsetObjectCanBeUsed")
     default Scanner newScanner(InputStream inputStream, Charset charset) {
         // Charset.name() for backwards compatibility.
         return new Scanner(inputStream, charset.name());
@@ -89,6 +90,7 @@ interface BoltProvide {
      * @throws java.io.UnsupportedEncodingException if any.
      * @since 7.0.0
      */
+    @SuppressWarnings("CharsetObjectCanBeUsed")
     default PrintStream newPrintStream(OutputStream outputStream, Charset charset)
     throws UnsupportedEncodingException
     {
