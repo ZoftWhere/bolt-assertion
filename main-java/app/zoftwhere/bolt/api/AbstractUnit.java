@@ -32,13 +32,11 @@ abstract class AbstractUnit {
     public AbstractUnit() {
     }
 
-    @SuppressWarnings("unused")
     interface Encoding<T> {
 
         T encoding(Charset encoding);
     }
 
-    @SuppressWarnings("unused")
     interface RunNoArguments<T> {
 
         T run(RunStandard program);
@@ -50,7 +48,6 @@ abstract class AbstractUnit {
         T runConsole(Charset charset, RunConsole program);
     }
 
-    @SuppressWarnings("unused")
     interface RunWithArguments<T> {
 
         T run(RunStandardArgued program);
@@ -62,13 +59,11 @@ abstract class AbstractUnit {
         T runConsole(Charset charset, RunConsoleArgued program);
     }
 
-    @SuppressWarnings("unused")
     interface Arguments<T> {
 
         T argument(String... arguments);
     }
 
-    @SuppressWarnings("unused")
     interface Input<T> {
 
         T input(String... input);
@@ -84,13 +79,11 @@ abstract class AbstractUnit {
         T loadInput(String resourceName, Class<?> withClass, Charset charset);
     }
 
-    @SuppressWarnings("unused")
     interface Comparison<T, C> {
 
         T comparator(Comparator<C> comparator);
     }
 
-    @SuppressWarnings("unused")
     interface Output {
 
         String[] output();
@@ -100,7 +93,6 @@ abstract class AbstractUnit {
         Optional<Exception> error();
     }
 
-    @SuppressWarnings("unused")
     interface Expected<T> {
 
         T expected(String... expected);
@@ -114,7 +106,6 @@ abstract class AbstractUnit {
         T loadExpectation(String resourceName, Class<?> withClass, Charset charset);
     }
 
-    @SuppressWarnings("unused")
     interface Assertions<T extends Result> {
 
         void assertSuccess();
@@ -130,7 +121,6 @@ abstract class AbstractUnit {
         T result();
     }
 
-    @SuppressWarnings("unused")
     interface Result {
 
         boolean isSuccess();
@@ -153,28 +143,24 @@ abstract class AbstractUnit {
     }
 
     @FunctionalInterface
-    @SuppressWarnings({"EmptyMethod", "unused"})
     interface CallerNoArguments<T1, T2> {
 
         void call(T1 t1, T2 t2) throws Exception;
     }
 
     @FunctionalInterface
-    @SuppressWarnings({"EmptyMethod", "unused"})
     interface CallerWithArguments<T1, T2> {
 
         void call(String[] arguments, T1 t1, T2 t2) throws Exception;
     }
 
     @FunctionalInterface
-    @SuppressWarnings({"EmptyMethod", "unused"})
     interface ThrowingSupplier<T> {
 
         T get() throws Exception;
     }
 
     @FunctionalInterface
-    @SuppressWarnings({"EmptyMethod", "unused"})
     interface ThrowingConsumer<T> {
 
         void accept(T input) throws Exception;
