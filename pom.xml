@@ -44,6 +44,7 @@
         <surefire.printSummary>false</surefire.printSummary>
 
         <!-- Settings: User defined plugin properties -->
+        <fmt-maven-plugin.version>2.20</fmt-maven-plugin.version>
         <moditect-maven-plugin.version>1.0.0.Beta2</moditect-maven-plugin.version>
         <tidy-maven-plugin.version>1.2.0</tidy-maven-plugin.version>
 
@@ -553,6 +554,12 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>tidy-maven-plugin</artifactId>
                 <version>${tidy-maven-plugin.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>com.spotify.fmt</groupId>
+                <artifactId>fmt-maven-plugin</artifactId>
+                <version>${fmt-maven-plugin.version}</version>
             </plugin>
         </plugins>
     </build>
