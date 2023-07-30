@@ -48,9 +48,9 @@ class RunnerTest {
     }
 
     @Test
+    @SuppressWarnings("ConstantConditions")
     void testCompiler() {
         // A purely paranoid test (based on a bug encountered).
-        //noinspection ConstantConditions
         if (!"\r\n".equals(NEW_LINE)) {
             throw new RunnerException("bolt.runner.new.line.invalid");
         }
