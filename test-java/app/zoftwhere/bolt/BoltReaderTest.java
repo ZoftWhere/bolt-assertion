@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("resource")
 class BoltReaderTest {
 
   @Test

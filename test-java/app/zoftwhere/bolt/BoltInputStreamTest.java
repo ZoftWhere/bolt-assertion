@@ -22,6 +22,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("resource")
 class BoltInputStreamTest {
 
   @Test
