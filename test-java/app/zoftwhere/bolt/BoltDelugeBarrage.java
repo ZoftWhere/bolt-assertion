@@ -20,7 +20,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.jupiter.api.Test;
 
 /**
  * Bolt Deluge Barrage.
@@ -29,33 +28,6 @@ import org.junit.jupiter.api.Test;
  * @since 11.0.0
  */
 class BoltDelugeBarrage {
-
-  /**
-   * Java main method for quick IDE execution.
-   *
-   * @param arguments input arguments
-   * @since 11.0.0
-   */
-  @SuppressWarnings("WeakerAccess")
-  public static void main(String[] arguments) {
-    final var test = new BoltDelugeBarrage();
-    final var rx = 2 + 2 * test.encodingArray.length;
-    final var ax = test.argumentArray.length;
-    final var cx = test.charsetArray.length;
-    final var ex = 1 + test.errorArray.length;
-    final var dx = test.dataList.size();
-
-    final var expected = rx * 2 * (1 + ax + cx + ax * cx) * ex * dx;
-    System.out.println("Tests expected : " + expected);
-
-    final var start = Instant.now();
-    final var count = test.main();
-    final var finish = Instant.now();
-    final var duration = Duration.ofMillis(start.until(finish, ChronoUnit.MILLIS));
-
-    System.out.println("Tests run      : " + count);
-    System.out.println("Duration       : " + duration);
-  }
 
   private final Charset[] encodingArray = {null, US_ASCII, UTF_8, UTF_16LE, UTF_16BE, UTF_16};
 
@@ -79,20 +51,33 @@ class BoltDelugeBarrage {
 
   private final List<DelugeData> dataList = expansiveData();
 
-  @Test
-  void runnerTest() {
-    if (!System.getProperties().containsKey("bolt.runner.deluge.test")) {
-      final var cause = new RunnerException("This exception is to manage long running tests.");
-      throw new RunnerException("bolt.runner.deluge.test.flag.missing", cause);
-    }
-    if (!"barrage".equals(System.getProperties().getProperty("bolt.runner.deluge.test"))) {
-      throw new RunnerException("bolt.runner.deluge.test.flag.mismatched");
-    }
+  /**
+   * Java main method for quick IDE execution.
+   *
+   * @param arguments input arguments
+   * @since 11.0.0
+   */
+  public static void main(String[] arguments) {
+    final var test = new BoltDelugeBarrage();
+    final var rx = 2 + 2 * test.encodingArray.length;
+    final var ax = test.argumentArray.length;
+    final var cx = test.charsetArray.length;
+    final var ex = 1 + test.errorArray.length;
+    final var dx = test.dataList.size();
 
-    new BoltDelugeBarrage().main();
+    final var expected = rx * 2 * (1 + ax + cx + ax * cx) * ex * dx;
+    System.out.println("Tests expected : " + expected);
+
+    final var start = Instant.now();
+    final var count = test.run();
+    final var finish = Instant.now();
+    final var duration = Duration.ofMillis(start.until(finish, ChronoUnit.MILLIS));
+
+    System.out.println("Tests run      : " + count);
+    System.out.println("Duration       : " + duration);
   }
 
-  private int main() {
+  private int run() {
     final var encodingList = Arrays.asList(encodingArray);
     final var argumentList = Arrays.asList(argumentArray);
     final var errorList = Arrays.asList(errorArray);
