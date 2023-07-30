@@ -18,6 +18,11 @@ import org.opentest4j.AssertionFailedError;
  */
 public class BoltTestHelper {
 
+  /** Private constructor for Bolt Test Helper. */
+  private BoltTestHelper() {
+    // Private constructor for utility class.
+  }
+
   public static String[] array(String... array) {
     return array;
   }
