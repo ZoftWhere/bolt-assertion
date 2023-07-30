@@ -193,7 +193,7 @@ download [here](/test-java/example).
 
 ## License
 
-Copyright (c) 2020 ZoftWhere
+Copyright (c) 2019-2023 ZoftWhere
 
 Licensed under the MIT License
 
