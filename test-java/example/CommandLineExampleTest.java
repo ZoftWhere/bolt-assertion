@@ -4,8 +4,7 @@ import app.zoftwhere.bolt.Runner;
 import org.junit.jupiter.api.Test;
 
 /**
- * <p>This class is the test class for the CommandLineExample.
- * </p>
+ * This class is the test class for the CommandLineExample.
  *
  * @author Osmund
  * @version 11.2.0
@@ -13,15 +12,15 @@ import org.junit.jupiter.api.Test;
  */
 class CommandLineExampleTest {
 
-    private final Runner runner = new Runner();
+  private final Runner runner = new Runner();
 
-    @Test
-    void testCase() {
-        runner.run(CommandLineExample::main)
-            .argument()
-            .input("World")
-            .expected("Hello World!", "")
-            .assertSuccess();
-    }
-
+  @Test
+  void testCase() {
+    runner
+        .run(CommandLineExample::run)
+        .argument()
+        .input("World")
+        .expected("Hello World!", "")
+        .assertSuccess();
+  }
 }

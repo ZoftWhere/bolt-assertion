@@ -9,14 +9,13 @@ package app.zoftwhere.bolt.api;
  */
 public interface RunnerPreProgram extends AbstractUnit.Arguments<RunnerProgram> {
 
-    /**
-     * Specify the program arguments.
-     *
-     * @param arguments program argument array
-     * @return {@link app.zoftwhere.bolt.api.RunnerProgram}
-     * @since 1.0.0
-     */
-    @Override
-    RunnerProgram argument(String... arguments);
-
+  /**
+   * Specify the program arguments.
+   *
+   * @param arguments program argument array
+   * @return {@link app.zoftwhere.bolt.api.RunnerProgram}
+   * @since 1.0.0
+   */
+  @Override
+  RunnerProgram argument(String... arguments);
 }

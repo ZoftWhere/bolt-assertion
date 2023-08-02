@@ -1,11 +1,3 @@
-# IDE files
-/.idea/dataSources
-/.idea/dictionaries
-/.idea/inspectionProfiles
-/.idea/libraries
-/.idea/shelf
-/.idea/*.xml
-
 # Maven target
 /_target
 
